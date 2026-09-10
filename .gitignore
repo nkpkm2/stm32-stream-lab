@@ -1,0 +1,16 @@
+# Project Python environment
+/.venv/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Generated build products
+/build/
+/build-*/
+
+# Local environment files that may contain credentials
+.env
+.env.*
+!.env.example
