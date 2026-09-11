@@ -33,3 +33,4 @@ CMakeLists.txt text eol=lf
 .gitattributes text eol=lf
 .gitignore     text eol=lf
 uv.lock        text eol=lf
+*.ioc    text eol=lf
