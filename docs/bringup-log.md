@@ -772,3 +772,302 @@ firmware/cubemx/cubemx.ioc
 ```
 
 This change was intentionally not included in the P0-A1 environment commit.
+
+## Session continuation: 2026-09-11 — Operations Work Package P0-A2
+
+### 15. P0-A2 objective
+
+Operations Work Package P0-A2 required a minimal reproducible firmware-build baseline using the existing STM32CubeMX project shell.
+
+The required proof was:
+
+- generate the actual STM32 project from the tracked `.ioc`;
+- perform a clean configure/build/link using the installed ARM GCC toolchain;
+- produce target artifacts;
+- verify Cortex-M4F / FPv4-SP-D16 / hard-float configuration;
+- document the reproducible build command;
+- keep generated build output out of Git;
+- preserve `.ioc` tracking;
+- avoid machine-specific paths and unrelated firmware implementation.
+
+The physical board and data cable were still unavailable, so the work package remained strictly host-side.
+
+### 16. Isolating unrelated CubeMX clock work
+
+Before P0-A2, the working tree contained an uncommitted CubeMX clock experiment with 180 MHz static clock settings.
+
+That work was intentionally excluded from the P0-A2 build baseline and saved as:
+
+```text
+stash@{0}: On main: pre-P0-A2 CubeMX clock configuration
+```
+
+The working tree was returned to the committed minimal CubeMX shell.
+
+The restored `.ioc` baseline reported:
+
+```text
+ProjectManager.FirmwarePackage=STM32Cube FW_F4 V1.28.3
+ProjectManager.LastFirmware=false
+ProjectManager.NoMain=false
+ProjectManager.ProjectName=cubemx
+ProjectManager.TargetToolchain=CMake
+```
+
+At that point, `firmware/cubemx/` contained only the tracked `cubemx.ioc`.
+
+### 17. Full CubeMX project generation
+
+The minimal CubeMX project was regenerated from the clean `.ioc`.
+
+The generated project included:
+
+```text
+CMakeLists.txt
+CMakePresets.json
+startup_stm32f446xx.s
+STM32F446xx_FLASH.ld
+cmake/gcc-arm-none-eabi.cmake
+cmake/stm32cubemx/CMakeLists.txt
+Core/Inc/*
+Core/Src/*
+Drivers/CMSIS/*
+Drivers/STM32F4xx_HAL_Driver/*
+Drivers/BSP/STM32F4xx-Nucleo/*
+```
+
+The generated GCC toolchain file explicitly contained:
+
+```text
+-mcpu=cortex-m4
+-mfpu=fpv4-sp-d16
+-mfloat-abi=hard
+```
+
+and linked with:
+
+```text
+STM32F446xx_FLASH.ld
+```
+
+The generated CMake configuration produced an ELF executable and linker map.
+
+### 18. Clean configure/build/link procedure
+
+A clean build directory was used:
+
+```text
+build/p0-a2
+```
+
+The procedure was:
+
+1. remove the previous `build/p0-a2` directory if present;
+2. configure CMake using:
+   - the generated CubeMX source tree;
+   - Ninja;
+   - `cmake/gcc-arm-none-eabi.cmake`;
+   - `Debug` build type;
+3. build the complete generated firmware;
+4. inspect the resulting ELF;
+5. package the ELF into `.hex` and `.bin` images using the same Arm GNU toolchain.
+
+The build completed successfully.
+
+### 19. Target artifacts
+
+The final verified target artifacts were:
+
+```text
+cubemx.elf
+cubemx.map
+cubemx.hex
+cubemx.bin
+```
+
+Observed sizes:
+
+```text
+cubemx.elf  1,007,272 bytes
+cubemx.map    343,837 bytes
+cubemx.hex     20,459 bytes
+cubemx.bin      7,240 bytes
+```
+
+`arm-none-eabi-size` reported:
+
+```text
+text    data     bss     dec     hex
+7220      20    1572    8812    226c
+```
+
+### 20. Architecture / ABI verification
+
+The ELF header reported:
+
+```text
+Class:   ELF32
+Data:    2's complement, little endian
+Machine: ARM
+Flags:   Version5 EABI, hard-float ABI
+```
+
+ARM attributes reported:
+
+```text
+Tag_CPU_name: "7E-M"
+Tag_CPU_arch: v7E-M
+Tag_CPU_arch_profile: Microcontroller
+Tag_FP_arch: VFPv4-D16
+Tag_ABI_VFP_args: VFP registers
+```
+
+The generated compile database independently confirmed:
+
+```text
+-mcpu=cortex-m4
+-mfpu=fpv4-sp-d16
+-mfloat-abi=hard
+```
+
+Therefore, the actual firmware build used the expected Cortex-M4F / ARMv7E-M / FPv4-SP-D16 / hard-float configuration.
+
+### 21. Artifact packaging
+
+The generated CMake baseline produced the ELF and linker map directly.
+
+Standard flashable HEX and BIN images were then derived from the verified ELF with:
+
+```text
+arm-none-eabi-objcopy -O ihex
+arm-none-eabi-objcopy -O binary
+```
+
+No CMake refactor or unnecessary post-build customization was introduced solely to create those formats.
+
+### 22. Git hygiene
+
+The following checks passed:
+
+- `firmware/cubemx/cubemx.ioc` remained tracked;
+- `build/p0-a2/*` remained ignored through the existing `/build/` rule;
+- `.elf`, `.map`, `.hex`, and `.bin` build artifacts were not staged;
+- the generated source tree contained no machine-specific Windows absolute-path candidates;
+- `.mxproject` contained only CubeMX bookkeeping and relative paths and was intentionally ignored;
+- ST/CubeMX generated source was not reformatted merely to satisfy whitespace style checks.
+
+`system_stm32f4xx.c` contained vendor/generated trailing whitespace. This was intentionally left unchanged to avoid meaningless vendor-code diffs and regeneration churn.
+
+A focused whitespace check was applied only to project-authored files.
+
+### 23. Firmware build documentation
+
+A reproducible build reference was added:
+
+```text
+docs/firmware-build.md
+```
+
+It records:
+
+- source and toolchain inputs;
+- clean build directory;
+- CMake/Ninja build procedure;
+- ELF-to-HEX/BIN packaging;
+- verified build result;
+- architecture / ABI evidence;
+- hardware evidence boundary.
+
+### 24. P0-A2 milestone commit
+
+The generated firmware baseline and build documentation were committed as:
+
+```text
+337e6c8  build: establish reproducible firmware baseline
+```
+
+### 25. GitHub push failure and network diagnosis
+
+The initial push attempt failed with:
+
+```text
+Recv failure: Connection was reset
+```
+
+A second attempt also failed.
+
+The local repository remained safe:
+
+```text
+## main...origin/main [ahead 1]
+```
+
+Network diagnosis showed:
+
+```text
+github.com DNS resolution     PASS
+TCP connection to port 443    FAIL
+curl HTTPS connection         TIMEOUT
+git ls-remote                 FAIL
+```
+
+The browser could still access GitHub because the Windows user proxy was configured as:
+
+```text
+127.0.0.1:7890
+```
+
+while:
+
+```text
+WinHTTP proxy                 direct
+HTTP_PROXY / HTTPS_PROXY      not set
+Git proxy                     not configured
+```
+
+Therefore, Git was attempting a direct GitHub connection while the browser used the local VPN proxy.
+
+A repository-local Git proxy was configured:
+
+```text
+http.proxy = http://127.0.0.1:7890
+```
+
+This setting is local to the repository and is not committed to Git.
+
+Remote access then succeeded and the P0-A2 milestone was pushed successfully:
+
+```text
+337e6c8 (HEAD -> main, origin/main) build: establish reproducible firmware baseline
+```
+
+Final repository status:
+
+```text
+## main...origin/main
+```
+
+### 26. P0-A2 result
+
+**PASS**
+
+P0-A2 proves that the tracked minimal STM32CubeMX project can be regenerated into a complete STM32F446RE project, cleanly configured, compiled, linked, inspected, and packaged into standard target artifacts using the documented host-side workflow.
+
+### 27. Remaining evidence boundary
+
+Still untested because the physical board and cable are unavailable:
+
+- ST-LINK detection;
+- flashing;
+- target boot;
+- on-board GDB debugging;
+- VCP/UART;
+- real HSE and clock behavior;
+- ADC;
+- TIM;
+- DMA / DBM;
+- FreeRTOS runtime behavior;
+- any board-level timing measurement;
+- R0-R7 hardware validation.
+
+Per the P0-A2 stop condition, firmware feature implementation must not continue until the physical board becomes available and board bring-up begins.
