@@ -7,7 +7,7 @@
 - Architecture baseline: `Architecture v3.2.2`
 - Target platform: `NUCLEO-F446RE / STM32F446RE`
 - RTOS baseline: FreeRTOS
-- Project repository: `E:\Projects\stm32-stream-lab`
+- Project repository: `<repo-root>`
 - Current phase: PC development environment bring-up
 - Hardware status: NUCLEO-F446RE not yet purchased; no board-level tests have been performed.
 
@@ -24,7 +24,7 @@
 
 Local repository:
 
-`E:\Projects\stm32-stream-lab`
+`<repo-root>`
 
 Branch:
 
@@ -75,19 +75,19 @@ Python/project manager:
 
 uv executable:
 
-`C:\Users\CHJ\.local\bin\uv.exe`
+`<user-profile>\.local\bin\uv.exe`
 
 Managed Python storage:
 
-`E:\DevTools\uv\python`
+`<tools-root>\uv\python`
 
 uv cache:
 
-`E:\DevTools\uv\cache`
+`<tools-root>\uv\cache`
 
 Project virtual environment:
 
-`E:\Projects\stm32-stream-lab\.venv`
+`<repo-root>\.venv`
 
 Project Python:
 
@@ -95,7 +95,7 @@ Project Python:
 
 Verified executable:
 
-`E:\Projects\stm32-stream-lab\.venv\Scripts\python.exe`
+`<repo-root>\.venv\Scripts\python.exe`
 
 Verified:
 
@@ -121,7 +121,7 @@ Version:
 
 Location:
 
-`E:\DevTools\cmake-3.31.12-windows-x86_64`
+`<tools-root>\cmake-3.31.12-windows-x86_64`
 
 Official download SHA-256 verification:
 
@@ -139,7 +139,7 @@ Version:
 
 Location:
 
-`E:\DevTools\ninja-1.13.1-windows-x86_64`
+`<tools-root>\ninja-1.13.1-windows-x86_64`
 
 Official download SHA-256 verification:
 
@@ -165,7 +165,7 @@ Build identifier:
 
 Location:
 
-`E:\DevTools\arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi`
+`<tools-root>\arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi`
 
 Compiler target:
 
@@ -201,7 +201,7 @@ The package was then downloaded successfully using `curl.exe`, and its checksum 
 
 The first valid extraction was accidentally performed directly into:
 
-`E:\DevTools`
+`<tools-root>`
 
 This created duplicate toolchain directories:
 
@@ -231,7 +231,7 @@ The compiler in the version-specific directory was tested again after cleanup an
 
 Test directory:
 
-`E:\DevTools\SmokeTests\arm-cmake-ninja`
+`<tools-root>\SmokeTests\arm-cmake-ninja`
 
 Purpose:
 
@@ -281,11 +281,11 @@ Installed version according to STM32CubeMX Help → About:
 
 Installation directory:
 
-`E:\DevTools\STM32CubeMX-6.18.1`
+`<tools-root>\STM32CubeMX-6.18.1`
 
 Executable:
 
-`E:\DevTools\STM32CubeMX-6.18.1\STM32CubeMX.exe`
+`<tools-root>\STM32CubeMX-6.18.1\STM32CubeMX.exe`
 
 Observed Windows executable metadata:
 
@@ -302,7 +302,7 @@ This metadata discrepancy is recorded but currently considered non-blocking.
 
 Configured CubeMX firmware repository:
 
-`E:\DevTools\STM32Cube\Repository`
+`<tools-root>\STM32Cube\Repository`
 
 Installed STM32F4 package:
 
@@ -310,7 +310,7 @@ Installed STM32F4 package:
 
 Verified on disk at:
 
-`E:\DevTools\STM32Cube\Repository\STM32Cube_FW_F4_V1.28.3`
+`<tools-root>\STM32Cube\Repository\STM32Cube_FW_F4_V1.28.3`
 
 Observed top-level contents:
 
