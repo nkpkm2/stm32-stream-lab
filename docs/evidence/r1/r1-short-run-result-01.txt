@@ -1,0 +1,66 @@
+Reset_Handler () at E:/Projects/stm32-stream-lab/firmware/cubemx\startup_stm32f446xx.s:61
+61	  ldr   sp, =_estack      /* set stack pointer */
+
+=== R1 BRINGUP RESULT ===
+magic=0x52314231
+task_created=1
+short_run_pass=1
+phase=4
+start_status=0
+stop_status=0
+tim2_cr1_after_start=0x00000001
+
+=== STARTUP DBM EVIDENCE ===
+dbm_bit_seen=1
+start_ndtr_is_256=1
+start_ct_is_m0=1
+m0ar_matches_buffer0=1
+m1ar_matches_buffer1=1
+start_dma_cr=0x00062d17
+start_dma_ndtr=256
+start_dma_m0ar=0x20000df8
+start_dma_m1ar=0x20000ff8
+start_dma_ct=0
+start_adc_cr2=0x16000701
+start_tim2_cr1=0x00000000
+
+=== BLOCK EVENT INTEGRITY ===
+start_count=1
+restart_count=0
+tc_count=195
+m0_complete_count=98
+m1_complete_count=97
+ct_mismatch_count=0
+alternation_mismatch_count=0
+suspected_event_loss_count=0
+
+=== ERROR COUNTERS ===
+adc_ovr_count=0
+dma_te_count=0
+dma_dme_count=0
+dma_fe_count=0
+dma_other_error_count=0
+
+=== BLOCK TIMING ===
+timing_interval_count=194
+last_delta_cycles=230406
+min_delta_cycles=230387
+max_delta_cycles=230413
+sum_delta_cycles=44697600
+trace_count=128
+
+=== STOP / PARTIAL BLOCK ===
+partial_stop_count=1
+stop_remaining_ndtr=210
+stop_captured_samples=46
+stop_active_target=1
+stop_artifact_count=0
+acquisition_state=1
+
+=== RAW GROUND INPUT SUMMARY ===
+raw0_min=0
+raw0_max=8
+raw1_min=0
+raw1_max=9
+
+=== POST-STOP LIVE REGISTERS ===

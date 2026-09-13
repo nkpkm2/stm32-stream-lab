@@ -1,0 +1,16 @@
+R1 raw snapshot metadata
+
+Input condition: PA0 / ADC1_IN0 connected to GND
+Target configuration: 200 kS/s, N=256, fixed M0/M1 DBM
+Formal soak duration: 600000 ms
+Formal soak ELF SHA256: 67040A73D2072C569918FA3E3AB9B3F88B52C0901E211665ED99462BF33E6CBA
+Stopped active DMA target: M1
+Selected fully completed DMA target: M0
+Stop remaining NDTR: 34
+Stop captured samples in active target: 222
+Snapshot sample count: 256
+Snapshot minimum raw value: 0
+Snapshot maximum raw value: 8
+
+The CSV contains the last fully completed fixed DMA target after the formal soak stop.
+The active partial DMA target was intentionally excluded from the complete raw snapshot.

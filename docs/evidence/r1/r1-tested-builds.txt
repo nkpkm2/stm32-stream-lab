@@ -1,0 +1,28 @@
+R1 tested-build manifest
+
+Short-run hardware bringup
+Source checkpoint commit: 8475676b7ffd657c2bcb6a56328322a15a400530
+ELF SHA256: C0493EC1B31D504F404BB2ABD732B1B82038102EA975099651E4D225932F4DA7
+Hardware classification: PASS
+
+Lifecycle regression
+Source checkpoint commit: ec2cc4244837d54d423ca9e240b50fe0a66509f1
+ELF SHA256: CDB12A342F507C7660E7C25DB8F4F640A3F0A2652A0AD3A3683A22EB680037FC
+Completed cycles: 6 / 6
+Hardware classification: PASS
+
+Formal 10-minute acquisition soak
+Base commit before soak-harness integration: ec2cc4244837d54d423ca9e240b50fe0a66509f1
+ELF SHA256: 67040A73D2072C569918FA3E3AB9B3F88B52C0901E211665ED99462BF33E6CBA
+Duration: 600000 ms
+Expected transfer completions: 468750
+Observed transfer completions: 468749
+Transfer-completion count error: -1
+Hardware classification: PASS
+
+Raw snapshot
+CSV SHA256: B01105298CDA8782E74D5E6702B5716293C23978D9AE6A9AF8567AF6B9DE1400
+Samples: 256
+Input condition: PA0 / ADC1_IN0 connected to GND
+Selected fully completed DMA target: M0
+Observed raw range: 0 .. 8
