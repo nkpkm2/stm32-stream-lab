@@ -119,7 +119,57 @@ P0-B does not validate the 180 MHz / DWT / FreeRTOS platform; those remain R0 wo
 
 **Result:** PASS
 
-R1 remains NOT STARTED.
+## R1 — Raw Acquisition Integrity
+
+**Status:** PASS
+**Date:** 2026-09-13
+**Firmware milestone:** `5ebf62e`
+**Evidence commit:** `538073f`
+
+**Final Principal acceptance:** granted; `r1-pass` created at the hardware-tested firmware milestone `5ebf62e`.
+
+**Primary evidence:**
+- [`docs/evidence/r1/README.md`](r1/README.md)
+- [`Short-run hardware result`](r1/r1-short-run-result-01.txt)
+- [`Lifecycle regression`](r1/r1-lifecycle-result-01.txt)
+- [`Formal 10-minute soak`](r1/r1-soak-result-01.txt)
+- [`Final focused hardware regression`](r1/r1-final-focused-regression-01.txt)
+- [`256-sample raw snapshot`](r1/r1-raw-snapshot.csv)
+- [`Raw snapshot metadata`](r1/r1-raw-snapshot-metadata.txt)
+- [`Tested-build manifest`](r1/r1-tested-builds.txt)
+- [`Evidence SHA256 manifest`](r1/r1-evidence-manifest.sha256)
+
+**Verified:**
+- TIM2 Update TRGO to ADC1 PA0 / IN0 acquisition path
+- effective 200 kS/s sampling with N = 256
+- genuine fixed-buffer DMA double-buffer mode using M0 and M1
+- six-cycle start / partial-stop / restart lifecycle regression
+- fresh M0 then M1 completion sequence after every restart
+- 600000 ms uninterrupted formal hardware soak
+- 468749 observed transfer completions versus 468750 expected
+- 781.248 blocks/s observed versus 781.250 blocks/s expected
+- 230400-cycle mean block interval
+- zero CT mismatches
+- zero alternation mismatches
+- zero suspected event loss
+- zero ADC overrun events
+- zero DMA TE / DME / FE errors
+- no post-stop stale completion
+- complete machine-readable 256-sample raw ADC snapshot
+- clean committed-state rebuild reproduced the hardware-tested ELF byte-for-byte
+- R0 clock, NVIC grouping, HAL tick, FreeRTOS tick, scheduler, VCP, and IRQ-priority regression checks passed
+
+**Result:** PASS
+
+`r1-pass` points to the exact hardware-tested firmware state:
+
+`5ebf62e90b31e262f44013afb594a430061f139a`
+
+The corresponding R1 evidence/documentation commit is:
+
+`538073fa3e86a8188a88d02360c2178494cd6928`
+
+R2 is authorized and remains NOT STARTED.
 
 ## Existing engineering / project logs
 
