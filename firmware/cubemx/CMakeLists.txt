@@ -86,3 +86,18 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM4F
 )
 # === R0 FREERTOS V11.1.0 END ===
+
+# === R1 ACQUISITION DRIVER BEGIN ===
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r1_acquisition.c"
+)
+
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition"
+)
+# === R1 ACQUISITION DRIVER END ===
+# === R1 BRINGUP HARNESS BEGIN ===
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r1_bringup.c"
+)
+# === R1 BRINGUP HARNESS END ===

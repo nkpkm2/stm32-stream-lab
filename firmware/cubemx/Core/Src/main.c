@@ -21,6 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "r1_bringup.h"
 #include "r0_freertos_smoke.h"
 
 /* USER CODE END Includes */
@@ -104,6 +105,7 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  R1_Bringup_CreateTask();
   static uint8_t p0b_banner[] = "P0-B VCP READY\r\n";
   if (HAL_UART_Transmit(&huart2, p0b_banner,
                         (uint16_t)(sizeof(p0b_banner) - 1U),
