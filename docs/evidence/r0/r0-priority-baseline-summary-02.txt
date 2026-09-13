@@ -1,0 +1,28 @@
+R0-F IRQ / Exception Priority Baseline
+Date: 2026-09-13 18:10:02
+
+ELF SHA256: 6C7B9F7871376A87FEAFC5CAD991E44DF5BC495B8DB434630A480C4895B2F059
+
+NVIC priority bits: 4
+CubeMX grouping: NVIC_PRIORITYGROUP_4
+Runtime AIRCR.PRIGROUP: 3
+
+SVC logical priority: 0
+PendSV logical priority: 15
+SysTick logical priority: 15
+TIM7 logical priority: 0
+
+FreeRTOS logical max-syscall interrupt priority: 5
+FreeRTOS logical lowest/kernel interrupt priority: 15
+
+ISR API contract:
+Logical priorities 5..15 may use approved FreeRTOS FromISR APIs.
+Logical priorities 0..4 must not call FreeRTOS APIs.
+TIM7 is priority 0..4 and MUST NOT call FreeRTOS APIs.
+
+Kernel exception contract:
+SVC = logical priority 0
+PendSV = logical priority 15
+SysTick = logical priority 15
+
+Result: PASS

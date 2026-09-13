@@ -1,0 +1,28 @@
+R0 180 MHz pre-flash record
+Date: 2026-09-13 16:43:16
+
+Previous confirmed target state:
+P0-B accepted firmware baseline
+
+P0-B tested firmware milestone:
+7b62082
+
+No target programming has been performed since the P0-B accepted runtime test.
+
+New R0 candidate:
+build/r0-clock-02/cubemx.elf
+
+ELF SHA256:
+F2E559D819EBEEA2191E48A65C77E4A605F82DABFE6895F545A1C45EDE45581A
+
+Expected platform configuration:
+- HSE Bypass: 8 MHz
+- SYSCLK/HCLK: 180 MHz
+- APB1: 45 MHz
+- APB2: 90 MHz
+- Voltage Scale: Scale 1
+- Over-Drive: enabled
+- Flash latency: 5 wait states
+
+Programming status at this record:
+NOT YET PERFORMED

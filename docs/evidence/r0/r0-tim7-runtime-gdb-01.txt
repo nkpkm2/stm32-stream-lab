@@ -1,0 +1,23 @@
+Reset_Handler () at E:/Projects/stm32-stream-lab/firmware/cubemx\startup_stm32f446xx.s:61
+61	  ldr   sp, =_estack      /* set stack pointer */
+Temporary breakpoint 1 at 0x8002556: file E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/main.c, line 220.
+Note: automatically using hardware breakpoints for read-only addresses.
+
+Temporary breakpoint 1, MX_GPIO_Init () at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/main.c:220
+220	  __HAL_RCC_GPIOC_CLK_ENABLE();
+R0_TIM7_CORECLOCK=180000000
+R0_TIM7_CR1=0x00000001
+R0_TIM7_DIER=0x00000001
+R0_TIM7_PSC=89
+R0_TIM7_ARR=999
+R0_SYSTICK_CTRL=0x00000000
+Breakpoint 2 at 0x800267c: file E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/stm32f4xx_it.c, line 224.
+
+Breakpoint 2, TIM7_IRQHandler () at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/stm32f4xx_it.c:224
+224	  HAL_TIM_IRQHandler(&htim7);
+R0_TIM7_TICK1=0
+
+Breakpoint 2, TIM7_IRQHandler () at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/stm32f4xx_it.c:224
+224	  HAL_TIM_IRQHandler(&htim7);
+R0_TIM7_TICK2=1
+R0_TIM7_TICK_DELTA=1

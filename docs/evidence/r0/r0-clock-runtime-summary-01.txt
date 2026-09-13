@@ -1,0 +1,51 @@
+R0 runtime clock/platform verification
+Date: 2026-09-13 16:45:01
+
+Firmware artifact:
+build/r0-clock-02/cubemx.elf
+
+ELF SHA256:
+F2E559D819EBEEA2191E48A65C77E4A605F82DABFE6895F545A1C45EDE45581A
+
+Execution proof:
+reset → continue → temporary breakpoint at MX_GPIO_Init
+SystemClock_Config returned successfully before breakpoint
+
+SystemCoreClock: 180000000
+
+RCC_CR:      0x03077683
+RCC_PLLCFGR: 0x22402D04
+RCC_CFGR:    0x0000940A
+PWR_CR:      0x0003C000
+PWR_CSR:     0x00034000
+FLASH_ACR:   0x00000705
+
+Verified runtime state:
+- HSE enabled
+- HSE ready
+- HSE bypass active
+- PLL enabled and ready
+- PLL source HSE
+- PLLM = 4
+- PLLN = 180
+- PLLP = /2
+- SYSCLK actual source = PLL
+- HCLK prescaler = /1
+- APB1 prescaler = /4
+- APB2 prescaler = /2
+- Voltage Scale 1
+- Over-Drive enabled and ready
+- Flash latency = 5 wait states
+- SystemCoreClock = 180000000
+
+Runtime clock/platform verification:
+PASS
+
+DWT:
+NOT YET TESTED
+
+FreeRTOS:
+NOT YET TESTED
+
+R0 overall:
+NOT YET PASSED

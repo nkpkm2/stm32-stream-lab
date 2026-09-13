@@ -1,0 +1,25 @@
+R0-C DWT Basic Validation
+Date: 2026-09-13 16:56:16
+
+Final method:
+Measure DWT CYCCNT between two consecutive SysTick_Handler entries.
+
+No firmware source change.
+No rebuild.
+No reflash.
+
+SystemCoreClock: 180000000
+DWT_CTRL: 0x40000001
+CYCCNT first: 179686
+CYCCNT second: 359677
+CYCCNT delta: 179991
+uwTick delta: 1
+Expected delta at 180 MHz for 1 ms: 180000 cycles
+Timing error: 0.005 %
+
+Result:
+PASS
+
+Scope:
+DWT primitive validated only.
+Clock64 / RuntimeEvent / wrap handling / accounting remain outside R0-C.

@@ -1,0 +1,39 @@
+R0-A formal clock configuration — static regeneration audit
+Date: 2026-09-13 16:37:45
+
+Configuration target:
+- HSE Bypass: 8 MHz
+- PLLM: 4
+- PLLN: 180
+- PLLP: /2
+- SYSCLK: 180 MHz
+- HCLK: 180 MHz
+- APB1: 45 MHz
+- APB2: 90 MHz
+- Voltage Scale: Scale 1
+- Over-Drive: enabled
+- Flash latency: 5 wait states
+
+Generated SystemClock_Config static audit:
+PASS
+
+Tracked .ioc frequency/configuration audit:
+PASS
+
+P0-B USART2/VCP source regression:
+PASS
+
+Unexpected FreeRTOS / ADC / TIM2 / DMA / USART2 IRQ changes:
+NONE DETECTED
+
+Clean build after clock change:
+NOT YET PERFORMED
+
+Hardware flash after clock change:
+NOT YET PERFORMED
+
+Runtime clock validation:
+NOT YET PERFORMED
+
+R0 overall status:
+NOT YET PASSED

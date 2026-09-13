@@ -1,0 +1,25 @@
+R0 180 MHz candidate flash summary
+Date: 2026-09-13 16:43:20
+
+Artifact:
+build/r0-clock-02/cubemx.elf
+
+ELF SHA256:
+F2E559D819EBEEA2191E48A65C77E4A605F82DABFE6895F545A1C45EDE45581A
+
+Programming:
+PASS
+
+Flash verification:
+PASS
+
+Important:
+This step proves programming and Flash verification only.
+
+The following are NOT yet proven:
+- stable target boot at 180 MHz
+- actual runtime RCC state
+- SystemCoreClock = 180 MHz
+- DWT timing
+- FreeRTOS
+- final R0 platform acceptance

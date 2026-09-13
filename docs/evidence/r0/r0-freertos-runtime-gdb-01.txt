@@ -1,0 +1,17 @@
+Reset_Handler () at E:/Projects/stm32-stream-lab/firmware/cubemx\startup_stm32f446xx.s:61
+61	  ldr   sp, =_estack      /* set stack pointer */
+Temporary breakpoint 1 at 0x80039a2: file E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c, line 49.
+Note: automatically using hardware breakpoints for read-only addresses.
+
+Temporary breakpoint 1, R0_FreeRTOS_StartSmoke () at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c:49
+49	    task_a = xTaskCreateStatic(
+
+=== BEFORE SCHEDULER START ===
+R0_PRE_CORECLOCK=180000000
+R0_PRE_SYSTICK_CTRL=0x00000000
+R0_PRE_TIM7_CR1=0x00000001
+R0_PRE_TIM7_DIER=0x00000001
+R0_PRE_UWTICK=1
+Temporary breakpoint 2 at 0x80035e0: file E:/Projects/stm32-stream-lab/firmware/cubemx/Middlewares/Third_Party/FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c, line 262.
+
+Program received signal SIGINT, Interrupt.

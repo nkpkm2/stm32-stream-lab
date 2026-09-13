@@ -1,0 +1,31 @@
+R0-D FreeRTOS-Kernel Source-Lock Preflight
+Date: 2026-09-13 17:23:28
+
+Upstream:
+https://github.com/FreeRTOS/FreeRTOS-Kernel.git
+
+Tag: V11.1.0
+Commit: dbf70559b27d39c1fdb68dfb9a32140b6a6777a0
+
+Kernel version macros:
+V11.1.0
+
+Port:
+portable/GCC/ARM_CM4F
+
+Architecture-relevant source checks:
+queue.c traceQUEUE_SEND: PASS
+xPortSysTickHandler: PASS
+xPortPendSVHandler: PASS
+vPortSVCHandler: PASS
+portEND_SWITCHING_ISR: PASS
+portYIELD_FROM_ISR: PASS
+
+Static task API:
+xTaskCreateStatic: PASS
+
+Tracked firmware modified:
+NO
+
+Decision:
+APPROVED SOURCE LOCKED FOR INTEGRATION

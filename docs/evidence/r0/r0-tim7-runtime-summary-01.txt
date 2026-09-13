@@ -1,0 +1,19 @@
+R0-E TIM7 HAL Timebase Runtime Validation
+Date: 2026-09-13 17:15:27
+
+ELF SHA256: B6722C75C567DA65B34CB06E366D4DE0BA72EB5D5D4D3FB477581BD0A979D0D4
+SystemCoreClock: 180000000
+TIM7 PSC: 89
+TIM7 ARR: 999
+TIM7 CR1: 0x00000001
+TIM7 DIER: 0x00000001
+SysTick CTRL: 0x00000000
+First TIM7 IRQ uwTick: 0
+Second TIM7 IRQ uwTick: 1
+uwTick delta: 1
+
+Result: PASS
+
+HAL tick ownership: TIM7 @ 1 kHz
+SysTick ownership: inactive / reserved for FreeRTOS
+FreeRTOS: NOT YET INTEGRATED

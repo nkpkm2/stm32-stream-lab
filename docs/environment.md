@@ -182,3 +182,25 @@ It does **not** establish:
 - any R0-R7 board-level validation gate.
 
 Those require the physical NUCLEO-F446RE and appropriate data cable and will be verified separately.
+
+## R0 board-side environment freeze — 2026-09-13
+
+R0 extends the earlier host-side environment baseline with the validated real-board platform.
+
+Board: NUCLEO-F446RE
+Target: STM32F446xx
+ST-LINK/V2-1 firmware: V2J48M35
+STM32CubeProgrammer: 2.23.0
+ST-LINK GDB server: 7.14.0
+STM32CubeMX: 6.18.1
+STM32CubeF4: V1.28.3
+Arm GNU Toolchain: 14.2.Rel1 / GCC 14.2.1
+CMake: 3.31.12
+Ninja: 1.13.1
+FreeRTOS-Kernel: V11.1.0
+FreeRTOS upstream commit: dbf70559b27d39c1fdb68dfb9a32140b6a6777a0
+
+Final firmware milestone: 9ade715d6f3035cd60512bf2ec4dd1c226436af8
+Final committed-state ELF SHA256: 3E078CC76AB82A424B5E0141A1C9686821B776D6D959E44EB9F349B4BB202DEC
+
+The final committed firmware was rebuilt from clean source, flashed, verified, and exercised on the real board.

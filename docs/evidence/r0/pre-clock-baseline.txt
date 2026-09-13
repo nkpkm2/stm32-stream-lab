@@ -1,0 +1,39 @@
+﻿R0-A pre-clock baseline
+Date: 2026-09-13 16:28:40
+
+Repository HEAD:
+6202cc459c58afd1f2115f0ec281da3628749ec4
+
+P0-B accepted firmware:
+7b62082
+
+P0-B tag:
+p0-b-pass
+
+cubemx.ioc SHA256 before R0 clock configuration:
+741409CE6E4FBCE4CD44544E3492D7C22F9E44825BCE9D0950D6D9D2B306AEDF
+
+main.c SHA256 before R0 clock configuration:
+4AB8763E4F000E4A19F0420FC7F0AF97701ECD8D5E2CB70622444621AB59321E
+
+Old clock-study stash:
+stash@{0}
+
+Policy:
+- old clock-study stash preserved as reference only
+- stash NOT applied
+- stash NOT popped
+- formal R0 clock configuration will be intentionally recreated from the accepted current baseline
+
+Approved R0 clock target:
+- HSE Bypass: 8 MHz
+- SYSCLK: 180 MHz
+- HCLK: 180 MHz
+- APB1: 45 MHz
+- APB2: 90 MHz
+- Voltage Scale: Scale 1
+- Over-Drive: enabled
+- Flash latency: appropriate for STM32F446RE at 180 MHz
+
+R0 runtime validation:
+NOT YET PERFORMED

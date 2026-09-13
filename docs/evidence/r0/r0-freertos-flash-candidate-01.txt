@@ -1,0 +1,36 @@
+R0-D FreeRTOS V11.1.0 Minimal Scheduling Build Candidate
+Date: 2026-09-13 17:31:02
+
+Base platform checkpoint:
+5287fe9
+
+FreeRTOS-Kernel:
+V11.1.0
+dbf70559b27d39c1fdb68dfb9a32140b6a6777a0
+
+Port:
+GCC ARM_CM4F
+
+Allocation:
+static only
+
+Smoke runtime:
+two static tasks
+
+HAL tick:
+TIM7 @ 1 kHz
+
+Kernel tick:
+SysTick @ 1 kHz
+
+Build directory:
+build/r0-freertos-01
+
+ELF SHA256: 4CEA6BEF8759344C87BD93DCA7E2D0FD704F33A8CCFD2C378BD5F07E238875E9
+
+Clean configure: PASS
+Compile/link: PASS
+Required RTOS/exception symbols: PASS
+
+Runtime scheduling proof:
+NOT YET PERFORMED

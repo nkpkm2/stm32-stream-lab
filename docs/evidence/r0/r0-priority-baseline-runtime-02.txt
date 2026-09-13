@@ -1,0 +1,17 @@
+Reset_Handler () at E:/Projects/stm32-stream-lab/firmware/cubemx\startup_stm32f446xx.s:61
+61	  ldr   sp, =_estack      /* set stack pointer */
+Temporary breakpoint 1 at 0x8003964: file E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c, line 28.
+Note: automatically using hardware breakpoints for read-only addresses.
+
+Temporary breakpoint 1, R0_TaskA (argument=0x0) at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c:28
+28	        g_r0_task_a_count++;
+R0_AIRCR=0xfa050300
+R0_SHPR2=0x00000000
+R0_SHPR3=0xf0f00000
+R0_TIM7_PRIORITY_RAW=0
+R0_BASEPRI=0
+R0_PRIMASK=0
+R0_FAULTMASK=0
+R0_IPSR=0
+R0_SYSTICK_CTRL=0x00000007
+R0_SYSTICK_LOAD=179999

@@ -1,0 +1,37 @@
+R0-D/F FreeRTOS V11.1.0 + NVIC GROUP_4 Build Candidate
+Date: 2026-09-13 18:03:05
+
+Base checkpoint:
+5287fe9
+
+FreeRTOS:
+V11.1.0
+dbf70559b27d39c1fdb68dfb9a32140b6a6777a0
+
+NVIC grouping source-of-truth:
+NVIC_PRIORITYGROUP_4
+
+HAL MSP GROUP_0 override:
+REMOVED
+
+HAL tick:
+TIM7 @ 1 kHz
+
+Kernel tick:
+SysTick @ 1 kHz
+
+Build directory:
+build/r0-freertos-prigroup4-01
+
+ELF SHA256: 6C7B9F7871376A87FEAFC5CAD991E44DF5BC495B8DB434630A480C4895B2F059
+
+Clean configure: PASS
+Compile/link: PASS
+RTOS exception symbols: PASS
+Static allocation only: PASS
+
+Runtime PRIGROUP verification:
+NOT YET PERFORMED
+
+Runtime scheduler verification:
+NOT YET PERFORMED

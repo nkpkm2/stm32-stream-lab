@@ -1,0 +1,20 @@
+R0-E USART2 / ST-LINK VCP Reset Regression
+Date: 2026-09-13 17:18:56
+
+ELF SHA256: B6722C75C567DA65B34CB06E366D4DE0BA72EB5D5D4D3FB477581BD0A979D0D4
+Port: COM5
+Serial configuration: 115200 8N1
+
+Physical reset #1:
+P0-B VCP READY
+PASS
+
+Physical reset #2:
+P0-B VCP READY
+PASS
+
+Result:
+PASS
+
+Conclusion:
+TIM7 HAL timebase migration did not regress USART2 / ST-LINK VCP startup behavior.

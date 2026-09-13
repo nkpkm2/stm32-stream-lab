@@ -1,0 +1,37 @@
+R0 180 MHz clock candidate — retry 02
+Date: 2026-09-13 16:41:44
+
+Source identities:
+cubemx.ioc SHA256: FDD0DC7761359958481A871C7781A1ACCC75AE5ADA08BEDEC2F461A860810A78
+main.c SHA256: 2BDD711091E1AE1A1902F85C396A5C5C4EA5A57D6C43FEDCB3A3425B618191E7
+
+Clock target:
+- HSE Bypass: 8 MHz
+- SYSCLK/HCLK: 180 MHz
+- APB1: 45 MHz
+- APB2: 90 MHz
+- Voltage Scale: Scale 1
+- Over-Drive: enabled
+- Flash latency: 5 wait states
+
+Build directory:
+build/r0-clock-02
+
+=== SIZE ===
+   text	   data	    bss	    dec	    hex	filename
+   9788	     40	   1640	  11468	   2ccc	E:\Projects\stm32-stream-lab\build\r0-clock-02\cubemx.elf
+
+=== ARTIFACTS ===
+
+Name         Bytes SHA256                                                          
+----         ----- ------                                                          
+cubemx.elf 1058916 F2E559D819EBEEA2191E48A65C77E4A605F82DABFE6895F545A1C45EDE45581A
+cubemx.map  374304 55E8CC731BDC7BF950C8F42448C85BD4CF0341A0C693146DFF7DDF3BBBDCAD38
+cubemx.hex   27741 E16FE1C48326F9B30E6CCC8E15A7C043CAB7AFE38DE497E4436958C7F61CA34B
+cubemx.bin    9828 54D664AE54B597C9F7591EF541167C45B171A54138B9B33208D1B5A25E7E87D9
+
+Flash:
+NOT YET PERFORMED
+
+Runtime clock validation:
+NOT YET PERFORMED

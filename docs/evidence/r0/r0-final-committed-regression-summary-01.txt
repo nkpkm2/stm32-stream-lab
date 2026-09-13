@@ -1,0 +1,29 @@
+R0 Final Committed-State Regression
+Date: 2026-09-13 18:20:33
+
+Firmware milestone: 9ade715d6f3035cd60512bf2ec4dd1c226436af8
+ELF SHA256: 3E078CC76AB82A424B5E0141A1C9686821B776D6D959E44EB9F349B4BB202DEC
+
+Flash / verify: PASS
+
+SystemCoreClock: 180000000
+AIRCR.PRIGROUP first task: 3
+AIRCR.PRIGROUP sustained: 3
+
+Task A count: 3
+Task B count: 2
+Kernel tick-hook count: 24
+Scheduler returned: 0
+
+HAL uwTick: 51
+SysTick LOAD: 179999
+SysTick CTRL: 0x00010007
+TIM7 CR1: 0x00000001
+TIM7 DIER: 0x00000001
+
+USART2 / ST-LINK VCP: PASS
+Physical reset #1: PASS
+Physical reset #2: PASS
+
+Result:
+PASS

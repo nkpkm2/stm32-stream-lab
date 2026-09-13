@@ -1,0 +1,36 @@
+R0-D/F FreeRTOS Startup HardFault Root-Cause Closure
+Date: 2026-09-13 18:04:54
+
+Original defect:
+CubeMX source-of-truth used NVIC_PRIORITYGROUP_0.
+Runtime AIRCR.PRIGROUP was 7.
+FreeRTOS scheduler startup reached prvPortStartFirstTask but svc 0 escalated to HardFault.
+
+Repair:
+CubeMX Priority Group changed to NVIC_PRIORITYGROUP_4.
+HAL_MspInit GROUP_0 override removed by regeneration.
+HAL_Init default GROUP_4 retained.
+
+Repaired ELF SHA256: 6C7B9F7871376A87FEAFC5CAD991E44DF5BC495B8DB434630A480C4895B2F059
+
+Runtime PRIGROUP before scheduler: 3
+Runtime PRIGROUP at first task: 3
+Runtime PRIGROUP sustained: 3
+
+Task A count: 3
+Task B count: 2
+Kernel tick-hook count: 24
+Scheduler returned: 0
+HAL uwTick: 52
+
+SysTick LOAD: 179999
+SysTick CTRL: 0x00010007
+TIM7 CR1: 0x00000001
+TIM7 DIER: 0x00000001
+
+Result:
+PASS
+
+Conclusion:
+NVIC_PRIORITYGROUP_0 was the confirmed startup HardFault root cause.
+NVIC_PRIORITYGROUP_4 removes the defect and permits sustained FreeRTOS scheduling.

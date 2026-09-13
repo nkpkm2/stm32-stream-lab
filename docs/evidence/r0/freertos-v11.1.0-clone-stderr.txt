@@ -1,0 +1,19 @@
+Cloning into 'E:\Projects\stm32-stream-lab\build\freertos-kernel-v11.1.0-preflight'...
+warning: refs/tags/V11.1.0 f388a5c8078e152913e4eb3c5d75bf89561392df is not a commit!
+Note: switching to 'dbf70559b27d39c1fdb68dfb9a32140b6a6777a0'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+

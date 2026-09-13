@@ -92,6 +92,35 @@ Package summary: [`docs/evidence/p0-a2/README.md`](p0-a2/README.md)
 
 P0-B does not validate the 180 MHz / DWT / FreeRTOS platform; those remain R0 work.
 
+## R0 — Platform Freeze
+
+**Status:** PASS CANDIDATE
+**Date:** 2026-09-13
+**Firmware milestone:** `9ade715`
+
+**Technical acceptance:** granted; final Principal administrative closeout pending.
+
+**Primary evidence:**
+- [`docs/evidence/r0/README.md`](r0/README.md)
+- [`docs/platform.md`](../platform.md)
+- [`NVIC priority-group investigation`](r0/investigation-001-nvic-priority-group-hardfault.md)
+- [`Final committed-state regression`](r0/r0-final-committed-regression-summary-01.txt)
+
+**Verified:**
+- 180 MHz runtime clock platform
+- DWT/CYCCNT
+- FreeRTOS-Kernel V11.1.0 / GCC ARM_CM4F
+- SysTick kernel tick / TIM7 HAL tick ownership
+- SVC / PendSV / SysTick exception ownership
+- NVIC_PRIORITYGROUP_4 / AIRCR.PRIGROUP=3
+- IRQ / FromISR priority boundary
+- static two-task scheduling
+- VCP and two-reset committed-state regression
+
+**Result:** PASS CANDIDATE
+
+R1 remains NOT STARTED.
+
 ## Existing engineering / project logs
 
 The existing logs remain the chronological record and are not duplicated by this evidence system:

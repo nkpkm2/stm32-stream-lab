@@ -1,0 +1,21 @@
+R0 Final Committed-State Firmware Candidate
+Date: 2026-09-13 18:18:42
+
+Firmware milestone commit: 9ade715d6f3035cd60512bf2ec4dd1c226436af8
+Subject: feat: establish R0 FreeRTOS platform baseline
+
+Build directory:
+build/r0-final-committed-01
+
+ELF SHA256: 3E078CC76AB82A424B5E0141A1C9686821B776D6D959E44EB9F349B4BB202DEC
+
+Clean configure from committed HEAD: PASS
+Compile/link from committed HEAD: PASS
+Required platform symbols: PASS
+Dynamic FreeRTOS heap: NOT LINKED
+
+Flash/verify:
+NOT YET PERFORMED
+
+Committed-state runtime regression:
+NOT YET PERFORMED

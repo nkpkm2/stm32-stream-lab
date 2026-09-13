@@ -1296,3 +1296,32 @@ The evidence includes ST-LINK failure/recovery output, real target identity, Fla
 - `p0-b-pass` tag not created pending Principal Lab Instructor acceptance
 
 Work stopped after P0-B closeout. No R0 or R1 implementation was started.
+
+## R0 Platform Freeze Closeout — 2026-09-13
+
+R0 completed the common STM32F446 + FreeRTOS platform bring-up and freeze.
+
+Accepted results:
+
+- 180 MHz SYSCLK/HCLK runtime state verified.
+- DWT/CYCCNT timing primitive verified.
+- HAL timebase moved to TIM7 @ 1 kHz.
+- FreeRTOS-Kernel V11.1.0 integrated from the exact locked upstream revision.
+- SysTick, PendSV, and SVC ownership assigned to FreeRTOS.
+- Two statically allocated smoke tasks repeatedly scheduled.
+- NVIC_PRIORITYGROUP_0 reproduced as a genuine scheduler-start HardFault root cause.
+- CubeMX source of truth repaired to NVIC_PRIORITYGROUP_4.
+- Runtime AIRCR.PRIGROUP repaired from 7 to 3.
+- Final IRQ / FromISR priority contract verified.
+- Final committed-state clean rebuild, Flash, runtime, VCP, and two-reset regression passed.
+
+Final firmware milestone: 9ade715d6f3035cd60512bf2ec4dd1c226436af8
+Final committed-state ELF SHA256: 3E078CC76AB82A424B5E0141A1C9686821B776D6D959E44EB9F349B4BB202DEC
+
+Formal defect investigation:
+docs/evidence/r0/investigation-001-nvic-priority-group-hardfault.md
+
+Principal technical acceptance: GRANTED.
+Final Principal administrative closeout: PENDING.
+r0-pass: NOT CREATED.
+R1: NOT STARTED.

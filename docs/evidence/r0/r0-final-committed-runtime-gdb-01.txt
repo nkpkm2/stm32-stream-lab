@@ -1,0 +1,31 @@
+Reset_Handler () at E:/Projects/stm32-stream-lab/firmware/cubemx\startup_stm32f446xx.s:61
+61	  ldr   sp, =_estack      /* set stack pointer */
+Breakpoint 1 at 0x8002624: file E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/stm32f4xx_it.c, line 90.
+Note: automatically using hardware breakpoints for read-only addresses.
+Temporary breakpoint 2 at 0x8003964: file E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c, line 28.
+
+Temporary breakpoint 2, R0_TaskA (argument=0x0) at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c:28
+28	        g_r0_task_a_count++;
+
+=== COMMITTED STATE: FIRST TASK ===
+R0_FINAL_PATH=TASK_A
+R0_CORECLOCK=180000000
+R0_AIRCR_FIRST=0xfa050300
+R0_SYSTICK_CTRL_FIRST=0x00000007
+R0_SYSTICK_LOAD_FIRST=179999
+Breakpoint 3 at 0x8003a5c: file E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c, line 104.
+
+Breakpoint 3, vApplicationTickHook () at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c:104
+104	    g_r0_tick_hook_count++;
+
+=== COMMITTED STATE: SUSTAINED SCHEDULING ===
+R0_TASK_A_COUNT=3
+R0_TASK_B_COUNT=2
+R0_TICK_HOOK_COUNT=24
+R0_SCHEDULER_RETURNED=0
+R0_HAL_UWTICK=51
+R0_AIRCR_FINAL=0xfa050300
+R0_SYSTICK_CTRL_FINAL=0x00010007
+R0_SYSTICK_LOAD_FINAL=179999
+R0_TIM7_CR1=0x00000001
+R0_TIM7_DIER=0x00000001

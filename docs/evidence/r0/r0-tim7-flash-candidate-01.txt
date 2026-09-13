@@ -1,0 +1,17 @@
+R0-E TIM7 HAL Timebase Flash Candidate
+Date: 2026-09-13 17:11:41
+
+Build directory:
+build/r0-tim7-01
+
+ELF:
+build/r0-tim7-01/cubemx.elf
+
+ELF SHA256: B6722C75C567DA65B34CB06E366D4DE0BA72EB5D5D4D3FB477581BD0A979D0D4
+
+Configure: PASS
+Compile/link: PASS
+TIM7 HAL timebase symbols: PASS
+
+Runtime validation: NOT YET PERFORMED
+FreeRTOS: NOT YET INTEGRATED

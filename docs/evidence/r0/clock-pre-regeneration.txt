@@ -1,0 +1,33 @@
+R0-A formal clock configuration — pre-regeneration state
+Date: 2026-09-13 16:35:25
+
+Repository HEAD:
+6202cc459c58afd1f2115f0ec281da3628749ec4
+
+Accepted P0-B firmware milestone:
+7b62082
+
+R0 clock target:
+- HSE Bypass: 8 MHz
+- SYSCLK: 180 MHz
+- HCLK: 180 MHz
+- APB1: 45 MHz
+- APB2: 90 MHz
+- Voltage Scale: Scale 1
+- Over-Drive: enabled
+- Flash latency: to be verified from generated code
+
+cubemx.ioc SHA256:
+FDD0DC7761359958481A871C7781A1ACCC75AE5ADA08BEDEC2F461A860810A78
+
+Clock-tree screenshot:
+docs/evidence/r0/clock-tree-180mhz.png
+
+Generated source status:
+NOT YET REGENERATED
+
+Build status:
+NOT YET PERFORMED
+
+Hardware runtime validation:
+NOT YET PERFORMED

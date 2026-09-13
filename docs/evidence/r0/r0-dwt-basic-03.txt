@@ -1,0 +1,28 @@
+Reset_Handler () at E:/Projects/stm32-stream-lab/firmware/cubemx\startup_stm32f446xx.s:61
+61	  ldr   sp, =_estack      /* set stack pointer */
+Temporary breakpoint 1 at 0x800207a: file E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/main.c, line 220.
+Note: automatically using hardware breakpoints for read-only addresses.
+
+Temporary breakpoint 1, MX_GPIO_Init () at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/main.c:220
+220	  __HAL_RCC_GPIOC_CLK_ENABLE();
+R0_DWT_CORECLOCK=180000000
+R0_DWT_CTRL=0x40000001
+Breakpoint 2 at 0x800215e: file E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/stm32f4xx_it.c, line 188.
+
+Breakpoint 2, SysTick_Handler () at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/stm32f4xx_it.c:188
+188	  HAL_IncTick();
+
+=== FIRST SYSTICK ENTRY ===
+R0_DWT_CYCLE1=179686
+R0_DWT_TICK1=0
+
+Breakpoint 2, SysTick_Handler () at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/stm32f4xx_it.c:188
+188	  HAL_IncTick();
+
+=== SECOND SYSTICK ENTRY ===
+R0_DWT_CYCLE2=359677
+R0_DWT_TICK2=1
+R0_DWT_DELTA=179991
+R0_DWT_TICK_DELTA=1
+
+=== R0 DWT SYSTICK TEST COMPLETE ===

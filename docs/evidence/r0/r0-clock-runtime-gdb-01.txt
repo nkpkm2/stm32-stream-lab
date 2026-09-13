@@ -1,0 +1,25 @@
+Reset_Handler () at E:/Projects/stm32-stream-lab/firmware/cubemx\startup_stm32f446xx.s:61
+61	  ldr   sp, =_estack      /* set stack pointer */
+Temporary breakpoint 1 at 0x800207a: file E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/main.c, line 220.
+Note: automatically using hardware breakpoints for read-only addresses.
+
+Temporary breakpoint 1, MX_GPIO_Init () at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/main.c:220
+220	  __HAL_RCC_GPIOC_CLK_ENABLE();
+
+=== R0 CLOCK RUNTIME BREAKPOINT HIT ===
+R0_SYSTEMCORECLOCK=180000000
+R0_RCC_CR=0x03077683
+R0_RCC_PLLCFGR=0x22402d04
+R0_RCC_CFGR=0x0000940a
+R0_PWR_CR=0x0003c000
+R0_PWR_CSR=0x00034000
+R0_FLASH_ACR=0x00000705
+
+=== CPU STATE ===
+pc             0x800207a           0x800207a <MX_GPIO_Init+6>
+sp             0x2001ffe0          0x2001ffe0
+lr             0x8001f05           134225669
+#0  MX_GPIO_Init () at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/main.c:220
+#1  0x08001f04 in main () at E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/main.c:92
+
+=== R0 CLOCK RUNTIME CAPTURE COMPLETE ===

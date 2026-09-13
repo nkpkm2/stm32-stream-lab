@@ -1,0 +1,17 @@
+R0-D FreeRTOS V11.1.0 VCP / Physical Reset Regression
+Date: 2026-09-13 18:06:04
+
+ELF SHA256: 6C7B9F7871376A87FEAFC5CAD991E44DF5BC495B8DB434630A480C4895B2F059
+Port: COM5
+Configuration: 115200 8N1
+
+Physical reset #1: PASS
+Banner: P0-B VCP READY
+
+Physical reset #2: PASS
+Banner: P0-B VCP READY
+
+Result: PASS
+
+Conclusion:
+FreeRTOS + NVIC GROUP_4 integration does not regress USART2/ST-LINK VCP startup behavior.
