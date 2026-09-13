@@ -21,6 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "r0_freertos_smoke.h"
 
 /* USER CODE END Includes */
 
@@ -99,6 +100,8 @@ int main(void)
   {
     Error_Handler();
   }
+    R0_FreeRTOS_StartSmoke();
+
   /* USER CODE END 2 */
 
   /* Initialize leds */

@@ -66,3 +66,23 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 
     # Add user defined libraries
 )
+
+# === R0 FREERTOS V11.1.0 BEGIN ===
+# Project-owned integration. Do not replace with CubeMX bundled middleware.
+set(FREERTOS_KERNEL_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS-Kernel"
+)
+
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+    ${FREERTOS_KERNEL_DIR}/tasks.c
+    ${FREERTOS_KERNEL_DIR}/queue.c
+    ${FREERTOS_KERNEL_DIR}/list.c
+    ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM4F/port.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/r0_freertos_smoke.c
+)
+
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+    ${FREERTOS_KERNEL_DIR}/include
+    ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM4F
+)
+# === R0 FREERTOS V11.1.0 END ===
