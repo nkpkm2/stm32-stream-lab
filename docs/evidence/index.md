@@ -94,11 +94,11 @@ P0-B does not validate the 180 MHz / DWT / FreeRTOS platform; those remain R0 wo
 
 ## R0 — Platform Freeze
 
-**Status:** PASS CANDIDATE
+**Status:** PASS
 **Date:** 2026-09-13
 **Firmware milestone:** `9ade715`
 
-**Technical acceptance:** granted; final Principal administrative closeout pending.
+**Final Principal acceptance:** granted; `r0-pass` created at the tested firmware milestone.
 
 **Primary evidence:**
 - [`docs/evidence/r0/README.md`](r0/README.md)
@@ -117,7 +117,7 @@ P0-B does not validate the 180 MHz / DWT / FreeRTOS platform; those remain R0 wo
 - static two-task scheduling
 - VCP and two-reset committed-state regression
 
-**Result:** PASS CANDIDATE
+**Result:** PASS
 
 R1 remains NOT STARTED.
 

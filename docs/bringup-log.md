@@ -1325,3 +1325,14 @@ Principal technical acceptance: GRANTED.
 Final Principal administrative closeout: PENDING.
 r0-pass: NOT CREATED.
 R1: NOT STARTED.
+
+## R0 Final Principal Acceptance — 2026-09-13
+
+Principal Lab Instructor granted final R0 administrative acceptance.
+
+r0-pass was created and pushed at firmware milestone: 9ade715d6f3035cd60512bf2ec4dd1c226436af8
+
+R0 final status: PASS.
+R1 status: AUTHORIZED, but implementation has not started.
+
+No R1 peripheral configuration or acquisition work was performed as part of this acceptance update.

@@ -1,9 +1,9 @@
 # R0 — Platform Freeze
 
-Status: PASS CANDIDATE
+Status: PASS
 Date: 2026-09-13
 Technical acceptance: GRANTED
-Final Principal closeout: PENDING
+Final Principal closeout: GRANTED
 Firmware milestone: 9ade715d6f3035cd60512bf2ec4dd1c226436af8
 
 ## Goal
@@ -79,5 +79,5 @@ R0 does not implement:
 
 R1 remains NOT STARTED.
 
-r0-pass has NOT been created.
-Final Principal administrative acceptance is still required.
+r0-pass has been created at the tested firmware milestone.
+Final Principal administrative acceptance has been granted.

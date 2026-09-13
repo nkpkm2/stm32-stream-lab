@@ -2,9 +2,9 @@
 
 Last updated: 2026-09-13
 Architecture baseline: v3.2.2
-R0 status: PASS CANDIDATE
+R0 status: PASS
 Technical acceptance: GRANTED
-Final Principal closeout: PENDING
+Final Principal closeout: GRANTED
 
 ## Hardware
 
