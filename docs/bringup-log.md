@@ -1071,3 +1071,228 @@ Still untested because the physical board and cable are unavailable:
 - R0-R7 hardware validation.
 
 Per the P0-A2 stop condition, firmware feature implementation must not continue until the physical board becomes available and board bring-up begins.
+## 2026-09-13 — P0-B Real Hardware Bring-up
+
+### Session scope
+
+The first physical-board session began after the NUCLEO-F446RE and USB data cable became available.
+
+Formal starting state:
+
+- P0-A1 PASS — `6337c44`
+- P0-A2 PASS — `337e6c8`
+- P0-DOC1 evidence structure established
+- R0 NOT STARTED
+
+The session was intentionally limited to P0-B:
+
+`identify → connect → flash → execute → debug → communicate`
+
+No ADC, DMA, FreeRTOS application work, or R1 implementation was started.
+
+### Physical board baseline
+
+The physical board was confirmed as NUCLEO-F446RE.
+
+Initial hardware state:
+
+- both CN2 ST-LINK/Nucleo jumpers installed
+- U5V selected
+- IDD jumper installed
+- JP1 not installed
+- no external peripherals connected
+
+During the initial failure state:
+
+- LD1 COM: solid red
+- LD3 PWR: solid red
+- LD2 USER: green and rapidly blinking
+
+The LD2 activity was treated only as evidence that a pre-existing application appeared to be running, not as proof that project firmware had executed.
+
+### ST-LINK connection failure
+
+STM32CubeProgrammer 2.23.0 successfully enumerated the onboard probe:
+
+- ST-LINK serial: `067AFF545754655087043860`
+- initial ST-LINK firmware: `V2J28M18`
+
+SWD target connection repeatedly failed with:
+
+`ST-LINK error (DEV_USB_COMM_ERR)`
+
+The failure remained reproducible after:
+
+- a controlled USB disconnect/reconnect
+- changing the physical PC USB port
+- changing to a second known-good USB data cable
+
+Windows continued to enumerate the expected ST-LINK/V2-1 USB interfaces, including Debug, Mass Storage, Composite Device, and Virtual COM Port.
+
+This separated basic USB enumeration from actual ST-LINK control/SWD communication.
+
+### ST-LINK firmware recovery
+
+The Java ST-Link Upgrade 3.17.11 utility detected the probe but failed to enter update mode with JNI/system error 121.
+
+No firmware was changed during that failed attempt.
+
+The official native Windows ST-LinkUpgrade utility was then used to update:
+
+`V2J28M18 → V2J48M35`
+
+LD1 flashed red regularly during the firmware update.
+
+After the update, SWD connection succeeded immediately.
+
+Post-upgrade target identification:
+
+- ST-LINK firmware: `V2J48M35`
+- target voltage: 3.20 V
+- SWD frequency: 4000 kHz
+- Device ID: `0x421`
+- Revision: Rev A
+- Device: STM32F446xx
+- internal Flash: 512 KBytes
+- CPU: Cortex-M4
+- bootloader version: `0x90`
+
+Technical conclusion: the repeatable `DEV_USB_COMM_ERR` was cleared after the onboard ST-LINK/V2-1 firmware update.
+
+### First project firmware flash
+
+Before the first project flash, `firmware/cubemx` was confirmed to be identical to the P0-A2 firmware milestone `337e6c8`.
+
+A separate clean build directory was used:
+
+`build/p0-b-baseline`
+
+The existing P0-A2 build evidence was not overwritten.
+
+Baseline footprint:
+
+- text: 7220 B
+- data: 20 B
+- bss: 1572 B
+
+First-flash ELF SHA-256:
+
+`09982EB00B2454C045B3A1DEFF2C34561A0CF018C77E0769DFFAB49B0F0437A7`
+
+Before the destructive first project flash, the previous target Flash contents were read back and retained locally as ignored evidence.
+
+Project firmware programming and Flash verification both passed.
+
+Flash success was not treated as target execution proof.
+
+### Target execution and debugger proof
+
+STM32CubeCLT 1.22.0 was added only to obtain the official ST-LINK GDB server.
+
+ST-LINK GDB server version:
+
+`7.14.0`
+
+The existing project Arm GNU Toolchain remained in use. No GDB `load` command was issued during the execution test.
+
+The debugger sequence was:
+
+`reset → hardware breakpoint at main() → continue → breakpoint hit`
+
+The target reached `main()` at the `HAL_Init()` line.
+
+The session captured PC, SP, LR, and a valid backtrace.
+
+Result:
+
+- target execution: PASS
+- debugger connection: PASS
+- reset: PASS
+- breakpoint: PASS
+- continue-to-breakpoint: PASS
+
+### USART2 / ST-LINK VCP bring-up
+
+Before the VCP firmware change, PA2 and PA3 were already assigned to USART2 TX/RX at the pin level, and Windows exposed the ST-LINK VCP as COM5, but the MCU firmware did not yet contain a complete USART2 HAL initialization path.
+
+USART2 was formally enabled in CubeMX with:
+
+- PA2 = USART2_TX
+- PA3 = USART2_RX
+- 115200 baud
+- 8 data bits
+- no parity
+- 1 stop bit
+- TX/RX
+- no hardware flow control
+- oversampling 16
+- USART2 IRQ disabled
+- USART2 DMA disabled
+
+CubeMX regeneration was reviewed before building.
+
+No unexpected FreeRTOS, ADC1, TIM2, or DMA configuration was introduced.
+
+The newly introduced UART HAL/LL vendor files were SHA-256 checked against STM32CubeF4 V1.28.3 and matched exactly.
+
+A deterministic startup message was added only inside the CubeMX USER CODE region:
+
+`P0-B VCP READY\r\n`
+
+### VCP runtime validation
+
+The VCP candidate was built in:
+
+`build/p0-b-vcp-01`
+
+VCP build footprint:
+
+- text: 9620 B
+- data: 40 B
+- bss: 1640 B
+
+VCP ELF SHA-256:
+
+`62AFAC04597BD590092042257D18C796E4DC9A3C1DDB0C3F88E7597FF6523BF2`
+
+The image was programmed and Flash verification passed.
+
+The host opened the ST-LINK Virtual COM Port at 115200 8N1.
+
+Two independent presses of the physical black RESET button each produced the exact expected startup message:
+
+`P0-B VCP READY`
+
+Result:
+
+- MCU → PC VCP communication: PASS
+- physical reset repeatability: PASS
+
+### Milestones and evidence
+
+P0-B firmware milestone:
+
+`7b62082 feat: establish hardware bring-up and VCP baseline`
+
+P0-B evidence/documentation commit:
+
+`282c0b3 docs: record P0-B hardware bring-up evidence`
+
+Daily project journal commit:
+
+`c908478 docs: add project logs for 2026-09-13`
+
+Formal evidence is stored under:
+
+`docs/evidence/p0-b/`
+
+The evidence includes ST-LINK failure/recovery output, real target identity, Flash verification, GDB execution proof, CubeMX/VCP audit, artifact manifests, and two-reset VCP runtime verification.
+
+### Final state
+
+- P0-B technical status: PASS
+- R0 status: NOT STARTED
+- R1-R7: NOT STARTED
+- `p0-b-pass` tag not created pending Principal Lab Instructor acceptance
+
+Work stopped after P0-B closeout. No R0 or R1 implementation was started.
