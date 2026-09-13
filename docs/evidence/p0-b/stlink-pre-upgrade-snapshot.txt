@@ -1,0 +1,87 @@
+P0-B ST-LINK pre-upgrade snapshot
+Date: 2026-09-13 14:51:23
+
+Reason:
+Repeated SWD connection failure with DEV_USB_COMM_ERR.
+No target flash operation has been performed.
+
+Known current ST-LINK firmware before upgrade:
+V2J28M18
+
+Expected probe serial:
+067AFF545754655087043860
+
+STLinkUpgrade.jar:
+<tools-root>\STM32CubeProgrammer-2.23.0\Drivers\FirmwareUpgrade\STLinkUpgrade.jar
+
+STLinkUpgrade.jar SHA256:
+D252C13B7F2A1DF15D5DD82EC225A677852DF780C14B76207E9E1F647C1DBD29
+
+=== STM32CubeProgrammer ST-LINK ENUMERATION ===
+      -------------------------------------------------------------------
+                       STM32CubeProgrammer v2.23.0                  
+      -------------------------------------------------------------------
+
+===== STLink Interface =====
+ST-LINK error (DEV_USB_COMM_ERR)
+
+-------- Connected ST-LINK Probes List --------
+
+ST-Link Probe 0 :
+   ST-LINK SN  : -
+   ST-LINK FW  : -
+   Access Port Number  : -
+   Board Name  : -
+-----------------------------------------------
+
+
+=== WINDOWS PRESENT DEVICES ===
+
+Status Class     FriendlyName                                      InstanceId                                    
+------ -----     ------------                                      ----------                                    
+OK     USB       USB 大容量存储设备                                       USB\VID_0483&PID_374B&MI_01\7&2A82FB63&0&0001 
+OK     USB       USB Composite Device                              USB\VID_0483&PID_374B\067AFF545754655087043860
+OK     Ports     STMicroelectronics STLink Virtual COM Port (COM5) USB\VID_0483&PID_374B&MI_02\7&2A82FB63&0&0002 
+OK     USBDevice ST-Link Debug                                     USB\VID_0483&PID_374B&MI_00\7&2A82FB63&0&0000 
+
+
+
+
+=== WINDOWS DRIVER INFORMATION ===
+
+
+DeviceName         : STMicroelectronics STLink Virtual COM Port
+DriverProviderName : STMicroelectronics
+DriverVersion      : 2.2.0.0
+DriverDate         : 2021/4/1 8:00:00
+InfName            : oem174.inf
+DeviceID           : USB\VID_0483&PID_374B&MI_02\7&2A82FB63&0&0002
+
+DeviceName         : USB Mass Storage Device
+DriverProviderName : Microsoft
+DriverVersion      : 10.0.26100.4768
+DriverDate         : 2006/6/21 8:00:00
+InfName            : usbstor.inf
+DeviceID           : USB\VID_0483&PID_374B&MI_01\7&2A82FB63&0&0001
+
+DeviceName         : STMicroelectronics STLink dongle
+DriverProviderName : STMicroelectronics
+DriverVersion      : 2.2.0.0
+DriverDate         : 2021/4/1 8:00:00
+InfName            : oem173.inf
+DeviceID           : USB\VID_0483&PID_374B&MI_00\7&2A82FB63&0&0000
+
+DeviceName         : USB Composite Device
+DriverProviderName : Microsoft
+DriverVersion      : 10.0.26100.8115
+DriverDate         : 2006/6/21 8:00:00
+InfName            : usb.inf
+DeviceID           : USB\VID_0483&PID_374B\067AFF545754655087043860
+
+
+
+
+
+No driver reinstall performed.
+No ST-LINK firmware upgrade performed yet.
+No board jumper changed.

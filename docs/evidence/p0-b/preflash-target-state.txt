@@ -1,0 +1,25 @@
+P0-B target state before first project firmware flash
+Date: 2026-09-13 15:18:20
+
+Target:
+STM32F446xx
+Device ID: 0x421
+Flash size: 512 KBytes
+
+Observed prior behavior:
+A pre-existing application appeared to be running; LD2 USER LED was rapidly blinking.
+
+Full internal Flash readback before overwrite:
+build/p0-b-preflash/target-before-first-project-flash.bin
+
+Readback size:
+524288 bytes
+
+Readback SHA256:
+1FD7AFD6903342C29133C5765300071378313CC2A70E3D88371057389C317876
+
+Note:
+The raw readback is retained as ignored local evidence and is not intended to be committed to Git.
+Its purpose is only to preserve the target's pre-project state before the first destructive flash.
+
+Project firmware has NOT yet been programmed at the point represented above.

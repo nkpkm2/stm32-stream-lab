@@ -1,0 +1,150 @@
+
+USAGE: 
+
+   <tools-root>\STM32CubeCLT-1.22.0\STLink-gdb-server\bin\ST-LINK_gdbserver.
+                                        exe  [--semihost-console-port <port
+                                        number>] [--semihosting <semihost
+                                        level>] [--external-init]
+                                        [--pend-halt-timeout <Pending halt
+                                        timeout>] [--halt] [-c <config
+                                        file>] [-e] [-f <log file>] [-l
+                                        <log level>] [-p <port number>]
+                                        [-v] [-r <refresh delay>]
+                                        [--target-sel <SWD multidrop target
+                                        sel>] [--pcm-pm-force]
+                                        [--incremental] [-s] [-d] [-z <port
+                                        number>] [-a <cpu clock>] [-b <SWO
+                                        CLOCKDIV>] [-k] [-q] [-i <ST-LINK
+                                        S/N>] [-m <apID>] [-g] [-t]
+                                        [--erase-all] [--memory-map <device
+                                        id>] [--ext-memory-loaders] [-ei
+                                        <file_path>] ...  [-el <file_path>]
+                                        ...  [-cp <path>] [--temp-path
+                                        <path>] [--preserve-temps]
+                                        [--frequency <max freq kHz>]
+                                        [--licenses] [--] [--version] [-h]
+
+
+Where: 
+
+   --semihost-console-port <port number>
+     Port number for semihost console clients
+
+   --semihosting <semihost level>
+     Select semihosting mode
+
+   --external-init
+     Run Init() from external loader after reset
+
+   --pend-halt-timeout <Pending halt timeout>
+     Maximum time to wait for core to halt
+
+   --halt
+     Halt all cores during reset
+
+   -c <config file>,  --config-file <config file>
+     Read the config params from config file
+
+   -e,  --persistent
+     Enable persistent mode
+
+   -f <log file>,  --log-file <log file>
+     Path to log file
+
+   -l <log level>,  --log-level <log level>
+     Logging level between 0 to 31
+
+   -p <port number>,  --port-number <port number>
+     TCP port number for GDB client
+
+   -v,  --verbose
+     Turn ON verbose mode
+
+   -r <refresh delay>,  --refresh-delay <refresh delay>
+     Minimum delay in seconds for hardware status refresh
+
+   --target-sel <SWD multidrop target sel>
+     Enable SWD multidrop mode with target selection
+
+   --pcm-pm-force
+     Force flash programming if PCM PM bit set
+
+   --incremental
+     Turn ON incremental flash programming
+
+   -s,  --verify
+     Turn ON flash download verify
+
+   -d,  --swd
+     Enable SWD debug mode	[use for SWV]
+
+   -z <port number>,  --swo-port <port number>
+     SWO output port number	[use for SWV]
+
+   -a <cpu clock>,  --cpu-clock <cpu clock>
+     CPU clock speed in Hz	[use for SWV]
+
+   -b <SWO CLOCKDIV>,  --swo-clock-div <SWO CLOCKDIV>
+     Divide CPU clock by SWO CLOCKDIV
+
+   -k,  --initialize-reset
+     Initialize the device under reset condition
+
+   -q,  --debuggers
+     List serial number for connected ST-LINK devices
+
+   -i <ST-LINK S/N>,  --serial-number <ST-LINK S/N>
+     ST-LINK serial number
+
+   -m <apID>,  --apid <apID>
+     Select core on multi-core devices
+
+   -g,  --attach
+     Attach to running target
+
+   -t,  --shared
+     Shareable ST-LINK	[using ST-LINK server]
+
+   --erase-all
+     Erase all memories
+
+   --memory-map <device id>
+     Show memory map for device id
+
+   --ext-memory-loaders
+     List of available external memory-loaders
+
+   -ei <file_path>,  --extload_init <file_path>  (accepted multiple times)
+     Custom external memory-loader with initialization after reset
+
+   -el <file_path>,  --extload <file_path>  (accepted multiple times)
+     Custom external memory-loader
+
+   -cp <path>,  --stm32cubeprogrammer-path <path>
+     Path to STM32CubeProgrammer installation
+
+   --temp-path <path>
+     Temporary files for starting a debug session are stored in the
+     provided path
+
+   --preserve-temps
+     Will not remove used temporary files
+
+   --frequency <max freq kHz>
+     Select com frequency in kHz
+
+   --licenses
+     List of used tools and licenses
+
+   --,  --ignore-rest
+     Ignores the rest of the labeled arguments following this flag
+
+   --version
+     Displays version information and exits
+
+   -h,  --help
+     Displays usage information and exits
+
+
+   ST-LINK GDB server
+

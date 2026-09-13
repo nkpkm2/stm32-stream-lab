@@ -1,13 +1,13 @@
 # Project Status
 
-Last updated: 2026-09-11
+Last updated: 2026-09-13
 Architecture baseline: v3.2.2
 
 | Gate / Package | Status | Milestone Commit | Notes |
 |---|---|---|---|
 | P0-A1 | PASS | `6337c44` | Computer-side reproducible environment |
 | P0-A2 | PASS | `337e6c8` | Reproducible firmware build baseline |
-| P0-B | BLOCKED | — | Waiting for NUCLEO-F446RE and data cable |
+| P0-B | PASS | `7b62082` | Real-board development loop: flash, execution, debug, VCP |
 | R0 | NOT STARTED | — | Requires hardware |
 | R1 | NOT STARTED | — | — |
 | R2 | NOT STARTED | — | — |

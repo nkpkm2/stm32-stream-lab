@@ -1,0 +1,19 @@
+P0-B initial physical observation
+Recorded: 2026-09-13 14:44:56
+
+Board state immediately after first CubeProgrammer SWD connection failure:
+- LD1 COM: solid red
+- LD2 USER: green, rapidly blinking
+- LD3 PWR: solid red
+- CN2 ST-LINK/Nucleo jumpers: both installed
+- JP5 power selection: U5V
+- JP6 IDD: installed
+- JP1: not installed
+- No external peripherals connected
+
+Interpretation:
+- Target board power is present.
+- ST-LINK USB initialization/enumeration succeeded.
+- Target MCU appears to be executing a pre-existing application because LD2 is actively blinking.
+- This is NOT evidence that the project firmware has been flashed or executed.
+- First SWD target connection attempt failed with DEV_USB_COMM_ERR.

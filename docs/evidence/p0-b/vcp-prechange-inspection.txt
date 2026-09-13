@@ -1,0 +1,48 @@
+P0-B VCP pre-change inspection
+Date: 2026-09-13 15:43:20
+
+Repository HEAD:
+ec53d007f9ef286b262df56f4dcef4be6b0b11a2
+
+Firmware tree before modification:
+CLEAN
+
+cubemx.ioc SHA256 before modification:
+98796794DA28DE610D16C00ABA99BEF90A9E89F4F924006A9053592EAB8DC09A
+
+=== MCU-SIDE USART2 / UART SOURCE HITS ===
+
+Path                                                         LineNumber Line                                          
+----                                                         ---------- ----                                          
+<repo-root>\firmware\cubemx\cubemx.ioc              23 Mcu.Pin5=PA2                                  
+<repo-root>\firmware\cubemx\cubemx.ioc              24 Mcu.Pin6=PA3                                  
+<repo-root>\firmware\cubemx\cubemx.ioc              57 PA2.GPIOParameters=GPIO_Label                 
+<repo-root>\firmware\cubemx\cubemx.ioc              58 PA2.GPIO_Label=USART_TX                       
+<repo-root>\firmware\cubemx\cubemx.ioc              59 PA2.Locked=true                               
+<repo-root>\firmware\cubemx\cubemx.ioc              60 PA2.Signal=USART2_TX                          
+<repo-root>\firmware\cubemx\cubemx.ioc              61 PA3.GPIOParameters=GPIO_Label                 
+<repo-root>\firmware\cubemx\cubemx.ioc              62 PA3.GPIO_Label=USART_RX                       
+<repo-root>\firmware\cubemx\cubemx.ioc              63 PA3.Locked=true                               
+<repo-root>\firmware\cubemx\cubemx.ioc              64 PA3.Signal=USART2_RX                          
+<repo-root>\firmware\cubemx\Core\Src\main.c        182   GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
+
+
+
+
+=== BASELINE BUILD UART HAL HITS ===
+NONE FOUND
+
+=== WINDOWS ST-LINK VCP DEVICE ===
+
+Status Class FriendlyName                                      InstanceId                                   
+------ ----- ------------                                      ----------                                   
+OK     Ports STMicroelectronics STLink Virtual COM Port (COM5) USB\VID_0483&PID_374B&MI_02\7&2A82FB63&0&0002
+
+
+
+
+Interpretation rule:
+A Windows ST-LINK Virtual COM Port only proves that the ST-LINK USB VCP
+interface exists. It does NOT prove MCU USART2-to-PC communication.
+
+No CubeMX or firmware modification was performed by this inspection.

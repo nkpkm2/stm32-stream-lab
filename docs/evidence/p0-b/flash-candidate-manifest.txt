@@ -1,0 +1,54 @@
+P0-B first flash candidate
+Date: 2026-09-13 15:15:57
+
+Current repository HEAD:
+ec53d007f9ef286b262df56f4dcef4be6b0b11a2
+
+P0-A2 firmware milestone:
+337e6c857a89fc58ba55e127ac89e43c975b4727
+
+Firmware source relation:
+Current tracked firmware/cubemx content is identical to milestone 337e6c8.
+
+Important:
+HEAD may contain later documentation commits, but the firmware source being built is unchanged from the P0-A2 firmware baseline.
+
+Build directory:
+build/p0-b-baseline
+
+Previous build/p0-a2 directory:
+NOT MODIFIED OR CLEANED BY THIS OPERATION
+
+Toolchain:
+Arm GNU Toolchain 14.2.Rel1 / arm-none-eabi
+
+Target:
+STM32F446RE / Cortex-M4F
+
+Build result:
+PASS
+
+=== SIZE ===
+   text	   data	    bss	    dec	    hex	filename
+   7220	     20	   1572	   8812	   226c	<repo-root>\build\p0-b-baseline\cubemx.elf
+
+=== FLASH CANDIDATE ARTIFACTS ===
+
+Name         Bytes SHA256                                                          
+----         ----- ------                                                          
+cubemx.elf 1007288 09982EB00B2454C045B3A1DEFF2C34561A0CF018C77E0769DFFAB49B0F0437A7
+cubemx.map  343837 541ADF552D62902C20A1CF19E26CB57BAFD533E47CA62EFD80EA3125C1EA6A35
+cubemx.hex   20459 224F9E8D63D17250C605FEF2C2390A12C2936510F235B2208830AA512292B158
+cubemx.bin    7240 A4531D941216A0C8EE2E638B45F790F5EC39E6F6DE03345EE5FBB7188C962CCF
+
+
+
+
+Planned first target image:
+cubemx.elf
+
+Target flash status:
+NOT YET PERFORMED
+
+Target execution status:
+NOT YET PROVEN

@@ -1,0 +1,69 @@
+P0-B VCP flash candidate
+Date: 2026-09-13 15:53:45
+
+Repository HEAD before P0-B milestone commit:
+ec53d007f9ef286b262df56f4dcef4be6b0b11a2
+
+Important:
+The VCP implementation is currently an intentionally uncommitted,
+reviewed P0-B change. Source identity is frozen below before flashing.
+
+Function:
+USART2 / ST-LINK VCP deterministic startup banner
+
+Banner:
+P0-B VCP READY\r\n
+
+USART2:
+115200 baud
+8 data bits
+no parity
+1 stop bit
+TX/RX
+no hardware flow control
+no USART2 IRQ
+no USART2 DMA
+
+Build directory:
+build/p0-b-vcp-01
+
+=== SOURCE FILE IDENTITIES ===
+
+File                                                                  SHA256                                                          
+----                                                                  ------                                                          
+firmware/cubemx/cmake/stm32cubemx/CMakeLists.txt                      74CA02D8077F36F7C08509F6183E8C2DC73528B8FBCB779F34203CE31A8DBB7D
+firmware/cubemx/Core/Inc/stm32f4xx_hal_conf.h                         0EA72FEDDEAA47EEA08AC4D68F19AC829EF30FAF70CAD55E3CBAD3CE7F9BABD4
+firmware/cubemx/Core/Src/main.c                                       4AB8763E4F000E4A19F0420FC7F0AF97701ECD8D5E2CB70622444621AB59321E
+firmware/cubemx/Core/Src/stm32f4xx_hal_msp.c                          2DD2C89B8BD255E9A4B7F6B4309AA7828E963FD80F6BD0546B63475D9DFC00B4
+firmware/cubemx/cubemx.ioc                                            741409CE6E4FBCE4CD44544E3492D7C22F9E44825BCE9D0950D6D9D2B306AEDF
+firmware/cubemx/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h 42528BC9CAA6E2FE96B7E6D7B3FCDF35D8D85AE38D33195A233E18A072F157A1
+firmware/cubemx/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h 982C4448C49DDC7C6C71BD788E5354F05E96ACA5E98EDD0626F8FFCAEFC65E79
+firmware/cubemx/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c A74ED3A9A13A4FCBAADA9E6F88F7D4FCABE2A75852A6CE4C09F8D4314A2E851A
+
+
+
+
+=== SIZE ===
+   text	   data	    bss	    dec	    hex	filename
+   9620	     40	   1640	  11300	   2c24	<repo-root>\build\p0-b-vcp-01\cubemx.elf
+
+=== BUILD ARTIFACTS ===
+
+Name         Bytes SHA256                                                          
+----         ----- ------                                                          
+cubemx.elf 1053044 62AFAC04597BD590092042257D18C796E4DC9A3C1DDB0C3F88E7597FF6523BF2
+cubemx.map  374235 DD2D12FC2C014CF6B57A20A19A1BCA4C8481BBA928FB0F9FDADDD0E4F0440E4A
+cubemx.hex   27275 EEB61FED884832DEF2AD7AFAF8E6BCEA21769B1240350106DAF1698F79E01FE5
+cubemx.bin    9660 6BB7DC35B32D53377C3769F650B3901CB542D05AA7D338D713CFB6F32051DF5B
+
+
+
+
+Planned target image:
+build/p0-b-vcp-01/cubemx.elf
+
+Target programming after this build:
+NOT YET PERFORMED
+
+VCP runtime result:
+NOT YET TESTED

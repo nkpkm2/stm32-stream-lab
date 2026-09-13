@@ -1,0 +1,29 @@
+P0-B deterministic VCP banner insertion
+Date: 2026-09-13 15:51:35
+
+main.c SHA256 before:
+84DF1CE12A6E3A48863A5B550808F32C5C8C5695BADE491EDE886B7F11C0E6EB
+
+main.c SHA256 after:
+4AB8763E4F000E4A19F0420FC7F0AF97701ECD8D5E2CB70622444621AB59321E
+
+Banner:
+P0-B VCP READY\r\n
+
+Transport:
+USART2 / ST-LINK VCP
+
+Implementation:
+Blocking HAL_UART_Transmit during startup only.
+
+Timeout:
+1000 ms
+
+Location:
+CubeMX USER CODE BEGIN 2 block.
+
+Build after change:
+NOT YET PERFORMED
+
+Flash after change:
+NOT YET PERFORMED

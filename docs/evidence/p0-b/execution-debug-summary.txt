@@ -1,0 +1,51 @@
+P0-B target execution / debugger proof
+Date: 2026-09-13 15:41:30
+
+Target:
+STM32F446xx
+
+ST-LINK:
+V2J48M35
+
+Firmware artifact:
+build/p0-b-baseline/cubemx.elf
+
+ELF SHA256:
+09982EB00B2454C045B3A1DEFF2C34561A0CF018C77E0769DFFAB49B0F0437A7
+
+Flash modification during this debug test:
+NONE
+
+GDB 'load' command:
+NOT USED
+
+Procedure:
+1. ST-LINK GDB server connected over SWD.
+2. GDB connected to localhost:61234.
+3. Target reset using 'monitor reset'.
+4. Hardware breakpoint placed at main().
+5. GDB 'continue' executed.
+6. Target reached and halted at main().
+7. PC/SP/LR and backtrace captured.
+
+Execution proof:
+PASS
+
+Debugger connection:
+PASS
+
+Reset:
+PASS
+
+Breakpoint:
+PASS
+
+Continue-to-breakpoint:
+PASS
+
+Evidence:
+docs/evidence/p0-b/gdb-execution-proof.txt
+docs/evidence/p0-b/gdbserver-session-01.log
+
+VCP:
+NOT YET TESTED

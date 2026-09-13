@@ -1,0 +1,15 @@
+Reset_Handler () at <repo-root>/firmware/cubemx\startup_stm32f446xx.s:61
+61	  ldr   sp, =_estack      /* set stack pointer */
+Breakpoint 1 at 0x80015d8: file <repo-root>/firmware/cubemx/Core/Src/main.c, line 75.
+Note: automatically using hardware breakpoints for read-only addresses.
+
+Breakpoint 1, main () at <repo-root>/firmware/cubemx/Core/Src/main.c:75
+75	  HAL_Init();
+
+=== BREAKPOINT HIT: MAIN ===
+pc             0x80015d8           0x80015d8 <main+4>
+sp             0x2001fff8          0x2001fff8
+lr             0x800188f           134224015
+#0  main () at <repo-root>/firmware/cubemx/Core/Src/main.c:75
+
+=== DEBUG EXECUTION PROOF COMPLETE ===

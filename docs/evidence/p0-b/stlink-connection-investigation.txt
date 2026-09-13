@@ -1,0 +1,89 @@
+P0-B ST-LINK connection investigation
+Date: 2026-09-13 14:48:58
+
+Observed before any driver or firmware change:
+
+ST-LINK serial:
+067AFF545754655087043860
+
+ST-LINK firmware:
+V2J28M18
+
+USB enumeration:
+PASS
+
+SWD target connection:
+FAIL
+
+Error:
+DEV_USB_COMM_ERR
+
+Reproduction:
+- Initial connection attempt failed
+- USB was disconnected and reconnected once
+- ST-LINK enumerated successfully again
+- Second target connection attempt failed with the same DEV_USB_COMM_ERR
+
+No flash operation performed.
+No ST-LINK firmware upgrade performed.
+No driver reinstall performed.
+No board jumper changed.
+
+USB transport retry 03
+Date: 2026-09-13 14:59:31
+Change from retry 02:
+- Replaced USB cable with a different known-good data cable.
+- PC USB port unchanged.
+- Board jumpers unchanged.
+- No firmware, driver, or ST-LINK firmware changes performed.
+
+ST-LINK firmware upgrade
+Date: 2026-09-13 15:13:46
+
+Before:
+V2J28M18
+
+After:
+V2J48M35
+
+Upgrade method:
+Official native Windows ST-LinkUpgrade utility.
+
+Observed during upgrade:
+LD1 flashed red regularly while programming.
+
+Post-upgrade ST-LINK enumeration:
+PASS
+
+Post-upgrade SWD target connection:
+PASS
+
+No target firmware flash performed during this step.
+Board jumpers unchanged.
+
+First project firmware programming
+Date: 2026-09-13 15:18:21
+
+Firmware source milestone:
+337e6c8
+
+Actual programmed artifact:
+build/p0-b-baseline/cubemx.elf
+
+ELF SHA256:
+09982EB00B2454C045B3A1DEFF2C34561A0CF018C77E0769DFFAB49B0F0437A7
+
+Programming:
+PASS
+
+Verification:
+PASS
+
+Evidence:
+docs/evidence/p0-b/first-flash-verify.txt
+
+Important:
+This proves programming and Flash verification only.
+Target execution has NOT yet been proven.
+Debugger operation has NOT yet been proven.
+VCP has NOT yet been proven.

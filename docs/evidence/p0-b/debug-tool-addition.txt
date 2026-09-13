@@ -1,0 +1,25 @@
+P0-B debugger tool addition
+Date: 2026-09-13 15:36:40
+
+STM32CubeCLT:
+1.22.0
+
+ST-LINK GDB server:
+<tools-root>\STM32CubeCLT-1.22.0\STLink-gdb-server\bin\ST-LINK_gdbserver.exe
+
+Version:
+
+<tools-root>\STM32CubeCLT-1.22.0\STLink-gdb-server\bin\ST-LINK_gdbserver.exe  version: 7.14.0
+
+
+SHA256:
+D522C64A5BF681671933A4CD6459CAB18C8E1C55A7E3489CAE1CDD9D01E40A06
+
+Purpose:
+P0-B execution/debugger-loop verification.
+
+ST-LINK driver reinstall:
+NOT performed
+
+Target firmware reflashing:
+NOT performed by this step

@@ -1,0 +1,37 @@
+P0-B ST-LINK update-mode entry failure
+Date: 2026-09-13 14:55:14
+
+Upgrade utility:
+ST-Link Upgrade 3.17.11
+
+Selected device:
+ST-LINK/V2-1
+
+Pre-existing firmware:
+V2J28M18
+
+Action attempted:
+Open in Update Mode
+
+Observed error:
+JNI error returned by system: 121
+JNI command error 0x10079 after cmd [-15, -128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+Upgrade button:
+Disabled
+
+Conclusion:
+Firmware upgrade was NOT performed.
+The failure occurred while attempting to enter ST-LINK update mode.
+
+=== PRESENT USB DEVICES AFTER FAILURE ===
+
+Status Class     FriendlyName                                      InstanceId                                    
+------ -----     ------------                                      ----------                                    
+OK     USB       USB 大容量存储设备                                       USB\VID_0483&PID_374B&MI_01\7&2A82FB63&0&0001 
+OK     USB       USB Composite Device                              USB\VID_0483&PID_374B\067AFF545754655087043860
+OK     Ports     STMicroelectronics STLink Virtual COM Port (COM5) USB\VID_0483&PID_374B&MI_02\7&2A82FB63&0&0002 
+OK     USBDevice ST-Link Debug                                     USB\VID_0483&PID_374B&MI_00\7&2A82FB63&0&0000 
+
+
+

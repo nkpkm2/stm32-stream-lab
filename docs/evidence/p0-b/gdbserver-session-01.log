@@ -1,0 +1,183 @@
+[0.000] initConfigParams():  Configuration flags start
+[0.000] initConfigParams():   semihost-console-port          61236
+[0.000] initConfigParams():   semihosting                    "disabled"
+[0.000] initConfigParams():   external-init                  false
+[0.000] initConfigParams():   pend-halt-timeout              -1
+[0.000] initConfigParams():   halt                           false
+[0.000] initConfigParams():   config-file                    ""
+[0.000] initConfigParams():   persistent                     false
+[0.000] initConfigParams():  +log-file                       "<repo-root>\docs\evidence\p0-b\gdbserver-session-01.log"
+[0.000] initConfigParams():  +log-level                      31
+[0.001] initConfigParams():  +port-number                    61234
+[0.001] initConfigParams():  +verbose                        true
+[0.001] initConfigParams():   refresh-delay                  15
+[0.001] initConfigParams():   target-sel                     ""
+[0.001] initConfigParams():   pcm-pm-force                   false
+[0.001] initConfigParams():   incremental                    false
+[0.001] initConfigParams():   verify                         false
+[0.001] initConfigParams():  +swd                            true
+[0.001] initConfigParams():   swo-port                       61234
+[0.001] initConfigParams():   cpu-clock                      8000000
+[0.001] initConfigParams():   swo-clock-div                  128
+[0.001] initConfigParams():   initialize-reset               false
+[0.001] initConfigParams():   debuggers                      false
+[0.001] initConfigParams():  +serial-number                  "067AFF545754655087043860"
+[0.001] initConfigParams():   apid                           0
+[0.001] initConfigParams():   attach                         false
+[0.001] initConfigParams():   shared                         false
+[0.001] initConfigParams():   erase-all                      false
+[0.001] initConfigParams():   memory-map                     ""
+[0.001] initConfigParams():   ext-memory-loaders             false
+[0.001] initConfigParams():   extload_init                   (null)
+[0.001] initConfigParams():   extload                        (null)
+[0.001] initConfigParams():  +stm32cubeprogrammer-path       "<tools-root>\STM32CubeProgrammer-2.23.0\bin"
+[0.001] initConfigParams():   temp-path                      ""
+[0.001] initConfigParams():   preserve-temps                 false
+[0.001] initConfigParams():  +frequency                      4000
+[0.001] initConfigParams():   licenses                       false
+[0.001] initConfigParams():   ignore-rest                    false
+[0.001] initConfigParams():   version                        false
+[0.001] initConfigParams():   help                           false
+[0.001] initConfigParams():  Configuration flags end
+[0.032] init():  STMicroelectronics ST-LINK GDB server. Version 7.14.0
+Copyright (c) 2026, STMicroelectronics. All rights reserved.
+[0.716] openDevice():  COM frequency = 4000 kHz
+[0.740] openDevice():  Target connection mode: Default
+[0.792] readFromTarget():  Reading ROM table for AP 0 @0xe00fffd0
+[0.835] reset_hw_wtchpt_module():  Hardware watchpoint supported by the target 
+[0.871] initContext():  ST-LINK Firmware version : V2J48M35
+[0.873] initContext():  Device ID: 0x421
+[0.875] initContext():  PC: 0x8001858
+[0.876] Device_GetStatus():  ST-LINK device status: HALT_MODE
+[0.877] initContext():  ST-LINK detects target voltage = 3.20 V
+[0.879] initContext():  ST-LINK device status: HALT_MODE
+[0.881] initServerContext():  ST-LINK device initialization OK
+[0.882] pollAndNotifyRun():  Stm32Device, pollAndNotify running...
+[0.885] updateState():  SwvSrv state change: 0 -> 1
+[0.886] WaitConnection():  Waiting for connection on port 61235...
+[0.889] WaitConnection():  Waiting for connection on port 61234...
+[9.634] WaitConnection():  Accepted connection on port 61234...
+[9.637] run():  GDB session thread running
+[9.638] handleSessionEvent():  GdbSessionManager, session started: 1
+[9.639] WaitConnection():  Waiting for connection on port 61234...
+[9.639] read():  <1216> Rx: +$qSupported:multiprocess+;swbreak+;hwbreak+;qRelocInsn+;fork-events+;vfork-events+;exec-events+;vContSupported+;QThreadEvents+;QThreadOptions+;no-resumed+;memory-tagging+#e7
+[9.655] write():  <1216> Tx: +
+[9.655] write():  <1216> Tx: $PacketSize=4000;qXfer:memory-map:read+;qXfer:features:read+;QStartNoAckMode+;QNonStop+;qXfer:threads:read+;hwbreak+;swbreak+#f3
+[9.655] read():  <1216> Rx: +
+[9.655] read():  <1216> Rx: $vCont?#49
+[9.655] write():  <1216> Tx: +
+[9.655] write():  <1216> Tx: $vCont;c;s;t#05
+[9.656] read():  <1216> Rx: +$vMustReplyEmpty#3a
+[9.671] write():  <1216> Tx: +
+[9.671] write():  <1216> Tx: $#00
+[9.671] read():  <1216> Rx: +
+[9.671] read():  <1216> Rx: $QStartNoAckMode#b0
+[9.671] write():  <1216> Tx: +
+[9.671] write():  <1216> Tx: $OK#9a
+[9.671] read():  <1216> Rx: +
+[9.671] read():  <1216> Rx: $Hg0#df
+[9.671] write():  <1216> Tx: $#00
+[9.671] read():  <1216> Rx: $qXfer:features:read:target.xml:0,1000#0c
+[9.672] write():  <1216> Tx: $l<?xml version="1.0"?><!DOCTYPE target SYSTEM "gdb-target.dtd"><target><feature name="org.gnu.gdb.arm.m-profile"><reg name="r0" bitsize="32" type="uint32" regnum="0"/><reg name="r1" bitsize="32" type="uint32" regnum="1"/><reg name="r2" bitsize="32" type="uint32" regnum="2"/><reg name="r3" bitsize="32" type="uint32" regnum="3"/><reg name="r4" bitsize="32" type="uint32" regnum="4"/><reg name="r5" bitsize="32" type="uint32" regnum="5"/><reg name="r6" bitsize="32" type="uint32" regnum="6"/><reg name="r7" bitsize="32" type="uint32" regnum="7"/><reg name="r8" bitsize="32" type="uint32" regnum="8"/><reg name="r9" bitsize="32" type="uint32" regnum="9"/><reg name="r10" bitsize="32" type="uint32" regnum="10"/><reg name="r11" bitsize="32" type="uint32" regnum="11"/><reg name="r12" bitsize="32" type="uint32" regnum="12"/><reg name="sp" bitsize="32" type="data_ptr" regnum="13"/><reg name="lr" bitsize="32" type="int" regnum="14"/><reg name="pc" bitsize="32" type="code_ptr" regnum="15"/><reg name="xpsr" bitsize="32" type="int" regnum="25"/></feature><feature name="org.gnu.gdb.arm.vfp"><reg name="d0" bitsize="64" type="ieee_double" regnum="26"/><reg name="d1" bitsize="64" type="ieee_double" regnum="27"/><reg name="d2" bitsize="64" type="ieee_double" regnum="28"/><reg name="d3" bitsize="64" type="ieee_double" regnum="29"/><reg name="d4" bitsize="64" type="ieee_double" regnum="30"/><reg name="d5" bitsize="64" type="ieee_double" regnum="31"/><reg name="d6" bitsize="64" type="ieee_double" regnum="32"/><reg name="d7" bitsize="64" type="ieee_double" regnum="33"/><reg name="d8" bitsize="64" type="ieee_double" regnum="34"/><reg name="d9" bitsize="64" type="ieee_double" regnum="35"/><reg name="d10" bitsize="64" type="ieee_double" regnum="36"/><reg name="d11" bitsize="64" type="ieee_double" regnum="37"/><reg name="d12" bitsize="64" type="ieee_double" regnum="38"/><reg name="d13" bitsize="64" type="ieee_double" regnum="39"/><reg name="d14" bitsize="64" type="ieee_double" regnum="40"/><reg name="d15" bitsize="64" type="ieee_double" regnum="41"/><reg name="fpscr" bitsize="32" type="int" group="float" regnum="42"/></feature><feature name="org.gnu.gdb.arm.m-system"><reg name="primask" bitsize="32" type="uint32" regnum="93"/><reg name="basepri" bitsize="32" type="uint32" regnum="94"/><reg name="faultmask" bitsize="32" type="uint32" regnum="95"/><reg name="control" bitsize="32" type="uint32" regnum="96"/><reg name="msp" bitsize="32" type="data_ptr" regnum="97"/><reg name="psp" bitsize="32" type="data_ptr" regnum="98"/></feature></target>#e2
+[9.674] read():  <1216> Rx: $QNonStop:0#8c
+[9.674] write():  <1216> Tx: $OK#9a
+[9.674] read():  <1216> Rx: $qTStatus#49
+[9.674] write():  <1216> Tx: $#00
+[9.674] read():  <1216> Rx: $?#3f
+[9.674] write():  <1216> Tx: $S05#b8
+[9.674] read():  <1216> Rx: $qXfer:threads:read::0,1000#92
+[9.674] write():  <1216> Tx: $l<?xml version="1.0"?><threads><thread id="1" core="0" name="main"></thread></threads>#f7
+[9.674] read():  <1216> Rx: $qAttached#8f
+[9.674] write():  <1216> Tx: $#00
+[9.674] read():  <1216> Rx: $Hc-1#09
+[9.674] write():  <1216> Tx: $#00
+[9.674] read():  <1216> Rx: $qC#b4
+[9.674] write():  <1216> Tx: $QC1#c5
+[9.675] read():  <1216> Rx: $qOffsets#4b
+[9.675] write():  <1216> Tx: $#00
+[9.675] read():  <1216> Rx: $g#67
+[9.686] write():  <1216> Tx: $0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000220ffffffff5818000800000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000022000000000#d7
+[9.686] read():  <1216> Rx: $qXfer:threads:read::0,1000#92
+[9.686] write():  <1216> Tx: $l<?xml version="1.0"?><threads><thread id="1" core="0" name="main"></thread></threads>#f7
+[9.687] read():  <1216> Rx: $qXfer:memory-map:read::0,1000#ab
+[9.731] write():  <1216> Tx: $l<?xml version="1.0"?>\x0a<!DOCTYPE memory-map\x0a          PUBLIC "+//IDN gnu.org//DTD GDB Memory Map V1.0//EN"\x0a                 "http://sourceware.org/gdb/gdb-memory-map.dtd">\x0a<memory-map>\x0a<memory type="ram" start="0x0" length="0x8000000"/>\x0a<memory type="flash" start="0x8000000" length="0x80000">\x0a<property name="blocksize">0x4000</property>\x0a</memory>\x0a<memory type="ram" start="0x8080000" length="0xf7f7ffff"/>\x0a</memory-map>#b2
+[9.731] read():  <1216> Rx: $m8001858,4#3b
+[9.732] handlePacket():  Reading 0x4 bytes of memory from addr 0x8001858 
+[9.732] write():  <1216> Tx: $dff834d0#63
+[9.732] read():  <1216> Rx: $m8001858,2#39
+[9.732] handlePacket():  Reading 0x2 bytes of memory from addr 0x8001858 
+[9.733] write():  <1216> Tx: $dff8#68
+[9.733] read():  <1216> Rx: $m800185a,2#62
+[9.733] handlePacket():  Reading 0x2 bytes of memory from addr 0x800185a 
+[9.733] write():  <1216> Tx: $34d0#fb
+[9.848] read():  <1216> Rx: $qSymbol::#5b
+[9.848] write():  <1216> Tx: $#00
+[9.849] read():  <1216> Rx: $qRcmd,7265736574#37
+[9.849] STM32_SystemReset():  Enter STM32_SystemReset() function 
+[9.875] handleTargetDeviceEvent():  GDB session, device event: 0
+[9.876] initAfterReset():  Enter STM32_InitAfterReset() function 
+[9.877] STM32_ClearFaultStatus():  NVIC_DFSR_REG = 0x00000008
+[9.879] STM32_ClearFaultStatus():  NVIC_CFGFSR_REG = 0x00000000
+[9.881] write():  <1216> Tx: $53544d3332205375636365737366756c6c7920636f6d706c65746564207265736574206f7065726174696f6e202853797374656d207265736574290a#b8
+[10.969] read():  <1216> Rx: $m80015c0,40#8e
+[10.969] handlePacket():  Reading 0x40 bytes of memory from addr 0x80015c0 
+[10.971] write():  <1216> Tx: $f0fe00bf2037bd4680bd00bf003802401000002080b500affff7fefe00f00cf800f078f80020fff769ff01210020fff79bff00bffde7000080b594b000af07f1#6b
+[11.012] read():  <1216> Rx: $m80015d8,2#65
+[11.012] handlePacket():  Reading 0x2 bytes of memory from addr 0x80015d8 
+[11.012] write():  <1216> Tx: $fff7#69
+[11.024] read():  <1216> Rx: $Z1,80015d8,2#af
+[11.025] write():  <1216> Tx: $OK#9a
+[11.025] read():  <1216> Rx: $Hc0#db
+[11.025] write():  <1216> Tx: $#00
+[11.025] read():  <1216> Rx: $c#63
+[11.044] handleTargetDeviceEvent():  GDB session, device event: 4
+[11.045] handleTargetDeviceEvent():  GDB session, device event: 2
+[11.061] Device_GetHaltReason():  NVIC_DFSR_REG = 0x00000003 
+[11.063] Device_GetHaltReason():  Stm32Device, getHaltReason, code: 4
+[11.064] handleTargetDeviceEvent():  GDB session, device event: 1
+[11.076] write():  <1216> Tx: $T05#b9
+[11.076] read():  <1216> Rx: $g#67
+[11.087] write():  <1216> Tx: $14000020000000003400002000000000340000200000000000000000f8ff01200000000000000000000000000000000000000000f8ff01208f180008d81500080000006100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f8ff012000000000#c0
+[11.087] read():  <1216> Rx: $qXfer:threads:read::0,1000#92
+[11.087] write():  <1216> Tx: $l<?xml version="1.0"?><threads><thread id="1" core="0" name="main"></thread></threads>#f7
+[11.088] read():  <1216> Rx: $z1,80015d8,2#cf
+[11.088] write():  <1216> Tx: $OK#9a
+[11.088] read():  <1216> Rx: $m80015d8,4#67
+[11.088] handlePacket():  Reading 0x4 bytes of memory from addr 0x80015d8 
+[11.089] write():  <1216> Tx: $fff7fefe#ff
+[11.145] read():  <1216> Rx: $m2001ffc0,40#1f
+[11.145] handlePacket():  Reading 0x40 bytes of memory from addr 0x2001ffc0 
+[11.146] write():  <1216> Tx: $4fb74e7fec935c96e96858e985b11cd6b691de4fea4b712000000000000000002c1c00080000000061020008e91b00083400002000000000000000008f180008#c7
+[11.147] read():  <1216> Rx: $m800188e,4#6b
+[11.147] handlePacket():  Reading 0x4 bytes of memory from addr 0x800188e 
+[11.149] write():  <1216> Tx: $70470000#92
+[11.149] read():  <1216> Rx: $m8001840,40#62
+[11.150] handlePacket():  Reading 0x40 bytes of memory from addr 0x8001840 
+[11.151] write():  <1216> Tx: $80533b603b680720fff784fd00bf0837bd4680bd00380240dff834d0fef712fd0c480d490d4a002302e0d458c4500433c4188c42f9d30a4a0a4c002301e01360#d1
+[11.151] read():  <1216> Rx: $m8001890,4#37
+[11.151] handlePacket():  Reading 0x4 bytes of memory from addr 0x8001890 
+[11.152] write():  <1216> Tx: $00000220#84
+[11.155] read():  <1216> Rx: $vKill;a410#33
+[11.155] handlePacket():  Hidden/Unsupported v-command 'vKill', see RSP for details
+[11.155] write():  <1216> Tx: $#00
+[11.155] read():  <1216> Rx: $k#6b
+[11.156] run():  GDB session terminated 
+[11.157] handleSessionEvent():  GdbSessionManager, session terminated: 1
+[11.158] handleSessionEvent():  GdbSrv, last session terminated, signal dispose
+[11.158] stop():  Stopping port 61234
+[11.170] WaitConnection():  Received stop for port 61234, not accepting new connections.
+[11.172] deInit():  GdbSrv, deInit entry.
+[11.174] deInit():  GdbSessionManager, deInit entry.
+[11.202] ~GdbSession():  GDB session disposed: 1
+[11.203] deInit():  GdbSessionManager, deInit exit
+[11.204] deInit():  SwvSrv deInit entry
+[11.205] stop():  Stopping port 61235
+[11.264] WaitConnection():  Received stop for port 61235, not accepting new connections.
+[11.265] deInit():  SwvSrv deInit exit
+[11.265] deInit():  SemihostSrv deInit entry
+[11.266] deInit():  SemihostSrv deInit exit
+[11.266] closeDevice():  Stm32Device, closeDevice() entry
+[11.280] pollAndNotifyRun():  Stm32Device, pollAndNotify stopped
+[11.336] closeDevice():  Stm32Device, closeDevice() exit
+[11.337] deInit():  Stm32Device, deInit success
+[11.337] deInit():  GdbSrv, deInit exit.

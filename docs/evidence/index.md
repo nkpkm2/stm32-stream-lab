@@ -64,6 +64,34 @@ Build artifacts are intentionally reproducible outputs and are not committed at 
 
 Package summary: [`docs/evidence/p0-a2/README.md`](p0-a2/README.md)
 
+## P0-B — Board Development Loop
+
+**Status:** PASS
+**Date:** 2026-09-13
+**Firmware milestone commit:** `7b62082`
+
+**Goal:** Prove the real NUCLEO-F446RE development loop through ST-LINK/SWD, Flash programming, target execution, debugger operation, and USART2/ST-LINK VCP.
+
+**Primary evidence:**
+- [`docs/evidence/p0-b/README.md`](p0-b/README.md)
+- [`target-identification-post-upgrade.txt`](p0-b/target-identification-post-upgrade.txt)
+- [`first-flash-verify.txt`](p0-b/first-flash-verify.txt)
+- [`gdb-execution-proof.txt`](p0-b/gdb-execution-proof.txt)
+- [`vcp-runtime-verification.txt`](p0-b/vcp-runtime-verification.txt)
+- [`docs/bringup-log.md`](../bringup-log.md)
+- Git history at commit `7b62082`
+
+**Key result:**
+- real STM32F446xx target detected;
+- ST-LINK recovered from repeated `DEV_USB_COMM_ERR` after firmware update `V2J28M18 → V2J48M35`;
+- Flash programming and verification passed;
+- reset → breakpoint at `main()` → continue → breakpoint hit passed;
+- deterministic `P0-B VCP READY` output captured across two physical resets.
+
+**Result:** PASS
+
+P0-B does not validate the 180 MHz / DWT / FreeRTOS platform; those remain R0 work.
+
 ## Existing engineering / project logs
 
 The existing logs remain the chronological record and are not duplicated by this evidence system:
