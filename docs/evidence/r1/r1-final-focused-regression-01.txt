@@ -1,0 +1,33 @@
+R1 final focused hardware regression
+
+Committed HEAD: 5ebf62e90b31e262f44013afb594a430061f139a
+ELF SHA256: 67040A73D2072C569918FA3E3AB9B3F88B52C0901E211665ED99462BF33E6CBA
+Exact committed-state flash/verify: PASS
+VCP startup banner: PASS
+
+R0 regression
+SystemCoreClock: 180000000
+AIRCR.PRIGROUP: 3
+TIM7 PSC: 89
+TIM7 ARR: 999
+SysTick LOAD: 179999
+HAL tick delta across snapshots: 3096
+FreeRTOS tick delta across snapshots: 3095
+FreeRTOS scheduler: RUNNING
+SVC priority: 0
+PendSV priority: 15
+SysTick priority: 15
+TIM7 priority: 0
+DMA2 Stream0 priority: 5
+
+R1 live sanity
+R1 task phase: RUNNING
+TIM2 PSC: 0
+TIM2 ARR: 449
+DMA NDTR snapshot A: 80
+DMA NDTR snapshot B: 3
+Genuine DBM fixed-address check: PASS
+ADC OVR flag: 0
+DMA FE/DME/TE flags: 0
+
+Classification: PASS
