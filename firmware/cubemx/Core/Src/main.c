@@ -21,7 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#ifdef STREAM_LAB_R2_W3
+#if defined(STREAM_LAB_R2_W4)
+#include "r2_w4_roundtrip.h"
+#elif defined(STREAM_LAB_R2_W3)
 #include "r2_w3_rebind.h"
 #else
 #include "r1_bringup.h"
@@ -109,7 +111,9 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-#ifdef STREAM_LAB_R2_W3
+#if defined(STREAM_LAB_R2_W4)
+  R2_W4_CreateTasks();
+#elif defined(STREAM_LAB_R2_W3)
   R2_W3_CreateTask();
 #else
   R1_Bringup_CreateTask();

@@ -1,0 +1,41 @@
+R2-W4 real-hardware ownership round-trip classification
+
+Source HEAD: f5d0f086dae94d2f244f8366a65aa32c511fd5be
+W4 ELF SHA256: D2018A7B03F65E66E66CCCE1045234DB346AED684BB7B6895D5F2A2097EA4A88
+Input: PA0 / ADC1_IN0 connected to GND
+K: 4
+P: 6
+Sample rate: 200 kS/s
+Block samples: 256
+Admitted blocks: 64
+Processed blocks: 64
+Released blocks: 64
+Initialization FreeBufferQueue commits: 4
+Completion release commits: 64
+Illegal FreeBufferQueue sends: 0
+FreeBufferQueue empty events: 0
+ReadyQueue send failures: 0
+Processing notification failures: 0
+Token ledger errors: 0
+DMA error flags seen: 0
+ADC OVR seen: 0
+Maximum nominal-to-commit cycles: 4978
+Maximum nominal-to-IRQ-exit cycles: 9982
+Maximum protected final-window cycles: 1084
+Maximum ReadyQueue depth: 1
+Minimum FreeBufferQueue depth after take: 3
+Final FreeBufferQueue depth: 4
+Final ReadyQueue depth: 0
+Final M0 binding: B4
+Final M1 binding: B5
+Final FREE buffers: 4
+Final DMA_OWNED buffers: 2
+Ownership violations: 0
+DMA-slot violations: 0
+Completed samples validated: 16384
+Sample errors: 0
+Canary errors: 0
+Observed raw range across processed blocks: 0 .. 10
+Post-stop quiet counters: stable
+
+Classification: PASS

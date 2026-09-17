@@ -22,7 +22,9 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#ifdef STREAM_LAB_R2_W3
+#if defined(STREAM_LAB_R2_W4)
+#include "r2_w4_roundtrip.h"
+#elif defined(STREAM_LAB_R2_W3)
 #include "r2_w3_rebind.h"
 #else
 #include "r1_acquisition.h"
@@ -211,7 +213,9 @@ void TIM7_IRQHandler(void)
 void DMA2_Stream0_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
-#ifdef STREAM_LAB_R2_W3
+#if defined(STREAM_LAB_R2_W4)
+  R2_W4_IrqEnter(DMA2->LISR);
+#elif defined(STREAM_LAB_R2_W3)
   R2_W3_IrqEnter(DMA2->LISR);
 #else
   R1_Acquisition_DmaIrqEnter(DMA2->LISR);
@@ -220,7 +224,9 @@ void DMA2_Stream0_IRQHandler(void)
   /* USER CODE END DMA2_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_adc1);
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
-#ifdef STREAM_LAB_R2_W3
+#if defined(STREAM_LAB_R2_W4)
+  R2_W4_IrqExit();
+#elif defined(STREAM_LAB_R2_W3)
   R2_W3_IrqExit();
 #endif
 

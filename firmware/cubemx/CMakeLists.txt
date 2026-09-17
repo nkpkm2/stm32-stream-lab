@@ -87,12 +87,30 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 )
 # === R0 FREERTOS V11.1.0 END ===
 
-# === R2-W3 DIAGNOSTIC PROFILE BEGIN ===
+# === R2 DIAGNOSTIC PROFILES BEGIN ===
 option(STREAM_LAB_R2_W3 "Build the bounded W3 rebinding experiment instead of R1 soak" OFF)
+option(STREAM_LAB_R2_W4 "Build the W4 queue/processing ownership round-trip experiment" OFF)
+if(STREAM_LAB_R2_W3 AND STREAM_LAB_R2_W4)
+    message(FATAL_ERROR "STREAM_LAB_R2_W3 and STREAM_LAB_R2_W4 are mutually exclusive")
+endif()
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition"
 )
-if(STREAM_LAB_R2_W3)
+if(STREAM_LAB_R2_W4)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R2_W4=1)
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool"
+    )
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_w4_roundtrip.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_dma_slots.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool/r2_buffer_pool.c"
+    )
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_w4_roundtrip.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+    )
+elseif(STREAM_LAB_R2_W3)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R2_W3=1)
     target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool"
@@ -123,4 +141,4 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # === R1 BRINGUP HARNESS END ===
 
 endif()
-# === R2-W3 DIAGNOSTIC PROFILE END ===
+# === R2 DIAGNOSTIC PROFILES END ===

@@ -107,3 +107,25 @@ foreach(case_name IN LISTS R2_W3_CASES)
     add_test(NAME r2_w3.${case_name} COMMAND test_r2_w3_guard ${case_name})
     set_tests_properties(r2_w3.${case_name} PROPERTIES TIMEOUT 10)
 endforeach()
+
+# W4 software ownership/queue model. The real FreeRTOS queue hook is verified
+# by the target build and hardware experiment, not emulated by this executable.
+add_executable(test_r2_w4_model
+    test_r2_w4_model.c
+    ../../firmware/acquisition/r2_dma_slots.c
+    ../../firmware/buffer_pool/r2_buffer_pool.c
+)
+target_include_directories(test_r2_w4_model PRIVATE
+    ../../firmware/acquisition ../../firmware/buffer_pool)
+set_target_properties(test_r2_w4_model PROPERTIES
+    C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+r2_apply_strict_warnings(test_r2_w4_model)
+r2_apply_sanitizers(test_r2_w4_model)
+set(R2_W4_CASES
+    roundtrip_64 fifo_rotation conservation exhaustion_boundary
+    guard_safe guard_late guard_ndtr guard_ct processing_state
+    final_mapping_distinct)
+foreach(case_name IN LISTS R2_W4_CASES)
+    add_test(NAME r2_w4.${case_name} COMMAND test_r2_w4_model ${case_name})
+    set_tests_properties(r2_w4.${case_name} PROPERTIES TIMEOUT 10)
+endforeach()
