@@ -169,7 +169,26 @@ The corresponding R1 evidence/documentation commit is:
 
 `538073fa3e86a8188a88d02360c2178494cd6928`
 
-R2 is authorized and remains NOT STARTED.
+R2 is IN PROGRESS. W1-W6 are implemented; W6 mandatory K matrix is 8/8 hardware PASS. Final control-traffic/service-margin acceptance remains pending.
+
+## R2 - Dynamic K+2 DMA Ownership and Capacity Control
+
+**Status:** IN PROGRESS
+**Latest firmware milestone:** `bbc3bf6821c4f6e4dc73beabd5685b8b0828205c`
+
+W1-W6 establish the K+2 BufferPool ownership model, DMA M0/M1 slot abstraction, real dynamic inactive-slot rebinding, DMA/Processing/FREE ownership round trip, controlled capacity drop, and the mandatory K=1/2/4/8 NORMAL/DROP hardware matrix.
+
+**W6 result:** 8 / 8 mandatory hardware cells PASS. Native W1-W6: 116 / 116 PASS. Committed-state programmed-byte regression: 12 / 12 PASS across W6 hardware images plus W5/W4/W3/R1 anchors.
+
+**Primary evidence:**
+- [`docs/evidence/r2/README.md`](r2/README.md)
+- [`R2-W3 evidence`](r2/w3/README.md)
+- [`R2-W4 evidence`](r2/w4/README.md)
+- [`R2-W5 evidence`](r2/w5/README.md)
+- [`R2-W6 evidence`](r2/w6/README.md)
+- [`R2 provenance archive`](r2/archive/README.md)
+
+R2 is not yet a final PASS. Architecture v3.2.2 final worst-permitted-control-traffic / service-margin acceptance remains pending, and `r2-pass` has not been created.
 
 ## Existing engineering / project logs
 

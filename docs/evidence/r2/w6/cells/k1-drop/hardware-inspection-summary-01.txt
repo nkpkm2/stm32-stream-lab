@@ -1,0 +1,134 @@
+0x08005e5e in prvIdleTask (pvParameters=0x0) at E:/Projects/stm32-stream-lab/firmware/cubemx/Middlewares/Third_Party/FreeRTOS-Kernel/tasks.c:5797
+5797	            if( listCURRENT_LIST_LENGTH( &( pxReadyTasksLists[ tskIDLE_PRIORITY ] ) ) > ( UBaseType_t ) configNUMBER_OF_CORES )
+=== W6 RESULT IDENTITY ===
+warning: could not convert 'magic' from the host encoding (CP1252) to UTF-32.
+This normally should not happen, please file a bug report.
+magic=0x52325736
+control_task_created=1
+processing_task_created=1
+phase=5
+test_pass=1
+fault_bits=0x00000000
+
+=== CONFIGURATION ===
+system_core_clock=180000000
+configured_k=1
+drop_mode=1
+process_hold_blocks=6
+aircr=0xfa050300
+
+=== START / STOP ===
+start_status=0
+stop_status=0
+start_dma_cr=0x00062d17
+start_dma_ndtr=256
+start_adc_cr2=0x16000701
+start_tim2_cr1=0x00000000
+
+=== EVENT ACCOUNTING ===
+epoch_before=481973763
+epoch_after=481973888
+irq_count=96
+input_count=96
+admitted_count=14
+capacity_drop_count=82
+processed_count=14
+released_count=14
+recovered_admission_after_drop_count=13
+current_drop_streak=4
+max_drop_streak=6
+
+=== PER-BUFFER ACCOUNTING ===
+buffer0_admitted=5
+buffer0_dropped=26
+buffer0_processed=5
+buffer0_released=5
+buffer1_admitted=5
+buffer1_dropped=27
+buffer1_processed=5
+buffer1_released=5
+buffer2_admitted=4
+buffer2_dropped=29
+buffer2_processed=4
+buffer2_released=4
+
+=== HOOK / QUEUE / ERROR ACCOUNTING ===
+init_hook_count=1
+completion_hook_count=14
+illegal_free_send_count=0
+ready_send_fail_count=0
+notification_fail_count=0
+token_ledger_errors=0
+dma_error_flags_seen=0
+adc_ovr_seen=0
+
+=== TIMING ===
+max_nominal_to_decision_cycles=6808
+max_nominal_to_irq_exit_cycles=11833
+max_final_window_cycles=1099
+
+=== QUEUE / TOKEN FINAL STATE ===
+max_ready_depth=1
+min_free_depth=0
+free_queue_depth_final=1
+ready_queue_depth_final=0
+free_token_mask_final=0x00000002
+ready_token_mask_final=0x00000000
+
+=== SAMPLE VALIDATION ===
+full_sample_count=3584
+sample_errors=0
+canary_errors=0
+
+=== QUIET WINDOW ===
+quiet_irq_count=96
+quiet_input_count=96
+quiet_admitted_count=14
+quiet_drop_count=82
+quiet_processed_count=14
+
+=== BUFFER POOL FINAL STATE ===
+pool_activated=1
+pool_k=1
+pool_active_count=3
+pool_inactive_count=7
+pool_free_count=1
+pool_dma_owned_count=2
+pool_ready_count=0
+pool_processing_count=0
+pool_violation_count=0
+pool_state_0=2
+pool_state_1=1
+pool_state_2=2
+
+=== DMA SLOT FINAL STATE ===
+slots_initialized=1
+slots_mapping_epoch=15
+slots_violation_count=0
+slots_m0_buffer=2
+slots_m1_buffer=0
+
+=== FIRST EVENT ===
+trace_1_sequence=1
+trace_1_decision=1
+trace_1_completed_id=0
+trace_1_replacement_id=2
+trace_1_mapping_epoch_after=2
+trace_1_m0_before=0x20000e48
+trace_1_m1_before=0x20001050
+trace_1_m0_after=0x20001258
+trace_1_m1_after=0x20001050
+trace_1_processed_ok=1
+
+=== LAST EVENT ===
+trace_96_sequence=96
+trace_96_decision=2
+trace_96_completed_id=0
+trace_96_replacement_id=255
+trace_96_mapping_epoch_after=15
+trace_96_m0_before=0x20001258
+trace_96_m1_before=0x20000e48
+trace_96_m0_after=0x20001258
+trace_96_m1_after=0x20000e48
+trace_96_processed_ok=0
+[Inferior 1 (Remote target) detached]

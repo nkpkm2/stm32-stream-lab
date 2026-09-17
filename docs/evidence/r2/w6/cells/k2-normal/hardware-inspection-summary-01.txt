@@ -1,0 +1,94 @@
+prvIdleTask (pvParameters=0x0) at E:/Projects/stm32-stream-lab/firmware/cubemx/Middlewares/Third_Party/FreeRTOS-Kernel/tasks.c:5773
+5773	        prvCheckTasksWaitingTermination();
+=== W6 RESULT IDENTITY ===
+warning: could not convert 'magic' from the host encoding (CP1252) to UTF-32.
+This normally should not happen, please file a bug report.
+magic=0x52325736
+control_task_created=1
+processing_task_created=1
+phase=5
+test_pass=1
+fault_bits=0x00000000
+
+=== CONFIGURATION ===
+system_core_clock=180000000
+configured_k=2
+drop_mode=0
+process_hold_blocks=0
+aircr=0xfa050300
+
+=== EVENT ACCOUNTING ===
+irq_count=96
+input_count=96
+admitted_count=96
+capacity_drop_count=0
+processed_count=96
+released_count=96
+recovered_admission_after_drop_count=0
+max_drop_streak=0
+
+=== ERROR ACCOUNTING ===
+init_hook_count=2
+completion_hook_count=96
+illegal_free_send_count=0
+ready_send_fail_count=0
+notification_fail_count=0
+token_ledger_errors=0
+dma_error_flags_seen=0
+adc_ovr_seen=0
+
+=== TIMING ===
+max_nominal_to_decision_cycles=6800
+max_nominal_to_irq_exit_cycles=11836
+max_final_window_cycles=1075
+
+=== QUEUE / TOKEN FINAL STATE ===
+max_ready_depth=1
+min_free_depth=1
+free_queue_depth_final=2
+ready_queue_depth_final=0
+free_token_mask_final=0x0000000c
+ready_token_mask_final=0x00000000
+
+=== SAMPLE VALIDATION ===
+full_sample_count=24576
+sample_errors=0
+canary_errors=0
+
+=== QUIET WINDOW ===
+quiet_irq_count=96
+quiet_input_count=96
+quiet_admitted_count=96
+quiet_drop_count=0
+quiet_processed_count=96
+
+=== BUFFER POOL FINAL STATE ===
+pool_activated=1
+pool_k=2
+pool_active_count=4
+pool_inactive_count=6
+pool_free_count=2
+pool_dma_owned_count=2
+pool_ready_count=0
+pool_processing_count=0
+pool_violation_count=0
+pool_state_0=2
+pool_state_1=2
+pool_state_2=1
+pool_state_3=1
+
+=== DMA SLOT FINAL STATE ===
+slots_initialized=1
+slots_mapping_epoch=97
+slots_violation_count=0
+slots_m0_buffer=0
+slots_m1_buffer=1
+
+=== FIRST / LAST EVENT ===
+trace_1_sequence=1
+trace_1_decision=1
+trace_1_processed_ok=1
+trace_96_sequence=96
+trace_96_decision=1
+trace_96_processed_ok=1
+[Inferior 1 (Remote target) detached]

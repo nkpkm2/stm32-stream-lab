@@ -1,0 +1,28 @@
+diff --git "a/C:\\Users\\CHJ\\Downloads\\tempa\\stm32-handoff-20260917-232541-4289db94\\working-tree\\firmware\\acquisition\\r2_w6_matrix.c" "b/E:\\Projects\\stm32-stream-lab\\firmware\\acquisition\\r2_w6_matrix.c"
+index 807f681..c5722a3 100644
+--- "a/C:\\Users\\CHJ\\Downloads\\tempa\\stm32-handoff-20260917-232541-4289db94\\working-tree\\firmware\\acquisition\\r2_w6_matrix.c"
++++ "b/E:\\Projects\\stm32-stream-lab\\firmware\\acquisition\\r2_w6_matrix.c"
+@@ -906,7 +906,9 @@ static void ProcessDescriptor(const W6_BlockDescriptor *descriptor)
+     uint32_t id = descriptor->buffer_id;
+     uint32_t sequence = descriptor->sequence;
+     uint32_t bit;
++#if R2_W6_DROP_MODE != 0U
+     uint32_t begin;
++#endif
+     uint32_t min_value = UINT32_MAX;
+     uint32_t max_value = 0U;
+     uint32_t j;
+@@ -953,11 +955,13 @@ static void ProcessDescriptor(const W6_BlockDescriptor *descriptor)
+      * PROCESSING buffer for K+5 block periods so all K FREE tokens are
+      * consumed and several consecutive capacity drops are forced. The task
+      * remains preemptible by DMA and kernel interrupts in both modes. */
++#if R2_W6_DROP_MODE != 0U
+     begin = DWT->CYCCNT;
+     while ((uint32_t)(DWT->CYCCNT - begin) < R2_W6_PROCESS_HOLD_CYCLES)
+     {
+         __NOP();
+     }
++#endif
+ 
+     if ((buffers[id].guard_lo != W6_GUARD_LO) ||
+         (buffers[id].guard_hi != W6_GUARD_HI))

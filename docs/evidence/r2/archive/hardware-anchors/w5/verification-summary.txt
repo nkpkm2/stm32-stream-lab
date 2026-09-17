@@ -1,0 +1,7 @@
+Profile: W5Target
+Source HEAD: 7ae9a562ff0eaeeeda4a80c1bea16a6d22d7203c
+Build: PASS
+Source byte fingerprint: unchanged
+Git index content: unchanged
+Hardware: NOT RUN
+Build directory: E:\Projects\stm32-stream-lab\build\r2-w5-w5target-c4b79468

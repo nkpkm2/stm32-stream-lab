@@ -1,0 +1,7 @@
+Profile: W3Target
+Source HEAD: a966cd3e78b4f190ca731daea8388463d39f7486
+Build: PASS
+Source byte fingerprint: unchanged
+Git index content: unchanged
+Hardware: NOT RUN
+Build directory: E:\Projects\stm32-stream-lab\build\r2-w3-w3target-23c9886a

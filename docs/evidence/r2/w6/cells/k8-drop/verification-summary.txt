@@ -1,0 +1,9 @@
+Profile: W6Target
+Source HEAD: 2752c0e915ab4725cc13e400d16fe47b14adfd4e
+Build: PASS
+Source byte fingerprint: unchanged
+Git index content: unchanged
+Hardware: NOT RUN
+Build directory: E:\Projects\stm32-stream-lab\build\r2-w6-w6target-k8-drop-7a95200b
+W6 K: 8
+W6 mode: DROP

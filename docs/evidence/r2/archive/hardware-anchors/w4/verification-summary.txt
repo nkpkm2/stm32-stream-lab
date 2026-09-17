@@ -1,0 +1,7 @@
+Profile: W4Target
+Source HEAD: f5d0f086dae94d2f244f8366a65aa32c511fd5be
+Build: PASS
+Source byte fingerprint: unchanged
+Git index content: unchanged
+Hardware: NOT RUN
+Build directory: E:\Projects\stm32-stream-lab\build\r2-w4-w4target-e2e7b31f
