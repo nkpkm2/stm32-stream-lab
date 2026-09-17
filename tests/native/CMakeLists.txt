@@ -129,3 +129,25 @@ foreach(case_name IN LISTS R2_W4_CASES)
     add_test(NAME r2_w4.${case_name} COMMAND test_r2_w4_model ${case_name})
     set_tests_properties(r2_w4.${case_name} PROPERTIES TIMEOUT 10)
 endforeach()
+
+# W5 controlled capacity-drop model. This validates the ownership/mapping
+# semantics of retaining the inactive DMA buffer when no FREE token exists.
+add_executable(test_r2_w5_model
+    test_r2_w5_model.c
+    ../../firmware/acquisition/r2_dma_slots.c
+    ../../firmware/buffer_pool/r2_buffer_pool.c
+)
+target_include_directories(test_r2_w5_model PRIVATE
+    ../../firmware/acquisition ../../firmware/buffer_pool)
+set_target_properties(test_r2_w5_model PROPERTIES
+    C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+r2_apply_strict_warnings(test_r2_w5_model)
+r2_apply_sanitizers(test_r2_w5_model)
+set(R2_W5_CASES
+    drop_no_mutation drop_preserves_epoch consecutive_drops release_recovery
+    conservation drop_no_violation guard_safe guard_late guard_ndtr guard_ct
+    drop_dma_owned deterministic_64)
+foreach(case_name IN LISTS R2_W5_CASES)
+    add_test(NAME r2_w5.${case_name} COMMAND test_r2_w5_model ${case_name})
+    set_tests_properties(r2_w5.${case_name} PROPERTIES TIMEOUT 10)
+endforeach()

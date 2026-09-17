@@ -1,0 +1,47 @@
+R2-W5 real-hardware controlled capacity-drop classification
+
+Source HEAD: 7ae9a562ff0eaeeeda4a80c1bea16a6d22d7203c
+W5 ELF SHA256: 301417FD7E57F3B74927286F37359035D8FF932CDEA526775E6FB9F243E4DEAE
+Input: PA0 / ADC1_IN0 connected to GND
+K: 1
+P: 3
+Sample rate: 200 kS/s
+Block samples: 256
+Input TC events: 64
+Admitted blocks: 10
+Capacity drops: 54
+Processed blocks: 10
+Released blocks: 10
+Recovered admissions after drop streaks: 9
+Maximum consecutive drop streak: 6
+Initialization FreeBufferQueue commits: 1
+Completion release commits: 10
+Illegal FreeBufferQueue sends: 0
+ReadyQueue send failures: 0
+Processing notification failures: 0
+Token ledger errors: 0
+DMA error flags seen: 0
+ADC OVR seen: 0
+Maximum nominal-to-decision cycles: 6796
+Maximum nominal-to-IRQ-exit cycles: 11850
+Maximum protected final-window cycles: 1089
+Maximum ReadyQueue depth: 1
+Minimum FreeBufferQueue depth after take: 0
+Final FreeBufferQueue depth: 1
+Final ReadyQueue depth: 0
+Final M0 binding: B1
+Final M1 binding: B2
+Final FREE buffer: B0
+Final ownership: 1 FREE + 2 DMA_OWNED
+Ownership violations: 0
+DMA-slot violations: 0
+Completed admitted samples validated: 2560
+Sample errors: 0
+Canary errors: 0
+Observed raw range across admitted blocks: 0 .. 9
+Every DROP left M0AR/M1AR and mapping epoch unchanged: PASS
+No dropped block entered Processing: PASS
+Admissions resumed after controlled drop streaks: PASS
+Post-stop quiet counters: stable
+
+Classification: PASS

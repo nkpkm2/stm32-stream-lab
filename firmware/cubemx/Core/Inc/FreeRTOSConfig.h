@@ -33,10 +33,13 @@ extern uint32_t SystemCoreClock;
 #define configCHECK_FOR_STACK_OVERFLOW          2
 #define configUSE_MALLOC_FAILED_HOOK            0
 
-/* R2-W4 queue-commit adapter. The macro is active only in the W4 profile.
+/* R2 queue-commit adapters. Exactly one diagnostic profile can be active.
  * FreeRTOS V11.1.0 invokes traceQUEUE_SEND inside the successful task-send
  * critical section before the token copy. */
-#ifdef STREAM_LAB_R2_W4
+#if defined(STREAM_LAB_R2_W5)
+void R2_W5_TraceQueueSend(void *queue_handle);
+#define traceQUEUE_SEND(pxQueue) R2_W5_TraceQueueSend((void *)(pxQueue))
+#elif defined(STREAM_LAB_R2_W4)
 void R2_W4_TraceQueueSend(void *queue_handle);
 #define traceQUEUE_SEND(pxQueue) R2_W4_TraceQueueSend((void *)(pxQueue))
 #endif
