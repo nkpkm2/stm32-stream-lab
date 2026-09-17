@@ -151,3 +151,39 @@ foreach(case_name IN LISTS R2_W5_CASES)
     add_test(NAME r2_w5.${case_name} COMMAND test_r2_w5_model ${case_name})
     set_tests_properties(r2_w5.${case_name} PROPERTIES TIMEOUT 10)
 endforeach()
+
+# W6 mandatory K matrix. Build the same ownership model for every supported K
+# in both NORMAL and DROP mode so compile-time K/mode contracts are exercised.
+function(r2_add_w6_matrix_target k_value mode_name drop_value)
+    string(TOLOWER "${mode_name}" mode_lower)
+    set(target_name "test_r2_w6_k${k_value}_${mode_lower}")
+
+    add_executable(${target_name}
+        test_r2_w6_matrix.c
+        ../../firmware/acquisition/r2_dma_slots.c
+        ../../firmware/buffer_pool/r2_buffer_pool.c
+    )
+    target_include_directories(${target_name} PRIVATE
+        ../../firmware/acquisition ../../firmware/buffer_pool)
+    target_compile_definitions(${target_name} PRIVATE
+        R2_W6_K=${k_value}U
+        R2_W6_DROP_MODE=${drop_value}U)
+    set_target_properties(${target_name} PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(${target_name})
+    r2_apply_sanitizers(${target_name})
+
+    foreach(case_name configuration guard matrix final_conservation)
+        add_test(
+            NAME r2_w6.k${k_value}.${mode_lower}.${case_name}
+            COMMAND ${target_name} ${case_name})
+        set_tests_properties(
+            r2_w6.k${k_value}.${mode_lower}.${case_name}
+            PROPERTIES TIMEOUT 20)
+    endforeach()
+endfunction()
+
+foreach(k_value 1 2 4 8)
+    r2_add_w6_matrix_target(${k_value} NORMAL 0)
+    r2_add_w6_matrix_target(${k_value} DROP 1)
+endforeach()

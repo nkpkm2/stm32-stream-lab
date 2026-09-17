@@ -36,7 +36,10 @@ extern uint32_t SystemCoreClock;
 /* R2 queue-commit adapters. Exactly one diagnostic profile can be active.
  * FreeRTOS V11.1.0 invokes traceQUEUE_SEND inside the successful task-send
  * critical section before the token copy. */
-#if defined(STREAM_LAB_R2_W5)
+#if defined(STREAM_LAB_R2_W6)
+void R2_W6_TraceQueueSend(void *queue_handle);
+#define traceQUEUE_SEND(pxQueue) R2_W6_TraceQueueSend((void *)(pxQueue))
+#elif defined(STREAM_LAB_R2_W5)
 void R2_W5_TraceQueueSend(void *queue_handle);
 #define traceQUEUE_SEND(pxQueue) R2_W5_TraceQueueSend((void *)(pxQueue))
 #elif defined(STREAM_LAB_R2_W4)

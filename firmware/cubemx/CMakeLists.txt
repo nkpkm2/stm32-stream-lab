@@ -91,15 +91,59 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 option(STREAM_LAB_R2_W3 "Build the bounded W3 rebinding experiment instead of R1 soak" OFF)
 option(STREAM_LAB_R2_W4 "Build the W4 queue/processing ownership round-trip experiment" OFF)
 option(STREAM_LAB_R2_W5 "Build the W5 controlled capacity-drop experiment" OFF)
-if((STREAM_LAB_R2_W3 AND STREAM_LAB_R2_W4) OR
-   (STREAM_LAB_R2_W3 AND STREAM_LAB_R2_W5) OR
-   (STREAM_LAB_R2_W4 AND STREAM_LAB_R2_W5))
-    message(FATAL_ERROR "R2 diagnostic profiles W3/W4/W5 are mutually exclusive")
+option(STREAM_LAB_R2_W6 "Build one W6 mandatory K-matrix experiment" OFF)
+set(STREAM_LAB_R2_W6_K "1" CACHE STRING "W6 backlog capacity K: 1, 2, 4, or 8")
+set_property(CACHE STREAM_LAB_R2_W6_K PROPERTY STRINGS 1 2 4 8)
+set(STREAM_LAB_R2_W6_MODE "NORMAL" CACHE STRING "W6 matrix mode: NORMAL or DROP")
+set_property(CACHE STREAM_LAB_R2_W6_MODE PROPERTY STRINGS NORMAL DROP)
+set(R2_DIAGNOSTIC_PROFILE_COUNT 0)
+foreach(profile_name
+    STREAM_LAB_R2_W3 STREAM_LAB_R2_W4 STREAM_LAB_R2_W5 STREAM_LAB_R2_W6)
+    if(${profile_name})
+        math(EXPR R2_DIAGNOSTIC_PROFILE_COUNT "${R2_DIAGNOSTIC_PROFILE_COUNT}+1")
+    endif()
+endforeach()
+if(R2_DIAGNOSTIC_PROFILE_COUNT GREATER 1)
+    message(FATAL_ERROR "R2 diagnostic profiles W3/W4/W5/W6 are mutually exclusive")
+endif()
+
+if(STREAM_LAB_R2_W6)
+    if(NOT STREAM_LAB_R2_W6_K MATCHES "^(1|2|4|8)$")
+        message(FATAL_ERROR "STREAM_LAB_R2_W6_K must be 1, 2, 4, or 8")
+    endif()
+    string(TOUPPER "${STREAM_LAB_R2_W6_MODE}" R2_W6_MODE_UPPER)
+    if(NOT R2_W6_MODE_UPPER STREQUAL "NORMAL" AND
+       NOT R2_W6_MODE_UPPER STREQUAL "DROP")
+        message(FATAL_ERROR "STREAM_LAB_R2_W6_MODE must be NORMAL or DROP")
+    endif()
 endif()
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition"
 )
-if(STREAM_LAB_R2_W5)
+if(STREAM_LAB_R2_W6)
+    if(R2_W6_MODE_UPPER STREQUAL "DROP")
+        set(R2_W6_DROP_VALUE 1)
+    else()
+        set(R2_W6_DROP_VALUE 0)
+    endif()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        STREAM_LAB_R2_W6=1
+        R2_W6_K=${STREAM_LAB_R2_W6_K}U
+        R2_W6_DROP_MODE=${R2_W6_DROP_VALUE}U
+    )
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool"
+    )
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_w6_matrix.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_dma_slots.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool/r2_buffer_pool.c"
+    )
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_w6_matrix.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+    )
+elseif(STREAM_LAB_R2_W5)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R2_W5=1)
     target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool"

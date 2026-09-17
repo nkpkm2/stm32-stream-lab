@@ -21,7 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#if defined(STREAM_LAB_R2_W5)
+#if defined(STREAM_LAB_R2_W6)
+#include "r2_w6_matrix.h"
+#elif defined(STREAM_LAB_R2_W5)
 #include "r2_w5_capacity.h"
 #elif defined(STREAM_LAB_R2_W4)
 #include "r2_w4_roundtrip.h"
@@ -113,7 +115,9 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-#if defined(STREAM_LAB_R2_W5)
+#if defined(STREAM_LAB_R2_W6)
+  R2_W6_CreateTasks();
+#elif defined(STREAM_LAB_R2_W5)
   R2_W5_CreateTasks();
 #elif defined(STREAM_LAB_R2_W4)
   R2_W4_CreateTasks();
