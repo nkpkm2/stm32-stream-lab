@@ -1,0 +1,9 @@
+sequence,ct,completed_slot,completed_id,replacement_id,ndtr_prewrite,nominal_to_commit_cycles,nominal_to_irq_exit_cycles,final_window_cycles,free_after,ready_after,mapping_epoch_after
+1,1,0,0,2,253,5206,8951,1335,7,1,2
+2,0,1,1,3,253,5202,8946,1338,6,2,3
+3,1,0,2,4,253,5202,9252,1335,5,3,4
+4,0,1,3,5,253,5194,8921,1338,4,4,5
+5,1,0,4,6,253,5190,8902,1335,3,5,6
+6,0,1,5,7,253,5194,8921,1340,2,6,7
+7,1,0,6,8,253,5182,8888,1335,1,7,8
+8,0,1,7,9,253,5178,8908,1338,0,8,9

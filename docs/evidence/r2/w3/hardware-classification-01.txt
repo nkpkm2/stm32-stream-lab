@@ -1,0 +1,29 @@
+R2-W3 bounded dynamic-DBM hardware classification
+
+Source HEAD: a966cd3e78b4f190ca731daea8388463d39f7486
+W3 ELF SHA256: 1F9CACD7838F3985C89DA7F7AFEE6428CB70BB9C1939890D41C4FBF0490A77E1
+Input: PA0 / ADC1_IN0 connected to GND
+K: 8
+P: 10
+Sample rate: 200 kS/s
+Block samples: 256
+Rebind events: 8 / 8
+IRQ count: 8
+Suppressed stop IRQs: 0
+DMA error flags seen: 0
+ADC OVR seen: 0
+Max nominal-to-commit cycles: 5206
+Max nominal-to-IRQ-exit cycles: 9252
+Max protected final-window cycles: 1340
+Final M0 binding: B8
+Final M1 binding: B9
+Final READY buffers: 8
+Final DMA_OWNED buffers: 2
+Ownership violations: 0
+DMA-slot violations: 0
+Completed samples validated: 2048
+Sample errors: 0
+Canary errors: 0
+Post-stop quiet counts: stable
+
+Classification: PASS

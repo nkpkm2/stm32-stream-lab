@@ -86,3 +86,24 @@ foreach(case_name IN LISTS R2_W2_CASES)
     add_test(NAME r2_w2.${case_name} COMMAND test_r2_dma_slots ${case_name})
     set_tests_properties(r2_w2.${case_name} PROPERTIES TIMEOUT 30)
 endforeach()
+
+# W3 pure guard + bounded software model only: no peripheral emulation.
+add_executable(test_r2_w3_guard
+    test_r2_w3_guard.c
+    ../../firmware/acquisition/r2_dma_slots.c
+    ../../firmware/buffer_pool/r2_buffer_pool.c
+)
+target_include_directories(test_r2_w3_guard PRIVATE
+    ../../firmware/acquisition ../../firmware/buffer_pool)
+set_target_properties(test_r2_w3_guard PROPERTIES
+    C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+r2_apply_strict_warnings(test_r2_w3_guard)
+r2_apply_sanitizers(test_r2_w3_guard)
+set(R2_W3_CASES
+    safe invalid_sequence ct_change wrong_phase early budget_boundary
+    ct_aba_late ndtr hardware_error dwt_wrap eight_step_model
+    rejected_no_model_change)
+foreach(case_name IN LISTS R2_W3_CASES)
+    add_test(NAME r2_w3.${case_name} COMMAND test_r2_w3_guard ${case_name})
+    set_tests_properties(r2_w3.${case_name} PROPERTIES TIMEOUT 10)
+endforeach()

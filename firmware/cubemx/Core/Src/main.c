@@ -21,7 +21,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#ifdef STREAM_LAB_R2_W3
+#include "r2_w3_rebind.h"
+#else
 #include "r1_bringup.h"
+#endif
 #include "r0_freertos_smoke.h"
 
 /* USER CODE END Includes */
@@ -105,7 +109,11 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+#ifdef STREAM_LAB_R2_W3
+  R2_W3_CreateTask();
+#else
   R1_Bringup_CreateTask();
+#endif
   static uint8_t p0b_banner[] = "P0-B VCP READY\r\n";
   if (HAL_UART_Transmit(&huart2, p0b_banner,
                         (uint16_t)(sizeof(p0b_banner) - 1U),

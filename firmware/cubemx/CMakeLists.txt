@@ -87,6 +87,26 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 )
 # === R0 FREERTOS V11.1.0 END ===
 
+# === R2-W3 DIAGNOSTIC PROFILE BEGIN ===
+option(STREAM_LAB_R2_W3 "Build the bounded W3 rebinding experiment instead of R1 soak" OFF)
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition"
+)
+if(STREAM_LAB_R2_W3)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R2_W3=1)
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool"
+    )
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_w3_rebind.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_dma_slots.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool/r2_buffer_pool.c"
+    )
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_w3_rebind.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+    )
+else()
 # === R1 ACQUISITION DRIVER BEGIN ===
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r1_acquisition.c"
@@ -101,3 +121,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r1_bringup.c"
 )
 # === R1 BRINGUP HARNESS END ===
+
+endif()
+# === R2-W3 DIAGNOSTIC PROFILE END ===
