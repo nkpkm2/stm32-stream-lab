@@ -21,7 +21,9 @@
 #endif
 
 #define R2_W6_BUFFERS (R2_W6_K + 2U)
+#ifndef R2_W6_EVENTS
 #define R2_W6_EVENTS 96U
+#endif
 #define R2_W6_BLOCK_SAMPLES 256U
 #define R2_W6_BLOCK_CYCLES 230400U
 #define R2_W6_WRITE_LIMIT_CYCLES 57600U

@@ -93,6 +93,8 @@ option(STREAM_LAB_R2_W4 "Build the W4 queue/processing ownership round-trip expe
 option(STREAM_LAB_R2_W5 "Build the W5 controlled capacity-drop experiment" OFF)
 option(STREAM_LAB_R2_W6 "Build one W6 mandatory K-matrix experiment" OFF)
 option(STREAM_LAB_R2_CT "Add the R2 final control-traffic acceptance path to a W6 build" OFF)
+set(STREAM_LAB_R2_CT_EVENTS "96" CACHE STRING "W6 event count for R2 control-traffic acceptance")
+set_property(CACHE STREAM_LAB_R2_CT_EVENTS PROPERTY STRINGS 96 800)
 set(STREAM_LAB_R2_W6_K "1" CACHE STRING "W6 backlog capacity K: 1, 2, 4, or 8")
 set_property(CACHE STREAM_LAB_R2_W6_K PROPERTY STRINGS 1 2 4 8)
 set(STREAM_LAB_R2_W6_MODE "NORMAL" CACHE STRING "W6 matrix mode: NORMAL or DROP")
@@ -110,6 +112,12 @@ endif()
 
 if(STREAM_LAB_R2_CT AND NOT STREAM_LAB_R2_W6)
     message(FATAL_ERROR "STREAM_LAB_R2_CT is a modifier of STREAM_LAB_R2_W6 and requires W6")
+endif()
+if(NOT STREAM_LAB_R2_CT_EVENTS MATCHES "^(96|800)$")
+    message(FATAL_ERROR "STREAM_LAB_R2_CT_EVENTS must be 96 or 800")
+endif()
+if(NOT STREAM_LAB_R2_CT AND NOT STREAM_LAB_R2_CT_EVENTS STREQUAL "96")
+    message(FATAL_ERROR "Non-default STREAM_LAB_R2_CT_EVENTS requires STREAM_LAB_R2_CT=ON")
 endif()
 
 if(STREAM_LAB_R2_W6)
@@ -150,6 +158,11 @@ if(STREAM_LAB_R2_W6)
     )
     if(STREAM_LAB_R2_CT)
         target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R2_CT=1)
+        if(NOT STREAM_LAB_R2_CT_EVENTS STREQUAL "96")
+            target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+                R2_W6_EVENTS=${STREAM_LAB_R2_CT_EVENTS}U
+            )
+        endif()
         target_sources(${CMAKE_PROJECT_NAME} PRIVATE
             "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_ct_protocol.c"
             "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_ct_control.c"
