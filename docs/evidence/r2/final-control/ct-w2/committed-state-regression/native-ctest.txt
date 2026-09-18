@@ -1,0 +1,254 @@
+﻿Internal ctest changing into directory: E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4
+Test project E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4
+        Start   1: r2_w1.reset
+  1/124 Test   #1: r2_w1.reset ..........................   Passed    0.09 sec
+        Start   2: r2_w1.activate_k1
+  2/124 Test   #2: r2_w1.activate_k1 ....................   Passed    0.02 sec
+        Start   3: r2_w1.activate_k2
+  3/124 Test   #3: r2_w1.activate_k2 ....................   Passed    0.02 sec
+        Start   4: r2_w1.activate_k4
+  4/124 Test   #4: r2_w1.activate_k4 ....................   Passed    0.01 sec
+        Start   5: r2_w1.activate_k8
+  5/124 Test   #5: r2_w1.activate_k8 ....................   Passed    0.01 sec
+        Start   6: r2_w1.invalid_k
+  6/124 Test   #6: r2_w1.invalid_k ......................   Passed    0.01 sec
+        Start   7: r2_w1.find_free
+  7/124 Test   #7: r2_w1.find_free ......................   Passed    0.01 sec
+        Start   8: r2_w1.rotation
+  8/124 Test   #8: r2_w1.rotation .......................   Passed    0.01 sec
+        Start   9: r2_w1.round_trip
+  9/124 Test   #9: r2_w1.round_trip .....................   Passed    0.01 sec
+        Start  10: r2_w1.double_release
+ 10/124 Test  #10: r2_w1.double_release .................   Passed    0.01 sec
+        Start  11: r2_w1.claim_nonready
+ 11/124 Test  #11: r2_w1.claim_nonready .................   Passed    0.01 sec
+        Start  12: r2_w1.completed_not_dma
+ 12/124 Test  #12: r2_w1.completed_not_dma ..............   Passed    0.01 sec
+        Start  13: r2_w1.replacement_not_free
+ 13/124 Test  #13: r2_w1.replacement_not_free ...........   Passed    0.01 sec
+        Start  14: r2_w1.same_id
+ 14/124 Test  #14: r2_w1.same_id ........................   Passed    0.01 sec
+        Start  15: r2_w1.invalid_id
+ 15/124 Test  #15: r2_w1.invalid_id .....................   Passed    0.01 sec
+        Start  16: r2_w1.exhaustion
+ 16/124 Test  #16: r2_w1.exhaustion .....................   Passed    0.01 sec
+        Start  17: r2_w1.reset_after_activity
+ 17/124 Test  #17: r2_w1.reset_after_activity ...........   Passed    0.01 sec
+        Start  18: r2_w1.queries
+ 18/124 Test  #18: r2_w1.queries ........................   Passed    0.01 sec
+        Start  19: r2_w1.null_arguments
+ 19/124 Test  #19: r2_w1.null_arguments .................   Passed    0.01 sec
+        Start  20: r2_w1.unactivated
+ 20/124 Test  #20: r2_w1.unactivated ....................   Passed    0.01 sec
+        Start  21: r2_w1.reactivation
+ 21/124 Test  #21: r2_w1.reactivation ...................   Passed    0.01 sec
+        Start  22: r2_w1.transaction_matrix
+ 22/124 Test  #22: r2_w1.transaction_matrix .............   Passed    0.01 sec
+        Start  23: r2_w1.deterministic_model_walk
+ 23/124 Test  #23: r2_w1.deterministic_model_walk .......   Passed    0.02 sec
+        Start  24: r2_w1.snapshot_copy
+ 24/124 Test  #24: r2_w1.snapshot_copy ..................   Passed    0.01 sec
+        Start  25: r2_w1.assertion_probe
+ 25/124 Test  #25: r2_w1.assertion_probe ................   Passed    0.01 sec
+        Start  26: r2_w2.reset
+ 26/124 Test  #26: r2_w2.reset ..........................   Passed    0.08 sec
+        Start  27: r2_w2.cold_initialize
+ 27/124 Test  #27: r2_w2.cold_initialize ................   Passed    0.03 sec
+        Start  28: r2_w2.initialize
+ 28/124 Test  #28: r2_w2.initialize .....................   Passed    0.02 sec
+        Start  29: r2_w2.invalid_initialize
+ 29/124 Test  #29: r2_w2.invalid_initialize .............   Passed    0.01 sec
+        Start  30: r2_w2.already_initialized
+ 30/124 Test  #30: r2_w2.already_initialized ............   Passed    0.01 sec
+        Start  31: r2_w2.observe_ct0
+ 31/124 Test  #31: r2_w2.observe_ct0 ....................   Passed    0.01 sec
+        Start  32: r2_w2.observe_ct1
+ 32/124 Test  #32: r2_w2.observe_ct1 ....................   Passed    0.01 sec
+        Start  33: r2_w2.invalid_ct
+ 33/124 Test  #33: r2_w2.invalid_ct .....................   Passed    0.01 sec
+        Start  34: r2_w2.get_bound
+ 34/124 Test  #34: r2_w2.get_bound ......................   Passed    0.01 sec
+        Start  35: r2_w2.invalid_slot
+ 35/124 Test  #35: r2_w2.invalid_slot ...................   Passed    0.01 sec
+        Start  36: r2_w2.prepare_no_mutation
+ 36/124 Test  #36: r2_w2.prepare_no_mutation ............   Passed    0.02 sec
+        Start  37: r2_w2.prepare_duplicate
+ 37/124 Test  #37: r2_w2.prepare_duplicate ..............   Passed    0.01 sec
+        Start  38: r2_w2.prepare_invalid
+ 38/124 Test  #38: r2_w2.prepare_invalid ................   Passed    0.01 sec
+        Start  39: r2_w2.check_plan_ct
+ 39/124 Test  #39: r2_w2.check_plan_ct ..................   Passed    0.01 sec
+        Start  40: r2_w2.ct_changed
+ 40/124 Test  #40: r2_w2.ct_changed .....................   Passed    0.01 sec
+        Start  41: r2_w2.commit_ct0
+ 41/124 Test  #41: r2_w2.commit_ct0 .....................   Passed    0.01 sec
+        Start  42: r2_w2.commit_ct1
+ 42/124 Test  #42: r2_w2.commit_ct1 .....................   Passed    0.01 sec
+        Start  43: r2_w2.stale_plan
+ 43/124 Test  #43: r2_w2.stale_plan .....................   Passed    0.01 sec
+        Start  44: r2_w2.forged_plan
+ 44/124 Test  #44: r2_w2.forged_plan ....................   Passed    0.01 sec
+        Start  45: r2_w2.repeat_commit
+ 45/124 Test  #45: r2_w2.repeat_commit ..................   Passed    0.01 sec
+        Start  46: r2_w2.alternating_sequence
+ 46/124 Test  #46: r2_w2.alternating_sequence ...........   Passed    0.01 sec
+        Start  47: r2_w2.null_arguments
+ 47/124 Test  #47: r2_w2.null_arguments .................   Passed    0.01 sec
+        Start  48: r2_w2.uninitialized
+ 48/124 Test  #48: r2_w2.uninitialized ..................   Passed    0.01 sec
+        Start  49: r2_w2.reset_after_activity
+ 49/124 Test  #49: r2_w2.reset_after_activity ...........   Passed    0.01 sec
+        Start  50: r2_w2.snapshot_copy
+ 50/124 Test  #50: r2_w2.snapshot_copy ..................   Passed    0.01 sec
+        Start  51: r2_w3.safe
+ 51/124 Test  #51: r2_w3.safe ...........................   Passed    0.09 sec
+        Start  52: r2_w3.invalid_sequence
+ 52/124 Test  #52: r2_w3.invalid_sequence ...............   Passed    0.01 sec
+        Start  53: r2_w3.ct_change
+ 53/124 Test  #53: r2_w3.ct_change ......................   Passed    0.01 sec
+        Start  54: r2_w3.wrong_phase
+ 54/124 Test  #54: r2_w3.wrong_phase ....................   Passed    0.01 sec
+        Start  55: r2_w3.early
+ 55/124 Test  #55: r2_w3.early ..........................   Passed    0.01 sec
+        Start  56: r2_w3.budget_boundary
+ 56/124 Test  #56: r2_w3.budget_boundary ................   Passed    0.01 sec
+        Start  57: r2_w3.ct_aba_late
+ 57/124 Test  #57: r2_w3.ct_aba_late ....................   Passed    0.01 sec
+        Start  58: r2_w3.ndtr
+ 58/124 Test  #58: r2_w3.ndtr ...........................   Passed    0.01 sec
+        Start  59: r2_w3.hardware_error
+ 59/124 Test  #59: r2_w3.hardware_error .................   Passed    0.01 sec
+        Start  60: r2_w3.dwt_wrap
+ 60/124 Test  #60: r2_w3.dwt_wrap .......................   Passed    0.01 sec
+        Start  61: r2_w3.eight_step_model
+ 61/124 Test  #61: r2_w3.eight_step_model ...............   Passed    0.01 sec
+        Start  62: r2_w3.rejected_no_model_change
+ 62/124 Test  #62: r2_w3.rejected_no_model_change .......   Passed    0.01 sec
+        Start  63: r2_w4.roundtrip_64
+ 63/124 Test  #63: r2_w4.roundtrip_64 ...................   Passed    0.07 sec
+        Start  64: r2_w4.fifo_rotation
+ 64/124 Test  #64: r2_w4.fifo_rotation ..................   Passed    0.01 sec
+        Start  65: r2_w4.conservation
+ 65/124 Test  #65: r2_w4.conservation ...................   Passed    0.01 sec
+        Start  66: r2_w4.exhaustion_boundary
+ 66/124 Test  #66: r2_w4.exhaustion_boundary ............   Passed    0.01 sec
+        Start  67: r2_w4.guard_safe
+ 67/124 Test  #67: r2_w4.guard_safe .....................   Passed    0.01 sec
+        Start  68: r2_w4.guard_late
+ 68/124 Test  #68: r2_w4.guard_late .....................   Passed    0.01 sec
+        Start  69: r2_w4.guard_ndtr
+ 69/124 Test  #69: r2_w4.guard_ndtr .....................   Passed    0.01 sec
+        Start  70: r2_w4.guard_ct
+ 70/124 Test  #70: r2_w4.guard_ct .......................   Passed    0.01 sec
+        Start  71: r2_w4.processing_state
+ 71/124 Test  #71: r2_w4.processing_state ...............   Passed    0.01 sec
+        Start  72: r2_w4.final_mapping_distinct
+ 72/124 Test  #72: r2_w4.final_mapping_distinct .........   Passed    0.01 sec
+        Start  73: r2_w5.drop_no_mutation
+ 73/124 Test  #73: r2_w5.drop_no_mutation ...............   Passed    0.04 sec
+        Start  74: r2_w5.drop_preserves_epoch
+ 74/124 Test  #74: r2_w5.drop_preserves_epoch ...........   Passed    0.01 sec
+        Start  75: r2_w5.consecutive_drops
+ 75/124 Test  #75: r2_w5.consecutive_drops ..............   Passed    0.01 sec
+        Start  76: r2_w5.release_recovery
+ 76/124 Test  #76: r2_w5.release_recovery ...............   Passed    0.01 sec
+        Start  77: r2_w5.conservation
+ 77/124 Test  #77: r2_w5.conservation ...................   Passed    0.01 sec
+        Start  78: r2_w5.drop_no_violation
+ 78/124 Test  #78: r2_w5.drop_no_violation ..............   Passed    0.01 sec
+        Start  79: r2_w5.guard_safe
+ 79/124 Test  #79: r2_w5.guard_safe .....................   Passed    0.01 sec
+        Start  80: r2_w5.guard_late
+ 80/124 Test  #80: r2_w5.guard_late .....................   Passed    0.01 sec
+        Start  81: r2_w5.guard_ndtr
+ 81/124 Test  #81: r2_w5.guard_ndtr .....................   Passed    0.01 sec
+        Start  82: r2_w5.guard_ct
+ 82/124 Test  #82: r2_w5.guard_ct .......................   Passed    0.01 sec
+        Start  83: r2_w5.drop_dma_owned
+ 83/124 Test  #83: r2_w5.drop_dma_owned .................   Passed    0.01 sec
+        Start  84: r2_w5.deterministic_64
+ 84/124 Test  #84: r2_w5.deterministic_64 ...............   Passed    0.01 sec
+        Start  85: r2_w6.k1.normal.configuration
+ 85/124 Test  #85: r2_w6.k1.normal.configuration ........   Passed    0.04 sec
+        Start  86: r2_w6.k1.normal.guard
+ 86/124 Test  #86: r2_w6.k1.normal.guard ................   Passed    0.01 sec
+        Start  87: r2_w6.k1.normal.matrix
+ 87/124 Test  #87: r2_w6.k1.normal.matrix ...............   Passed    0.02 sec
+        Start  88: r2_w6.k1.normal.final_conservation
+ 88/124 Test  #88: r2_w6.k1.normal.final_conservation ...   Passed    0.01 sec
+        Start  89: r2_w6.k1.drop.configuration
+ 89/124 Test  #89: r2_w6.k1.drop.configuration ..........   Passed    0.04 sec
+        Start  90: r2_w6.k1.drop.guard
+ 90/124 Test  #90: r2_w6.k1.drop.guard ..................   Passed    0.01 sec
+        Start  91: r2_w6.k1.drop.matrix
+ 91/124 Test  #91: r2_w6.k1.drop.matrix .................   Passed    0.01 sec
+        Start  92: r2_w6.k1.drop.final_conservation
+ 92/124 Test  #92: r2_w6.k1.drop.final_conservation .....   Passed    0.01 sec
+        Start  93: r2_w6.k2.normal.configuration
+ 93/124 Test  #93: r2_w6.k2.normal.configuration ........   Passed    0.05 sec
+        Start  94: r2_w6.k2.normal.guard
+ 94/124 Test  #94: r2_w6.k2.normal.guard ................   Passed    0.01 sec
+        Start  95: r2_w6.k2.normal.matrix
+ 95/124 Test  #95: r2_w6.k2.normal.matrix ...............   Passed    0.01 sec
+        Start  96: r2_w6.k2.normal.final_conservation
+ 96/124 Test  #96: r2_w6.k2.normal.final_conservation ...   Passed    0.02 sec
+        Start  97: r2_w6.k2.drop.configuration
+ 97/124 Test  #97: r2_w6.k2.drop.configuration ..........   Passed    0.08 sec
+        Start  98: r2_w6.k2.drop.guard
+ 98/124 Test  #98: r2_w6.k2.drop.guard ..................   Passed    0.01 sec
+        Start  99: r2_w6.k2.drop.matrix
+ 99/124 Test  #99: r2_w6.k2.drop.matrix .................   Passed    0.01 sec
+        Start 100: r2_w6.k2.drop.final_conservation
+100/124 Test #100: r2_w6.k2.drop.final_conservation .....   Passed    0.03 sec
+        Start 101: r2_w6.k4.normal.configuration
+101/124 Test #101: r2_w6.k4.normal.configuration ........   Passed    0.09 sec
+        Start 102: r2_w6.k4.normal.guard
+102/124 Test #102: r2_w6.k4.normal.guard ................   Passed    0.01 sec
+        Start 103: r2_w6.k4.normal.matrix
+103/124 Test #103: r2_w6.k4.normal.matrix ...............   Passed    0.01 sec
+        Start 104: r2_w6.k4.normal.final_conservation
+104/124 Test #104: r2_w6.k4.normal.final_conservation ...   Passed    0.01 sec
+        Start 105: r2_w6.k4.drop.configuration
+105/124 Test #105: r2_w6.k4.drop.configuration ..........   Passed    0.05 sec
+        Start 106: r2_w6.k4.drop.guard
+106/124 Test #106: r2_w6.k4.drop.guard ..................   Passed    0.01 sec
+        Start 107: r2_w6.k4.drop.matrix
+107/124 Test #107: r2_w6.k4.drop.matrix .................   Passed    0.01 sec
+        Start 108: r2_w6.k4.drop.final_conservation
+108/124 Test #108: r2_w6.k4.drop.final_conservation .....   Passed    0.01 sec
+        Start 109: r2_w6.k8.normal.configuration
+109/124 Test #109: r2_w6.k8.normal.configuration ........   Passed    0.07 sec
+        Start 110: r2_w6.k8.normal.guard
+110/124 Test #110: r2_w6.k8.normal.guard ................   Passed    0.01 sec
+        Start 111: r2_w6.k8.normal.matrix
+111/124 Test #111: r2_w6.k8.normal.matrix ...............   Passed    0.01 sec
+        Start 112: r2_w6.k8.normal.final_conservation
+112/124 Test #112: r2_w6.k8.normal.final_conservation ...   Passed    0.01 sec
+        Start 113: r2_w6.k8.drop.configuration
+113/124 Test #113: r2_w6.k8.drop.configuration ..........   Passed    0.07 sec
+        Start 114: r2_w6.k8.drop.guard
+114/124 Test #114: r2_w6.k8.drop.guard ..................   Passed    0.02 sec
+        Start 115: r2_w6.k8.drop.matrix
+115/124 Test #115: r2_w6.k8.drop.matrix .................   Passed    0.01 sec
+        Start 116: r2_w6.k8.drop.final_conservation
+116/124 Test #116: r2_w6.k8.drop.final_conservation .....   Passed    0.01 sec
+        Start 117: r2_ct.crc_standard
+117/124 Test #117: r2_ct.crc_standard ...................   Passed    0.09 sec
+        Start 118: r2_ct.encode_zero
+118/124 Test #118: r2_ct.encode_zero ....................   Passed    0.01 sec
+        Start 119: r2_ct.encode_max
+119/124 Test #119: r2_ct.encode_max .....................   Passed    0.02 sec
+        Start 120: r2_ct.parse_fragmented
+120/124 Test #120: r2_ct.parse_fragmented ...............   Passed    0.01 sec
+        Start 121: r2_ct.resync
+121/124 Test #121: r2_ct.resync .........................   Passed    0.01 sec
+        Start 122: r2_ct.bad_length
+122/124 Test #122: r2_ct.bad_length .....................   Passed    0.01 sec
+        Start 123: r2_ct.bad_crc
+123/124 Test #123: r2_ct.bad_crc ........................   Passed    0.01 sec
+        Start 124: r2_ct.version
+124/124 Test #124: r2_ct.version ........................   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 124
+
+Total Test time (real) =   2.24 sec

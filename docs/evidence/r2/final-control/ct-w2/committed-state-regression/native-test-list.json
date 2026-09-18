@@ -1,0 +1,3818 @@
+﻿{
+  "backtraceGraph" : 
+  {
+    "commands" : 
+    [
+      "add_test",
+      "r2_add_w6_matrix_target"
+    ],
+    "files" : 
+    [
+      "E:/Projects/stm32-stream-lab/tests/native/CMakeLists.txt"
+    ],
+    "nodes" : 
+    [
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 0
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 2
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 4
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 6
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 8
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 10
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 12
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 14
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 16
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 18
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 20
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 22
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 24
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 26
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 28
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 30
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 32
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 34
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 36
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 38
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 40
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 42
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 44
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 70,
+        "parent" : 46
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 74,
+        "parent" : 48
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 50
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 52
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 54
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 56
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 58
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 60
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 62
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 64
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 66
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 68
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 70
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 72
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 74
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 76
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 78
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 80
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 82
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 84
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 86
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 88
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 90
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 92
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 94
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 96
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 86,
+        "parent" : 98
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 100
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 102
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 104
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 106
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 108
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 110
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 112
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 114
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 116
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 118
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 120
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 107,
+        "parent" : 122
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 129,
+        "parent" : 124
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 129,
+        "parent" : 126
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 129,
+        "parent" : 128
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 129,
+        "parent" : 130
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 129,
+        "parent" : 132
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 129,
+        "parent" : 134
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 129,
+        "parent" : 136
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 129,
+        "parent" : 138
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 129,
+        "parent" : 140
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 129,
+        "parent" : 142
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 144
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 146
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 148
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 150
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 152
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 154
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 156
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 158
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 160
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 162
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 164
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 151,
+        "parent" : 166
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 168
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 169
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 171
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 172
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 174
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 175
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 177
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 178
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 180
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 181
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 183
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 184
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 186
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 187
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 189
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 190
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 192
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 193
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 195
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 196
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 198
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 199
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 201
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 202
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 204
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 205
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 207
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 208
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 210
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 211
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 213
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 214
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 216
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 217
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 219
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 220
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 222
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 223
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 225
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 226
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 228
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 229
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 231
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 232
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 234
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 235
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 237
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 238
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 240
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 241
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 243
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 244
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 246
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 247
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 187,
+        "parent" : 249
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 250
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 252
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 253
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 255
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 256
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 258
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 259
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 1,
+        "file" : 0,
+        "line" : 188,
+        "parent" : 261
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 177,
+        "parent" : 262
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 209,
+        "parent" : 264
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 209,
+        "parent" : 266
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 209,
+        "parent" : 268
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 209,
+        "parent" : 270
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 209,
+        "parent" : 272
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 209,
+        "parent" : 274
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 209,
+        "parent" : 276
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 209,
+        "parent" : 278
+      }
+    ]
+  },
+  "kind" : "ctestInfo",
+  "tests" : 
+  [
+    {
+      "backtrace" : 1,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "reset"
+      ],
+      "name" : "r2_w1.reset",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 3,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "activate_k1"
+      ],
+      "name" : "r2_w1.activate_k1",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 5,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "activate_k2"
+      ],
+      "name" : "r2_w1.activate_k2",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 7,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "activate_k4"
+      ],
+      "name" : "r2_w1.activate_k4",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 9,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "activate_k8"
+      ],
+      "name" : "r2_w1.activate_k8",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 11,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "invalid_k"
+      ],
+      "name" : "r2_w1.invalid_k",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 13,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "find_free"
+      ],
+      "name" : "r2_w1.find_free",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 15,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "rotation"
+      ],
+      "name" : "r2_w1.rotation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 17,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "round_trip"
+      ],
+      "name" : "r2_w1.round_trip",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 19,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "double_release"
+      ],
+      "name" : "r2_w1.double_release",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 21,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "claim_nonready"
+      ],
+      "name" : "r2_w1.claim_nonready",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 23,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "completed_not_dma"
+      ],
+      "name" : "r2_w1.completed_not_dma",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 25,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "replacement_not_free"
+      ],
+      "name" : "r2_w1.replacement_not_free",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 27,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "same_id"
+      ],
+      "name" : "r2_w1.same_id",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 29,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "invalid_id"
+      ],
+      "name" : "r2_w1.invalid_id",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 31,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "exhaustion"
+      ],
+      "name" : "r2_w1.exhaustion",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 33,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "reset_after_activity"
+      ],
+      "name" : "r2_w1.reset_after_activity",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 35,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "queries"
+      ],
+      "name" : "r2_w1.queries",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 37,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "null_arguments"
+      ],
+      "name" : "r2_w1.null_arguments",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 39,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "unactivated"
+      ],
+      "name" : "r2_w1.unactivated",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 41,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "reactivation"
+      ],
+      "name" : "r2_w1.reactivation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 43,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "transaction_matrix"
+      ],
+      "name" : "r2_w1.transaction_matrix",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 45,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "deterministic_model_walk"
+      ],
+      "name" : "r2_w1.deterministic_model_walk",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 47,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "snapshot_copy"
+      ],
+      "name" : "r2_w1.snapshot_copy",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 49,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_buffer_pool.exe",
+        "--assertion-probe"
+      ],
+      "name" : "r2_w1.assertion_probe",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 5.0
+        },
+        {
+          "name" : "WILL_FAIL",
+          "value" : true
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 51,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "reset"
+      ],
+      "name" : "r2_w2.reset",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 53,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "cold_initialize"
+      ],
+      "name" : "r2_w2.cold_initialize",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 55,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "initialize"
+      ],
+      "name" : "r2_w2.initialize",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 57,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "invalid_initialize"
+      ],
+      "name" : "r2_w2.invalid_initialize",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 59,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "already_initialized"
+      ],
+      "name" : "r2_w2.already_initialized",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 61,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "observe_ct0"
+      ],
+      "name" : "r2_w2.observe_ct0",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 63,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "observe_ct1"
+      ],
+      "name" : "r2_w2.observe_ct1",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 65,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "invalid_ct"
+      ],
+      "name" : "r2_w2.invalid_ct",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 67,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "get_bound"
+      ],
+      "name" : "r2_w2.get_bound",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 69,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "invalid_slot"
+      ],
+      "name" : "r2_w2.invalid_slot",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 71,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "prepare_no_mutation"
+      ],
+      "name" : "r2_w2.prepare_no_mutation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 73,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "prepare_duplicate"
+      ],
+      "name" : "r2_w2.prepare_duplicate",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 75,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "prepare_invalid"
+      ],
+      "name" : "r2_w2.prepare_invalid",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 77,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "check_plan_ct"
+      ],
+      "name" : "r2_w2.check_plan_ct",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 79,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "ct_changed"
+      ],
+      "name" : "r2_w2.ct_changed",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 81,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "commit_ct0"
+      ],
+      "name" : "r2_w2.commit_ct0",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 83,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "commit_ct1"
+      ],
+      "name" : "r2_w2.commit_ct1",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 85,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "stale_plan"
+      ],
+      "name" : "r2_w2.stale_plan",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 87,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "forged_plan"
+      ],
+      "name" : "r2_w2.forged_plan",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 89,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "repeat_commit"
+      ],
+      "name" : "r2_w2.repeat_commit",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 91,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "alternating_sequence"
+      ],
+      "name" : "r2_w2.alternating_sequence",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 93,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "null_arguments"
+      ],
+      "name" : "r2_w2.null_arguments",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 95,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "uninitialized"
+      ],
+      "name" : "r2_w2.uninitialized",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 97,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "reset_after_activity"
+      ],
+      "name" : "r2_w2.reset_after_activity",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 99,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_dma_slots.exe",
+        "snapshot_copy"
+      ],
+      "name" : "r2_w2.snapshot_copy",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 101,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "safe"
+      ],
+      "name" : "r2_w3.safe",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 103,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "invalid_sequence"
+      ],
+      "name" : "r2_w3.invalid_sequence",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 105,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "ct_change"
+      ],
+      "name" : "r2_w3.ct_change",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 107,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "wrong_phase"
+      ],
+      "name" : "r2_w3.wrong_phase",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 109,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "early"
+      ],
+      "name" : "r2_w3.early",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 111,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "budget_boundary"
+      ],
+      "name" : "r2_w3.budget_boundary",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 113,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "ct_aba_late"
+      ],
+      "name" : "r2_w3.ct_aba_late",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 115,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "ndtr"
+      ],
+      "name" : "r2_w3.ndtr",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 117,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "hardware_error"
+      ],
+      "name" : "r2_w3.hardware_error",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 119,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "dwt_wrap"
+      ],
+      "name" : "r2_w3.dwt_wrap",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 121,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "eight_step_model"
+      ],
+      "name" : "r2_w3.eight_step_model",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 123,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w3_guard.exe",
+        "rejected_no_model_change"
+      ],
+      "name" : "r2_w3.rejected_no_model_change",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 125,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w4_model.exe",
+        "roundtrip_64"
+      ],
+      "name" : "r2_w4.roundtrip_64",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 127,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w4_model.exe",
+        "fifo_rotation"
+      ],
+      "name" : "r2_w4.fifo_rotation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 129,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w4_model.exe",
+        "conservation"
+      ],
+      "name" : "r2_w4.conservation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 131,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w4_model.exe",
+        "exhaustion_boundary"
+      ],
+      "name" : "r2_w4.exhaustion_boundary",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 133,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w4_model.exe",
+        "guard_safe"
+      ],
+      "name" : "r2_w4.guard_safe",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 135,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w4_model.exe",
+        "guard_late"
+      ],
+      "name" : "r2_w4.guard_late",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 137,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w4_model.exe",
+        "guard_ndtr"
+      ],
+      "name" : "r2_w4.guard_ndtr",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 139,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w4_model.exe",
+        "guard_ct"
+      ],
+      "name" : "r2_w4.guard_ct",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 141,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w4_model.exe",
+        "processing_state"
+      ],
+      "name" : "r2_w4.processing_state",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 143,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w4_model.exe",
+        "final_mapping_distinct"
+      ],
+      "name" : "r2_w4.final_mapping_distinct",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 145,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "drop_no_mutation"
+      ],
+      "name" : "r2_w5.drop_no_mutation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 147,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "drop_preserves_epoch"
+      ],
+      "name" : "r2_w5.drop_preserves_epoch",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 149,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "consecutive_drops"
+      ],
+      "name" : "r2_w5.consecutive_drops",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 151,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "release_recovery"
+      ],
+      "name" : "r2_w5.release_recovery",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 153,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "conservation"
+      ],
+      "name" : "r2_w5.conservation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 155,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "drop_no_violation"
+      ],
+      "name" : "r2_w5.drop_no_violation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 157,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "guard_safe"
+      ],
+      "name" : "r2_w5.guard_safe",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 159,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "guard_late"
+      ],
+      "name" : "r2_w5.guard_late",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 161,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "guard_ndtr"
+      ],
+      "name" : "r2_w5.guard_ndtr",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 163,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "guard_ct"
+      ],
+      "name" : "r2_w5.guard_ct",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 165,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "drop_dma_owned"
+      ],
+      "name" : "r2_w5.drop_dma_owned",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 167,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w5_model.exe",
+        "deterministic_64"
+      ],
+      "name" : "r2_w5.deterministic_64",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 170,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k1_normal.exe",
+        "configuration"
+      ],
+      "name" : "r2_w6.k1.normal.configuration",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 173,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k1_normal.exe",
+        "guard"
+      ],
+      "name" : "r2_w6.k1.normal.guard",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 176,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k1_normal.exe",
+        "matrix"
+      ],
+      "name" : "r2_w6.k1.normal.matrix",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 179,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k1_normal.exe",
+        "final_conservation"
+      ],
+      "name" : "r2_w6.k1.normal.final_conservation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 182,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k1_drop.exe",
+        "configuration"
+      ],
+      "name" : "r2_w6.k1.drop.configuration",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 185,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k1_drop.exe",
+        "guard"
+      ],
+      "name" : "r2_w6.k1.drop.guard",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 188,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k1_drop.exe",
+        "matrix"
+      ],
+      "name" : "r2_w6.k1.drop.matrix",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 191,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k1_drop.exe",
+        "final_conservation"
+      ],
+      "name" : "r2_w6.k1.drop.final_conservation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 194,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k2_normal.exe",
+        "configuration"
+      ],
+      "name" : "r2_w6.k2.normal.configuration",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 197,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k2_normal.exe",
+        "guard"
+      ],
+      "name" : "r2_w6.k2.normal.guard",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 200,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k2_normal.exe",
+        "matrix"
+      ],
+      "name" : "r2_w6.k2.normal.matrix",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 203,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k2_normal.exe",
+        "final_conservation"
+      ],
+      "name" : "r2_w6.k2.normal.final_conservation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 206,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k2_drop.exe",
+        "configuration"
+      ],
+      "name" : "r2_w6.k2.drop.configuration",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 209,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k2_drop.exe",
+        "guard"
+      ],
+      "name" : "r2_w6.k2.drop.guard",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 212,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k2_drop.exe",
+        "matrix"
+      ],
+      "name" : "r2_w6.k2.drop.matrix",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 215,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k2_drop.exe",
+        "final_conservation"
+      ],
+      "name" : "r2_w6.k2.drop.final_conservation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 218,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k4_normal.exe",
+        "configuration"
+      ],
+      "name" : "r2_w6.k4.normal.configuration",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 221,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k4_normal.exe",
+        "guard"
+      ],
+      "name" : "r2_w6.k4.normal.guard",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 224,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k4_normal.exe",
+        "matrix"
+      ],
+      "name" : "r2_w6.k4.normal.matrix",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 227,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k4_normal.exe",
+        "final_conservation"
+      ],
+      "name" : "r2_w6.k4.normal.final_conservation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 230,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k4_drop.exe",
+        "configuration"
+      ],
+      "name" : "r2_w6.k4.drop.configuration",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 233,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k4_drop.exe",
+        "guard"
+      ],
+      "name" : "r2_w6.k4.drop.guard",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 236,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k4_drop.exe",
+        "matrix"
+      ],
+      "name" : "r2_w6.k4.drop.matrix",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 239,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k4_drop.exe",
+        "final_conservation"
+      ],
+      "name" : "r2_w6.k4.drop.final_conservation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 242,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k8_normal.exe",
+        "configuration"
+      ],
+      "name" : "r2_w6.k8.normal.configuration",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 245,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k8_normal.exe",
+        "guard"
+      ],
+      "name" : "r2_w6.k8.normal.guard",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 248,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k8_normal.exe",
+        "matrix"
+      ],
+      "name" : "r2_w6.k8.normal.matrix",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 251,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k8_normal.exe",
+        "final_conservation"
+      ],
+      "name" : "r2_w6.k8.normal.final_conservation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 254,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k8_drop.exe",
+        "configuration"
+      ],
+      "name" : "r2_w6.k8.drop.configuration",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 257,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k8_drop.exe",
+        "guard"
+      ],
+      "name" : "r2_w6.k8.drop.guard",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 260,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k8_drop.exe",
+        "matrix"
+      ],
+      "name" : "r2_w6.k8.drop.matrix",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 263,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_w6_k8_drop.exe",
+        "final_conservation"
+      ],
+      "name" : "r2_w6.k8.drop.final_conservation",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 265,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_ct_protocol.exe",
+        "crc_standard"
+      ],
+      "name" : "r2_ct.crc_standard",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 267,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_ct_protocol.exe",
+        "encode_zero"
+      ],
+      "name" : "r2_ct.encode_zero",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 269,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_ct_protocol.exe",
+        "encode_max"
+      ],
+      "name" : "r2_ct.encode_max",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 271,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_ct_protocol.exe",
+        "parse_fragmented"
+      ],
+      "name" : "r2_ct.parse_fragmented",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 273,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_ct_protocol.exe",
+        "resync"
+      ],
+      "name" : "r2_ct.resync",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 275,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_ct_protocol.exe",
+        "bad_length"
+      ],
+      "name" : "r2_ct.bad_length",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 277,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_ct_protocol.exe",
+        "bad_crc"
+      ],
+      "name" : "r2_ct.bad_crc",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    },
+    {
+      "backtrace" : 279,
+      "command" : 
+      [
+        "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4/test_r2_ct_protocol.exe",
+        "version"
+      ],
+      "name" : "r2_ct.version",
+      "properties" : 
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 10.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "E:/Projects/stm32-stream-lab/build/r2-ct-native-6a7938a4"
+        }
+      ]
+    }
+  ],
+  "version" : 
+  {
+    "major" : 1,
+    "minor" : 0
+  }
+}

@@ -1,0 +1,2 @@
+﻿   text	   data	    bss	    dec	    hex	filename
+  50280	     60	  32436	  82776	  14358	E:\Projects\stm32-stream-lab\build\r2-ct-w2-k8-normal-6a7938a4\cubemx.elf

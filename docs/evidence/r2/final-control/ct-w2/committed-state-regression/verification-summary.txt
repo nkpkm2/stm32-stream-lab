@@ -1,0 +1,14 @@
+R2 CT-W2 VERIFICATION: PASS
+Source HEAD: 297ae193b64f277e9cf5d8038c91396f28a6e6c1
+Protected W1-W6 source: unchanged
+Native W1-W6 + CT protocol: 124 / 124 PASS
+CT protocol tests: 8 / 8 PASS
+CT-OFF sealed W6 K8 NORMAL programmed image: byte-identical PASS
+CT-ON K8 NORMAL target build: PASS
+CT-ON ELF SHA256: CB507E7EBA8EB5E26083EB2FFB5E957FFB4BA5C1C44A8EA20EB8BF16E7C44B5F
+CT-ON programmed SHA256: C16309F614A5E2B918FFD2B053E45DDAD70BE36B0E3A42E9316DD8C9996696B3
+Native build: E:\Projects\stm32-stream-lab\build\r2-ct-native-6a7938a4
+CT-OFF build: E:\Projects\stm32-stream-lab\build\r2-ct-w6off-k8-normal-6a7938a4
+CT-ON build: E:\Projects\stm32-stream-lab\build\r2-ct-w2-k8-normal-6a7938a4
+Hardware: NOT RUN
+No flash/reset/debug/commit/push/tag operation.

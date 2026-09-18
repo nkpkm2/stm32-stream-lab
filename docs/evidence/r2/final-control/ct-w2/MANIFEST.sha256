@@ -26,4 +26,11 @@ E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855  docs/evidence/
 8D06CACE8CC14256D3EC12BF44F6FCDE64A585C1CB6EBD93AE08552E56DD0F04  docs/evidence/r2/final-control/ct-w2/attempt-02-pass/host-procedures/r2_ct_w2_h3_runtime_v2.py
 6D1AE20CD001D0A7A27E37D8809FD6026D955F02E2943E2026E84E5793F5D93F  docs/evidence/r2/final-control/ct-w2/attempt-02-pass/host-procedures/r2_ct_w2_h4_inspect.py
 50254D4BF5A2C3676AF89443896767742534B016E5FE8CABF71FBF7842EF77D7  docs/evidence/r2/final-control/ct-w2/attempt-02-pass/host-procedures/r2_ct_w2_h5_accept.py
+FCABC81975B5B4040958269495F2967FC514AB9D735C6076D2DE324EC5EC4FDB  docs/evidence/r2/final-control/ct-w2/committed-state-regression/elf.sha256
+06A3C30F694DF332D3AEAC804968A5727C7E8836F57EFA918F45CA95E7D8F351  docs/evidence/r2/final-control/ct-w2/committed-state-regression/native-ctest.txt
+F298AB48035BF5AB4417C2F4E350D77DBFAEED42747F1F664EE6720B112C7171  docs/evidence/r2/final-control/ct-w2/committed-state-regression/native-test-list.json
+27DED7750549B18DBBD2F52A8650BDA8F470C4D049E8E71AE7D9A43DFA477523  docs/evidence/r2/final-control/ct-w2/committed-state-regression/programmed.sha256
+840B33D4B9750A5C8243021423513D346CDC5BB4EF4EB7FF67F0CF8D94305EC2  docs/evidence/r2/final-control/ct-w2/committed-state-regression/README.md
+E1E91333F05F9870D575D6423873A9A4642133D8BE184819A7EBC5A583C8990C  docs/evidence/r2/final-control/ct-w2/committed-state-regression/size.txt
+454DB1F5D7B07E22363016BF8DE916714568E359FC622C8307ED1FF7F51B33BA  docs/evidence/r2/final-control/ct-w2/committed-state-regression/verification-summary.txt
 0C8BA7AE69F4D18DE6CE109D2A3F17A187D43A8A1DF925F0882D8B9F3C1AE751  docs/evidence/r2/final-control/ct-w2/README.md
