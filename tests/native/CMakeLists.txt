@@ -210,3 +210,29 @@ if(R2_CT_NATIVE_TESTS)
         set_tests_properties(r2_ct.${case_name} PROPERTIES TIMEOUT 10)
     endforeach()
 endif()
+# R2->R3 foundation guard tests are opt-in so the sealed R2 native profile and
+# its 124-test R2+CT identity remain unchanged when this option is OFF.
+option(FOUNDATION_ADC_DBM_NATIVE_TESTS
+    "Build F0-2 AdcDbmDriver pure completion-guard tests" OFF)
+if(FOUNDATION_ADC_DBM_NATIVE_TESTS)
+    add_executable(test_adc_dbm_rebind_guard
+        test_adc_dbm_rebind_guard.c
+    )
+    target_include_directories(test_adc_dbm_rebind_guard PRIVATE
+        ../../firmware/acquisition)
+    set_target_properties(test_adc_dbm_rebind_guard PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_adc_dbm_rebind_guard)
+    r2_apply_sanitizers(test_adc_dbm_rebind_guard)
+
+    foreach(case_name
+        policy_256 policy_512 invalid_policy safe event ct hardware ndtr
+        time_boundary dwt_wrap n512_boundary)
+        add_test(
+            NAME foundation.adc_dbm.${case_name}
+            COMMAND test_adc_dbm_rebind_guard ${case_name})
+        set_tests_properties(
+            foundation.adc_dbm.${case_name}
+            PROPERTIES TIMEOUT 10)
+    endforeach()
+endif()
