@@ -1,0 +1,44 @@
+R2 CT-W5 COMMITTED-STATE / HARDWARE PROVENANCE: PASS
+
+Checkpoint: b3aa0b926a49182e99095241a7939195073aa545
+Firmware unchanged since CT long-run baseline: PASS
+CT-W5 profile: K1 / DROP / 800 events / 1500 ms
+DROP process hold: 6 blocks
+
+Sealed W6 K1/DROP programmed-byte regression: PASS
+Sealed K1/DROP programmed SHA256:
+0242FCFAAD2994B4547C5F9485CB9C5E308A9A36CB75158E3775E3F5736C2B45
+
+CT-W5 ELF SHA256:
+7736852DFAE9254055ADA8D1EF8DDE36AF09B478BB658AF9526D7143C51367C3
+
+CT-W5 programmed SHA256:
+754AB433AE4E36EDA317F0F75AC148CC4C6D01AA867E5EB960D69EB5693F39E2
+
+RAM used: 93368 B / 131072 B (71.23%)
+RAM free: 37704 B
+
+Hardware Attempt 01:
+H2 flash + verify: PASS
+H3 adverse burst: PASS
+H4 same-run CT 10/10 + W6 800/800 trace collection: PASS
+H5 offline architecture acceptance: PASS
+
+CT input observations: 51 -> 98
+Guaranteed W6 event interval: 52..98
+In-window admitted / dropped: 6 / 41
+Proven in-window recovery: DROP 52 -> ADMIT 57
+
+Full W6:
+admitted / dropped: 115 / 685
+processed / released: 115 / 115
+recoveries: 114
+max drop streak: 6
+timing cycles (decision / IRQ-exit / final-window):
+6755 / 11707 / 1073
+
+CT max RX-complete -> reply-complete: 406337 cycles
+
+Hardware operations during evidence seal: NONE
+This seal does not constitute final R2 Principal acceptance.
+r2-pass remains absent.

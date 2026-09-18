@@ -1,0 +1,71 @@
+{
+  "artifact_identity": {
+    "elf_sha256": "7736852DFAE9254055ADA8D1EF8DDE36AF09B478BB658AF9526D7143C51367C3",
+    "host_tool_sha256": "C70A794F61980DF6DBB0F4E6B61775C22E3AE51D37B2D32EB50BEE38717B143B",
+    "programmed_sha256": "754AB433AE4E36EDA317F0F75AC148CC4C6D01AA867E5EB960D69EB5693F39E2"
+  },
+  "attempt": 1,
+  "checkpoint": "b3aa0b926a49182e99095241a7939195073aa545",
+  "control_traffic": {
+    "burst_bytes": 760,
+    "first_w6_input": 51,
+    "host_all_replies_ms": 63.0,
+    "host_submit_ms": 63.0,
+    "host_timestamp_interpretation": "orchestration only; not used as target service-latency gate",
+    "last_w6_input": 98,
+    "max_process_to_tx_cycles": 29261,
+    "max_rx_to_process_cycles": 514,
+    "max_rx_to_reply_complete_cycles": 406337,
+    "max_tx_cycles": 377766,
+    "payload_bytes_each": 64,
+    "rate_limited_count": 0,
+    "reply_success_count": 10,
+    "requests": 10,
+    "rx_overflow_count": 0,
+    "single_write_call": true
+  },
+  "evidence_sha256": {
+    "hardware-attempt01-burst.stderr.txt": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "hardware-attempt01-burst.stdout.txt": "3C44A7F7BE7D257BD9E6C424E11E2A65C754F3C73D871E4A2D464FF8F3B1A77F",
+    "hardware-attempt01-flash-verify.stderr.txt": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "hardware-attempt01-flash-verify.stdout.txt": "6473DE5EA7210B4E273B9FE04802BE7DD08F610CC13CA4994B23332AE3964392",
+    "hardware-attempt01-h3-runtime.json": "9B124FB3BB3F903F6798FC050CFFE0A2DF007FC606181FD245CB38B8E3FC6577",
+    "hardware-attempt01-h4-collection.json": "66D4D7A8C1983D546BF0FEF9AEDAA801E6338B306357836A5CBD9489F2F3B950",
+    "hardware-attempt01-h4-inspection.stderr.txt": "4A928CFE5F85061B67863A67ED198E86C62654B4FBD0496E56589BF4B68177BF",
+    "hardware-attempt01-h4-inspection.txt": "BF9730C50099BF4F14EE474EA6F71F4187623CD75AECFAE12160A16E22B037BF"
+  },
+  "hardware_operations_during_h5": false,
+  "intersection": {
+    "first_proven_recovery_admit_sequence": 57,
+    "first_proven_recovery_drop_sequence": 52,
+    "guaranteed_event_end": 98,
+    "guaranteed_event_start": 52,
+    "status": "PASS",
+    "window_admitted_count": 6,
+    "window_drop_count": 41
+  },
+  "profile": {
+    "events": 800,
+    "k": 1,
+    "mode": "DROP",
+    "process_hold_blocks": 6,
+    "run_timeout_ms": 1500
+  },
+  "result": "PASS",
+  "scope": "CT-W5 K1/DROP real-control recovery intersection",
+  "w6": {
+    "admitted": 115,
+    "current_drop_streak": 1,
+    "decision_code_admit": 1,
+    "decision_code_drop": 2,
+    "drops": 685,
+    "events": 800,
+    "max_drop_streak": 6,
+    "max_final_window_cycles": 1073,
+    "max_nominal_to_decision_cycles": 6755,
+    "max_nominal_to_irq_exit_cycles": 11707,
+    "processed": 115,
+    "recoveries": 114,
+    "released": 115
+  }
+}

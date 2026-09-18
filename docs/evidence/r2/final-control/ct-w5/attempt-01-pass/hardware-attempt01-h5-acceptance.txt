@@ -1,0 +1,38 @@
+R2 CT-W5 K1/DROP REAL-CONTROL RECOVERY: PASS
+
+Checkpoint: b3aa0b926a49182e99095241a7939195073aa545
+ELF SHA256: 7736852DFAE9254055ADA8D1EF8DDE36AF09B478BB658AF9526D7143C51367C3
+Programmed SHA256: 754AB433AE4E36EDA317F0F75AC148CC4C6D01AA867E5EB960D69EB5693F39E2
+Host tool SHA256: C70A794F61980DF6DBB0F4E6B61775C22E3AE51D37B2D32EB50BEE38717B143B
+
+Control traffic:
+  10 x 64-byte PING
+  one 760-byte serial write
+  rate-limited: 0
+  RX overflow: 0
+  replies: 10 / 10
+  W6 input observations: 51 -> 98
+  CT max service cycles (rx->proc / proc->tx / tx / rx->done): 514 / 29261 / 377766 / 406337
+
+W6 K1/DROP:
+  admitted: 115
+  capacity drops: 685
+  processed/released: 115 / 115
+  recoveries: 114
+  max drop streak: 6
+  current final drop streak: 1
+  timing cycles (decision / IRQ-exit / final-window): 6755 / 11707 / 1073
+  integrity errors: 0
+  final pool: 1 FREE + 2 DMA
+
+CT x DROP/recovery intersection:
+  guaranteed event interval: 52..98
+  in-window admitted/dropped: 6 / 41
+  proven recovery: DROP seq 52 -> ADMIT seq 57
+  status: PASS
+
+Host submit/all-replies millisecond timestamps are retained as orchestration evidence only and are not used as a target service-latency gate.
+
+Hardware operations during H5: NONE
+CT-W5 hardware acceptance: PASS
+R2 final acceptance: NOT YET COMPLETE

@@ -1,0 +1,18 @@
+{
+  "acceptance_evaluation_performed": false,
+  "attempt": 1,
+  "checkpoint": "b3aa0b926a49182e99095241a7939195073aa545",
+  "continue_or_restart_performed": false,
+  "ct_trace_lines": 10,
+  "flash_performed": false,
+  "h3_first_w6_input": 51,
+  "h3_last_w6_input": 98,
+  "inspection_sha256": "BF9730C50099BF4F14EE474EA6F71F4187623CD75AECFAE12160A16E22B037BF",
+  "reset_performed": false,
+  "result": "COLLECTED",
+  "scope": "CT-W5 H4 same-run post-run RAM collection",
+  "serial_traffic_performed": false,
+  "w6_sequence_first": 1,
+  "w6_sequence_last": 800,
+  "w6_trace_lines": 800
+}
