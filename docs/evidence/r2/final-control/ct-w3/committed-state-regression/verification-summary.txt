@@ -1,0 +1,14 @@
+R2 CT-W3 COMMITTED-STATE VERIFICATION: PASS
+Source HEAD: 48da792e382e911aad1b7bb43765284aa8b58ea2
+Native W1-W6 + CT protocol: 124 / 124 PASS
+CT protocol tests: 8 / 8 PASS
+Default CT-OFF sealed W6 K8 NORMAL programmed image: byte-identical PASS
+Default CT-W2 programmed image: hardware-tested byte identity PASS
+Default CT-W2 programmed SHA256: C16309F614A5E2B918FFD2B053E45DDAD70BE36B0E3A42E9316DD8C9996696B3
+CT-W3 profile: K8 / NORMAL / 800 events / 1500 ms run timeout
+CT-W3 hardware-tested ELF SHA256: 9803E7A3974C08913C18B8285807971253680B9ACAA64572F2BCECBC4A0E578A
+CT-W3 hardware-tested programmed SHA256: D83E2B181F33EB1A5D994D61DA02083D096C23181015A8795E378152DC9C44F7
+CT-W3 RAM used: 97264 B / 131072 B (74.21%)
+CT-W3 RAM free: 33808 B
+Hardware operations during this regression: NONE
+No flash/reset/debug/commit/push/tag operation.

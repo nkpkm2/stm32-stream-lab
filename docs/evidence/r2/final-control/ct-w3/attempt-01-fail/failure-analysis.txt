@@ -1,0 +1,43 @@
+R2 CT-W3 HARDWARE ATTEMPT 01: FAIL - TEST HARNESS TIMEOUT
+
+Checkpoint:
+36776d8219cf28aa3ca53938005e5cfea8decd28
+
+Attempt-01 ELF SHA256:
+451A15072E32D7CF2FE46B1C967A5E5B8D235AA168788208A5680AC50ADB9223
+
+Attempt-01 programmed SHA256:
+60F9037FCF1E4EF5D65C9224E8E215FC8C1AA724431C748C1E194934D9B98391
+
+Uniform host traffic:
+- 10 x 64-byte PING
+- nominal absolute spacing: 100 ms
+- actual first-to-last start span: 906 ms
+- host replies: 10 / 10 PASS
+- target W6 input range observed by host: 51 -> 749
+- CT rate limited: 0
+
+Final W6 state:
+- phase: FAILED
+- test_pass: 0
+- fault_bits: 0x00010000 (TIMEOUT)
+- IRQ/input/admitted/processed/released: 780 / 780 / 780 / 780 / 780
+- capacity drops: 0
+- samples validated: 199680
+- max decision / IRQ-exit / final-window cycles: 6954 / 12106 / 1054
+- DMA/ADC/ownership/sample/canary errors: 0
+
+Root cause:
+R2_W6_EVENTS was correctly increased from 96 to 800, but the W6 run timeout
+remained fixed at 1000 ms.
+
+At fs=200 kS/s and N=256, each W6 event is 1.28 ms.
+800 events therefore require approximately 1024 ms of acquisition time.
+The observed timeout at 780 events corresponds to approximately 998.4 ms,
+which matches the fixed 1000 ms harness timeout.
+
+Conclusion:
+Attempt 01 does not demonstrate a control-traffic capacity failure. The
+acquisition/processing path remained internally clean until the test harness
+terminated the run. The failure is retained as evidence because it directly
+motivated the CT-long-run timeout seam used by Attempt 02.

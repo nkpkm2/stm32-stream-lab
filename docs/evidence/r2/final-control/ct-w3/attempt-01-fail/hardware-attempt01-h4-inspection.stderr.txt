@@ -1,0 +1,2 @@
+warning: could not convert 'magic' from the host encoding (CP1252) to UTF-32.
+This normally should not happen, please file a bug report.

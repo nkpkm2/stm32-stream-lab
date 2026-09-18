@@ -1,0 +1,33 @@
+R2 CT-W3 UNIFORM HARDWARE ATTEMPT 02: PASS
+
+Checkpoint: 48da792e382e911aad1b7bb43765284aa8b58ea2
+ELF SHA256: 9803E7A3974C08913C18B8285807971253680B9ACAA64572F2BCECBC4A0E578A
+Programmed SHA256: D83E2B181F33EB1A5D994D61DA02083D096C23181015A8795E378152DC9C44F7
+Host tool SHA256: C91EE670D0B7B5395F479A6238EA87D31DF4708584E4240551732832C341C29D
+
+Traffic: 10 x 64-byte PING
+Nominal absolute spacing: 100 ms
+Actual first-to-last start span: 891.000 ms
+W6 input range: 52 -> 744
+
+CT processed / while-running / reply-success: 10 / 10 / 10
+CT rate-limited: 0
+CT parser/UART/overflow/reply errors: 0
+CT max service cycles (rx->proc / proc->tx / tx / rx->done): 511 / 33073 / 377775 / 410030
+
+W6 K8 NORMAL: 800 / 800 admitted, 0 drops
+W6 processed/released: 800 / 800
+W6 test_pass: 1
+W6 fault_bits: 0
+W6 max decision cycles: 6954 / 57600
+W6 max IRQ-exit cycles: 12106 / 80640
+W6 max final window cycles: 1054 / 3600
+DMA/ADC/ownership/sample/canary errors: 0
+Final pool: 8 FREE + 2 DMA
+
+Debugger attached during runtime: NO
+H4 action: post-run read-only inspection
+Hardware operations during H5: NONE
+
+CT-W3 uniform scope: PASS
+R2 final control acceptance: NOT YET COMPLETE
