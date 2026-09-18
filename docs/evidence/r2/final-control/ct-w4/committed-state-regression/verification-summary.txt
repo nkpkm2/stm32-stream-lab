@@ -1,0 +1,14 @@
+R2 CT-W4 COMMITTED-STATE VERIFICATION: PASS
+Source HEAD: fd5ddcab2b4c2b831b2105a97ff94d83619d303f
+Native W1-W6 + CT protocol: 124 / 124 PASS
+CT protocol tests: 8 / 8 PASS
+Default CT-OFF sealed W6 K8 NORMAL programmed image: byte-identical PASS
+Default CT-W2 programmed image: hardware-tested byte identity PASS
+CT-W4 target profile: K8 / NORMAL / 800 events / 1500 ms run timeout
+CT-W4 target programmed image equals CT-W3 programmed image: PASS
+CT-W4 ELF SHA256: 64BA47D3A9EA93BB9980D2412932223131CD17F3A6296111FDA1F5CE259CFC8D
+CT-W4 programmed SHA256: D83E2B181F33EB1A5D994D61DA02083D096C23181015A8795E378152DC9C44F7
+CT-W4 RAM used: 97264 B / 131072 B (74.21%)
+CT-W4 RAM free: 33808 B
+Hardware operations during this regression: NONE
+No flash/reset/debug/commit/push/tag operation.

@@ -1,0 +1,38 @@
+R2 CT-W4 ADVERSE BURST HARDWARE ATTEMPT 01: PASS
+
+Checkpoint: fd5ddcab2b4c2b831b2105a97ff94d83619d303f
+ELF SHA256: 64BA47D3A9EA93BB9980D2412932223131CD17F3A6296111FDA1F5CE259CFC8D
+Programmed SHA256: D83E2B181F33EB1A5D994D61DA02083D096C23181015A8795E378152DC9C44F7
+Host tool SHA256: C70A794F61980DF6DBB0F4E6B61775C22E3AE51D37B2D32EB50BEE38717B143B
+
+Traffic: 10 x 64-byte PING
+Request frame size: 76 bytes
+Burst bytes: 760
+Burst submission: one serial write
+Intentional inter-request delay: 0 ms
+Host burst submit time: 62.000 ms
+Host all-replies time: 78.000 ms
+W6 input range: 52 -> 98
+
+CT processed / while-running / reply-success: 10 / 10 / 10
+CT rate-limited: 0
+CT RX overflow: 0
+CT parser/UART/reply errors: 0
+CT max service cycles (rx->proc / proc->tx / tx / rx->done): 512 / 22608 / 386752 / 409094
+
+W6 K8 NORMAL: 800 / 800 admitted, 0 drops
+W6 processed/released: 800 / 800
+W6 test_pass: 1
+W6 fault_bits: 0
+W6 max decision cycles: 6972 / 57600
+W6 max IRQ-exit cycles: 12132 / 80640
+W6 max final window cycles: 1054 / 3600
+DMA/ADC/ownership/sample/canary errors: 0
+Final pool: 8 FREE + 2 DMA
+
+Debugger attached during runtime: NO
+H4 action: post-run read-only inspection
+Hardware operations during H5: NONE
+
+CT-W4 adverse-burst scope: PASS
+R2 final control acceptance: NOT YET COMPLETE
