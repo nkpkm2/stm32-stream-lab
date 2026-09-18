@@ -1,0 +1,18 @@
+{
+  "acceptance_evaluation_performed": false,
+  "attempt": 1,
+  "cell": "k8-drop",
+  "checkpoint": "94ca103c27f508f97c38645883a712e0c16a76e8",
+  "continue_or_restart_performed": false,
+  "ct_trace_lines": 10,
+  "flash_performed": false,
+  "h3_first_w6_input": 51,
+  "h3_last_w6_input": 97,
+  "inspection_sha256": "E30B8C7B90C6FE2494835552719D9D18F5BDFDBB359F105CEA62B9331A7A81FC",
+  "reset_performed": false,
+  "result": "COLLECTED",
+  "serial_traffic_performed": false,
+  "w6_sequence_first": 1,
+  "w6_sequence_last": 800,
+  "w6_trace_lines": 800
+}

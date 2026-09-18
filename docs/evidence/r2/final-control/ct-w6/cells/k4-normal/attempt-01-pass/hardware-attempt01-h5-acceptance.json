@@ -1,0 +1,59 @@
+{
+  "artifact_identity": {
+    "elf_sha256": "070073EA551625176A5FFF3A5871783F29E124EEB0486AB66B421CD63A02F1AF",
+    "host_tool_sha256": "C70A794F61980DF6DBB0F4E6B61775C22E3AE51D37B2D32EB50BEE38717B143B",
+    "programmed_sha256": "F1BB191B3256D5F96A75D7D2516C7C74B702128FA30B357300E715FD7D68C387"
+  },
+  "attempt": 1,
+  "cell": "k4-normal",
+  "checkpoint": "94ca103c27f508f97c38645883a712e0c16a76e8",
+  "control_traffic": {
+    "burst_bytes": 760,
+    "first_w6_input": 41,
+    "host_all_replies_ms": 78.0,
+    "host_submit_ms": 78.0,
+    "host_timestamp_interpretation": "orchestration only; not a target service-latency gate",
+    "last_w6_input": 87,
+    "max_process_to_tx_cycles": 33776,
+    "max_rx_to_process_cycles": 512,
+    "max_rx_to_reply_complete_cycles": 410991,
+    "max_tx_cycles": 386758,
+    "payload_bytes_each": 64,
+    "rate_limited_count": 0,
+    "reply_success_count": 10,
+    "requests": 10,
+    "rx_overflow_count": 0,
+    "single_write_call": true
+  },
+  "evidence_sha256": {
+    "hardware-attempt01-burst.stderr.txt": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "hardware-attempt01-burst.stdout.txt": "EE9F75D6F0C5CA81E6D736FC7834EE43BC97887B89A27B8EEDBA5C13DD320614",
+    "hardware-attempt01-flash-verify.stderr.txt": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "hardware-attempt01-flash-verify.stdout.txt": "CFB53862010B8F81F553FFA8CFE15C903D06B6DD26B78B036A0D84B6A24EA0BD",
+    "hardware-attempt01-h3-runtime.json": "CB9F8CC389F098481303D9DFEF7847686044807DAE777D0F608E51CB55C2285D",
+    "hardware-attempt01-h4-collection.json": "239DA7F6E7EB45C7E6E1A18E19223C03B60080CA47EECAD31F53DE88EEFA568C",
+    "hardware-attempt01-h4-inspection.stderr.txt": "4A928CFE5F85061B67863A67ED198E86C62654B4FBD0496E56589BF4B68177BF",
+    "hardware-attempt01-h4-inspection.txt": "ECB16F6D9CB9C38FBB3819D3CCEE9B31ED87DCAB5D1F6F9F9B2AD3D45F9446F5"
+  },
+  "hardware_operations_during_h5": false,
+  "profile": {
+    "events": 800,
+    "k": 4,
+    "mode": "NORMAL",
+    "run_timeout_ms": 1500
+  },
+  "result": "PASS",
+  "w6": {
+    "admitted": 800,
+    "decision_code_admit": 1,
+    "drops": 0,
+    "intersection_required": false,
+    "max_drop_streak": 0,
+    "max_final_window_cycles": 1076,
+    "max_nominal_to_decision_cycles": 6914,
+    "max_nominal_to_irq_exit_cycles": 11991,
+    "processed": 800,
+    "recoveries": 0,
+    "released": 800
+  }
+}

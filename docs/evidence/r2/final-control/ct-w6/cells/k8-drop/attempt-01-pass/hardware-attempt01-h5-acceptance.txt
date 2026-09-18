@@ -1,0 +1,31 @@
+R2 CT-W6 k8-drop HARDWARE ACCEPTANCE: PASS
+
+Checkpoint: 94ca103c27f508f97c38645883a712e0c16a76e8
+Cell: k8-drop
+Profile: K=8 / DROP / 800 events / 1500 ms
+
+Control traffic:
+  10 x 64-byte PING
+  one 760-byte serial write
+  rate-limited: 0
+  RX overflow: 0
+  replies: 10 / 10
+  W6 input observations: 51 -> 97
+  CT max service cycles (rx->proc / proc->tx / tx / rx->done): 514 / 29420 / 379233 / 407394
+
+W6:
+  admitted / dropped: 69 / 731
+  processed / released: 69 / 69
+  timing cycles (decision / IRQ-exit / final-window): 8188 / 13077 / 1054
+  integrity errors: 0
+  final pool: 8 FREE + 2 DMA
+  recoveries: 61
+  max drop streak: 13
+
+CT x DROP/recovery intersection:
+  guaranteed events: 52..97
+  in-window admitted / dropped: 4 / 42
+  recovery: DROP 52 -> ADMIT 54
+
+Hardware operations during H5: NONE
+Acceptance: PASS

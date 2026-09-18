@@ -1,0 +1,28 @@
+R2 CT-W6 SIX-CELL MATRIX: PASS
+
+Checkpoint: 94ca103c27f508f97c38645883a712e0c16a76e8
+Firmware baseline: 48da792e382e911aad1b7bb43765284aa8b58ea2
+Firmware source delta since CT long-run baseline: NONE
+
+Traffic per cell:
+10 x 64-byte PING
+one 760-byte serial write
+0 ms intentional inter-request delay
+
+Historical W6 CT-OFF programmed-byte regressions: 6 / 6 PASS
+CT-W6 H2 flash+verify: 6 / 6 PASS
+CT-W6 H3 adverse burst: 6 / 6 PASS
+CT-W6 H4 same-run trace collection: 6 / 6 PASS
+CT-W6 H5 offline acceptance: 6 / 6 PASS
+
+k1-normal: 800 admitted / 0 dropped; timing 6841 / 11810 / 1095; CT max 411106
+k2-normal: 800 admitted / 0 dropped; timing 7034 / 12049 / 1076; CT max 411984
+k2-drop: 114 admitted / 686 dropped; timing 6803 / 11608 / 1053; CT max 407064; recovery DROP 53 -> ADMIT 58
+k4-normal: 800 admitted / 0 dropped; timing 6914 / 11991 / 1076; CT max 410991
+k4-drop: 91 admitted / 709 dropped; timing 7255 / 12090 / 1053; CT max 407510; recovery DROP 52 -> ADMIT 56
+k8-drop: 69 admitted / 731 dropped; timing 8188 / 13077 / 1054; CT max 407394; recovery DROP 52 -> ADMIT 54
+
+All six cells passed architecture timing/integrity gates.
+No hardware operation occurred during this seal.
+This seal does not itself constitute final R2 Principal acceptance.
+r2-pass remains absent.

@@ -1,0 +1,133 @@
+{
+  "attempt": 1,
+  "burst_bytes": 760,
+  "cell": "k8-drop",
+  "checkpoint": "94ca103c27f508f97c38645883a712e0c16a76e8",
+  "debugger_attached": false,
+  "first_w6_input": 51,
+  "flash_performed": false,
+  "host_all_replies_ms": 62.0,
+  "host_burst_submit_ms": 62.0,
+  "host_returncode": 0,
+  "intentional_inter_request_delay_ms": 0,
+  "last_w6_input": 97,
+  "passive_completion_wait_s": 1.25,
+  "payload_bytes_each": 64,
+  "profile": {
+    "events": 800,
+    "k": 8,
+    "mode": "DROP",
+    "run_timeout_ms": 1500
+  },
+  "ram_inspection_performed": false,
+  "records": [
+    {
+      "index": 0,
+      "payload_crc32": "E030BDC1",
+      "reply_received_offset_ms": 62.0,
+      "request_id": 1616,
+      "target_drop_mode": 1,
+      "target_k": 8,
+      "target_phase": 3,
+      "target_w6_input_at_process": 51
+    },
+    {
+      "index": 1,
+      "payload_crc32": "512883CB",
+      "reply_received_offset_ms": 62.0,
+      "request_id": 1617,
+      "target_drop_mode": 1,
+      "target_k": 8,
+      "target_phase": 3,
+      "target_w6_input_at_process": 56
+    },
+    {
+      "index": 2,
+      "payload_crc32": "EA385155",
+      "reply_received_offset_ms": 62.0,
+      "request_id": 1618,
+      "target_drop_mode": 1,
+      "target_k": 8,
+      "target_phase": 3,
+      "target_w6_input_at_process": 61
+    },
+    {
+      "index": 3,
+      "payload_crc32": "91878AAC",
+      "reply_received_offset_ms": 62.0,
+      "request_id": 1619,
+      "target_drop_mode": 1,
+      "target_k": 8,
+      "target_phase": 3,
+      "target_w6_input_at_process": 67
+    },
+    {
+      "index": 4,
+      "payload_crc32": "333D125D",
+      "reply_received_offset_ms": 62.0,
+      "request_id": 1620,
+      "target_drop_mode": 1,
+      "target_k": 8,
+      "target_phase": 3,
+      "target_w6_input_at_process": 72
+    },
+    {
+      "index": 5,
+      "payload_crc32": "4858B59F",
+      "reply_received_offset_ms": 62.0,
+      "request_id": 1621,
+      "target_drop_mode": 1,
+      "target_k": 8,
+      "target_phase": 3,
+      "target_w6_input_at_process": 77
+    },
+    {
+      "index": 6,
+      "payload_crc32": "A3D0027A",
+      "reply_received_offset_ms": 62.0,
+      "request_id": 1622,
+      "target_drop_mode": 1,
+      "target_k": 8,
+      "target_phase": 3,
+      "target_w6_input_at_process": 82
+    },
+    {
+      "index": 7,
+      "payload_crc32": "3C4C74B5",
+      "reply_received_offset_ms": 62.0,
+      "request_id": 1623,
+      "target_drop_mode": 1,
+      "target_k": 8,
+      "target_phase": 3,
+      "target_w6_input_at_process": 87
+    },
+    {
+      "index": 8,
+      "payload_crc32": "33478810",
+      "reply_received_offset_ms": 62.0,
+      "request_id": 1624,
+      "target_drop_mode": 1,
+      "target_k": 8,
+      "target_phase": 3,
+      "target_w6_input_at_process": 92
+    },
+    {
+      "index": 9,
+      "payload_crc32": "C1F5AE26",
+      "reply_received_offset_ms": 62.0,
+      "request_id": 1625,
+      "target_drop_mode": 1,
+      "target_k": 8,
+      "target_phase": 3,
+      "target_w6_input_at_process": 97
+    }
+  ],
+  "request_count": 10,
+  "request_frame_bytes_each": 76,
+  "request_id_first": 1616,
+  "request_id_last": 1625,
+  "result": "PASS",
+  "scope": "CT-W6 H3 k8-drop adverse burst",
+  "single_write_call": true,
+  "wait_for_reply_before_burst_complete": false
+}

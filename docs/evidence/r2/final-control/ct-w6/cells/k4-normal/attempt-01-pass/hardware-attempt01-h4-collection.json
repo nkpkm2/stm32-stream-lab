@@ -1,0 +1,18 @@
+{
+  "acceptance_evaluation_performed": false,
+  "attempt": 1,
+  "cell": "k4-normal",
+  "checkpoint": "94ca103c27f508f97c38645883a712e0c16a76e8",
+  "continue_or_restart_performed": false,
+  "ct_trace_lines": 10,
+  "flash_performed": false,
+  "h3_first_w6_input": 41,
+  "h3_last_w6_input": 87,
+  "inspection_sha256": "ECB16F6D9CB9C38FBB3819D3CCEE9B31ED87DCAB5D1F6F9F9B2AD3D45F9446F5",
+  "reset_performed": false,
+  "result": "COLLECTED",
+  "serial_traffic_performed": false,
+  "w6_sequence_first": 1,
+  "w6_sequence_last": 800,
+  "w6_trace_lines": 800
+}

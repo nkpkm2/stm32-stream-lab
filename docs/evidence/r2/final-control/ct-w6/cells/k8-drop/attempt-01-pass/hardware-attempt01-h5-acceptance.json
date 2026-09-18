@@ -1,0 +1,67 @@
+{
+  "artifact_identity": {
+    "elf_sha256": "5B177CA61EAE3C783A7FC52FD4F9CD37AA85D49A8FD49BCDF7C55D33EF693C96",
+    "host_tool_sha256": "C70A794F61980DF6DBB0F4E6B61775C22E3AE51D37B2D32EB50BEE38717B143B",
+    "programmed_sha256": "E33E38B0E323CB098D34E84AAE8F10DE8A06FA18C5166F2D3AE1510FB9020B5C"
+  },
+  "attempt": 1,
+  "cell": "k8-drop",
+  "checkpoint": "94ca103c27f508f97c38645883a712e0c16a76e8",
+  "control_traffic": {
+    "burst_bytes": 760,
+    "first_w6_input": 51,
+    "host_all_replies_ms": 62.0,
+    "host_submit_ms": 62.0,
+    "host_timestamp_interpretation": "orchestration only; not a target service-latency gate",
+    "last_w6_input": 97,
+    "max_process_to_tx_cycles": 29420,
+    "max_rx_to_process_cycles": 514,
+    "max_rx_to_reply_complete_cycles": 407394,
+    "max_tx_cycles": 379233,
+    "payload_bytes_each": 64,
+    "rate_limited_count": 0,
+    "reply_success_count": 10,
+    "requests": 10,
+    "rx_overflow_count": 0,
+    "single_write_call": true
+  },
+  "evidence_sha256": {
+    "hardware-attempt01-burst.stderr.txt": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "hardware-attempt01-burst.stdout.txt": "41AB4B2093C012D425D3AEA4BED2C16F7C5E8EDF2F5273E87C50943D55067A42",
+    "hardware-attempt01-flash-verify.stderr.txt": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "hardware-attempt01-flash-verify.stdout.txt": "19D6BED0E35B0C32F2688EE5A129E71AC13590A0A03BEAAB1E633801533A8A14",
+    "hardware-attempt01-h3-runtime.json": "0D3CC72B3B284C454114C6D4F15C887C5A93FCE36316B8B6EF8C4DB0BC83B606",
+    "hardware-attempt01-h4-collection.json": "34EDF5D1C21BA82C3FDBC4E7E8C938637C55BDB8D3F28956F88ABE16D31B1D30",
+    "hardware-attempt01-h4-inspection.stderr.txt": "4A928CFE5F85061B67863A67ED198E86C62654B4FBD0496E56589BF4B68177BF",
+    "hardware-attempt01-h4-inspection.txt": "E30B8C7B90C6FE2494835552719D9D18F5BDFDBB359F105CEA62B9331A7A81FC"
+  },
+  "hardware_operations_during_h5": false,
+  "profile": {
+    "events": 800,
+    "k": 8,
+    "mode": "DROP",
+    "run_timeout_ms": 1500
+  },
+  "result": "PASS",
+  "w6": {
+    "admitted": 69,
+    "current_drop_streak": 0,
+    "decision_code_admit": 1,
+    "decision_code_drop": 2,
+    "drops": 731,
+    "guaranteed_event_end": 97,
+    "guaranteed_event_start": 52,
+    "intersection_required": true,
+    "max_drop_streak": 13,
+    "max_final_window_cycles": 1054,
+    "max_nominal_to_decision_cycles": 8188,
+    "max_nominal_to_irq_exit_cycles": 13077,
+    "processed": 69,
+    "recoveries": 61,
+    "recovery_admit_sequence": 54,
+    "recovery_drop_sequence": 52,
+    "released": 69,
+    "window_admitted_count": 4,
+    "window_drop_count": 42
+  }
+}

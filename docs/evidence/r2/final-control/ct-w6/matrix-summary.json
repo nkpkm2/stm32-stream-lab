@@ -1,0 +1,191 @@
+{
+  "already_closed_outside_ct_w6": {
+    "k1-drop": "CT-W5 adverse burst + in-window DROP->ADMIT recovery",
+    "k8-normal": "CT-W3 uniform + CT-W4 adverse burst"
+  },
+  "cells": [
+    {
+      "admitted": 800,
+      "base_request_id": 1536,
+      "build_directory": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w6-matrix-94ca103c\\k1-normal-ct-on-800-t1500",
+      "cell": "k1-normal",
+      "ct_max_rx_to_reply_complete_cycles": 411106,
+      "ct_off_programmed_identity": "PASS",
+      "drops": 0,
+      "elf_sha256": "F3D1D2D745EC4629253C0046ADAADB83FBA2E7067D534F0AF5D82838A929303F",
+      "h2": "PASS",
+      "h3": "PASS",
+      "h3_first_w6_input": 52,
+      "h3_last_w6_input": 99,
+      "h4": "PASS",
+      "h5": "PASS",
+      "k": 1,
+      "last_request_id": 1545,
+      "mode": "NORMAL",
+      "programmed_sha256": "1C60A189CE4FEFAA64A2BEE315776BC903775AF7C36A0E351EFB50A5AE44B1ED",
+      "recovery": null,
+      "timing": {
+        "max_final_window_cycles": 1095,
+        "max_nominal_to_decision_cycles": 6841,
+        "max_nominal_to_irq_exit_cycles": 11810
+      }
+    },
+    {
+      "admitted": 800,
+      "base_request_id": 1552,
+      "build_directory": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w6-matrix-94ca103c\\k2-normal-ct-on-800-t1500",
+      "cell": "k2-normal",
+      "ct_max_rx_to_reply_complete_cycles": 411984,
+      "ct_off_programmed_identity": "PASS",
+      "drops": 0,
+      "elf_sha256": "3EED127B92C07DEE156CF5B7CB40EF309BEAC96ED18807BCF91D1AF23F846C60",
+      "h2": "PASS",
+      "h3": "PASS",
+      "h3_first_w6_input": 52,
+      "h3_last_w6_input": 99,
+      "h4": "PASS",
+      "h5": "PASS",
+      "k": 2,
+      "last_request_id": 1561,
+      "mode": "NORMAL",
+      "programmed_sha256": "BC552CC915E23D136D045B97CE9C9D66FDB07636DA4AB2A44E256F7379B5F74C",
+      "recovery": null,
+      "timing": {
+        "max_final_window_cycles": 1076,
+        "max_nominal_to_decision_cycles": 7034,
+        "max_nominal_to_irq_exit_cycles": 12049
+      }
+    },
+    {
+      "admitted": 114,
+      "base_request_id": 1568,
+      "build_directory": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w6-matrix-94ca103c\\k2-drop-ct-on-800-t1500",
+      "cell": "k2-drop",
+      "ct_max_rx_to_reply_complete_cycles": 407064,
+      "ct_off_programmed_identity": "PASS",
+      "drops": 686,
+      "elf_sha256": "58A9B6E1DDABE6344BD64DE0444B87DBBBB69EB58B813B8E2D9ADF6D3437ADA3",
+      "h2": "PASS",
+      "h3": "PASS",
+      "h3_first_w6_input": 52,
+      "h3_last_w6_input": 98,
+      "h4": "PASS",
+      "h5": "PASS",
+      "k": 2,
+      "last_request_id": 1577,
+      "mode": "DROP",
+      "programmed_sha256": "1C699480787A41CB5CAF772D0DF66B4BAFCA66D04DC1A3AEB88C2B14299AC328",
+      "recovery": {
+        "admit_sequence": 58,
+        "drop_sequence": 53
+      },
+      "timing": {
+        "max_final_window_cycles": 1053,
+        "max_nominal_to_decision_cycles": 6803,
+        "max_nominal_to_irq_exit_cycles": 11608
+      }
+    },
+    {
+      "admitted": 800,
+      "base_request_id": 1584,
+      "build_directory": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w6-matrix-94ca103c\\k4-normal-ct-on-800-t1500",
+      "cell": "k4-normal",
+      "ct_max_rx_to_reply_complete_cycles": 410991,
+      "ct_off_programmed_identity": "PASS",
+      "drops": 0,
+      "elf_sha256": "070073EA551625176A5FFF3A5871783F29E124EEB0486AB66B421CD63A02F1AF",
+      "h2": "PASS",
+      "h3": "PASS",
+      "h3_first_w6_input": 41,
+      "h3_last_w6_input": 87,
+      "h4": "PASS",
+      "h5": "PASS",
+      "k": 4,
+      "last_request_id": 1593,
+      "mode": "NORMAL",
+      "programmed_sha256": "F1BB191B3256D5F96A75D7D2516C7C74B702128FA30B357300E715FD7D68C387",
+      "recovery": null,
+      "timing": {
+        "max_final_window_cycles": 1076,
+        "max_nominal_to_decision_cycles": 6914,
+        "max_nominal_to_irq_exit_cycles": 11991
+      }
+    },
+    {
+      "admitted": 91,
+      "base_request_id": 1600,
+      "build_directory": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w6-matrix-94ca103c\\k4-drop-ct-on-800-t1500",
+      "cell": "k4-drop",
+      "ct_max_rx_to_reply_complete_cycles": 407510,
+      "ct_off_programmed_identity": "PASS",
+      "drops": 709,
+      "elf_sha256": "1563C4CC9FB0FB52CCFCB6495DAC2836159D6E9C5E1E0192C8AD86DB3EBCC924",
+      "h2": "PASS",
+      "h3": "PASS",
+      "h3_first_w6_input": 51,
+      "h3_last_w6_input": 97,
+      "h4": "PASS",
+      "h5": "PASS",
+      "k": 4,
+      "last_request_id": 1609,
+      "mode": "DROP",
+      "programmed_sha256": "0C67495BC7E1E77464CAB7A1E2995E5C8DB0CB71B8992011DE435D3C43F0F756",
+      "recovery": {
+        "admit_sequence": 56,
+        "drop_sequence": 52
+      },
+      "timing": {
+        "max_final_window_cycles": 1053,
+        "max_nominal_to_decision_cycles": 7255,
+        "max_nominal_to_irq_exit_cycles": 12090
+      }
+    },
+    {
+      "admitted": 69,
+      "base_request_id": 1616,
+      "build_directory": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w6-matrix-94ca103c\\k8-drop-ct-on-800-t1500",
+      "cell": "k8-drop",
+      "ct_max_rx_to_reply_complete_cycles": 407394,
+      "ct_off_programmed_identity": "PASS",
+      "drops": 731,
+      "elf_sha256": "5B177CA61EAE3C783A7FC52FD4F9CD37AA85D49A8FD49BCDF7C55D33EF693C96",
+      "h2": "PASS",
+      "h3": "PASS",
+      "h3_first_w6_input": 51,
+      "h3_last_w6_input": 97,
+      "h4": "PASS",
+      "h5": "PASS",
+      "k": 8,
+      "last_request_id": 1625,
+      "mode": "DROP",
+      "programmed_sha256": "E33E38B0E323CB098D34E84AAE8F10DE8A06FA18C5166F2D3AE1510FB9020B5C",
+      "recovery": {
+        "admit_sequence": 54,
+        "drop_sequence": 52
+      },
+      "timing": {
+        "max_final_window_cycles": 1054,
+        "max_nominal_to_decision_cycles": 8188,
+        "max_nominal_to_irq_exit_cycles": 13077
+      }
+    }
+  ],
+  "checkpoint": "94ca103c27f508f97c38645883a712e0c16a76e8",
+  "ct_off_programmed_regression_pass_count": 6,
+  "h2_pass_count": 6,
+  "h3_pass_count": 6,
+  "h4_pass_count": 6,
+  "h5_pass_count": 6,
+  "hardware_cell_count": 6,
+  "hardware_operations_during_seal": false,
+  "r2_pass_created": false,
+  "result": "PASS",
+  "scope": "CT-W6 six remaining K/mode cells under sealed adverse-burst real control traffic",
+  "traffic": {
+    "intentional_inter_request_delay_ms": 0,
+    "payload_bytes_each": 64,
+    "request_frame_bytes_each": 76,
+    "requests_per_cell": 10,
+    "single_write_bytes": 760
+  }
+}

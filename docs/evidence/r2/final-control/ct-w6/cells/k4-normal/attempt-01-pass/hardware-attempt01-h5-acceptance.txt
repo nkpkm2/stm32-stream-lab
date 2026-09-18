@@ -1,0 +1,24 @@
+R2 CT-W6 k4-normal HARDWARE ACCEPTANCE: PASS
+
+Checkpoint: 94ca103c27f508f97c38645883a712e0c16a76e8
+Cell: k4-normal
+Profile: K=4 / NORMAL / 800 events / 1500 ms
+
+Control traffic:
+  10 x 64-byte PING
+  one 760-byte serial write
+  rate-limited: 0
+  RX overflow: 0
+  replies: 10 / 10
+  W6 input observations: 41 -> 87
+  CT max service cycles (rx->proc / proc->tx / tx / rx->done): 512 / 33776 / 386758 / 410991
+
+W6:
+  admitted / dropped: 800 / 0
+  processed / released: 800 / 800
+  timing cycles (decision / IRQ-exit / final-window): 6914 / 11991 / 1076
+  integrity errors: 0
+  final pool: 4 FREE + 2 DMA
+
+Hardware operations during H5: NONE
+Acceptance: PASS
