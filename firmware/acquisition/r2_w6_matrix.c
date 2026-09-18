@@ -21,7 +21,9 @@ extern TIM_HandleTypeDef htim2;
 #define W6_GUARD_LO 0x13579BDFU
 #define W6_GUARD_HI 0x2468ACE0U
 #define W6_SENTINEL 0xA55AU
-#define W6_RUN_TIMEOUT_MS 1000U
+#ifndef R2_W6_RUN_TIMEOUT_MS
+#define R2_W6_RUN_TIMEOUT_MS 1000U
+#endif
 #define W6_DRAIN_TIMEOUT_MS 500U
 #define W6_SETTLE_CYCLES 1200U
 #define W6_DMA_REQUIRED_CR 0x00062D17U
@@ -1207,7 +1209,7 @@ static void ControlTask(void *argument)
         while (g_r2_w6_result.phase == R2_W6_RUNNING)
         {
             if ((TickType_t)(xTaskGetTickCount() - start_tick) >=
-                pdMS_TO_TICKS(W6_RUN_TIMEOUT_MS))
+                pdMS_TO_TICKS(R2_W6_RUN_TIMEOUT_MS))
             {
                 LatchFault(R2_W6_FAULT_TIMEOUT);
                 break;

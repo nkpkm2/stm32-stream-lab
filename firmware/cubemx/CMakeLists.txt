@@ -95,6 +95,8 @@ option(STREAM_LAB_R2_W6 "Build one W6 mandatory K-matrix experiment" OFF)
 option(STREAM_LAB_R2_CT "Add the R2 final control-traffic acceptance path to a W6 build" OFF)
 set(STREAM_LAB_R2_CT_EVENTS "96" CACHE STRING "W6 event count for R2 control-traffic acceptance")
 set_property(CACHE STREAM_LAB_R2_CT_EVENTS PROPERTY STRINGS 96 800)
+set(STREAM_LAB_R2_CT_RUN_TIMEOUT_MS "1000" CACHE STRING "W6 run timeout for R2 control-traffic acceptance")
+set_property(CACHE STREAM_LAB_R2_CT_RUN_TIMEOUT_MS PROPERTY STRINGS 1000 1500)
 set(STREAM_LAB_R2_W6_K "1" CACHE STRING "W6 backlog capacity K: 1, 2, 4, or 8")
 set_property(CACHE STREAM_LAB_R2_W6_K PROPERTY STRINGS 1 2 4 8)
 set(STREAM_LAB_R2_W6_MODE "NORMAL" CACHE STRING "W6 matrix mode: NORMAL or DROP")
@@ -118,6 +120,12 @@ if(NOT STREAM_LAB_R2_CT_EVENTS MATCHES "^(96|800)$")
 endif()
 if(NOT STREAM_LAB_R2_CT AND NOT STREAM_LAB_R2_CT_EVENTS STREQUAL "96")
     message(FATAL_ERROR "Non-default STREAM_LAB_R2_CT_EVENTS requires STREAM_LAB_R2_CT=ON")
+endif()
+if(NOT STREAM_LAB_R2_CT_RUN_TIMEOUT_MS MATCHES "^(1000|1500)$")
+    message(FATAL_ERROR "STREAM_LAB_R2_CT_RUN_TIMEOUT_MS must be 1000 or 1500")
+endif()
+if(NOT STREAM_LAB_R2_CT AND NOT STREAM_LAB_R2_CT_RUN_TIMEOUT_MS STREQUAL "1000")
+    message(FATAL_ERROR "Non-default STREAM_LAB_R2_CT_RUN_TIMEOUT_MS requires STREAM_LAB_R2_CT=ON")
 endif()
 
 if(STREAM_LAB_R2_W6)
@@ -161,6 +169,11 @@ if(STREAM_LAB_R2_W6)
         if(NOT STREAM_LAB_R2_CT_EVENTS STREQUAL "96")
             target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
                 R2_W6_EVENTS=${STREAM_LAB_R2_CT_EVENTS}U
+            )
+        endif()
+        if(NOT STREAM_LAB_R2_CT_RUN_TIMEOUT_MS STREQUAL "1000")
+            target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+                R2_W6_RUN_TIMEOUT_MS=${STREAM_LAB_R2_CT_RUN_TIMEOUT_MS}U
             )
         endif()
         target_sources(${CMAKE_PROJECT_NAME} PRIVATE
