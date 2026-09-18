@@ -93,6 +93,8 @@ option(STREAM_LAB_R2_W4 "Build the W4 queue/processing ownership round-trip expe
 option(STREAM_LAB_R2_W5 "Build the W5 controlled capacity-drop experiment" OFF)
 option(STREAM_LAB_R2_W6 "Build one W6 mandatory K-matrix experiment" OFF)
 option(STREAM_LAB_R2_CT "Add the R2 final control-traffic acceptance path to a W6 build" OFF)
+option(STREAM_LAB_FOUNDATION_ADC_DBM_DRIVER
+    "Compile the F0-2 AdcDbmDriver foundation module without migrating historical profiles" OFF)
 set(STREAM_LAB_R2_CT_EVENTS "96" CACHE STRING "W6 event count for R2 control-traffic acceptance")
 set_property(CACHE STREAM_LAB_R2_CT_EVENTS PROPERTY STRINGS 96 800)
 set(STREAM_LAB_R2_CT_RUN_TIMEOUT_MS "1000" CACHE STRING "W6 run timeout for R2 control-traffic acceptance")
@@ -141,6 +143,20 @@ endif()
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition"
 )
+
+# === R2->R3 RUNTIME FOUNDATION F0-2 BEGIN ===
+# Compile-only gate.  No historical R1/R2 runtime path calls this module yet.
+if(STREAM_LAB_FOUNDATION_ADC_DBM_DRIVER)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/adc_dbm_driver.c"
+    )
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/adc_dbm_driver.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+    )
+endif()
+# === R2->R3 RUNTIME FOUNDATION F0-2 END ===
+
 if(STREAM_LAB_R2_W6)
     if(R2_W6_MODE_UPPER STREQUAL "DROP")
         set(R2_W6_DROP_VALUE 1)
