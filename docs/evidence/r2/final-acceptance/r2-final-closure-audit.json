@@ -1,0 +1,463 @@
+{
+  "checkpoint": "3db4339b64b275e5868cdb288d867a561caf3cba",
+  "current_r2_blocker_count": 0,
+  "final_control_ct_on_programmed_regressions": {
+    "cell_count": 8,
+    "pass_count": 8
+  },
+  "final_control_evidence_manifests": {
+    "ct-w2": {
+      "manifest_count": 2,
+      "manifests": [
+        {
+          "entries": 36,
+          "manifest": "docs/evidence/r2/final-control/ct-w2/MANIFEST.sha256",
+          "resolution_counts": {
+            "absolute": 0,
+            "manifest-relative": 0,
+            "repo-relative": 36
+          }
+        },
+        {
+          "entries": 36,
+          "manifest": "docs/evidence/r2/final-control/ct-w2/manifest.sha256",
+          "resolution_counts": {
+            "absolute": 0,
+            "manifest-relative": 0,
+            "repo-relative": 36
+          }
+        }
+      ],
+      "resolution_counts": {
+        "absolute": 0,
+        "manifest-relative": 0,
+        "repo-relative": 72
+      },
+      "total_entries": 72,
+      "unique_resolved_files": 36
+    },
+    "ct-w3": {
+      "manifest_count": 2,
+      "manifests": [
+        {
+          "entries": 35,
+          "manifest": "docs/evidence/r2/final-control/ct-w3/MANIFEST.sha256",
+          "resolution_counts": {
+            "absolute": 0,
+            "manifest-relative": 0,
+            "repo-relative": 35
+          }
+        },
+        {
+          "entries": 35,
+          "manifest": "docs/evidence/r2/final-control/ct-w3/manifest.sha256",
+          "resolution_counts": {
+            "absolute": 0,
+            "manifest-relative": 0,
+            "repo-relative": 35
+          }
+        }
+      ],
+      "resolution_counts": {
+        "absolute": 0,
+        "manifest-relative": 0,
+        "repo-relative": 70
+      },
+      "total_entries": 70,
+      "unique_resolved_files": 35
+    },
+    "ct-w4": {
+      "manifest_count": 2,
+      "manifests": [
+        {
+          "entries": 23,
+          "manifest": "docs/evidence/r2/final-control/ct-w4/MANIFEST.sha256",
+          "resolution_counts": {
+            "absolute": 0,
+            "manifest-relative": 0,
+            "repo-relative": 23
+          }
+        },
+        {
+          "entries": 23,
+          "manifest": "docs/evidence/r2/final-control/ct-w4/manifest.sha256",
+          "resolution_counts": {
+            "absolute": 0,
+            "manifest-relative": 0,
+            "repo-relative": 23
+          }
+        }
+      ],
+      "resolution_counts": {
+        "absolute": 0,
+        "manifest-relative": 0,
+        "repo-relative": 46
+      },
+      "total_entries": 46,
+      "unique_resolved_files": 23
+    },
+    "ct-w5": {
+      "manifest_count": 2,
+      "manifests": [
+        {
+          "entries": 25,
+          "manifest": "docs/evidence/r2/final-control/ct-w5/MANIFEST.sha256",
+          "resolution_counts": {
+            "absolute": 0,
+            "manifest-relative": 0,
+            "repo-relative": 25
+          }
+        },
+        {
+          "entries": 25,
+          "manifest": "docs/evidence/r2/final-control/ct-w5/manifest.sha256",
+          "resolution_counts": {
+            "absolute": 0,
+            "manifest-relative": 0,
+            "repo-relative": 25
+          }
+        }
+      ],
+      "resolution_counts": {
+        "absolute": 0,
+        "manifest-relative": 0,
+        "repo-relative": 50
+      },
+      "total_entries": 50,
+      "unique_resolved_files": 25
+    },
+    "ct-w6": {
+      "manifest_count": 2,
+      "manifests": [
+        {
+          "entries": 99,
+          "manifest": "docs/evidence/r2/final-control/ct-w6/MANIFEST.sha256",
+          "resolution_counts": {
+            "absolute": 0,
+            "manifest-relative": 0,
+            "repo-relative": 99
+          }
+        },
+        {
+          "entries": 99,
+          "manifest": "docs/evidence/r2/final-control/ct-w6/manifest.sha256",
+          "resolution_counts": {
+            "absolute": 0,
+            "manifest-relative": 0,
+            "repo-relative": 99
+          }
+        }
+      ],
+      "resolution_counts": {
+        "absolute": 0,
+        "manifest-relative": 0,
+        "repo-relative": 198
+      },
+      "total_entries": 198,
+      "unique_resolved_files": 99
+    }
+  },
+  "firmware_content_anchor": "48da792e382e911aad1b7bb43765284aa8b58ea2",
+  "firmware_tree_identical_to_anchor": true,
+  "git_modification": false,
+  "hardware_operations": false,
+  "historical_w6_ct_off_programmed_regressions": {
+    "cell_count": 8,
+    "pass_count": 8
+  },
+  "limitations": [
+    "W6 final_window <=3600 cycles is not claimed to be the Architecture CompleteAndReleaseBlock full [t_lock,t_unlock) <=1800-cycle interval.",
+    "Current R2 final-control stress evidence is at N=256 / 200 kS/s and does not claim N=512, all rates, or final floating-point DSP integration.",
+    "Final floating-point Benchmark must later rerun the Architecture-required R2-R4 regressions."
+  ],
+  "native_ct_verifier": {
+    "default_ct_on_programmed_sha256": "C16309F614A5E2B918FFD2B053E45DDAD70BE36B0E3A42E9316DD8C9996696B3",
+    "log": "build/r2-final-closure-3db4339b-v3/verify_ct_final.txt",
+    "protected_hashes_patched_in_temp_copy": 8,
+    "status": "PASS"
+  },
+  "principal_candidate_evidence_commit": "3db4339b64b275e5868cdb288d867a561caf3cba",
+  "principal_candidate_firmware_commit": "48da792e382e911aad1b7bb43765284aa8b58ea2",
+  "profiles": [
+    {
+      "cell": "k1-normal",
+      "final_control": {
+        "hardware_tested_elf_sha256": "F3D1D2D745EC4629253C0046ADAADB83FBA2E7067D534F0AF5D82838A929303F",
+        "hardware_tested_programmed_sha256": "1C60A189CE4FEFAA64A2BEE315776BC903775AF7C36A0E351EFB50A5AE44B1ED",
+        "identity_source": "docs/evidence/r2/final-control/ct-w6/matrix-summary.json",
+        "programmed_identity": "PASS",
+        "ram_free_bytes": 37704,
+        "ram_used_bytes": 93368,
+        "ram_used_percent": 71.23,
+        "rebuilt_elf_sha256": "0E622A806503C8F90A0B4EA1971015C2C2D00E53239995D16226F2D5DA1CBC67",
+        "rebuilt_programmed_sha256": "1C60A189CE4FEFAA64A2BEE315776BC903775AF7C36A0E351EFB50A5AE44B1ED",
+        "whole_elf_identity": "DIFFERENT_INFORMATIONAL"
+      },
+      "historical_w6": {
+        "programmed_identity": "PASS",
+        "rebuilt_programmed_sha256": "AFD70C9B4E580AAB475577D3960223B891F4A760705FFA29CA781DA77853D64A",
+        "sealed_elf_sha256": "311835D2C505F239C0791F0C144548B24CC5E7BD5E177C5DB2FAF6FA8DF62A93",
+        "sealed_programmed_sha256": "AFD70C9B4E580AAB475577D3960223B891F4A760705FFA29CA781DA77853D64A"
+      },
+      "k": 1,
+      "mode": "NORMAL"
+    },
+    {
+      "cell": "k1-drop",
+      "final_control": {
+        "hardware_tested_elf_sha256": "7736852DFAE9254055ADA8D1EF8DDE36AF09B478BB658AF9526D7143C51367C3",
+        "hardware_tested_programmed_sha256": "754AB433AE4E36EDA317F0F75AC148CC4C6D01AA867E5EB960D69EB5693F39E2",
+        "identity_source": "docs/evidence/r2/final-control/ct-w5/attempt-01-pass/hardware-attempt01-h5-acceptance.json",
+        "programmed_identity": "PASS",
+        "ram_free_bytes": 37704,
+        "ram_used_bytes": 93368,
+        "ram_used_percent": 71.23,
+        "rebuilt_elf_sha256": "AC9A4661DF7DA1DAA4CB79C509EE5468790A752619B11BCB2210795FAEDA1F3F",
+        "rebuilt_programmed_sha256": "754AB433AE4E36EDA317F0F75AC148CC4C6D01AA867E5EB960D69EB5693F39E2",
+        "whole_elf_identity": "DIFFERENT_INFORMATIONAL"
+      },
+      "historical_w6": {
+        "programmed_identity": "PASS",
+        "rebuilt_programmed_sha256": "0242FCFAAD2994B4547C5F9485CB9C5E308A9A36CB75158E3775E3F5736C2B45",
+        "sealed_elf_sha256": "0998BEC54FDCFBA81A5E995DB892A3CEF0B1E6C0C910622CB5B3E7311FB429CE",
+        "sealed_programmed_sha256": "0242FCFAAD2994B4547C5F9485CB9C5E308A9A36CB75158E3775E3F5736C2B45"
+      },
+      "k": 1,
+      "mode": "DROP"
+    },
+    {
+      "cell": "k2-normal",
+      "final_control": {
+        "hardware_tested_elf_sha256": "3EED127B92C07DEE156CF5B7CB40EF309BEAC96ED18807BCF91D1AF23F846C60",
+        "hardware_tested_programmed_sha256": "BC552CC915E23D136D045B97CE9C9D66FDB07636DA4AB2A44E256F7379B5F74C",
+        "identity_source": "docs/evidence/r2/final-control/ct-w6/matrix-summary.json",
+        "programmed_identity": "PASS",
+        "ram_free_bytes": 37144,
+        "ram_used_bytes": 93928,
+        "ram_used_percent": 71.66,
+        "rebuilt_elf_sha256": "EF60317E08540FA1324C2397C9C151152B46BE883BDE04FB5B5DF361076C91FA",
+        "rebuilt_programmed_sha256": "BC552CC915E23D136D045B97CE9C9D66FDB07636DA4AB2A44E256F7379B5F74C",
+        "whole_elf_identity": "DIFFERENT_INFORMATIONAL"
+      },
+      "historical_w6": {
+        "programmed_identity": "PASS",
+        "rebuilt_programmed_sha256": "FCCA0ED1004CACB379752B6767CC3DAC4E3F154235C0B2B8F9EEF78C527E5579",
+        "sealed_elf_sha256": "1D44D800B5940882F00D1E6CCCD1FF6E2A30B3661BB19EAE37292E022EE8C3F7",
+        "sealed_programmed_sha256": "FCCA0ED1004CACB379752B6767CC3DAC4E3F154235C0B2B8F9EEF78C527E5579"
+      },
+      "k": 2,
+      "mode": "NORMAL"
+    },
+    {
+      "cell": "k2-drop",
+      "final_control": {
+        "hardware_tested_elf_sha256": "58A9B6E1DDABE6344BD64DE0444B87DBBBB69EB58B813B8E2D9ADF6D3437ADA3",
+        "hardware_tested_programmed_sha256": "1C699480787A41CB5CAF772D0DF66B4BAFCA66D04DC1A3AEB88C2B14299AC328",
+        "identity_source": "docs/evidence/r2/final-control/ct-w6/matrix-summary.json",
+        "programmed_identity": "PASS",
+        "ram_free_bytes": 37144,
+        "ram_used_bytes": 93928,
+        "ram_used_percent": 71.66,
+        "rebuilt_elf_sha256": "6FB8DFB7CC115DDC60D41404171DC865668A76D8B069C475C50F00A75F222C64",
+        "rebuilt_programmed_sha256": "1C699480787A41CB5CAF772D0DF66B4BAFCA66D04DC1A3AEB88C2B14299AC328",
+        "whole_elf_identity": "DIFFERENT_INFORMATIONAL"
+      },
+      "historical_w6": {
+        "programmed_identity": "PASS",
+        "rebuilt_programmed_sha256": "1EC4CFB4D1D0E4273E13B966FEA0983CDC2A73E5B0ECF36EDA24B5D9D66AE879",
+        "sealed_elf_sha256": "B9D7222ADF3E4BEAD78F53E0F5FACC8C43691E1899E36DC72DCE0155BC3C1FA1",
+        "sealed_programmed_sha256": "1EC4CFB4D1D0E4273E13B966FEA0983CDC2A73E5B0ECF36EDA24B5D9D66AE879"
+      },
+      "k": 2,
+      "mode": "DROP"
+    },
+    {
+      "cell": "k4-normal",
+      "final_control": {
+        "hardware_tested_elf_sha256": "070073EA551625176A5FFF3A5871783F29E124EEB0486AB66B421CD63A02F1AF",
+        "hardware_tested_programmed_sha256": "F1BB191B3256D5F96A75D7D2516C7C74B702128FA30B357300E715FD7D68C387",
+        "identity_source": "docs/evidence/r2/final-control/ct-w6/matrix-summary.json",
+        "programmed_identity": "PASS",
+        "ram_free_bytes": 36032,
+        "ram_used_bytes": 95040,
+        "ram_used_percent": 72.51,
+        "rebuilt_elf_sha256": "562EF86CE6B384F385DB9B3926ED75B0A78E701C32A477BA30731CF7DC8846D6",
+        "rebuilt_programmed_sha256": "F1BB191B3256D5F96A75D7D2516C7C74B702128FA30B357300E715FD7D68C387",
+        "whole_elf_identity": "DIFFERENT_INFORMATIONAL"
+      },
+      "historical_w6": {
+        "programmed_identity": "PASS",
+        "rebuilt_programmed_sha256": "4EA3D68FCDACF3976C0592A0BF5AA360B15703765D101BF665CC5AB8F84D2F76",
+        "sealed_elf_sha256": "68599AA9820108398F80538286070E54DA3A53EC6968FBDBFD64B2E4C3FF32BF",
+        "sealed_programmed_sha256": "4EA3D68FCDACF3976C0592A0BF5AA360B15703765D101BF665CC5AB8F84D2F76"
+      },
+      "k": 4,
+      "mode": "NORMAL"
+    },
+    {
+      "cell": "k4-drop",
+      "final_control": {
+        "hardware_tested_elf_sha256": "1563C4CC9FB0FB52CCFCB6495DAC2836159D6E9C5E1E0192C8AD86DB3EBCC924",
+        "hardware_tested_programmed_sha256": "0C67495BC7E1E77464CAB7A1E2995E5C8DB0CB71B8992011DE435D3C43F0F756",
+        "identity_source": "docs/evidence/r2/final-control/ct-w6/matrix-summary.json",
+        "programmed_identity": "PASS",
+        "ram_free_bytes": 36032,
+        "ram_used_bytes": 95040,
+        "ram_used_percent": 72.51,
+        "rebuilt_elf_sha256": "95D609301F1EB371BE1D2FA6F83391CC9ED1513D892FA436B40BCD633A83ACD9",
+        "rebuilt_programmed_sha256": "0C67495BC7E1E77464CAB7A1E2995E5C8DB0CB71B8992011DE435D3C43F0F756",
+        "whole_elf_identity": "DIFFERENT_INFORMATIONAL"
+      },
+      "historical_w6": {
+        "programmed_identity": "PASS",
+        "rebuilt_programmed_sha256": "92D9A41DB004E57766B6EF852DEFC81B747E40A46EF017D606528625CD8A0D4A",
+        "sealed_elf_sha256": "C732A527A7B49BCAC109C3BCF5E6E402723A457574D447C616FA3D7B7C1E9134",
+        "sealed_programmed_sha256": "92D9A41DB004E57766B6EF852DEFC81B747E40A46EF017D606528625CD8A0D4A"
+      },
+      "k": 4,
+      "mode": "DROP"
+    },
+    {
+      "cell": "k8-normal",
+      "final_control": {
+        "hardware_tested_elf_sha256": "64BA47D3A9EA93BB9980D2412932223131CD17F3A6296111FDA1F5CE259CFC8D",
+        "hardware_tested_programmed_sha256": "D83E2B181F33EB1A5D994D61DA02083D096C23181015A8795E378152DC9C44F7",
+        "identity_source": "docs/evidence/r2/final-control/ct-w4/attempt-01-pass/hardware-attempt01-h5-acceptance.json",
+        "programmed_identity": "PASS",
+        "ram_free_bytes": 33808,
+        "ram_used_bytes": 97264,
+        "ram_used_percent": 74.21,
+        "rebuilt_elf_sha256": "624B70718F3B1E9BC431CE74D0D9CBEF72BD8B1C96A8DB30218365EC7E2F4282",
+        "rebuilt_programmed_sha256": "D83E2B181F33EB1A5D994D61DA02083D096C23181015A8795E378152DC9C44F7",
+        "whole_elf_identity": "DIFFERENT_INFORMATIONAL"
+      },
+      "historical_w6": {
+        "programmed_identity": "PASS",
+        "rebuilt_programmed_sha256": "CFE5D02BD66BDEDFFBD25D04A9D29A559477FE546677E2862DC2EA8DF2AFCA10",
+        "sealed_elf_sha256": "E102911CC6A2C81D65ED03BD63B1558018D59BB507436DD7D2E7B67D69F11B18",
+        "sealed_programmed_sha256": "CFE5D02BD66BDEDFFBD25D04A9D29A559477FE546677E2862DC2EA8DF2AFCA10"
+      },
+      "k": 8,
+      "mode": "NORMAL"
+    },
+    {
+      "cell": "k8-drop",
+      "final_control": {
+        "hardware_tested_elf_sha256": "5B177CA61EAE3C783A7FC52FD4F9CD37AA85D49A8FD49BCDF7C55D33EF693C96",
+        "hardware_tested_programmed_sha256": "E33E38B0E323CB098D34E84AAE8F10DE8A06FA18C5166F2D3AE1510FB9020B5C",
+        "identity_source": "docs/evidence/r2/final-control/ct-w6/matrix-summary.json",
+        "programmed_identity": "PASS",
+        "ram_free_bytes": 33808,
+        "ram_used_bytes": 97264,
+        "ram_used_percent": 74.21,
+        "rebuilt_elf_sha256": "71788F8A8B208E0460B8C09B3EE0C35F68B3A3A6543850263D743B29A86B4265",
+        "rebuilt_programmed_sha256": "E33E38B0E323CB098D34E84AAE8F10DE8A06FA18C5166F2D3AE1510FB9020B5C",
+        "whole_elf_identity": "DIFFERENT_INFORMATIONAL"
+      },
+      "historical_w6": {
+        "programmed_identity": "PASS",
+        "rebuilt_programmed_sha256": "57E02134B44EDBD66EA111BD3B3320B3E0A929AB9364A7C13C48F3D7D60784E3",
+        "sealed_elf_sha256": "B687A7D83E51533622AE77AABFC97E23FF0131964C6B7A2AD041AB48BB756581",
+        "sealed_programmed_sha256": "57E02134B44EDBD66EA111BD3B3320B3E0A929AB9364A7C13C48F3D7D60784E3"
+      },
+      "k": 8,
+      "mode": "DROP"
+    }
+  ],
+  "r2_pass_present": false,
+  "requirements": [
+    {
+      "evidence": "R2-W1/W2/W3/W6 sealed evidence",
+      "id": "R2-OWNERSHIP",
+      "requirement": "K+2 pool, ownership accounting, DMA-slot model, dynamic inactive-slot rebinding",
+      "status": "CLOSED_R2"
+    },
+    {
+      "evidence": "R2-W4/W6 sealed evidence",
+      "id": "R2-ROUNDTRIP",
+      "requirement": "DMA -> READY -> PROCESSING -> FREE -> DMA round trip and functional completion hook",
+      "status": "CLOSED_R2"
+    },
+    {
+      "evidence": "R2-W5/W6 + CT-W5/CT-W6 DROP cells",
+      "id": "R2-DROP",
+      "requirement": "controlled capacity drop preserves DMA mapping/ownership and later admission recovery",
+      "status": "CLOSED_R2"
+    },
+    {
+      "evidence": "R2-W6 8/8 historical matrix + CT-W3/W4/W5/W6 real-control coverage",
+      "id": "R2-K-MATRIX",
+      "requirement": "K=1/2/4/8 x NORMAL/DROP hardware coverage",
+      "status": "CLOSED_R2"
+    },
+    {
+      "evidence": "CT-W2 smoke; CT-W3 through CT-W6 stress",
+      "id": "R2-REAL-CONTROL",
+      "requirement": "real USART2/VCP control request processed during active acquisition with bounded reply path",
+      "status": "CLOSED_R2"
+    },
+    {
+      "evidence": "CT-W3",
+      "id": "R2-UNIFORM",
+      "requirement": "worst-permitted uniform control traffic within <=10/s, payload <=64 B",
+      "status": "CLOSED_R2"
+    },
+    {
+      "evidence": "CT-W4; reused in CT-W5/CT-W6",
+      "id": "R2-BURST",
+      "requirement": "adverse bounded burst in addition to uniform traffic",
+      "status": "CLOSED_R2"
+    },
+    {
+      "evidence": "CT-W3/W4/W5/W6 target traces and H5 validators",
+      "id": "R2-SERVICE-MARGIN",
+      "requirement": "nominal->decision <=57600 cycles and nominal->ISR-exit <=80640 cycles under approved control load",
+      "status": "CLOSED_R2"
+    },
+    {
+      "evidence": "CT-W3/W4/W5/W6 target traces",
+      "id": "R2-W6-FINAL-WINDOW",
+      "requirement": "W6-specific final protected window <=3600 cycles under control stress",
+      "status": "CLOSED_R2"
+    },
+    {
+      "evidence": "CT-W2 through CT-W6 H5 acceptance",
+      "id": "R2-INTEGRITY",
+      "requirement": "zero DMA/ADC/ownership/slot/token/queue/notification/sample/canary integrity failures under control stress",
+      "status": "CLOSED_R2"
+    },
+    {
+      "evidence": "W6 + CT-W3/W4/W5/W6",
+      "id": "R2-T11",
+      "requirement": "T11 K full coverage, successful admission and continuous drop under worst allowed control load",
+      "status": "CLOSED_R2"
+    },
+    {
+      "evidence": "current final committed-state regression",
+      "id": "R2-PROVENANCE",
+      "requirement": "native/target regression, exact artifact identity and historical programmed-byte reproducibility",
+      "status": "CLOSED_R2_IF_THIS_AUDIT_PASSES"
+    },
+    {
+      "evidence": "Architecture explicitly allows R2/R4 diagnostic proof; current W6 final_window is a different interval and is not used as substitute",
+      "id": "ARCH-COMMIT-CRITICAL-1800",
+      "requirement": "CompleteAndReleaseBlock full [t_lock,t_unlock) <=1800 cycles",
+      "status": "DEFERRED_R4_NOT_CLAIMED"
+    },
+    {
+      "evidence": "current stress point is N=256, fs=200 kS/s; later risk gates/final integration must retain their own coverage",
+      "id": "ARCH-N512-OTHER-RATES",
+      "requirement": "N=512 / broader mandatory parameter functionality and final floating-point integration",
+      "status": "NOT_CLAIMED_BY_CURRENT_R2_FINAL_CONTROL"
+    },
+    {
+      "evidence": "Architecture R3-R7 risk-gate mapping",
+      "id": "R3-R7-FUTURE",
+      "requirement": "START/STOP lifecycle, RuntimeEvent/Clock64, model/DSP and final Benchmark regressions",
+      "status": "OUTSIDE_R2_CURRENT_GATE"
+    }
+  ],
+  "result": "PASS",
+  "tag_created": false,
+  "verdict": "R2_PRINCIPAL_REVIEW_READY"
+}

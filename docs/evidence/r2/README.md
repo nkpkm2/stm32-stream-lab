@@ -34,8 +34,38 @@ W6 then demonstrated the same mechanism across K=1,2,4,8 in both NORMAL and DROP
 
 W1 and W2 do not have standalone hardware evidence packages because they are lower-layer software abstractions; their behavior is exercised by later Native and hardware packages. Their implementation commits remain part of the Git history.
 
-## Remaining R2 acceptance work
+## Final R2 status
 
-W6 closes the mandatory K matrix but not the whole R2 gate.
-Architecture v3.2.2 still requires final worst-permitted-control-traffic / service-margin stress acceptance, including approved control-traffic interference in the DBM service budget.
-Only after the remaining R2 acceptance work, final evidence review, and Principal acceptance may `r2-pass` be created.
+R2 is **PASS / CLOSED** following completion of the
+R2 Final Control-Traffic / Service-Margin Acceptance work package and
+Principal Acceptance.
+
+Final R2 identities:
+
+- firmware milestone / authorized `r2-pass` target:
+  `48da792e382e911aad1b7bb43765284aa8b58ea2`;
+- pre-acceptance evidence commit:
+  `3db4339b64b275e5868cdb288d867a561caf3cba`;
+- final closure audit: **PASS**;
+- current-R2 blockers: **0**.
+
+Final committed-state regression established:
+
+- Native W1-W6 + CT protocol: `124 / 124 PASS`;
+- CT protocol tests: `8 / 8 PASS`;
+- historical W6 CT-OFF programmed-byte regression: `8 / 8 PASS`;
+- final-control CT-ON programmed-byte regression: `8 / 8 PASS`;
+- CT-W2 through CT-W6 evidence manifests: **PASS**;
+- current firmware tree equals the firmware milestone content.
+
+The following remain explicit non-claims and are not R2 blockers:
+
+- the distinct CompleteAndReleaseBlock full `[t_lock,t_unlock)` initial
+  `1800-cycle` target remains assigned to its later Architecture gate;
+- N=512, broader sample-rate functional coverage, and final floating-point
+  DSP integration are not certified by the current R2 final-control package;
+- later R3-R7 lifecycle/runtime/model/DSP gates retain their own acceptance
+  requirements.
+
+Principal Acceptance authorizes creation of `r2-pass` at
+`48da792e382e911aad1b7bb43765284aa8b58ea2` as a separate post-acceptance tag operation.

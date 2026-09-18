@@ -169,7 +169,7 @@ The corresponding R1 evidence/documentation commit is:
 
 `538073fa3e86a8188a88d02360c2178494cd6928`
 
-R2 is IN PROGRESS. W1-W6 are implemented; W6 mandatory K matrix is 8/8 hardware PASS. Final control-traffic/service-margin acceptance remains pending.
+R2 is PASS / CLOSED. W1-W6 and the final control-traffic/service-margin acceptance are complete; Principal Acceptance has approved the R2 milestone.
 
 ## R2 - Dynamic K+2 DMA Ownership and Capacity Control
 
@@ -188,7 +188,7 @@ W1-W6 establish the K+2 BufferPool ownership model, DMA M0/M1 slot abstraction, 
 - [`R2-W6 evidence`](r2/w6/README.md)
 - [`R2 provenance archive`](r2/archive/README.md)
 
-R2 is not yet a final PASS. Architecture v3.2.2 final worst-permitted-control-traffic / service-margin acceptance remains pending, and `r2-pass` has not been created.
+R2 final acceptance is complete. CT-W2 through CT-W6 close the real control-traffic/service-margin evidence, the final committed-state regression is PASS, and Principal Acceptance authorizes `r2-pass` to point to firmware milestone `48da792e382e911aad1b7bb43765284aa8b58ea2`.
 
 ## Existing engineering / project logs
 
