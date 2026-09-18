@@ -92,6 +92,7 @@ option(STREAM_LAB_R2_W3 "Build the bounded W3 rebinding experiment instead of R1
 option(STREAM_LAB_R2_W4 "Build the W4 queue/processing ownership round-trip experiment" OFF)
 option(STREAM_LAB_R2_W5 "Build the W5 controlled capacity-drop experiment" OFF)
 option(STREAM_LAB_R2_W6 "Build one W6 mandatory K-matrix experiment" OFF)
+option(STREAM_LAB_R2_CT "Add the R2 final control-traffic acceptance path to a W6 build" OFF)
 set(STREAM_LAB_R2_W6_K "1" CACHE STRING "W6 backlog capacity K: 1, 2, 4, or 8")
 set_property(CACHE STREAM_LAB_R2_W6_K PROPERTY STRINGS 1 2 4 8)
 set(STREAM_LAB_R2_W6_MODE "NORMAL" CACHE STRING "W6 matrix mode: NORMAL or DROP")
@@ -105,6 +106,10 @@ foreach(profile_name
 endforeach()
 if(R2_DIAGNOSTIC_PROFILE_COUNT GREATER 1)
     message(FATAL_ERROR "R2 diagnostic profiles W3/W4/W5/W6 are mutually exclusive")
+endif()
+
+if(STREAM_LAB_R2_CT AND NOT STREAM_LAB_R2_W6)
+    message(FATAL_ERROR "STREAM_LAB_R2_CT is a modifier of STREAM_LAB_R2_W6 and requires W6")
 endif()
 
 if(STREAM_LAB_R2_W6)
@@ -143,6 +148,18 @@ if(STREAM_LAB_R2_W6)
         "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_w6_matrix.c"
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
     )
+    if(STREAM_LAB_R2_CT)
+        target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R2_CT=1)
+        target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_ct_protocol.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_ct_control.c"
+        )
+        set_source_files_properties(
+            "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_ct_protocol.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_ct_control.c"
+            PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+        )
+    endif()
 elseif(STREAM_LAB_R2_W5)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R2_W5=1)
     target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE

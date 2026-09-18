@@ -1,0 +1,23 @@
+{
+  "debugger_attached": false,
+  "explicit_reset": true,
+  "flash_performed": false,
+  "host_returncode": 0,
+  "host_round_trip_ms": 15.0,
+  "host_stderr_file": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w2-k8-normal-6b43bec8\\hardware-attempt02-ping.stderr.txt",
+  "host_stdout_file": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w2-k8-normal-6b43bec8\\hardware-attempt02-ping.stdout.txt",
+  "payload_crc32": "B6BCD81D",
+  "reply_payload_bytes": 12,
+  "request_bytes": 76,
+  "request_id": 513,
+  "request_payload_bytes": 64,
+  "reset_stderr_file": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w2-k8-normal-6b43bec8\\hardware-attempt02-reset.stderr.txt",
+  "reset_stdout_file": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w2-k8-normal-6b43bec8\\hardware-attempt02-reset.stdout.txt",
+  "result": "PASS",
+  "scope": "CT-W2 Attempt 02 H3 runtime only",
+  "target_drop_mode": 0,
+  "target_k": 8,
+  "target_phase": 3,
+  "target_w6_input_at_process": 43,
+  "vcp": "COM5"
+}

@@ -23,6 +23,9 @@
 /* USER CODE BEGIN Includes */
 #if defined(STREAM_LAB_R2_W6)
 #include "r2_w6_matrix.h"
+#if defined(STREAM_LAB_R2_CT)
+#include "r2_ct_control.h"
+#endif
 #elif defined(STREAM_LAB_R2_W5)
 #include "r2_w5_capacity.h"
 #elif defined(STREAM_LAB_R2_W4)
@@ -56,6 +59,9 @@
 
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
+#if defined(STREAM_LAB_R2_CT)
+DMA_HandleTypeDef hdma_usart2_tx;
+#endif
 
 TIM_HandleTypeDef htim2;
 
@@ -117,6 +123,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
 #if defined(STREAM_LAB_R2_W6)
   R2_W6_CreateTasks();
+#if defined(STREAM_LAB_R2_CT)
+  R2_CT_CreateTask();
+#endif
 #elif defined(STREAM_LAB_R2_W5)
   R2_W5_CreateTasks();
 #elif defined(STREAM_LAB_R2_W4)
@@ -346,11 +355,19 @@ static void MX_DMA_Init(void)
 
   /* DMA controller clock enable */
   __HAL_RCC_DMA2_CLK_ENABLE();
+#if defined(STREAM_LAB_R2_CT)
+  __HAL_RCC_DMA1_CLK_ENABLE();
+#endif
 
   /* DMA interrupt init */
   /* DMA2_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
+#if defined(STREAM_LAB_R2_CT)
+  /* Control TX DMA is intentionally lower urgency than acquisition DMA. */
+  HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 6, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+#endif
 
 }
 

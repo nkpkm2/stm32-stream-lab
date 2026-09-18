@@ -24,6 +24,11 @@
 /* USER CODE BEGIN Includes */
 #if defined(STREAM_LAB_R2_W6)
 #include "r2_w6_matrix.h"
+#if defined(STREAM_LAB_R2_CT)
+#include "FreeRTOS.h"
+#include "task.h"
+#include "r2_ct_control.h"
+#endif
 #elif defined(STREAM_LAB_R2_W5)
 #include "r2_w5_capacity.h"
 #elif defined(STREAM_LAB_R2_W4)
@@ -210,6 +215,32 @@ void TIM7_IRQHandler(void)
 
   /* USER CODE END TIM7_IRQn 1 */
 }
+
+#if defined(STREAM_LAB_R2_CT)
+/**
+  * @brief This function handles DMA1 stream6 global interrupt.
+  */
+void DMA1_Stream6_IRQHandler(void)
+{
+  BaseType_t higher_priority_task_woken;
+
+  higher_priority_task_woken =
+      R2_CT_TxDmaIrqHandler() != 0U ? pdTRUE : pdFALSE;
+  portYIELD_FROM_ISR(higher_priority_task_woken);
+}
+
+/**
+  * @brief This function handles USART2 global interrupt.
+  */
+void USART2_IRQHandler(void)
+{
+  BaseType_t higher_priority_task_woken;
+
+  higher_priority_task_woken =
+      R2_CT_UsartIrqHandler() != 0U ? pdTRUE : pdFALSE;
+  portYIELD_FROM_ISR(higher_priority_task_woken);
+}
+#endif
 
 /**
   * @brief This function handles DMA2 stream0 global interrupt.

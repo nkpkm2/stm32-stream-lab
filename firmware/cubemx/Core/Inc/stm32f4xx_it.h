@@ -59,7 +59,10 @@ void EXTI15_10_IRQHandler(void);
 void TIM7_IRQHandler(void);
 void DMA2_Stream0_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-
+#if defined(STREAM_LAB_R2_CT)
+void DMA1_Stream6_IRQHandler(void);
+void USART2_IRQHandler(void);
+#endif
 /* USER CODE END EFP */
 
 #ifdef __cplusplus

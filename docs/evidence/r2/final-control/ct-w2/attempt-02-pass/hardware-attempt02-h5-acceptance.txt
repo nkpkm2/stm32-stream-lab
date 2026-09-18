@@ -1,0 +1,35 @@
+R2 CT-W2 HARDWARE SMOKE ATTEMPT 02: PASS
+
+Source HEAD: 45a5b0b3983d01b59893aea8cfb1b42c4afb2420
+CT source SHA256: 630FC34A41DA02CFDB0EC00A12EA576CE8915EF7C87A6F477CB63733311FEAD1
+CT-ON ELF SHA256: 7C2CCA4982D39930BC4FFE31328F985880D4828F0F209C8B150F3A44D7042CFB
+CT-ON programmed SHA256: C16309F614A5E2B918FFD2B053E45DDAD70BE36B0E3A42E9316DD8C9996696B3
+
+H2 flash + verify: PASS
+H3 one real 64-byte PING: PASS
+H4 same-run post-run RAM collection: PASS
+H5 offline acceptance: PASS
+
+PING processed at W6 input: 43
+Host round trip: 15.0 ms
+Payload CRC32: B6BCD81D
+CT reply attempt/success/error: 1 / 1 / 0
+CT reply complete cycle: 2429155961
+
+W6 K8 NORMAL: 96 / 96 admitted, 0 drops
+W6 processed/released: 96 / 96
+W6 test_pass: 1
+W6 fault_bits: 0
+W6 max decision cycles: 6945 / 57600
+W6 max IRQ-exit cycles: 12150 / 80640
+W6 max final window cycles: 1076 / 3600
+DMA/ADC/ownership/sample/canary errors: 0
+Final pool: 8 FREE + 2 DMA, 0 READY, 0 PROCESSING
+
+Debugger attached during measurement: NO
+H4 debugger action: post-run read-only inspection
+Hardware operations during H5: NONE
+
+SCOPE:
+CT-W2 smoke only: one real 64-byte PING during K=8 NORMAL.
+Do NOT claim worst-permitted control-traffic acceptance or R2 final closure yet.

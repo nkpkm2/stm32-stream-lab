@@ -187,3 +187,26 @@ foreach(k_value 1 2 4 8)
     r2_add_w6_matrix_target(${k_value} NORMAL 0)
     r2_add_w6_matrix_target(${k_value} DROP 1)
 endforeach()
+
+# R2 final control-traffic protocol tests are opt-in so the sealed W6 Native
+# profile remains exactly 116 registered tests when this option is OFF.
+option(R2_CT_NATIVE_TESTS "Build R2 control-traffic protocol tests" OFF)
+if(R2_CT_NATIVE_TESTS)
+    add_executable(test_r2_ct_protocol
+        test_r2_ct_protocol.c
+        ../../firmware/acquisition/r2_ct_protocol.c
+    )
+    target_include_directories(test_r2_ct_protocol PRIVATE
+        ../../firmware/acquisition)
+    set_target_properties(test_r2_ct_protocol PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_r2_ct_protocol)
+    r2_apply_sanitizers(test_r2_ct_protocol)
+
+    foreach(case_name
+        crc_standard encode_zero encode_max parse_fragmented
+        resync bad_length bad_crc version)
+        add_test(NAME r2_ct.${case_name} COMMAND test_r2_ct_protocol ${case_name})
+        set_tests_properties(r2_ct.${case_name} PROPERTIES TIMEOUT 10)
+    endforeach()
+endif()

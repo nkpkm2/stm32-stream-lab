@@ -1,0 +1,16 @@
+{
+  "continue_or_restart_performed": false,
+  "elf_sha256": "7C2CCA4982D39930BC4FFE31328F985880D4828F0F209C8B150F3A44D7042CFB",
+  "flash_performed": false,
+  "gdb_returncode": 0,
+  "gdbserver_stderr_file": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w2-k8-normal-6b43bec8\\hardware-attempt02-h4-gdbserver.stderr.txt",
+  "gdbserver_stdout_file": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w2-k8-normal-6b43bec8\\hardware-attempt02-h4-gdbserver.stdout.txt",
+  "h3_result": "PASS",
+  "h3_target_w6_input_at_process": 43,
+  "inspection_file": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w2-k8-normal-6b43bec8\\hardware-attempt02-h4-inspection.txt",
+  "inspection_stderr_file": "E:\\Projects\\stm32-stream-lab\\build\\r2-ct-w2-k8-normal-6b43bec8\\hardware-attempt02-h4-inspection.stderr.txt",
+  "ping_performed": false,
+  "reset_performed": false,
+  "result": "COLLECTED",
+  "scope": "CT-W2 Attempt 02 H4 post-run RAM inspection only"
+}

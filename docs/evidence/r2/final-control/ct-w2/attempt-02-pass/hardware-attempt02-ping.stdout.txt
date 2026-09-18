@@ -1,0 +1,1 @@
+{"baud": 115200, "host_round_trip_ms": 15.0, "payload_crc32": "B6BCD81D", "port": "COM5", "reply_payload_bytes": 12, "request_bytes": 76, "request_id": 513, "request_payload_bytes": 64, "result": "PASS", "target_drop_mode": 0, "target_k": 8, "target_phase": 3, "target_w6_input_at_process": 43}
