@@ -339,3 +339,48 @@ if(FOUNDATION_STREAM_RUN_AUTHORITY_NATIVE_TESTS)
             PROPERTIES TIMEOUT 10)
     endforeach()
 endif()
+
+# R3-W2-A: pure worker lifecycle contract tests.
+option(R3_WORKER_CONTRACT_NATIVE_TESTS
+    "Build R3-W2 worker contract native tests" OFF)
+if(R3_WORKER_CONTRACT_NATIVE_TESTS)
+    add_executable(test_r3_worker_contract
+        test_r3_worker_contract.c
+        ../../firmware/runtime/r3_worker_contract.c
+    )
+    target_include_directories(test_r3_worker_contract PRIVATE
+        ../../firmware/runtime)
+    set_target_properties(test_r3_worker_contract PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_r3_worker_contract)
+    r2_apply_sanitizers(test_r3_worker_contract)
+
+    foreach(case_name
+        init
+        bind_idempotent
+        bind_different_active_rejected
+        stale_stop_rejected
+        duplicate_stop_idempotent
+        conflicting_stop_rejected
+        wake_stop_precedence
+        new_work_closes_on_stop
+        processing_empty_stop_ack
+        processing_held_cancel
+        processing_current_finish
+        processing_drain_backlog
+        interference_pending_cancel
+        interference_running_finish
+        interference_idle_ack
+        ack_requires_released
+        ack_exact_identity
+        ack_exactly_once
+        post_ack_old_mutation_closed
+        rebind_after_ack_new_generation)
+        add_test(
+            NAME r3.worker_contract.${case_name}
+            COMMAND test_r3_worker_contract ${case_name})
+        set_tests_properties(
+            r3.worker_contract.${case_name}
+            PROPERTIES TIMEOUT 10)
+    endforeach()
+endif()

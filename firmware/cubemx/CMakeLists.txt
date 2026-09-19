@@ -101,6 +101,9 @@ option(STREAM_LAB_FOUNDATION_TOKEN_LEDGER
     "Compile the F0-3 pure token-authority ledger" OFF)
 option(STREAM_LAB_FOUNDATION_QUEUE_ADAPTER
     "Compile the F0-3 FreeRTOS queue transport adapter" OFF)
+option(STREAM_LAB_R3_WORKER_CONTRACT
+    "Compile the R3-W2 worker lifecycle contract foundation" OFF)
+
 set(STREAM_LAB_R2_CT_EVENTS "96" CACHE STRING "W6 event count for R2 control-traffic acceptance")
 set_property(CACHE STREAM_LAB_R2_CT_EVENTS PROPERTY STRINGS 96 800)
 set(STREAM_LAB_R2_CT_RUN_TIMEOUT_MS "1000" CACHE STRING "W6 run timeout for R2 control-traffic acceptance")
@@ -245,6 +248,29 @@ if(STREAM_LAB_FOUNDATION_QUEUE_ADAPTER)
     )
 endif()
 # === R2->R3 RUNTIME FOUNDATION F0-3 STAGE2B1 END ===
+
+# === R3-W2 WORKER CONTRACT FOUNDATION BEGIN ===
+if(STREAM_LAB_R3_WORKER_CONTRACT)
+    if(STREAM_LAB_R2_W3 OR STREAM_LAB_R2_W4 OR
+       STREAM_LAB_R2_W5 OR STREAM_LAB_R2_W6)
+        message(FATAL_ERROR
+            "R3 worker contract must not be combined with historical R2 profiles.")
+    endif()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        STREAM_LAB_R3_WORKER_CONTRACT=1
+    )
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_worker_contract.c"
+    )
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime"
+    )
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_worker_contract.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+    )
+endif()
+# === R3-W2 WORKER CONTRACT FOUNDATION END ===
 
 if(STREAM_LAB_R2_W6)
     if(R2_W6_MODE_UPPER STREQUAL "DROP")
