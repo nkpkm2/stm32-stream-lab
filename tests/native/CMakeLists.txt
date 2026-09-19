@@ -236,3 +236,39 @@ if(FOUNDATION_ADC_DBM_NATIVE_TESTS)
             PROPERTIES TIMEOUT 10)
     endforeach()
 endif()
+# F0-3 Stage 1: pure logical ownership/mapping composition. This is opt-in so
+# the sealed R2+CT and F0-2 native-test identities remain unchanged by default.
+option(FOUNDATION_STREAM_OWNERSHIP_NATIVE_TESTS
+    "Build F0-3 StreamOwnership pure logical transaction tests" OFF)
+if(FOUNDATION_STREAM_OWNERSHIP_NATIVE_TESTS)
+    add_executable(test_stream_ownership_core
+        test_stream_ownership_core.c
+        ../../firmware/runtime/stream_ownership_core.c
+        ../../firmware/acquisition/r2_dma_slots.c
+        ../../firmware/buffer_pool/r2_buffer_pool.c
+    )
+    target_include_directories(test_stream_ownership_core PRIVATE
+        ../../firmware/runtime
+        ../../firmware/acquisition
+        ../../firmware/buffer_pool)
+    set_target_properties(test_stream_ownership_core PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_stream_ownership_core)
+    r2_apply_sanitizers(test_stream_ownership_core)
+
+    foreach(case_name
+        reset init_k1 init_k2 init_k4 init_k8 invalid_k double_init_faults
+        prepare_keep_no_mutation commit_keep_no_mutation
+        prepare_rebind_no_mutation commit_rebind alternating_eight
+        keep_after_exhaustion drop_streak_then_rebind
+        sequence_gap_faults duplicate_keep_faults
+        stale_plan_rejected replacement_not_free_faults forged_plan_faults
+        keep_replacement_rejected snapshot)
+        add_test(
+            NAME foundation.stream_ownership.${case_name}
+            COMMAND test_stream_ownership_core ${case_name})
+        set_tests_properties(
+            foundation.stream_ownership.${case_name}
+            PROPERTIES TIMEOUT 10)
+    endforeach()
+endif()

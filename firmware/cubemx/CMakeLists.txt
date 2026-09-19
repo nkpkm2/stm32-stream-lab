@@ -95,6 +95,8 @@ option(STREAM_LAB_R2_W6 "Build one W6 mandatory K-matrix experiment" OFF)
 option(STREAM_LAB_R2_CT "Add the R2 final control-traffic acceptance path to a W6 build" OFF)
 option(STREAM_LAB_FOUNDATION_ADC_DBM_DRIVER
     "Compile the F0-2 AdcDbmDriver foundation module without migrating historical profiles" OFF)
+option(STREAM_LAB_FOUNDATION_OWNERSHIP_CORE
+    "Compile the F0-3 pure logical stream ownership core" OFF)
 set(STREAM_LAB_R2_CT_EVENTS "96" CACHE STRING "W6 event count for R2 control-traffic acceptance")
 set_property(CACHE STREAM_LAB_R2_CT_EVENTS PROPERTY STRINGS 96 800)
 set(STREAM_LAB_R2_CT_RUN_TIMEOUT_MS "1000" CACHE STRING "W6 run timeout for R2 control-traffic acceptance")
@@ -156,6 +158,32 @@ if(STREAM_LAB_FOUNDATION_ADC_DBM_DRIVER)
     )
 endif()
 # === R2->R3 RUNTIME FOUNDATION F0-2 END ===
+
+# === R2->R3 RUNTIME FOUNDATION F0-3 STAGE1 BEGIN ===
+if(STREAM_LAB_FOUNDATION_OWNERSHIP_CORE)
+    if(STREAM_LAB_R2_W3 OR STREAM_LAB_R2_W4 OR
+       STREAM_LAB_R2_W5 OR STREAM_LAB_R2_W6)
+        message(FATAL_ERROR
+            "F0-3 ownership-core compile gate must not be combined with historical R2 profiles.")
+    endif()
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/stream_ownership_core.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool/r2_buffer_pool.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_dma_slots.c"
+    )
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition"
+    )
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/stream_ownership_core.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool/r2_buffer_pool.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition/r2_dma_slots.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+    )
+endif()
+# === R2->R3 RUNTIME FOUNDATION F0-3 STAGE1 END ===
 
 if(STREAM_LAB_R2_W6)
     if(R2_W6_MODE_UPPER STREQUAL "DROP")
