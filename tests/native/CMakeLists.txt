@@ -307,3 +307,35 @@ if(FOUNDATION_STREAM_TOKEN_NATIVE_TESTS)
             PROPERTIES TIMEOUT 10)
     endforeach()
 endif()
+# F0-3 Stage 2C: run-scoped provenance/lease authority bridge.
+option(FOUNDATION_STREAM_RUN_AUTHORITY_NATIVE_TESTS
+    "Build F0-3 StreamRunAuthority run/lease authority tests" OFF)
+if(FOUNDATION_STREAM_RUN_AUTHORITY_NATIVE_TESTS)
+    add_executable(test_stream_run_authority
+        test_stream_run_authority.c
+        ../../firmware/runtime/stream_run_authority.c
+    )
+    target_include_directories(test_stream_run_authority PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/freertos_stubs
+        ../../firmware/runtime
+        ../../firmware/acquisition
+        ../../firmware/buffer_pool)
+    set_target_properties(test_stream_run_authority PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_stream_run_authority)
+    r2_apply_sanitizers(test_stream_run_authority)
+
+    foreach(case_name
+        initialize publish_provenance lease_monotonic
+        roundtrip_complete cancel stale_ticket_faults
+        stale_ready_provenance_faults unminted_ready_faults
+        wrong_operation_rejected direct_adapter_claim_rejected
+        reset_after_complete reset_with_live_lease_faults)
+        add_test(
+            NAME foundation.stream_run_authority.${case_name}
+            COMMAND test_stream_run_authority ${case_name})
+        set_tests_properties(
+            foundation.stream_run_authority.${case_name}
+            PROPERTIES TIMEOUT 10)
+    endforeach()
+endif()

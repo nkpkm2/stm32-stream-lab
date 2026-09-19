@@ -231,6 +231,7 @@ if(STREAM_LAB_FOUNDATION_QUEUE_ADAPTER)
     )
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/stream_queue_adapter.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/stream_run_authority.c"
     )
     target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime"
@@ -239,6 +240,7 @@ if(STREAM_LAB_FOUNDATION_QUEUE_ADAPTER)
     )
     set_source_files_properties(
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/stream_queue_adapter.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/stream_run_authority.c"
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
     )
 endif()
