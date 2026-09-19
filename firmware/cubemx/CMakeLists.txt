@@ -97,6 +97,8 @@ option(STREAM_LAB_FOUNDATION_ADC_DBM_DRIVER
     "Compile the F0-2 AdcDbmDriver foundation module without migrating historical profiles" OFF)
 option(STREAM_LAB_FOUNDATION_OWNERSHIP_CORE
     "Compile the F0-3 pure logical stream ownership core" OFF)
+option(STREAM_LAB_FOUNDATION_TOKEN_LEDGER
+    "Compile the F0-3 pure token-authority ledger" OFF)
 set(STREAM_LAB_R2_CT_EVENTS "96" CACHE STRING "W6 event count for R2 control-traffic acceptance")
 set_property(CACHE STREAM_LAB_R2_CT_EVENTS PROPERTY STRINGS 96 800)
 set(STREAM_LAB_R2_CT_RUN_TIMEOUT_MS "1000" CACHE STRING "W6 run timeout for R2 control-traffic acceptance")
@@ -184,6 +186,31 @@ if(STREAM_LAB_FOUNDATION_OWNERSHIP_CORE)
     )
 endif()
 # === R2->R3 RUNTIME FOUNDATION F0-3 STAGE1 END ===
+
+# === R2->R3 RUNTIME FOUNDATION F0-3 STAGE2A BEGIN ===
+if(STREAM_LAB_FOUNDATION_TOKEN_LEDGER)
+    if(NOT STREAM_LAB_FOUNDATION_OWNERSHIP_CORE)
+        message(FATAL_ERROR
+            "F0-3 token-ledger foundation requires STREAM_LAB_FOUNDATION_OWNERSHIP_CORE=ON.")
+    endif()
+    if(STREAM_LAB_R2_W3 OR STREAM_LAB_R2_W4 OR
+       STREAM_LAB_R2_W5 OR STREAM_LAB_R2_W6)
+        message(FATAL_ERROR
+            "F0-3 token-ledger compile gate must not be combined with historical R2 profiles.")
+    endif()
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/stream_token_ledger.c"
+    )
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool"
+    )
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/stream_token_ledger.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+    )
+endif()
+# === R2->R3 RUNTIME FOUNDATION F0-3 STAGE2A END ===
 
 if(STREAM_LAB_R2_W6)
     if(R2_W6_MODE_UPPER STREQUAL "DROP")

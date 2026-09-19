@@ -272,3 +272,38 @@ if(FOUNDATION_STREAM_OWNERSHIP_NATIVE_TESTS)
             PROPERTIES TIMEOUT 10)
     endforeach()
 endif()
+
+# F0-3 Stage 2A: pure token-authority mirror plus READY->FREE CANCEL primitive.
+option(FOUNDATION_STREAM_TOKEN_NATIVE_TESTS
+    "Build F0-3 StreamTokenLedger pure transaction tests" OFF)
+if(FOUNDATION_STREAM_TOKEN_NATIVE_TESTS)
+    add_executable(test_stream_token_ledger
+        test_stream_token_ledger.c
+        ../../firmware/runtime/stream_token_ledger.c
+        ../../firmware/buffer_pool/r2_buffer_pool.c
+    )
+    target_include_directories(test_stream_token_ledger PRIVATE
+        ../../firmware/runtime
+        ../../firmware/buffer_pool)
+    set_target_properties(test_stream_token_ledger PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_stream_token_ledger)
+    r2_apply_sanitizers(test_stream_token_ledger)
+
+    foreach(case_name
+        reset init_k1 init_k2 init_k4 init_k8 invalid_k
+        seal_incomplete duplicate_init admission_publish ready_claim
+        cancel_flow complete_flow concurrent_windows
+        publish_held_ready_rejected
+        stable_reject_admission stable_reject_ready_hold
+        missing_free missing_ready wrong_cancel
+        complete_replacement_rejected cancel_ready_primitive
+        stable_mismatch full_round_trip)
+        add_test(
+            NAME foundation.stream_token.${case_name}
+            COMMAND test_stream_token_ledger ${case_name})
+        set_tests_properties(
+            foundation.stream_token.${case_name}
+            PROPERTIES TIMEOUT 10)
+    endforeach()
+endif()

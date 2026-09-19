@@ -226,6 +226,11 @@ R2_BufferPoolStatus R2_BufferPool_ClaimReady(R2_BufferId id)
     return Transition(id, R2_BUFFER_STATE_READY, R2_BUFFER_STATE_PROCESSING);
 }
 
+R2_BufferPoolStatus R2_BufferPool_CancelReady(R2_BufferId id)
+{
+    return Transition(id, R2_BUFFER_STATE_READY, R2_BUFFER_STATE_FREE);
+}
+
 R2_BufferPoolStatus R2_BufferPool_ReleaseProcessing(R2_BufferId id)
 {
     return Transition(id, R2_BUFFER_STATE_PROCESSING, R2_BUFFER_STATE_FREE);

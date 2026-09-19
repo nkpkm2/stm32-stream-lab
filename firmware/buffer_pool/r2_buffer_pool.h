@@ -91,6 +91,11 @@ R2_BufferPoolStatus R2_BufferPool_CommitDmaRotation(
     R2_BufferId replacement_id);
 
 R2_BufferPoolStatus R2_BufferPool_ClaimReady(R2_BufferId id);
+
+/* STOP/CANCEL primitive only: READY -> FREE. The queue/token adapter remains
+ * responsible for making the corresponding FreeQueue token visible. */
+R2_BufferPoolStatus R2_BufferPool_CancelReady(R2_BufferId id);
+
 R2_BufferPoolStatus R2_BufferPool_ReleaseProcessing(R2_BufferId id);
 
 /* GetState can inspect INACTIVE IDs, including in the reset state. */
