@@ -384,3 +384,51 @@ if(R3_WORKER_CONTRACT_NATIVE_TESTS)
             PROPERTIES TIMEOUT 10)
     endforeach()
 endif()
+
+# R3-W2-B: persistent Processing/Interference task-glue tests.
+option(R3_WORKER_TASK_GLUE_NATIVE_TESTS
+    "Build R3-W2 worker task-glue native tests" OFF)
+if(R3_WORKER_TASK_GLUE_NATIVE_TESTS)
+    add_executable(test_r3_worker_tasks
+        test_r3_worker_tasks.c
+        ../../firmware/runtime/r3_worker_tasks.c
+        ../../firmware/runtime/r3_worker_contract.c
+    )
+    target_include_directories(test_r3_worker_tasks PRIVATE
+        r3_worker_task_stubs
+        ../../firmware/runtime
+        ../../firmware/buffer_pool
+        ../../firmware/acquisition
+    )
+    target_compile_definitions(test_r3_worker_tasks PRIVATE
+        R3_WORKER_TASKS_TESTING=1
+    )
+    set_target_properties(test_r3_worker_tasks PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_r3_worker_tasks)
+    r2_apply_sanitizers(test_r3_worker_tasks)
+
+    foreach(case_name
+        start_binds
+        t03a_empty_stop
+        t03b_work_stop_race
+        t03c_stop_between_take_claim
+        t03d_stop_during_processing
+        t05a_pending_stop
+        t05b_running_stop
+        ack_exactly_once
+        ack_wake_bits
+        post_ack_old_work_closed
+        new_run_requires_ack_consumed
+        new_run_after_ack_consumed
+        notify_caller_guard
+        create_partial_failure_no_retry
+        isr_notify_failure_uses_isr_critical)
+        add_test(
+            NAME r3.worker_tasks.${case_name}
+            COMMAND test_r3_worker_tasks ${case_name})
+        set_tests_properties(
+            r3.worker_tasks.${case_name}
+            PROPERTIES TIMEOUT 10)
+    endforeach()
+endif()

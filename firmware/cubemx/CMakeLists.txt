@@ -104,6 +104,9 @@ option(STREAM_LAB_FOUNDATION_QUEUE_ADAPTER
 option(STREAM_LAB_R3_WORKER_CONTRACT
     "Compile the R3-W2 worker lifecycle contract foundation" OFF)
 
+option(STREAM_LAB_R3_WORKER_TASKS
+    "Compile the R3-W2 persistent Processing/Interference task glue" OFF)
+
 set(STREAM_LAB_R2_CT_EVENTS "96" CACHE STRING "W6 event count for R2 control-traffic acceptance")
 set_property(CACHE STREAM_LAB_R2_CT_EVENTS PROPERTY STRINGS 96 800)
 set(STREAM_LAB_R2_CT_RUN_TIMEOUT_MS "1000" CACHE STRING "W6 run timeout for R2 control-traffic acceptance")
@@ -271,6 +274,34 @@ if(STREAM_LAB_R3_WORKER_CONTRACT)
     )
 endif()
 # === R3-W2 WORKER CONTRACT FOUNDATION END ===
+
+# === R3-W2B WORKER TASK GLUE BEGIN ===
+if(STREAM_LAB_R3_WORKER_TASKS)
+    if(NOT STREAM_LAB_FOUNDATION_QUEUE_ADAPTER OR
+       NOT STREAM_LAB_R3_WORKER_CONTRACT)
+        message(FATAL_ERROR
+            "R3 worker tasks require queue adapter and worker contract.")
+    endif()
+    if(STREAM_LAB_R2_W3 OR STREAM_LAB_R2_W4 OR
+       STREAM_LAB_R2_W5 OR STREAM_LAB_R2_W6)
+        message(FATAL_ERROR
+            "R3 worker tasks must not be combined with historical R2 profiles.")
+    endif()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        STREAM_LAB_R3_WORKER_TASKS=1
+    )
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_worker_tasks.c"
+    )
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime"
+    )
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_worker_tasks.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+    )
+endif()
+# === R3-W2B WORKER TASK GLUE END ===
 
 if(STREAM_LAB_R2_W6)
     if(R2_W6_MODE_UPPER STREQUAL "DROP")
