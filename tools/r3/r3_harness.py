@@ -22,6 +22,11 @@ from r3lib.lifecycle import (
     start_allowed, stop_allowed,
 )
 from r3lib.seal import SealRelation, classify_heads, classify_worktree, inspect_seal
+from r3lib.w2_hw import (
+    W2_HW_CASES, W2_NATIVE_ONLY_CASES, W2_HW_HOST_TIMEOUT_S,
+    W2_HW_TARGET_BOUND_S, case_partition_ok, case_selector_contract_ok,
+    inspect_w2_hw_preflight,
+)
 
 
 def sha256(path: Path) -> str:
@@ -49,6 +54,7 @@ def print_status(repo: Path) -> None:
     print(f"W1_SPEC: {progress.w1_spec}")
     print(f"W2A_WORKER_CONTRACT: {progress.w2a_worker_contract}")
     print(f"W2B_TASK_GLUE: {progress.w2b_task_glue}")
+    print(f"W2_HW_HARNESS_FREEZE: {progress.w2_hw_harness_freeze}")
     print(f"W2_EVIDENCE: {progress.w2_evidence}")
     print(f"CURRENT_WORK_PACKAGE: {progress.current_work_package}")
     print(f"TECHNICAL_NEXT_ALLOWED: {progress.next_allowed}")
@@ -213,6 +219,32 @@ def selftest() -> int:
         == SealRelation.CANDIDATE_MIXED
         or (_ for _ in ()).throw(AssertionError()),
     )
+    case(
+        "w2_hw_case_partition",
+        lambda: case_partition_ok()
+        or (_ for _ in ()).throw(AssertionError()),
+    )
+    case(
+        "w2_hw_case_selector",
+        lambda: case_selector_contract_ok()
+        or (_ for _ in ()).throw(AssertionError()),
+    )
+    case(
+        "w2_hw_progress_after_freeze",
+        lambda: __import__("r3lib.control_state", fromlist=["derive_progress"])
+        .derive_progress(
+            w1_sealed=True,
+            w2a_sealed=True,
+            w2b_sealed=True,
+            w2_evidence_present=False,
+            w2_hw_freeze_sealed=True,
+        ).next_allowed == "W2_HW_HARNESS_IMPLEMENTATION"
+        or (_ for _ in ()).throw(AssertionError()),
+    )
+    case(
+        "w2_hw_timeout_policy",
+        lambda: validate_host_timeout(W2_HW_TARGET_BOUND_S, W2_HW_HOST_TIMEOUT_S),
+    )
 
     for name, ok, detail in tests:
         print(f"{'PASS' if ok else 'FAIL'} {name}: {detail}")
@@ -237,6 +269,7 @@ def main(argv=None) -> int:
     sub.add_parser("selftest")
     sub.add_parser("list-cases")
     sub.add_parser("seal-status")
+    sub.add_parser("w2-hw-preflight")
     ns = parser.parse_args(argv)
     repo = Path(ns.repo).resolve()
 
@@ -260,6 +293,55 @@ def main(argv=None) -> int:
         print(f"CASE_COUNT: {len(CASES)}")
         print(f"NEXT_ALLOWED: {inspect_operator_gate(repo).next_allowed}")
         return 0
+    if ns.cmd == "w2-hw-preflight":
+        identity(repo)
+        progress = inspect_progress(repo)
+        gate = inspect_operator_gate(repo, progress)
+        print(f"W2_HW_HARNESS_FREEZE: {progress.w2_hw_harness_freeze}")
+        print(f"OPERATOR_GATE: {gate.state}")
+        if gate.state != "OPEN":
+            print("PREFLIGHT_RESULT: BLOCKED_OPERATOR_GATE")
+            print(f"NEXT_ALLOWED: {gate.next_allowed}")
+            return 2
+        if progress.w2_hw_harness_freeze != "SEALED":
+            print("PREFLIGHT_RESULT: BLOCKED_FREEZE_NOT_COMMITTED")
+            print("NEXT_ALLOWED: W2_DIRECTED_HARDWARE_HARNESS_PREFLIGHT")
+            return 2
+        preflight = inspect_w2_hw_preflight(repo)
+        print(f"W2_HW_CASES: {','.join(W2_HW_CASES)}")
+        print(f"W2_NATIVE_ONLY_CASES: {','.join(W2_NATIVE_ONLY_CASES)}")
+        print(f"CASE_PARTITION_OK: {'YES' if preflight.case_partition_ok else 'NO'}")
+        print(f"WORKER_IMPL_PRESENT: {'YES' if preflight.worker_impl_present else 'NO'}")
+        print(f"TARGET_PROFILE_PRESENT: {'YES' if preflight.target_profile_present else 'NO'}")
+        print(f"TARGET_HARNESS_PRESENT: {'YES' if preflight.target_harness_present else 'NO'}")
+        print(f"FORMAL_W2_EVIDENCE_PRESENT: {'YES' if preflight.evidence_present else 'NO'}")
+        print(f"SYNTHETIC_IRQ_AVAILABLE: {'YES' if preflight.synthetic_irq_available else 'NO'}")
+        print(f"IRQ_PRIORITY_CONTRACT_OK: {'YES' if preflight.irq_priority_contract_ok else 'NO'}")
+        print(f"WORKER_ISR_API_PRESENT: {'YES' if preflight.worker_isr_api_present else 'NO'}")
+        print(
+            "AUTHORITY_LINK_CONTRACT_OK: "
+            + ("YES" if preflight.authority_link_contract_ok else "NO")
+        )
+        print(
+            "AUTHORITY_LINK_SUBSTITUTION_REQUIRED: "
+            + ("YES" if preflight.authority_link_substitution_required else "NO")
+        )
+        print(
+            "CASE_SELECTOR_CONTRACT_OK: "
+            + ("YES" if preflight.case_selector_contract_ok else "NO")
+        )
+        print(
+            "RESULT_COMMIT_PROTOCOL_FROZEN: "
+            + ("YES" if preflight.result_commit_protocol_frozen else "NO")
+        )
+        print(
+            "STRONG_SYNTHETIC_IRQ_DEFINITIONS: "
+            + (",".join(preflight.strong_irq_definition_paths) or "NONE")
+        )
+        print(f"PREFLIGHT_RESULT: {'PASS' if preflight.ready_for_implementation else 'FAIL'}")
+        print("HARDWARE_ALLOWED: NO")
+        print(f"NEXT_ALLOWED: {preflight.next_allowed}")
+        return 0 if preflight.ready_for_implementation else 2
     if ns.cmd == "seal-status":
         identity(repo)
         seal = inspect_seal(repo)

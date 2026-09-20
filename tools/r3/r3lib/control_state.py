@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .git_state import run_git, status
+from .w2_hw import W2_HW_FREEZE_PATHS
 
 W1_PATHS = (
     "docs/r3/w1/R3_W1_SPEC_FREEZE.md",
@@ -33,6 +34,7 @@ class Progress:
     w1_spec: str
     w2a_worker_contract: str
     w2b_task_glue: str
+    w2_hw_harness_freeze: str
     w2_evidence: str
     current_work_package: str
     next_allowed: str
@@ -65,29 +67,37 @@ def derive_progress(
     w2a_sealed: bool,
     w2b_sealed: bool,
     w2_evidence_present: bool,
+    w2_hw_freeze_sealed: bool = False,
 ) -> Progress:
     if not w1_sealed:
         return Progress(
-            "MISSING", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
+            "MISSING", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
             "R3-W1", "W1_HOST_QUALITY_GATE", False,
         )
     if not w2a_sealed:
         return Progress(
-            "SEALED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
+            "SEALED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
             "R3-W2", "W2A_IMPLEMENTATION", True,
         )
     if not w2b_sealed:
         return Progress(
-            "SEALED", "SEALED", "NOT_STARTED", "NOT_STARTED",
+            "SEALED", "SEALED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
             "R3-W2", "W2B_TASK_GLUE_IMPLEMENTATION", True,
         )
     if not w2_evidence_present:
+        if not w2_hw_freeze_sealed:
+            return Progress(
+                "SEALED", "SEALED", "SEALED", "NOT_STARTED", "NOT_STARTED",
+                "R3-W2", "W2_DIRECTED_HARDWARE_HARNESS_PREFLIGHT", False,
+            )
         return Progress(
-            "SEALED", "SEALED", "SEALED", "NOT_STARTED",
-            "R3-W2", "W2_DIRECTED_HARDWARE_HARNESS_PREFLIGHT", False,
+            "SEALED", "SEALED", "SEALED", "SEALED", "NOT_STARTED",
+            "R3-W2", "W2_HW_HARNESS_IMPLEMENTATION", True,
         )
     return Progress(
-        "SEALED", "SEALED", "SEALED", "PRESENT_UNASSESSED",
+        "SEALED", "SEALED", "SEALED",
+        "SEALED" if w2_hw_freeze_sealed else "NOT_STARTED",
+        "PRESENT_UNASSESSED",
         "R3-W2", "W2_EVIDENCE_REVIEW", False,
     )
 
@@ -116,6 +126,7 @@ def inspect_progress(repo: Path) -> Progress:
         w2a_sealed=_tree_has_all(repo, W2A_PATHS),
         w2b_sealed=_tree_has_all(repo, W2B_PATHS),
         w2_evidence_present=_tree_has_prefix(repo, "docs/evidence/r3/w2/"),
+        w2_hw_freeze_sealed=_tree_has_all(repo, W2_HW_FREEZE_PATHS),
     )
 
 
