@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "r3"))
 
 from r3lib.w3_hardware import (
-    COMPLETED_MAGIC, RESULT_MAGIC, evaluate, manifest, validate_manifest,
+    COMPLETED_MAGIC, RESULT_MAGIC, CASE_TO_SELECTOR, evaluate, manifest, validate_manifest,
 )
 
 
@@ -57,6 +57,11 @@ class W3HardwareResultTests(unittest.TestCase):
             (root / "H0.json").write_text("{\"changed\":true}\n", encoding="utf-8")
             with self.assertRaises(RuntimeError):
                 validate_manifest(root)
+
+    def test_hardware_selector_catalog_is_complete(self):
+        self.assertEqual(set(CASE_TO_SELECTOR), {
+            "W3-START-A", "W3-T06-A", "W3-T06-B", "W3-START-C",
+        })
 
 
 if __name__ == "__main__":

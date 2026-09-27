@@ -140,7 +140,7 @@ def validate_manifest(root: Path) -> None:
         raise WorkflowError("evidence manifest does not match attempt files")
 
 
-def audit_elf(repo: Path, build: Path, tools: dict, env: dict, log: CommandLog) -> dict:
+def audit_elf(repo: Path, build: Path, selector: str, tools: dict, env: dict, log: CommandLog) -> dict:
     elf = build / "cubemx.elf"
     if not elf.is_file():
         raise WorkflowError("target ELF missing")
@@ -148,7 +148,12 @@ def audit_elf(repo: Path, build: Path, tools: dict, env: dict, log: CommandLog) 
     if "ELF32" not in header or not re.search(r"Machine:\s+ARM(?:\s|$)", header):
         raise WorkflowError("artifact is not a 32-bit ARM ELF")
     _, symbols, _ = log.run([tools["nm"], "-P", "--defined-only", elf], name="elf-symbols", env=env, timeout=30)
-    for symbol in ("R3_W3_HW_Start", "g_r3_w3_hw_result", "AdcDbmDriver_Arm", "R3Lifecycle_CommitStart"):
+    required = ["R3_W3_HW_Start", "g_r3_w3_hw_result", "AdcDbmDriver_Arm", "R3Lifecycle_PrepareStart"]
+    if selector in ("START_A", "START_C"):
+        required.append("R3Lifecycle_CommitStart")
+    if selector == "T06_B":
+        required.append("R3Lifecycle_RequestStopBeforeCommit")
+    for symbol in required:
         if not re.search(r"^" + re.escape(symbol) + r"\s", symbols, re.M):
             raise WorkflowError(f"required W3 target symbol missing: {symbol}")
     binary = build / "programmed.bin"
@@ -185,7 +190,7 @@ def attempt(repo: Path, case: str, output_parent: Path) -> int:
         configure(log, repo, build, chosen, tools, env)
         verify_cache(build, chosen)
         log.run([tools["cmake"], "--build", build, "--parallel", "4"], name="build", env=env, timeout=600)
-        audit = audit_elf(repo, build, tools, env, log)
+        audit = audit_elf(repo, build, CASE_TO_SELECTOR[case], tools, env, log)
         elf = build / "cubemx.elf"
         write_new(root / "H1.json", {"phase": "H1", "audit": audit, "elf_sha256": digest(elf)})
         completed.append("H1")
