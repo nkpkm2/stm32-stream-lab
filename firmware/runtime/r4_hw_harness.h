@@ -113,6 +113,12 @@ extern "C" {
 #define R4_HW_COMMIT_PENDING_ARM_COUNT_WORD 214U
 #define R4_HW_COMMIT_PENDING_IRQ_COUNT_WORD 215U
 #define R4_HW_COMMIT_PENDING_ACTIVE_AT_IRQ_WORD 216U
+/* Five preceding uint32_t fields end at word 217; natural uint64_t alignment
+ * reserves word 217 and makes the first 64-bit target-window field word 218. */
+#define R4_HW_TARGET_WINDOW_TASK_WORD 218U
+#define R4_HW_TARGET_WINDOW_IRQ_WORD 220U
+#define R4_HW_TARGET_WINDOW_IDLE_WORD 222U
+#define R4_HW_TARGET_WINDOW_UNCLASSIFIED_WORD 224U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -276,6 +282,10 @@ typedef struct
     uint32_t commit_pending_arm_count;
     uint32_t commit_pending_irq_count;
     uint32_t commit_pending_active_at_irq;
+    uint64_t target_window_task_cycles;
+    uint64_t target_window_irq_cycles;
+    uint64_t target_window_idle_cycles;
+    uint64_t target_window_unclassified_cycles;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -401,6 +411,9 @@ _Static_assert(offsetof(R4HwHarnessResult, time_regression_serial_before) ==
 _Static_assert(offsetof(R4HwHarnessResult, commit_pending_arm_status) ==
     (R4_HW_COMMIT_PENDING_ARM_STATUS_WORD * sizeof(uint32_t)),
     "R4 completion-pending arm evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, target_window_task_cycles) ==
+    (R4_HW_TARGET_WINDOW_TASK_WORD * sizeof(uint32_t)),
+    "R4 target-window task evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 

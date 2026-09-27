@@ -434,6 +434,21 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_COMPLETION);
     }
+#elif (R4_HW_CASE_ID == 13U)
+    if ((g_r4_hw_result.window_open_status != ok) ||
+        (g_r4_hw_result.window_close_status != ok) ||
+        (g_r4_hw_result.checkpoint_status != ok) ||
+        (g_r4_hw_result.t17_window_cycles_at_close == 0U) ||
+        (g_r4_hw_result.t17_window_cycles_after_close !=
+         g_r4_hw_result.t17_window_cycles_at_close) ||
+        (g_r4_hw_result.window_cycles !=
+         (g_r4_hw_result.target_window_task_cycles +
+          g_r4_hw_result.target_window_irq_cycles +
+          g_r4_hw_result.target_window_idle_cycles +
+          g_r4_hw_result.target_window_unclassified_cycles)))
+    {
+        FailInvariant(R4_HW_INVARIANT_WINDOW);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -550,6 +565,10 @@ static void HarnessTask(void *argument)
     g_r4_hw_result.window_open_status = (uint32_t)
         R4_RuntimeTarget_ArmDmaWindow(0U, R4_HW_DMA_WINDOW_OPEN_SEQUENCE,
             R4_HW_DMA_WINDOW_CLOSE_SEQUENCE);
+#elif (R4_HW_CASE_ID == 13U)
+    /* A pre-open checkpoint is deliberately outside the formal interval. */
+    g_r4_hw_result.checkpoint_status = (uint32_t)R4_RuntimeTarget_Checkpoint();
+    g_r4_hw_result.window_open_status = (uint32_t)R4_RuntimeTarget_OpenWindow(0U);
 #else
     g_r4_hw_result.window_open_status = (uint32_t)R4_RuntimeTarget_OpenWindow(0U);
 #endif
@@ -935,6 +954,13 @@ static void HarnessTask(void *argument)
         g_r4_hw_result.irq_cycles = ledger->irq_cycles;
         g_r4_hw_result.window_cycles = ledger->window_cycles[0];
         g_r4_hw_result.irq_depth = ledger->irq_depth;
+#if (R4_HW_CASE_ID == 13U)
+        g_r4_hw_result.target_window_task_cycles = ledger->window_task_cycles[0];
+        g_r4_hw_result.target_window_irq_cycles = ledger->window_irq_cycles[0];
+        g_r4_hw_result.target_window_idle_cycles = ledger->window_idle_cycles[0];
+        g_r4_hw_result.target_window_unclassified_cycles =
+            ledger->window_unclassified_cycles[0];
+#endif
 #if (R4_HW_CASE_ID == 6U)
         g_r4_hw_result.synthetic_task_a_cycles = OwnerCycles(
             ledger->window_task_buckets[0], R4_RUNTIME_MAX_TASK_BUCKETS,
@@ -947,6 +973,22 @@ static void HarnessTask(void *argument)
         g_r4_hw_result.synthetic_window_idle_cycles = ledger->window_idle_cycles[0];
         g_r4_hw_result.synthetic_window_unclassified_cycles =
             ledger->window_unclassified_cycles[0];
+#endif
+#if (R4_HW_CASE_ID == 13U)
+    /* Genuine post-close scheduling/tick activity must remain live-only. */
+    vTaskDelay(pdMS_TO_TICKS(2U));
+    g_r4_hw_result.t17_post_close_status =
+        (uint32_t)R4_RuntimeTarget_Checkpoint();
+    ledger = R4_RuntimeTarget_GetLedger();
+    if (ledger != NULL)
+    {
+        g_r4_hw_result.t17_window_cycles_after_close = ledger->window_cycles[0];
+        g_r4_hw_result.runtime_status = (uint32_t)R4_RuntimeLedger_GetStatus(ledger);
+        g_r4_hw_result.event_serial = ledger->event_serial;
+        g_r4_hw_result.last_time = ledger->last_time;
+        g_r4_hw_result.task_cycles = ledger->task_cycles;
+        g_r4_hw_result.irq_cycles = ledger->irq_cycles;
+    }
 #endif
     }
 #if (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 12U)

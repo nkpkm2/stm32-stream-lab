@@ -125,6 +125,10 @@ COMMIT_PENDING_SNAPSHOT_STATUS_WORD = 213
 COMMIT_PENDING_ARM_COUNT_WORD = 214
 COMMIT_PENDING_IRQ_COUNT_WORD = 215
 COMMIT_PENDING_ACTIVE_AT_IRQ_WORD = 216
+TARGET_WINDOW_TASK_WORD = 218
+TARGET_WINDOW_IRQ_WORD = 220
+TARGET_WINDOW_IDLE_WORD = 222
+TARGET_WINDOW_UNCLASSIFIED_WORD = 224
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -142,6 +146,7 @@ CASES = {
     # This composes the directed IRQ witness with the released full-lock
     # budget gate, which requires the representative completion population.
     "commit-pending-irq": ("COMMIT_PENDING_IRQ", 12, 65000, 75),
+    "window-intersection": ("WINDOW_INTERSECTION", 13, 0, 8),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -484,6 +489,23 @@ def evaluate(case: str, words: list[int]) -> dict:
                 words[COMMIT_PENDING_ARM_COUNT_WORD] == 1 and
                 words[COMMIT_PENDING_IRQ_COUNT_WORD] == 1 and
                 words[COMMIT_PENDING_ACTIVE_AT_IRQ_WORD] == 0)
+    if case == "window-intersection":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= TARGET_WINDOW_UNCLASSIFIED_WORD + 1:
+            checks["target_window_extension_present"] = False
+        else:
+            checks["target_window_conservation"] = (
+                word64(WINDOW_CYCLES_WORD) > 0 and
+                word64(WINDOW_CYCLES_WORD) ==
+                word64(TARGET_WINDOW_TASK_WORD) + word64(TARGET_WINDOW_IRQ_WORD) +
+                word64(TARGET_WINDOW_IDLE_WORD) +
+                word64(TARGET_WINDOW_UNCLASSIFIED_WORD))
+            checks["target_window_sealed_after_real_activity"] = (
+                word64(T17_WINDOW_AT_CLOSE_WORD) > 0 and
+                word64(T17_WINDOW_AFTER_CLOSE_WORD) ==
+                word64(T17_WINDOW_AT_CLOSE_WORD))
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 

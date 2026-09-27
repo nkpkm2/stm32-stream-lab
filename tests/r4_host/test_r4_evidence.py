@@ -167,3 +167,18 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("commit-pending-irq", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["commit_pending_irq_after_unlock"])
+
+    def test_target_window_intersection_requires_partition_and_seal(self) -> None:
+        words = [0] * 226
+        words[:11] = [EVIDENCE.MAGIC, 13, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.WINDOW_CYCLES_WORD] = 10
+        words[EVIDENCE.T17_WINDOW_AT_CLOSE_WORD] = 10
+        words[EVIDENCE.T17_WINDOW_AFTER_CLOSE_WORD] = 10
+        words[EVIDENCE.TARGET_WINDOW_TASK_WORD] = 4
+        words[EVIDENCE.TARGET_WINDOW_IRQ_WORD] = 3
+        words[EVIDENCE.TARGET_WINDOW_IDLE_WORD] = 2
+        words[EVIDENCE.TARGET_WINDOW_UNCLASSIFIED_WORD] = 1
+        verdict = EVIDENCE.evaluate("window-intersection", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["target_window_conservation"])
