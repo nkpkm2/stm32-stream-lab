@@ -6,6 +6,8 @@ import hashlib
 from pathlib import Path
 import sys
 
+sys.dont_write_bytecode = True
+
 HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
@@ -270,9 +272,17 @@ def main(argv=None) -> int:
     sub.add_parser("list-cases")
     sub.add_parser("seal-status")
     sub.add_parser("w2-hw-preflight")
+    build_check = sub.add_parser("w2-hw-validate", help="candidate-only host/ARM/link/regression validation; never flashes")
+    build_check.add_argument("--candidate", action="store_true", required=True)
+    build_check.add_argument("--phase", choices=("all", "host", "arm", "negative", "history"), default="all")
+    build_check.add_argument("--out-dir", default=str(Path.home() / "Downloads" / "STM32_R3_VALIDATION"))
     ns = parser.parse_args(argv)
     repo = Path(ns.repo).resolve()
 
+    if ns.cmd == "w2-hw-validate":
+        from r3lib.w2_build_validation import validate
+        return validate(repo, candidate=ns.candidate,
+                        output_parent=Path(ns.out_dir), phase=ns.phase)
     if ns.cmd == "status":
         print_status(repo)
         return 0

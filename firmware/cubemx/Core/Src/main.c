@@ -21,7 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#if defined(STREAM_LAB_R2_W6)
+#if defined(STREAM_LAB_R3_W2_HW)
+#include "r3_w2_hw_harness.h"
+#elif defined(STREAM_LAB_R2_W6)
 #include "r2_w6_matrix.h"
 #if defined(STREAM_LAB_R2_CT)
 #include "r2_ct_control.h"
@@ -121,6 +123,9 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+#if defined(STREAM_LAB_R3_W2_HW)
+  R3_W2_HW_Start();
+#else
 #if defined(STREAM_LAB_R2_W6)
   R2_W6_CreateTasks();
 #if defined(STREAM_LAB_R2_CT)
@@ -143,6 +148,7 @@ int main(void)
     Error_Handler();
   }
     R0_FreeRTOS_StartSmoke();
+#endif
 
   /* USER CODE END 2 */
 

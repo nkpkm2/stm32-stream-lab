@@ -107,6 +107,12 @@ option(STREAM_LAB_R3_WORKER_CONTRACT
 option(STREAM_LAB_R3_WORKER_TASKS
     "Compile the R3-W2 persistent Processing/Interference task glue" OFF)
 
+option(STREAM_LAB_R3_W2_HW
+    "Build the R3-W2 target-only worker hardware harness" OFF)
+set(STREAM_LAB_R3_W2_HW_CASE "" CACHE STRING
+    "R3-W2 target hardware case: T03_A, T03_C, T03_D, T05_A, or T05_B")
+set_property(CACHE STREAM_LAB_R3_W2_HW_CASE PROPERTY STRINGS
+    T03_A T03_C T03_D T05_A T05_B)
 set(STREAM_LAB_R2_CT_EVENTS "96" CACHE STRING "W6 event count for R2 control-traffic acceptance")
 set_property(CACHE STREAM_LAB_R2_CT_EVENTS PROPERTY STRINGS 96 800)
 set(STREAM_LAB_R2_CT_RUN_TIMEOUT_MS "1000" CACHE STRING "W6 run timeout for R2 control-traffic acceptance")
@@ -126,6 +132,39 @@ if(R2_DIAGNOSTIC_PROFILE_COUNT GREATER 1)
     message(FATAL_ERROR "R2 diagnostic profiles W3/W4/W5/W6 are mutually exclusive")
 endif()
 
+if(STREAM_LAB_R3_W2_HW)
+    if(R2_DIAGNOSTIC_PROFILE_COUNT GREATER 0)
+        message(FATAL_ERROR
+            "STREAM_LAB_R3_W2_HW must not be combined with historical R2 profiles.")
+    endif()
+    if(NOT STREAM_LAB_R3_WORKER_CONTRACT OR
+       NOT STREAM_LAB_R3_WORKER_TASKS)
+        message(FATAL_ERROR
+            "STREAM_LAB_R3_W2_HW requires the production R3 worker contract and worker tasks.")
+    endif()
+    if(STREAM_LAB_FOUNDATION_QUEUE_ADAPTER)
+        message(FATAL_ERROR
+            "STREAM_LAB_R3_W2_HW uses its test authority shim and must not link the production queue-adapter/RunAuthority profile.")
+    endif()
+
+    if(STREAM_LAB_R3_W2_HW_CASE STREQUAL "T03_A")
+        set(R3_W2_HW_CASE_ID_VALUE 1)
+    elseif(STREAM_LAB_R3_W2_HW_CASE STREQUAL "T03_C")
+        set(R3_W2_HW_CASE_ID_VALUE 2)
+    elseif(STREAM_LAB_R3_W2_HW_CASE STREQUAL "T03_D")
+        set(R3_W2_HW_CASE_ID_VALUE 3)
+    elseif(STREAM_LAB_R3_W2_HW_CASE STREQUAL "T05_A")
+        set(R3_W2_HW_CASE_ID_VALUE 4)
+    elseif(STREAM_LAB_R3_W2_HW_CASE STREQUAL "T05_B")
+        set(R3_W2_HW_CASE_ID_VALUE 5)
+    else()
+        message(FATAL_ERROR
+            "STREAM_LAB_R3_W2_HW_CASE must be one of T03_A, T03_C, T03_D, T05_A, T05_B.")
+    endif()
+elseif(NOT STREAM_LAB_R3_W2_HW_CASE STREQUAL "")
+    message(FATAL_ERROR
+        "STREAM_LAB_R3_W2_HW_CASE requires STREAM_LAB_R3_W2_HW=ON.")
+endif()
 if(STREAM_LAB_R2_CT AND NOT STREAM_LAB_R2_W6)
     message(FATAL_ERROR "STREAM_LAB_R2_CT is a modifier of STREAM_LAB_R2_W6 and requires W6")
 endif()
@@ -270,17 +309,26 @@ if(STREAM_LAB_R3_WORKER_CONTRACT)
     )
     set_source_files_properties(
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_worker_contract.c"
-        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb"
     )
 endif()
 # === R3-W2 WORKER CONTRACT FOUNDATION END ===
 
 # === R3-W2B WORKER TASK GLUE BEGIN ===
 if(STREAM_LAB_R3_WORKER_TASKS)
-    if(NOT STREAM_LAB_FOUNDATION_QUEUE_ADAPTER OR
-       NOT STREAM_LAB_R3_WORKER_CONTRACT)
+    if(NOT STREAM_LAB_R3_WORKER_CONTRACT)
         message(FATAL_ERROR
-            "R3 worker tasks require queue adapter and worker contract.")
+            "R3 worker tasks require the worker contract.")
+    endif()
+    if(NOT STREAM_LAB_R3_W2_HW AND
+       NOT STREAM_LAB_FOUNDATION_QUEUE_ADAPTER)
+        message(FATAL_ERROR
+            "R3 worker tasks require the production queue adapter unless the frozen W2-HW authority shim profile is active.")
+    endif()
+    if(STREAM_LAB_R3_W2_HW AND
+       STREAM_LAB_FOUNDATION_QUEUE_ADAPTER)
+        message(FATAL_ERROR
+            "R3 W2-HW must substitute the test authority shim for production RunAuthority.")
     endif()
     if(STREAM_LAB_R2_W3 OR STREAM_LAB_R2_W4 OR
        STREAM_LAB_R2_W5 OR STREAM_LAB_R2_W6)
@@ -298,12 +346,32 @@ if(STREAM_LAB_R3_WORKER_TASKS)
     )
     set_source_files_properties(
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_worker_tasks.c"
-        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb"
     )
 endif()
 # === R3-W2B WORKER TASK GLUE END ===
 
-if(STREAM_LAB_R2_W6)
+# === R3-W2 TARGET HARDWARE HARNESS BEGIN ===
+if(STREAM_LAB_R3_W2_HW)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        STREAM_LAB_R3_W2_HW=1
+        R3_W2_HW_CASE_ID=${R3_W2_HW_CASE_ID_VALUE}U
+    )
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition"
+    )
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w2_hw_harness.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w2_hw_authority_shim.c"
+    )
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w2_hw_harness.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w2_hw_authority_shim.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb"
+    )
+elseif(STREAM_LAB_R2_W6)
     if(R2_W6_MODE_UPPER STREQUAL "DROP")
         set(R2_W6_DROP_VALUE 1)
     else()
