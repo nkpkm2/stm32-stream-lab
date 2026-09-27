@@ -14,6 +14,7 @@ CLOCK = RUNTIME / "r4_clock64.c"
 CONFIG = REPO / "firmware" / "cubemx" / "Core" / "Inc" / "FreeRTOSConfig.h"
 ISR = REPO / "firmware" / "cubemx" / "Core" / "Src" / "stm32f4xx_it.c"
 HOOKS = REPO / "firmware" / "cubemx" / "Core" / "Src" / "r0_freertos_smoke.c"
+CMAKE = REPO / "firmware" / "cubemx" / "CMakeLists.txt"
 
 
 def function_body(text: str, name: str) -> str:
@@ -90,6 +91,27 @@ class R4ClockAuthorityAuditTests(unittest.TestCase):
             self.assertEqual(body.count("traceISR_ENTER()"), 1, handler)
             self.assertEqual(body.count("portYIELD_FROM_ISR("), 1, handler)
             self.assertNotIn("traceISR_EXIT()", body, handler)
+
+    def test_reference_profile_compiles_out_every_accounting_hook(self) -> None:
+        cmake = CMAKE.read_text(encoding="utf-8")
+        config = CONFIG.read_text(encoding="utf-8")
+        hooks = HOOKS.read_text(encoding="utf-8")
+        self.assertIn("option(STREAM_LAB_R4_ACCOUNTING", cmake)
+        self.assertIn("STREAM_LAB_R4_ACCOUNTING=${R4_ACCOUNTING_VALUE}", cmake)
+        guard = "#if defined(STREAM_LAB_R4_RUNTIME) && (STREAM_LAB_R4_ACCOUNTING != 0)"
+        self.assertIn(guard, config)
+        self.assertIn(guard, hooks)
+        self.assertIn("#define traceISR_ENTER() R4_RuntimeTarget_TraceIsrEnter()", config)
+
+    def test_dma_perturbation_probe_is_separate_from_irq_accounting(self) -> None:
+        target = TARGET.read_text(encoding="utf-8")
+        body = function_body(ISR.read_text(encoding="utf-8"),
+                             "DMA2_Stream0_IRQHandler")
+        self.assertIn("void R4_RuntimeTarget_ObserveDmaServiceEnter(void)", target)
+        self.assertIn("void R4_RuntimeTarget_ObserveDmaServiceExit(void)", target)
+        self.assertEqual(body.count("R4_RuntimeTarget_ObserveDmaServiceEnter()"), 1)
+        self.assertEqual(body.count("R4_RuntimeTarget_ObserveDmaServiceExit()"), 1)
+        self.assertEqual(body.count("STREAM_LAB_R4_PERTURBATION_AB"), 2)
 
 
 if __name__ == "__main__":
