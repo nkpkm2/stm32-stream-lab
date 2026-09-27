@@ -1,0 +1,7 @@
+{
+  "case_id": "window-intersection",
+  "case_numeric_id": 13,
+  "configured_soak_ms": 0,
+  "selector": "WINDOW_INTERSECTION",
+  "work_package": "R4"
+}
