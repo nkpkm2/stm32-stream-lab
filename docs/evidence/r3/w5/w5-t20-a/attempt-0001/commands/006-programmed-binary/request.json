@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "E:\\DevTools\\arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi\\bin\\arm-none-eabi-objcopy.exe",
+    "-O",
+    "binary",
+    "C:\\Users\\CHJ\\Downloads\\STM32_R3_EVIDENCE\\w5-t20-a-qo790n3z\\build\\cubemx.elf",
+    "C:\\Users\\CHJ\\Downloads\\STM32_R3_EVIDENCE\\w5-t20-a-qo790n3z\\build\\programmed.bin"
+  ],
+  "cwd": null,
+  "timeout_seconds": 30,
+  "automatic_retry": false
+}

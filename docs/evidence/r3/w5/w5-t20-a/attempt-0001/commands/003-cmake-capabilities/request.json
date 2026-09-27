@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "E:\\DevTools\\STM32CubeCLT-1.22.0\\CMake\\bin\\cmake.exe",
+    "-E",
+    "capabilities"
+  ],
+  "cwd": null,
+  "timeout_seconds": 30,
+  "automatic_retry": false
+}

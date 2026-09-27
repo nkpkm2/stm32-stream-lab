@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "E:\\DevTools\\STM32CubeCLT-1.22.0\\CMake\\bin\\cmake.exe",
+    "--build",
+    "C:\\Users\\CHJ\\Downloads\\STM32_R3_EVIDENCE\\w5-t20-a-qo790n3z\\build",
+    "--parallel",
+    "4"
+  ],
+  "cwd": null,
+  "timeout_seconds": 600,
+  "automatic_retry": false
+}

@@ -1,0 +1,9 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w5_hw_harness.c:29:32:StartRequest	48	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w5_hw_harness.c:40:31:StopRequest	32	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w5_hw_harness.c:48:12:Capture	688	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w5_hw_harness.c:67:13:Publish	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w5_hw_harness.c:74:13:TerminalLoop	8	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w5_hw_harness.c:79:12:StartRun	40	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w5_hw_harness.c:85:12:StopRun	56	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w5_hw_harness.c:91:13:ControllerTask	192	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w5_hw_harness.c:182:6:R3_W5_HW_Start	32	static

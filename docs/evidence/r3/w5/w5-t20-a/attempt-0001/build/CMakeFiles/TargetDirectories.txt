@@ -1,0 +1,6 @@
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w5-t20-a-qo790n3z/build/CMakeFiles/cubemx.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w5-t20-a-qo790n3z/build/CMakeFiles/edit_cache.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w5-t20-a-qo790n3z/build/CMakeFiles/rebuild_cache.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w5-t20-a-qo790n3z/build/cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w5-t20-a-qo790n3z/build/cmake/stm32cubemx/CMakeFiles/edit_cache.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w5-t20-a-qo790n3z/build/cmake/stm32cubemx/CMakeFiles/rebuild_cache.dir
