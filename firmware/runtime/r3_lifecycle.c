@@ -148,6 +148,11 @@ R3LifecycleStatus R3Lifecycle_RequestStop(const R3LifecycleStopRequest *request)
     {
         return R3_LIFECYCLE_STALE_TICKET;
     }
+    if (lifecycle.snapshot.state == R3_LIFECYCLE_IDLE)
+    {
+        return request->stop_id == lifecycle.snapshot.stop_id ?
+            R3_LIFECYCLE_STOPPED : R3_LIFECYCLE_INVALID_STATE;
+    }
     if (lifecycle.snapshot.state != R3_LIFECYCLE_RUNNING)
     {
         return R3_LIFECYCLE_INVALID_STATE;

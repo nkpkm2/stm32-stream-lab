@@ -22,6 +22,9 @@ typedef struct
     uint32_t workers_created;
     uint32_t runtime_fault;
     uint32_t stop_serial;
+    StreamRunTicket last_stop_ticket;
+    uint32_t last_stop_id;
+    uint32_t last_stop_result_valid;
     uint32_t rollback_ack_mask;
     uint32_t processing_entered;
     uint32_t stop_begin_report_valid;
@@ -401,9 +404,14 @@ static R3LifecycleStatus HookCommit(void *context, const StreamRunTicket *ticket
 static R3LifecycleStatus HookRollback(void *context, const StreamRunTicket *ticket)
 {
     AdcDbmDriverSnapshot driver;
+    R3LifecycleSnapshot lifecycle;
     (void)context;
     (void)ticket;
     if (AdcDbmDriver_GetSnapshot(&driver) != ADC_DBM_DRIVER_OK)
+    {
+        return R3_LIFECYCLE_ROLLBACK_FAILED;
+    }
+    if (R3Lifecycle_GetSnapshot(&lifecycle) != R3_LIFECYCLE_OK)
     {
         return R3_LIFECYCLE_ROLLBACK_FAILED;
     }
@@ -416,11 +424,9 @@ static R3LifecycleStatus HookRollback(void *context, const StreamRunTicket *tick
     if (runtime.control.run_valid != 0U)
     {
         taskENTER_CRITICAL();
-        ++runtime.stop_serial;
-        if (runtime.stop_serial == 0U) ++runtime.stop_serial;
         runtime.control.stop_valid = 1U;
         runtime.control.stop.run = runtime.control.run;
-        runtime.control.stop.stop_id = runtime.stop_serial;
+        runtime.control.stop.stop_id = lifecycle.stop_id;
         runtime.rollback_ack_mask = 0U;
         taskEXIT_CRITICAL();
         if ((R3WorkerTasks_NotifyStop() != R3_WORKER_TASKS_OK) ||
@@ -497,6 +503,7 @@ R3W3RuntimeStatus R3W3Runtime_PrepareStart(
 {
     R3LifecycleStatus status;
     if (!CoordinatorCaller()) return R3_W3_RUNTIME_INVALID_STATE;
+    runtime.last_stop_result_valid = 0U;
     status = R3Lifecycle_PrepareStart(request, out_ticket);
     return status == R3_LIFECYCLE_OK ? R3_W3_RUNTIME_OK :
         (status == R3_LIFECYCLE_STATUS_RESET_REQUIRED ?
@@ -527,14 +534,26 @@ R3W3RuntimeStatus R3W3Runtime_StopRunning(uint32_t stop_id)
 {
     R3LifecycleStopRequest request;
     R3LifecycleStatus status;
-    if (!CoordinatorCaller() || (stop_id == 0U) || (runtime.control.run_valid == 0U))
+    if (!CoordinatorCaller() || (stop_id == 0U))
     {
         return R3_W3_RUNTIME_INVALID_STATE;
+    }
+    if (runtime.control.run_valid == 0U)
+    {
+        return (runtime.last_stop_result_valid != 0U &&
+                runtime.last_stop_id == stop_id) ?
+            R3_W3_RUNTIME_OK : R3_W3_RUNTIME_INVALID_STATE;
     }
     (void)memset(&request, 0, sizeof(request));
     request.stream_ticket = runtime.stream_ticket;
     request.stop_id = stop_id;
     status = R3Lifecycle_RequestStop(&request);
+    if (status == R3_LIFECYCLE_STOPPED)
+    {
+        runtime.last_stop_ticket = request.stream_ticket;
+        runtime.last_stop_id = stop_id;
+        runtime.last_stop_result_valid = 1U;
+    }
     return status == R3_LIFECYCLE_STOPPED ? R3_W3_RUNTIME_OK :
         (status == R3_LIFECYCLE_STATUS_RESET_REQUIRED ?
          R3_W3_RUNTIME_RESET_REQUIRED : R3_W3_RUNTIME_LIFECYCLE_ERROR);
