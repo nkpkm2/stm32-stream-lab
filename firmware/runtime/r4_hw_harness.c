@@ -19,6 +19,9 @@
 #ifndef R4_HW_SOAK_MS
 #define R4_HW_SOAK_MS 0U
 #endif
+#ifndef R4_HW_CASE_ID
+#error "R4 formal target build must define R4_HW_CASE_ID"
+#endif
 
 volatile R4HwHarnessResult g_r4_hw_result;
 static StaticTask_t harness_tcb;
@@ -49,17 +52,21 @@ static int HarnessTickRelease(uint64_t planned_service_seq,
 static void HarnessTask(void *argument)
 {
     const R4_RuntimeLedger *ledger;
+#if (R4_HW_CASE_ID == 5U)
     R4_CompletionTimingSnapshot timing;
+#endif
+#if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U)
     R3W3RuntimeConfig config;
     R3LifecycleStartRequest start;
     R3LifecycleStartTicket ticket;
     R3LifecycleStopRequest stop;
-    R4_TickService tick_snapshot;
-    R4_TickServiceTiming tick_timing;
     R4_DmaTailSnapshot dma_tail;
     R4_RuntimeHealthSnapshot health;
     uint64_t soak_now;
     uint32_t soak_elapsed_ms;
+#endif
+    R4_TickService tick_snapshot;
+    R4_TickServiceTiming tick_timing;
     R4_TickServiceTargetCallbacks tick_callbacks;
 
     (void)argument;
@@ -74,6 +81,10 @@ static void HarnessTask(void *argument)
     g_r4_hw_result.tick_timing_configure_status = (uint32_t)
         R4_TickServiceTarget_ConfigureTiming(R4_HW_TICK_CYCLES,
             R4_HW_TICK_INTERVAL_LIMIT_CYCLES);
+/* T15 is deliberately split into two images.  q0 and the first release share
+ * a TickService invocation, whereas the later occupied release is a distinct
+ * requirement and must not borrow evidence from the q0 case. */
+#if (R4_HW_CASE_ID == 2U) || (R4_HW_CASE_ID == 3U)
     if (g_r4_hw_result.tick_register_status == (uint32_t)R4_TICK_SERVICE_OK)
     {
         g_r4_hw_result.tick_arm_status = (uint32_t)
@@ -85,13 +96,17 @@ static void HarnessTask(void *argument)
     }
     if (g_r4_hw_result.tick_arm_status == (uint32_t)R4_TICK_SERVICE_OK)
     {
-        uint32_t suspended_at = DWT->CYCCNT;
+        uint32_t suspended_at;
 
-        /* T15 target case: hold the scheduler past q0 and two release slots.
-         * SysTick still enters its real hook; only task dispatch is delayed.
-         * No tick is manufactured when xTaskResumeAll() processes its backlog. */
+        /* In RELEASE, first allow q0/start to occur, then cross only the next
+         * release.  In Q0, suspend before q0.  SysTick still enters its real
+         * hook; resume never manufactures a service invocation. */
+#if (R4_HW_CASE_ID == 3U)
+        vTaskDelay(pdMS_TO_TICKS(3U));
+#endif
+        suspended_at = DWT->CYCCNT;
         vTaskSuspendAll();
-        while ((uint32_t)(DWT->CYCCNT - suspended_at) < UINT32_C(1080000))
+        while ((uint32_t)(DWT->CYCCNT - suspended_at) < UINT32_C(540000))
         {
         }
         (void)xTaskResumeAll();
@@ -102,6 +117,8 @@ static void HarnessTask(void *argument)
                 tick_snapshot.service_seq;
         }
     }
+#endif
+#if (R4_HW_CASE_ID == 4U)
     ledger = R4_RuntimeTarget_GetLedger();
     if (ledger != NULL)
     {
@@ -118,6 +135,8 @@ static void HarnessTask(void *argument)
          * scheduling events may exist but can never make the delta smaller. */
         g_r4_hw_result.t17_serial_after_pending_irq = ledger->event_serial;
     }
+#endif
+#if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U)
     (void)memset(&config, 0, sizeof(config));
     config.boot_id = R4_HW_BOOT;
     config.k = 4U;
@@ -191,6 +210,7 @@ static void HarnessTask(void *argument)
             stop.stop_id = UINT32_C(0x52340002);
             g_r4_hw_result.lifecycle_stop_status =
                 (uint32_t)R3W3Runtime_Stop(&stop);
+#if (R4_HW_CASE_ID == 1U)
             /* T12's no-switch arm: the real DMA vector is pended only after
              * sampling is stopped and with no DMA status bit set.  It is not
              * a fabricated completion; it proves the common handler's
@@ -211,6 +231,7 @@ static void HarnessTask(void *argument)
                 g_r4_hw_result.dma_no_event_no_yield_after =
                     dma_tail.dma_no_yield_count;
             }
+#endif
         }
     }
     else
@@ -218,6 +239,7 @@ static void HarnessTask(void *argument)
         g_r4_hw_result.lifecycle_start_status = (uint32_t)R3_W3_RUNTIME_INVALID_STATE;
         g_r4_hw_result.lifecycle_stop_status = (uint32_t)R3_W3_RUNTIME_INVALID_STATE;
     }
+#endif
     g_r4_hw_result.checkpoint_status = (uint32_t)R4_RuntimeTarget_Checkpoint();
     g_r4_hw_result.window_close_status = (uint32_t)R4_RuntimeTarget_CloseWindow(0U);
     ledger = R4_RuntimeTarget_GetLedger();
@@ -257,6 +279,7 @@ static void HarnessTask(void *argument)
         g_r4_hw_result.window_cycles = ledger->window_cycles[0];
         g_r4_hw_result.irq_depth = ledger->irq_depth;
     }
+#if (R4_HW_CASE_ID == 5U)
     if (R4_RuntimeTarget_GetCompletionTiming(&timing) == R4_RUNTIME_OK)
     {
         g_r4_hw_result.completion_malformed_count = timing.malformed_count;
@@ -272,11 +295,14 @@ static void HarnessTask(void *argument)
             (timing.completed_count != 0U) && (timing.malformed_count == 0U) &&
             (timing.max_total_cycles <= R4_HW_COMPLETE_BUDGET_CYCLES) ? 1U : 0U;
     }
+#endif
+#if (R4_HW_CASE_ID == 4U)
     /* Deliberately repeat the already-completed TIM6 exit.  This is final:
      * RuntimeEvent correctly latches the fault and no later event may hide it. */
     g_r4_hw_result.t17_duplicate_exit_status =
         (uint32_t)R4_RuntimeTarget_TestInjectDuplicateExit(
             (uint32_t)TIM6_DAC_IRQn + 16U);
+#endif
     __DMB();
     g_r4_hw_result.completed_magic = R4_HW_COMPLETE;
     for (;;)
@@ -291,6 +317,7 @@ void R4_HW_Start(void)
 
     (void)memset((void *)&g_r4_hw_result, 0, sizeof(g_r4_hw_result));
     g_r4_hw_result.magic = R4_HW_MAGIC;
+    g_r4_hw_result.case_id = R4_HW_CASE_ID;
     g_r4_hw_result.init_status = (uint32_t)R4_RuntimeTarget_Initialize();
     if (g_r4_hw_result.init_status != (uint32_t)R4_RUNTIME_OK)
     {

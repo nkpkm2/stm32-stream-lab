@@ -125,6 +125,10 @@ option(STREAM_LAB_R4_HW
     "Build the R4 target Clock64/runtime-window harness" OFF)
 set(STREAM_LAB_R4_HW_SOAK_MS "0" CACHE STRING
     "R4 target-harness real DMA/IRQ soak duration in milliseconds (0 disables)")
+set(STREAM_LAB_R4_HW_CASE "" CACHE STRING
+    "R4 formal hardware case: T12_SOAK, T15_Q0, T15_RELEASE, T17_ATOMIC, or COMMIT_BUDGET")
+set_property(CACHE STREAM_LAB_R4_HW_CASE PROPERTY STRINGS
+    T12_SOAK T15_Q0 T15_RELEASE T17_ATOMIC COMMIT_BUDGET)
 option(STREAM_LAB_R5_METRICS
     "Compile the R5 cohort/cutoff/sealed-results core" OFF)
 option(STREAM_LAB_R5_HW
@@ -583,8 +587,22 @@ if(STREAM_LAB_R4_HW)
     if(NOT STREAM_LAB_R4_HW_SOAK_MS MATCHES "^[0-9]+$")
         message(FATAL_ERROR "STREAM_LAB_R4_HW_SOAK_MS must be an unsigned integer.")
     endif()
+    if(STREAM_LAB_R4_HW_CASE STREQUAL "T12_SOAK")
+        set(R4_HW_CASE_ID_VALUE 1)
+    elseif(STREAM_LAB_R4_HW_CASE STREQUAL "T15_Q0")
+        set(R4_HW_CASE_ID_VALUE 2)
+    elseif(STREAM_LAB_R4_HW_CASE STREQUAL "T15_RELEASE")
+        set(R4_HW_CASE_ID_VALUE 3)
+    elseif(STREAM_LAB_R4_HW_CASE STREQUAL "T17_ATOMIC")
+        set(R4_HW_CASE_ID_VALUE 4)
+    elseif(STREAM_LAB_R4_HW_CASE STREQUAL "COMMIT_BUDGET")
+        set(R4_HW_CASE_ID_VALUE 5)
+    else()
+        message(FATAL_ERROR "STREAM_LAB_R4_HW_CASE must select one formal R4 case.")
+    endif()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-        R4_HW_SOAK_MS=${STREAM_LAB_R4_HW_SOAK_MS}U)
+        R4_HW_SOAK_MS=${STREAM_LAB_R4_HW_SOAK_MS}U
+        R4_HW_CASE_ID=${R4_HW_CASE_ID_VALUE}U)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_hw_harness.c")
     set_source_files_properties(

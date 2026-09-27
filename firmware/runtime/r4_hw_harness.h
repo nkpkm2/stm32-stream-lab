@@ -13,6 +13,7 @@ extern "C" {
 typedef struct
 {
     uint32_t magic;
+    uint32_t case_id;
     uint32_t init_status;
     uint32_t window_open_status;
     uint32_t window_close_status;
