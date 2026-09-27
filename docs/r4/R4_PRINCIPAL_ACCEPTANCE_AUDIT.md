@@ -56,16 +56,15 @@ hardware test is not a substitute.
 * Full `t_lock` to `t_unlock` bound: Release/LTO
   `t04-commit-budget-a/attempt-0002` and
   `t04-commit-budget-b/attempt-0001`.
-* RuntimeEvent microbenchmark: `docs/evidence/r4/microbenchmark/attempt-0001`
-  is a sealed target PASS from commit `3ed3df7084d3c0b553151be2e569c8e3ddb08366`
-  (ELF SHA-256 `ABAF380D73F9F16ECCFB35D8A0DF3F1BDFD0521A244632B53EAFC020B3DE2FD4`).
-  Its raw target words contain 33 samples per row: task checkpoint
-  **308/308/379 cycles**, balanced IRQ enter/exit **778/784/906 cycles**,
-  window open/close **691/691/822 cycles**, and balanced nested IRQ
-  enter/enter/exit/exit **1478/1484/1600 cycles** (min/median/max).  These
-  bracket the complete guarded `RuntimeEvent_Apply` ledger transaction.  The
-  IRQ rows intentionally measure ledger-path cost only; they do not claim to
-  include Cortex-M exception-entry or exception-return machine cycles.
+* RuntimeEvent microbenchmark: `docs/evidence/r4/microbenchmark/attempt-0002`
+  is the current sealed target PASS after the diagnostic harness was made
+  fail-closed for every sample.  Its raw target words contain 33 successful
+  samples per row: task checkpoint **412/417/439 cycles**, balanced IRQ
+  enter/exit **897/902/902 cycles**, window open/close **876/881/2049
+  cycles**, and balanced nested IRQ enter/enter/exit/exit
+  **1595/1597/3358 cycles** (min/median/max).  These bracket guarded
+  `RuntimeEvent_Apply` ledger sequences; the multi-event rows do not claim to
+  be one PRIMASK-held interval or to include Cortex-M exception entry/return.
 
 Historical failed attempts are intentionally retained alongside their PASS
 successors.  They establish that the harness rejects over-broad release
