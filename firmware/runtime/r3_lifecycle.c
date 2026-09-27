@@ -29,6 +29,14 @@ static int TicketMatches(const R3LifecycleStartTicket *ticket)
         (ticket->stream_ticket.identity.generation == lifecycle.stream_ticket.identity.generation);
 }
 
+static int StopMatches(const R3LifecycleStopRequest *request)
+{
+    return (request != NULL) && (request->stop_id != 0U) &&
+        (request->stream_ticket.identity.boot_id == lifecycle.stream_ticket.identity.boot_id) &&
+        (request->stream_ticket.identity.run_id == lifecycle.stream_ticket.identity.run_id) &&
+        (request->stream_ticket.identity.generation == lifecycle.stream_ticket.identity.generation);
+}
+
 static R3LifecycleStatus RollbackToIdle(void)
 {
     R3LifecycleStatus status;
@@ -131,6 +139,25 @@ R3LifecycleStatus R3Lifecycle_CommitStart(const R3LifecycleStartTicket *ticket)
     lifecycle.snapshot.start_ticket_valid = 0U;
     ++lifecycle.snapshot.commit_count;
     return R3_LIFECYCLE_OK;
+}
+
+R3LifecycleStatus R3Lifecycle_RequestStop(const R3LifecycleStopRequest *request)
+{
+    R3LifecycleStatus status;
+    if ((lifecycle.initialized == 0U) || !StopMatches(request))
+    {
+        return R3_LIFECYCLE_STALE_TICKET;
+    }
+    if (lifecycle.snapshot.state != R3_LIFECYCLE_RUNNING)
+    {
+        return R3_LIFECYCLE_INVALID_STATE;
+    }
+    lifecycle.snapshot.state = R3_LIFECYCLE_QUIESCING;
+    lifecycle.snapshot.stop_id = request->stop_id;
+    CloseGates();
+    status = RollbackToIdle();
+    return status == R3_LIFECYCLE_OK ?
+        R3_LIFECYCLE_STOPPED : R3_LIFECYCLE_STATUS_RESET_REQUIRED;
 }
 
 R3LifecycleStatus R3Lifecycle_GetSnapshot(R3LifecycleSnapshot *out)

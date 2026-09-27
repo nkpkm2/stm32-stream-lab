@@ -65,6 +65,7 @@ R3W3RuntimeStatus R3W3Runtime_PrepareStart(
 R3W3RuntimeStatus R3W3Runtime_CommitStart(const R3LifecycleStartTicket *ticket);
 R3W3RuntimeStatus R3W3Runtime_StopBeforeCommit(
     const R3LifecycleStartTicket *ticket);
+R3W3RuntimeStatus R3W3Runtime_StopRunning(uint32_t stop_id);
 R3W3RuntimeStatus R3W3Runtime_GetSnapshot(R3W3RuntimeSnapshot *out);
 
 #ifdef __cplusplus

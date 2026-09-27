@@ -47,6 +47,12 @@ typedef struct
     uint32_t start_ticket;
 } R3LifecycleStartTicket;
 
+typedef struct
+{
+    StreamRunTicket stream_ticket;
+    uint32_t stop_id;
+} R3LifecycleStopRequest;
+
 /* All callbacks run in Communication task context and may block only where
  * their individual driver contract permits.  rollback must leave TIM2 stopped
  * and ADC/DMA no longer accessing sample memory before returning success. */
@@ -71,6 +77,7 @@ typedef struct
     uint32_t configuration_id;
     uint32_t start_ticket;
     uint32_t start_ticket_valid;
+    uint32_t stop_id;
     uint32_t acquisition_publish_allowed;
     uint32_t processing_claim_allowed;
     uint32_t interference_release_allowed;
@@ -85,6 +92,7 @@ R3LifecycleStatus R3Lifecycle_PrepareStart(const R3LifecycleStartRequest *reques
                                             R3LifecycleStartTicket *out_ticket);
 R3LifecycleStatus R3Lifecycle_RequestStopBeforeCommit(const R3LifecycleStartTicket *ticket);
 R3LifecycleStatus R3Lifecycle_CommitStart(const R3LifecycleStartTicket *ticket);
+R3LifecycleStatus R3Lifecycle_RequestStop(const R3LifecycleStopRequest *request);
 R3LifecycleStatus R3Lifecycle_GetSnapshot(R3LifecycleSnapshot *out);
 
 #ifdef __cplusplus

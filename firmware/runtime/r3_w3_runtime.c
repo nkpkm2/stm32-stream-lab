@@ -454,6 +454,23 @@ R3W3RuntimeStatus R3W3Runtime_StopBeforeCommit(const R3LifecycleStartTicket *tic
          R3_W3_RUNTIME_RESET_REQUIRED : R3_W3_RUNTIME_LIFECYCLE_ERROR);
 }
 
+R3W3RuntimeStatus R3W3Runtime_StopRunning(uint32_t stop_id)
+{
+    R3LifecycleStopRequest request;
+    R3LifecycleStatus status;
+    if (!CoordinatorCaller() || (stop_id == 0U) || (runtime.control.run_valid == 0U))
+    {
+        return R3_W3_RUNTIME_INVALID_STATE;
+    }
+    (void)memset(&request, 0, sizeof(request));
+    request.stream_ticket = runtime.stream_ticket;
+    request.stop_id = stop_id;
+    status = R3Lifecycle_RequestStop(&request);
+    return status == R3_LIFECYCLE_STOPPED ? R3_W3_RUNTIME_OK :
+        (status == R3_LIFECYCLE_STATUS_RESET_REQUIRED ?
+         R3_W3_RUNTIME_RESET_REQUIRED : R3_W3_RUNTIME_LIFECYCLE_ERROR);
+}
+
 R3W3RuntimeStatus R3W3Runtime_GetSnapshot(R3W3RuntimeSnapshot *out)
 {
     if ((out == NULL) || (runtime.config.boot_id == 0U))

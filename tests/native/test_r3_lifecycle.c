@@ -13,7 +13,7 @@ static void Init(Fake *f) { R3LifecycleHooks h = {f, V, P, A, C, R}; R3Lifecycle
 static R3LifecycleStartRequest Req(void) { R3LifecycleStartRequest r = {7U, 9U, 3U, 11U}; return r; }
 #define CHECK(x) do { if (!(x)) return 1; } while (0)
 int main(int argc, char **argv) {
-    Fake f; R3LifecycleStartTicket t; R3LifecycleSnapshot s; R3LifecycleStartRequest r;
+    Fake f; R3LifecycleStartTicket t; R3LifecycleSnapshot s; R3LifecycleStartRequest r; R3LifecycleStopRequest stop;
     if (argc != 2) return 2; (void)memset(&f, 0, sizeof(f)); Init(&f); r = Req();
     if (strcmp(argv[1], "normal") == 0) { CHECK(R3Lifecycle_PrepareStart(&r,&t)==R3_LIFECYCLE_OK); CHECK(R3Lifecycle_CommitStart(&t)==R3_LIFECYCLE_OK); CHECK(R3Lifecycle_GetSnapshot(&s)==R3_LIFECYCLE_OK); CHECK(s.state==R3_LIFECYCLE_RUNNING && s.acquisition_publish_allowed); }
     else if (strcmp(argv[1], "invalid") == 0) { f.validate=1; CHECK(R3Lifecycle_PrepareStart(&r,&t)==R3_LIFECYCLE_INVALID_CONFIG); CHECK(R3Lifecycle_GetSnapshot(&s)==R3_LIFECYCLE_OK); CHECK(s.state==R3_LIFECYCLE_IDLE && !s.prepare_count); }
@@ -23,5 +23,7 @@ int main(int argc, char **argv) {
     else if (strcmp(argv[1], "commit_failure") == 0) { f.commit=1; CHECK(R3Lifecycle_PrepareStart(&r,&t)==R3_LIFECYCLE_OK); CHECK(R3Lifecycle_CommitStart(&t)==R3_LIFECYCLE_COMMIT_FAILED); CHECK(R3Lifecycle_GetSnapshot(&s)==R3_LIFECYCLE_OK); CHECK(s.state==R3_LIFECYCLE_IDLE && !s.processing_claim_allowed); }
     else if (strcmp(argv[1], "stale") == 0) { CHECK(R3Lifecycle_PrepareStart(&r,&t)==R3_LIFECYCLE_OK); ++t.start_ticket; CHECK(R3Lifecycle_CommitStart(&t)==R3_LIFECYCLE_STALE_TICKET); }
     else if (strcmp(argv[1], "rollback_failure") == 0) { f.arm=1; f.rollback=1; CHECK(R3Lifecycle_PrepareStart(&r,&t)==R3_LIFECYCLE_ARM_FAILED); CHECK(R3Lifecycle_GetSnapshot(&s)==R3_LIFECYCLE_OK); CHECK(s.state==R3_LIFECYCLE_RESET_REQUIRED && s.failure_count==1U && !s.start_ticket_valid); }
+    else if (strcmp(argv[1], "running_stop") == 0) { CHECK(R3Lifecycle_PrepareStart(&r,&t)==R3_LIFECYCLE_OK); CHECK(R3Lifecycle_CommitStart(&t)==R3_LIFECYCLE_OK); memset(&stop,0,sizeof(stop)); stop.stream_ticket=t.stream_ticket; stop.stop_id=5U; CHECK(R3Lifecycle_RequestStop(&stop)==R3_LIFECYCLE_STOPPED); CHECK(R3Lifecycle_GetSnapshot(&s)==R3_LIFECYCLE_OK); CHECK(s.state==R3_LIFECYCLE_IDLE && s.stop_id==5U && !s.acquisition_publish_allowed); }
+    else if (strcmp(argv[1], "stale_running_stop") == 0) { CHECK(R3Lifecycle_PrepareStart(&r,&t)==R3_LIFECYCLE_OK); CHECK(R3Lifecycle_CommitStart(&t)==R3_LIFECYCLE_OK); memset(&stop,0,sizeof(stop)); stop.stream_ticket=t.stream_ticket; stop.stream_ticket.identity.generation++; stop.stop_id=5U; CHECK(R3Lifecycle_RequestStop(&stop)==R3_LIFECYCLE_STALE_TICKET); CHECK(R3Lifecycle_GetSnapshot(&s)==R3_LIFECYCLE_OK); CHECK(s.state==R3_LIFECYCLE_RUNNING); }
     else return 2; return 0;
 }
