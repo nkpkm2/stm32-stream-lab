@@ -910,6 +910,12 @@ static void HarnessTask(void *argument)
      * the sealed window field. */
     g_r4_hw_result.t17_post_close_status =
         (uint32_t)R4_RuntimeTarget_Checkpoint();
+#if (R4_HW_CASE_ID == 13U)
+    /* Require real SysTick/tick-hook activity after CLOSE before taking the
+     * formal snapshot.  Those events are live-only and must not reopen or
+     * extend the sealed CPU window. */
+    vTaskDelay(pdMS_TO_TICKS(2U));
+#endif
     g_r4_hw_result.tick_snapshot_status = (uint32_t)
         R4_TickServiceTarget_GetSnapshot(&tick_snapshot);
     g_r4_hw_result.tick_start_callback_count = tick_start_callback_count;
