@@ -135,3 +135,13 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("microbenchmark", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["runtime_event_microbenchmark"])
+
+    def test_mask_restore_requires_both_primask_entrance_states(self) -> None:
+        words = [0] * 206
+        words[:11] = [EVIDENCE.MAGIC, 10, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.MASK_MASKED_PRIMASK_BEFORE_WORD] = 1
+        words[EVIDENCE.MASK_MASKED_PRIMASK_AFTER_WORD] = 1
+        verdict = EVIDENCE.evaluate("mask-restore", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["runtime_event_mask_restore"])

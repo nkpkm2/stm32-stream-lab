@@ -96,6 +96,14 @@ extern "C" {
 #define R4_HW_MICROBENCH_NESTED_MIN_WORD 192U
 #define R4_HW_MICROBENCH_NESTED_MEDIAN_WORD 194U
 #define R4_HW_MICROBENCH_NESTED_MAX_WORD 196U
+#define R4_HW_MASK_NORMAL_STATUS_WORD 198U
+#define R4_HW_MASK_NORMAL_PRIMASK_BEFORE_WORD 199U
+#define R4_HW_MASK_NORMAL_PRIMASK_AFTER_WORD 200U
+#define R4_HW_MASK_MASKED_STATUS_WORD 201U
+#define R4_HW_MASK_MASKED_PRIMASK_BEFORE_WORD 202U
+#define R4_HW_MASK_MASKED_PRIMASK_AFTER_WORD 203U
+#define R4_HW_MASK_BASEPRI_BEFORE_WORD 204U
+#define R4_HW_MASK_BASEPRI_AFTER_WORD 205U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -242,6 +250,14 @@ typedef struct
     uint64_t microbench_nested_min_cycles;
     uint64_t microbench_nested_median_cycles;
     uint64_t microbench_nested_max_cycles;
+    uint32_t mask_normal_status;
+    uint32_t mask_normal_primask_before;
+    uint32_t mask_normal_primask_after;
+    uint32_t mask_masked_status;
+    uint32_t mask_masked_primask_before;
+    uint32_t mask_masked_primask_after;
+    uint32_t mask_basepri_before;
+    uint32_t mask_basepri_after;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -352,6 +368,12 @@ _Static_assert(offsetof(R4HwHarnessResult, microbench_task_min_cycles) ==
 _Static_assert(offsetof(R4HwHarnessResult, microbench_nested_max_cycles) ==
     (R4_HW_MICROBENCH_NESTED_MAX_WORD * sizeof(uint32_t)),
     "R4 microbenchmark nested evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, mask_normal_status) ==
+    (R4_HW_MASK_NORMAL_STATUS_WORD * sizeof(uint32_t)),
+    "R4 mask-restore normal evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, mask_basepri_after) ==
+    (R4_HW_MASK_BASEPRI_AFTER_WORD * sizeof(uint32_t)),
+    "R4 mask-restore BASEPRI evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 

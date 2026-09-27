@@ -395,6 +395,18 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
+#elif (R4_HW_CASE_ID == 10U)
+    if ((g_r4_hw_result.mask_normal_status != ok) ||
+        (g_r4_hw_result.mask_normal_primask_before != 0U) ||
+        (g_r4_hw_result.mask_normal_primask_after != 0U) ||
+        (g_r4_hw_result.mask_masked_status != ok) ||
+        (g_r4_hw_result.mask_masked_primask_before != 1U) ||
+        (g_r4_hw_result.mask_masked_primask_after != 1U) ||
+        (g_r4_hw_result.mask_basepri_before !=
+         g_r4_hw_result.mask_basepri_after))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -593,6 +605,27 @@ static void HarnessTask(void *argument)
     RunMicrobenchmark();
     /* Benchmark samples must not include a tick wait, but the formal image
      * still has to witness the normal production SysTick/tick-hook route. */
+    vTaskDelay(pdMS_TO_TICKS(2U));
+#endif
+#if (R4_HW_CASE_ID == 10U)
+    /* Apply must return a caller that entered unmasked to PRIMASK=0, and a
+     * caller that entered with PRIMASK=1 to exactly that same masked state.
+     * BASEPRI is only witnessed for non-modification; this test never owns it. */
+    g_r4_hw_result.mask_normal_primask_before = __get_PRIMASK();
+    g_r4_hw_result.mask_basepri_before = __get_BASEPRI();
+    g_r4_hw_result.mask_normal_status = (uint32_t)
+        R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_CHECKPOINT, 0U);
+    g_r4_hw_result.mask_normal_primask_after = __get_PRIMASK();
+    {
+        uint32_t saved_primask = __get_PRIMASK();
+        __disable_irq();
+        g_r4_hw_result.mask_masked_primask_before = __get_PRIMASK();
+        g_r4_hw_result.mask_masked_status = (uint32_t)
+            R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_CHECKPOINT, 0U);
+        g_r4_hw_result.mask_masked_primask_after = __get_PRIMASK();
+        __set_PRIMASK(saved_primask);
+    }
+    g_r4_hw_result.mask_basepri_after = __get_BASEPRI();
     vTaskDelay(pdMS_TO_TICKS(2U));
 #endif
 #if (R4_HW_CASE_ID == 4U)

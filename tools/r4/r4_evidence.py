@@ -108,6 +108,14 @@ MICROBENCH_WINDOW_MAX_WORD = 190
 MICROBENCH_NESTED_MIN_WORD = 192
 MICROBENCH_NESTED_MEDIAN_WORD = 194
 MICROBENCH_NESTED_MAX_WORD = 196
+MASK_NORMAL_STATUS_WORD = 198
+MASK_NORMAL_PRIMASK_BEFORE_WORD = 199
+MASK_NORMAL_PRIMASK_AFTER_WORD = 200
+MASK_MASKED_STATUS_WORD = 201
+MASK_MASKED_PRIMASK_BEFORE_WORD = 202
+MASK_MASKED_PRIMASK_AFTER_WORD = 203
+MASK_BASEPRI_BEFORE_WORD = 204
+MASK_BASEPRI_AFTER_WORD = 205
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -120,6 +128,7 @@ CASES = {
     "dma-window": ("DMA_WINDOW", 7, 0, 8),
     "tick-gap": ("TICK_GAP", 8, 0, 8),
     "microbenchmark": ("MICROBENCH", 9, 0, 8),
+    "mask-restore": ("MASK_RESTORE", 10, 0, 8),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -428,6 +437,18 @@ def evaluate(case: str, words: list[int]) -> dict:
                 words[MICROBENCH_SAMPLE_COUNT_WORD] >= 17 and
                 all(0 < word64(low) <= word64(mid) <= word64(high)
                     for low, mid, high in paths))
+    if case == "mask-restore":
+        if len(words) <= MASK_BASEPRI_AFTER_WORD:
+            checks["mask_restore_extension_present"] = False
+        else:
+            checks["runtime_event_mask_restore"] = (
+                words[MASK_NORMAL_STATUS_WORD] == 0 and
+                words[MASK_NORMAL_PRIMASK_BEFORE_WORD] == 0 and
+                words[MASK_NORMAL_PRIMASK_AFTER_WORD] == 0 and
+                words[MASK_MASKED_STATUS_WORD] == 0 and
+                words[MASK_MASKED_PRIMASK_BEFORE_WORD] == 1 and
+                words[MASK_MASKED_PRIMASK_AFTER_WORD] == 1 and
+                words[MASK_BASEPRI_BEFORE_WORD] == words[MASK_BASEPRI_AFTER_WORD])
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 
