@@ -91,6 +91,8 @@ const R4_RuntimeLedger *R4_RuntimeTarget_GetLedger(void);
 /* Board-only T17 controls.  They are excluded from production profiles so a
  * diagnostic software-pended IRQ cannot become an experiment control path. */
 R4_RuntimeStatus R4_RuntimeTarget_TestArmPendingIrq(void);
+R4_RuntimeStatus R4_RuntimeTarget_TestArmNestedIrq(void);
+void R4_RuntimeTarget_TestPendHighFromLowIrq(void);
 R4_RuntimeStatus R4_RuntimeTarget_TestInjectDuplicateExit(uint32_t irq_id);
 #endif
 

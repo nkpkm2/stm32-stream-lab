@@ -15,6 +15,7 @@ static R4_DmaTailSnapshot dma_tail;
 static R4_RuntimeHealthSnapshot runtime_health;
 #if defined(STREAM_LAB_R4_HW)
 static uint32_t target_test_pend_irq_after_mask;
+static uint32_t target_test_pend_high_from_low;
 #endif
 
 static uint32_t TargetReadCycle(void *context)
@@ -434,6 +435,32 @@ R4_RuntimeStatus R4_RuntimeTarget_TestArmPendingIrq(void)
     NVIC_EnableIRQ(TIM6_DAC_IRQn);
     target_test_pend_irq_after_mask = 1U;
     return R4_RUNTIME_OK;
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_TestArmNestedIrq(void)
+{
+    if (target_initialized == 0U)
+    {
+        return target_boot_error;
+    }
+    NVIC_ClearPendingIRQ(TIM7_IRQn);
+    NVIC_ClearPendingIRQ(TIM6_DAC_IRQn);
+    NVIC_SetPriority(TIM7_IRQn, 10U);
+    NVIC_SetPriority(TIM6_DAC_IRQn, 5U);
+    NVIC_EnableIRQ(TIM7_IRQn);
+    NVIC_EnableIRQ(TIM6_DAC_IRQn);
+    target_test_pend_high_from_low = 1U;
+    NVIC_SetPendingIRQ(TIM7_IRQn);
+    return R4_RUNTIME_OK;
+}
+
+void R4_RuntimeTarget_TestPendHighFromLowIrq(void)
+{
+    if (target_test_pend_high_from_low != 0U)
+    {
+        target_test_pend_high_from_low = 0U;
+        NVIC_SetPendingIRQ(TIM6_DAC_IRQn);
+    }
 }
 
 R4_RuntimeStatus R4_RuntimeTarget_TestInjectDuplicateExit(uint32_t irq_id)

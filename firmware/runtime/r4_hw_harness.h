@@ -57,11 +57,16 @@ typedef struct
     uint64_t completion_max_prefix_cycles;
     uint64_t completion_max_suffix_cycles;
     uint32_t t17_arm_status;
+    uint32_t t17_nested_arm_status;
     uint32_t t17_checkpoint_status;
     uint32_t t17_post_close_status;
     uint32_t t17_duplicate_exit_status;
     uint64_t t17_serial_before;
     uint64_t t17_serial_after_pending_irq;
+    uint64_t t17_low_irq_cycles_before;
+    uint64_t t17_high_irq_cycles_before;
+    uint64_t t17_low_irq_cycles_after;
+    uint64_t t17_high_irq_cycles_after;
     uint64_t t17_window_cycles_at_close;
     uint64_t t17_window_cycles_after_close;
     uint32_t tick_register_status;

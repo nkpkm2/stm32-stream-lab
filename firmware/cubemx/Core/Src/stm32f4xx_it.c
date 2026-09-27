@@ -217,6 +217,9 @@ void TIM7_IRQHandler(void)
   /* USER CODE BEGIN TIM7_IRQn 0 */
 #if defined(STREAM_LAB_R4_RUNTIME)
   traceISR_ENTER();
+#if defined(STREAM_LAB_R4_HW)
+  R4_RuntimeTarget_TestPendHighFromLowIrq();
+#endif
 #endif
 
   /* USER CODE END TIM7_IRQn 0 */

@@ -31,6 +31,20 @@ static StackType_t idle_stack[configMINIMAL_STACK_SIZE];
 static volatile uint32_t tick_start_callback_count;
 static volatile uint32_t tick_release_callback_count;
 
+static uint64_t OwnerCycles(const R4_RuntimeOwnerBucket *buckets,
+    uint32_t capacity, uintptr_t identity)
+{
+    uint32_t index;
+    for (index = 0U; index < capacity; ++index)
+    {
+        if (buckets[index].identity == identity)
+        {
+            return buckets[index].cycles;
+        }
+    }
+    return 0U;
+}
+
 static void FailInvariant(R4HwInvariant invariant)
 {
     g_r4_hw_result.invariant_failure_mask |= (uint32_t)invariant;
@@ -117,7 +131,12 @@ static void EvaluateFormalInvariants(void)
          g_r4_hw_result.t17_serial_before) ||
         (g_r4_hw_result.irq_depth != 0U) ||
         (g_r4_hw_result.t17_duplicate_exit_status !=
-         (uint32_t)R4_RUNTIME_IRQ_EXIT_MISMATCH))
+         (uint32_t)R4_RUNTIME_IRQ_EXIT_MISMATCH) ||
+        (g_r4_hw_result.t17_nested_arm_status != ok) ||
+        (g_r4_hw_result.t17_low_irq_cycles_after <=
+         g_r4_hw_result.t17_low_irq_cycles_before) ||
+        (g_r4_hw_result.t17_high_irq_cycles_after <=
+         g_r4_hw_result.t17_high_irq_cycles_before))
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
@@ -263,6 +282,25 @@ static void HarnessTask(void *argument)
         /* This includes exactly the checkpoint plus TIM6 enter/exit; other
          * scheduling events may exist but can never make the delta smaller. */
         g_r4_hw_result.t17_serial_after_pending_irq = ledger->event_serial;
+        g_r4_hw_result.t17_low_irq_cycles_before = OwnerCycles(
+            ledger->irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
+            (uintptr_t)TIM7_IRQn + 16U);
+        g_r4_hw_result.t17_high_irq_cycles_before = OwnerCycles(
+            ledger->irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
+            (uintptr_t)TIM6_DAC_IRQn + 16U);
+    }
+    g_r4_hw_result.t17_nested_arm_status =
+        (uint32_t)R4_RuntimeTarget_TestArmNestedIrq();
+    vTaskDelay(pdMS_TO_TICKS(2U));
+    ledger = R4_RuntimeTarget_GetLedger();
+    if (ledger != NULL)
+    {
+        g_r4_hw_result.t17_low_irq_cycles_after = OwnerCycles(
+            ledger->irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
+            (uintptr_t)TIM7_IRQn + 16U);
+        g_r4_hw_result.t17_high_irq_cycles_after = OwnerCycles(
+            ledger->irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
+            (uintptr_t)TIM6_DAC_IRQn + 16U);
     }
 #endif
 #if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U)
