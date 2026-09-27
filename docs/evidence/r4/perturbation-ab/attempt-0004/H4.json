@@ -1,0 +1,33 @@
+{
+  "checks": {
+    "case_identity": true,
+    "completed_magic": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "perturbation_cpu_profile_semantics": true,
+    "perturbation_dma_margin": true,
+    "perturbation_fixed_real_worker_response_population": true,
+    "perturbation_lifecycle_data_plane": true,
+    "perturbation_profile_identity": true,
+    "result_magic": true,
+    "schema_version": true,
+    "terminal_pass": true
+  },
+  "phase": "H4",
+  "prefix_words": [
+    "0x52344857",
+    "0x00000011",
+    "0x00000001",
+    "0x00000001",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x5234444E"
+  ],
+  "result": "PASS",
+  "result_address": "0x20005400",
+  "selector": "PERTURBATION_AB"
+}

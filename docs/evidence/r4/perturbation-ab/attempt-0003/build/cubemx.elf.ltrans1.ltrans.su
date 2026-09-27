@@ -1,0 +1,17 @@
+E:/Projects/stm32-stream-lab/firmware/cubemx/Middlewares/Third_Party/FreeRTOS-Kernel/queue.c:2394:19:prvCopyDataToQueue.constprop	32	static,ignoring_inline_asm
+E:/Projects/stm32-stream-lab/firmware/cubemx/Middlewares/Third_Party/FreeRTOS-Kernel/tasks.c:7832:16:xTaskGenericNotify.constprop	16	static,ignoring_inline_asm
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_tasks.c:178:28:PublishAck.isra	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_tasks.c:631:28:InterferenceAck.isra	40	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_target.c:43:17:TargetSaveAndDisable.constprop	4	static,ignoring_inline_asm
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_event.c:61:25:Settle.constprop	48	static
+E:/Projects/stm32-stream-lab/firmware/cubemx/Middlewares/Third_Party/FreeRTOS-Kernel/tasks.c:1309:18:xTaskCreateStatic.constprop	40	static,ignoring_inline_asm
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_target.c:201:18:R4_RuntimeTarget_MonitorService.part.0.constprop.isra	24	static,ignoring_inline_asm
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:134:22:R4_TickServiceTarget_OnTickHook.part.0.isra	32	static,ignoring_inline_asm
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_target.c:387:18:R4_RuntimeTarget_ReadNow.isra	12	static,ignoring_inline_asm
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_tasks.c:426:28:QuiesceProcessing.isra	144	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_tasks.c:656:28:HandleInterferenceStop.isra	0	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/adc_dbm_driver.c:930:20:AdcDbmDriver_FailActiveCompletion.isra	0	static
+E:/Projects/stm32-stream-lab/firmware/cubemx/Middlewares/Third_Party/FreeRTOS-Kernel/tasks.c:5341:12:xTaskRemoveFromEventList.isra	16	static,ignoring_inline_asm
+E:/Projects/stm32-stream-lab/firmware/cubemx/Middlewares/Third_Party/FreeRTOS-Kernel/tasks.c:8415:13:prvAddCurrentTaskToDelayedList.isra	24	static
+E:/Projects/stm32-stream-lab/firmware/cubemx/Middlewares/Third_Party/FreeRTOS-Kernel/queue.c:1506:12:xQueueReceive.constprop	16	static,ignoring_inline_asm
+E:/Projects/stm32-stream-lab/firmware/cubemx/Middlewares/Third_Party/FreeRTOS-Kernel/tasks.c:7717:16:xTaskGenericNotifyWait.part.0.constprop.isra	32	static,ignoring_inline_asm

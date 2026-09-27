@@ -1,0 +1,8 @@
+{
+  "accounting_profile": "MINIMAL",
+  "case_id": "perturbation-ab",
+  "case_numeric_id": 17,
+  "configured_soak_ms": 65000,
+  "selector": "PERTURBATION_AB",
+  "work_package": "R4"
+}
