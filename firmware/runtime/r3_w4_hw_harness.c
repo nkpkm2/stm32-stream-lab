@@ -52,6 +52,8 @@ static void Capture(const R3W3RuntimeSnapshot *s)
     g_r3_w4_hw_result.worker_faulted = s->workers.faulted;
     g_r3_w4_hw_result.worker_first_fault = (uint32_t)s->workers.first_fault;
     g_r3_w4_hw_result.runtime_fault = s->runtime_fault;
+    g_r3_w4_hw_result.inactive_keep_count = s->driver.inactive_keep_success_count;
+    g_r3_w4_hw_result.inactive_rebind_count = s->driver.inactive_rebind_success_count;
 }
 
 static int Snapshot(R3W3RuntimeSnapshot *s)
@@ -121,6 +123,8 @@ static void ControllerTask(void *argument)
     config.k = 1U;
 #if (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_STOP_A)
     config.suppress_processing_notify = 1U;
+#elif (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_STOP_C)
+    config.suppress_processing_notify = 1U;
 #elif (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_STOP_B)
     config.processing_hold_ticks = 12U;
 #endif
@@ -168,6 +172,12 @@ static void ControllerTask(void *argument)
 #elif (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_STOP_B)
     if (!WaitForProcessingEntry(&snapshot))
         g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_CURRENT;
+#elif (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_STOP_C)
+    vTaskDelay(pdMS_TO_TICKS(12U));
+    if (!Snapshot(&snapshot) || (snapshot.driver.completion_count < 3U) ||
+        (snapshot.driver.inactive_rebind_success_count == 0U) ||
+        (snapshot.driver.inactive_keep_success_count == 0U))
+        g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_PARTIAL;
 #endif
     if (R3W3Runtime_StopRunning(R3_W4_HW_STOP_ID) != R3_W3_RUNTIME_OK ||
         !Snapshot(&snapshot))
@@ -219,6 +229,11 @@ static void ControllerTask(void *argument)
     if ((snapshot.processing_entered == 0U) ||
         (snapshot.workers.processing_complete_count == 0U))
         g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_CURRENT;
+#elif (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_STOP_C)
+    if ((snapshot.driver.inactive_rebind_success_count == 0U) ||
+        (snapshot.driver.inactive_keep_success_count == 0U) ||
+        (snapshot.workers.processing_cancel_count == 0U))
+        g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_WORKERS;
 #endif
     Publish(g_r3_w4_hw_result.invariant_bits == 0U ?
         R3_W4_HW_TERMINAL_PASS : R3_W4_HW_TERMINAL_FAIL);

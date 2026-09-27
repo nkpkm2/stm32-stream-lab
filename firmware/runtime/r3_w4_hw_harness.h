@@ -12,6 +12,7 @@
 #define R3_W4_HW_CASE_STOP_B 3UL
 #define R3_W4_HW_CASE_STOP_D 4UL
 #define R3_W4_HW_CASE_T04_B  5UL
+#define R3_W4_HW_CASE_STOP_C 6UL
 
 #define R3_W4_HW_TERMINAL_RUNNING 0UL
 #define R3_W4_HW_TERMINAL_PASS    1UL
@@ -45,6 +46,8 @@ typedef struct
     uint32_t worker_first_fault;
     uint32_t runtime_fault;
     uint32_t duplicate_stop_ok;
+    uint32_t inactive_keep_count;
+    uint32_t inactive_rebind_count;
     uint32_t completed_magic;
 } R3W4HwResult;
 
