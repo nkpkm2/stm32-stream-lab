@@ -760,6 +760,32 @@ R4_RuntimeStatus R4_RuntimeTarget_TestApplyEvent(R4_RuntimeEventKind kind,
     return Apply(kind, identity);
 }
 
+R4_RuntimeStatus R4_RuntimeTarget_TestResetLedger(void)
+{
+    R4_RuntimePlatform platform;
+    R4_RuntimeContext initial;
+    uint32_t saved_mask;
+    R4_RuntimeStatus status;
+
+    if (target_initialized == 0U)
+    {
+        return target_boot_error;
+    }
+    platform.read_cycle = TargetReadCycle;
+    platform.save_and_disable = TargetSaveAndDisable;
+    platform.restore = TargetRestore;
+    platform.context = NULL;
+    initial.kind = R4_RUNTIME_CONTEXT_IDLE;
+    initial.identity = 0U;
+    saved_mask = TargetSaveAndDisable(NULL);
+    /* Preserve target_clock: the production Clock64 extension remains the
+     * sole clock authority while each sample receives a fresh ledger. */
+    status = R4_RuntimeLedger_Initialize(&target_ledger, &target_clock,
+        &platform, initial);
+    TargetRestore(saved_mask, NULL);
+    return status;
+}
+
 R4_RuntimeStatus R4_RuntimeTarget_TestResetMaskTiming(void)
 {
     uint32_t saved_mask;

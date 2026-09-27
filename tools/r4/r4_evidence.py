@@ -142,6 +142,8 @@ MASK_TIMING_MAX_WORD = 236
 MASK_TIMING_LIMIT_WORD = 238
 DMA_SERVICE_COUNT_WORD = 240
 DMA_SERVICE_MAX_WORD = 242
+MICROBENCH_FAILURE_COUNT_WORD = 244
+MICROBENCH_LAST_STATUS_WORD = 245
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -454,7 +456,7 @@ def evaluate(case: str, words: list[int]) -> dict:
         def word64(index: int) -> int:
             return words[index] | (words[index + 1] << 32)
 
-        if len(words) <= MICROBENCH_NESTED_MAX_WORD + 1:
+        if len(words) <= MICROBENCH_LAST_STATUS_WORD:
             checks["microbenchmark_extension_present"] = False
         else:
             paths = (
@@ -469,6 +471,8 @@ def evaluate(case: str, words: list[int]) -> dict:
             )
             checks["runtime_event_microbenchmark"] = (
                 words[MICROBENCH_SAMPLE_COUNT_WORD] >= 17 and
+                words[MICROBENCH_FAILURE_COUNT_WORD] == 0 and
+                words[MICROBENCH_LAST_STATUS_WORD] == 0 and
                 all(0 < word64(low) <= word64(mid) <= word64(high)
                     for low, mid, high in paths))
     if case == "mask-restore":

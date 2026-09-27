@@ -114,10 +114,12 @@ class R4EvidenceTests(unittest.TestCase):
         self.assertTrue(verdict["checks"]["tick_gap_fail_closed"])
 
     def test_microbenchmark_requires_all_runtime_event_paths(self) -> None:
-        words = [0] * 198
+        words = [0] * 246
         words[:11] = [EVIDENCE.MAGIC, 9, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
                       0, 0, EVIDENCE.COMPLETE]
         words[EVIDENCE.MICROBENCH_SAMPLE_COUNT_WORD] = 33
+        words[EVIDENCE.MICROBENCH_FAILURE_COUNT_WORD] = 0
+        words[EVIDENCE.MICROBENCH_LAST_STATUS_WORD] = 0
         for low, median, high in (
                 (EVIDENCE.MICROBENCH_TASK_MIN_WORD,
                  EVIDENCE.MICROBENCH_TASK_MEDIAN_WORD,
@@ -135,6 +137,31 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("microbenchmark", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["runtime_event_microbenchmark"])
+
+    def test_microbenchmark_rejects_a_faulted_sample(self) -> None:
+        words = [0] * 246
+        words[:11] = [EVIDENCE.MAGIC, 9, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.MICROBENCH_SAMPLE_COUNT_WORD] = 33
+        words[EVIDENCE.MICROBENCH_FAILURE_COUNT_WORD] = 1
+        words[EVIDENCE.MICROBENCH_LAST_STATUS_WORD] = 9
+        for low, median, high in (
+                (EVIDENCE.MICROBENCH_TASK_MIN_WORD,
+                 EVIDENCE.MICROBENCH_TASK_MEDIAN_WORD,
+                 EVIDENCE.MICROBENCH_TASK_MAX_WORD),
+                (EVIDENCE.MICROBENCH_IRQ_MIN_WORD,
+                 EVIDENCE.MICROBENCH_IRQ_MEDIAN_WORD,
+                 EVIDENCE.MICROBENCH_IRQ_MAX_WORD),
+                (EVIDENCE.MICROBENCH_WINDOW_MIN_WORD,
+                 EVIDENCE.MICROBENCH_WINDOW_MEDIAN_WORD,
+                 EVIDENCE.MICROBENCH_WINDOW_MAX_WORD),
+                (EVIDENCE.MICROBENCH_NESTED_MIN_WORD,
+                 EVIDENCE.MICROBENCH_NESTED_MEDIAN_WORD,
+                 EVIDENCE.MICROBENCH_NESTED_MAX_WORD)):
+            words[low], words[median], words[high] = 1, 2, 3
+        verdict = EVIDENCE.evaluate("microbenchmark", words)
+        self.assertEqual(verdict["result"], "FAIL")
+        self.assertFalse(verdict["checks"]["runtime_event_microbenchmark"])
 
     def test_mask_restore_requires_both_primask_entrance_states(self) -> None:
         words = [0] * 206

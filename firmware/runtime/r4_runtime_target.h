@@ -150,6 +150,9 @@ R4_RuntimeStatus R4_RuntimeTarget_TestGetCompletionPendingIrqSnapshot(
  * is never present in a production build. */
 R4_RuntimeStatus R4_RuntimeTarget_TestApplyEvent(R4_RuntimeEventKind kind,
     uintptr_t identity);
+/* Reset only the diagnostic ledger between benchmark samples.  Clock64 stays
+ * live, so this never creates another clock authority. */
+R4_RuntimeStatus R4_RuntimeTarget_TestResetLedger(void);
 /* Board-only observer of the actual interval after RuntimeEvent raises
  * PRIMASK and before it restores the caller's saved value. */
 R4_RuntimeStatus R4_RuntimeTarget_TestResetMaskTiming(void);

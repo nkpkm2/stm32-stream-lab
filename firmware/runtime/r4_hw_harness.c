@@ -161,21 +161,39 @@ static void MeasureRuntimeEventPath(uint32_t *samples,
 
     for (index = 0U; index < R4_HW_MICROBENCH_SAMPLES; ++index)
     {
+        R4_RuntimeStatus status = R4_RuntimeTarget_TestResetLedger();
         uint32_t start = DWT->CYCCNT;
-        (void)R4_RuntimeTarget_TestApplyEvent(first, R4_HW_MICROBENCH_IRQ_A);
+        if (status == R4_RUNTIME_OK)
+        {
+            status = R4_RuntimeTarget_TestApplyEvent(first, R4_HW_MICROBENCH_IRQ_A);
+        }
         if (events > 1U)
         {
-            (void)R4_RuntimeTarget_TestApplyEvent(second, R4_HW_MICROBENCH_IRQ_A);
+            if (status == R4_RUNTIME_OK)
+            {
+                status = R4_RuntimeTarget_TestApplyEvent(second, R4_HW_MICROBENCH_IRQ_A);
+            }
         }
         if (events > 2U)
         {
-            (void)R4_RuntimeTarget_TestApplyEvent(third, R4_HW_MICROBENCH_IRQ_B);
+            if (status == R4_RUNTIME_OK)
+            {
+                status = R4_RuntimeTarget_TestApplyEvent(third, R4_HW_MICROBENCH_IRQ_B);
+            }
         }
         if (events > 3U)
         {
-            (void)R4_RuntimeTarget_TestApplyEvent(fourth, R4_HW_MICROBENCH_IRQ_B);
+            if (status == R4_RUNTIME_OK)
+            {
+                status = R4_RuntimeTarget_TestApplyEvent(fourth, R4_HW_MICROBENCH_IRQ_B);
+            }
         }
         samples[index] = (uint32_t)(DWT->CYCCNT - start);
+        if (status != R4_RUNTIME_OK)
+        {
+            ++g_r4_hw_result.microbench_failure_count;
+            g_r4_hw_result.microbench_last_status = (uint32_t)status;
+        }
     }
 }
 
@@ -203,10 +221,22 @@ static void RunMicrobenchmark(void)
         &g_r4_hw_result.microbench_irq_max_cycles);
     for (index = 0U; index < R4_HW_MICROBENCH_SAMPLES; ++index)
     {
+        R4_RuntimeStatus status = R4_RuntimeTarget_TestResetLedger();
         uint32_t start = DWT->CYCCNT;
-        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_WINDOW_OPEN, 1U);
-        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_WINDOW_CLOSE, 1U);
+        if (status == R4_RUNTIME_OK)
+        {
+            status = R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_WINDOW_OPEN, 1U);
+        }
+        if (status == R4_RUNTIME_OK)
+        {
+            status = R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_WINDOW_CLOSE, 1U);
+        }
         samples[index] = (uint32_t)(DWT->CYCCNT - start);
+        if (status != R4_RUNTIME_OK)
+        {
+            ++g_r4_hw_result.microbench_failure_count;
+            g_r4_hw_result.microbench_last_status = (uint32_t)status;
+        }
     }
     SummarizeSamples(samples, R4_HW_MICROBENCH_SAMPLES,
         &g_r4_hw_result.microbench_window_min_cycles,
@@ -214,16 +244,22 @@ static void RunMicrobenchmark(void)
         &g_r4_hw_result.microbench_window_max_cycles);
     for (index = 0U; index < R4_HW_MICROBENCH_SAMPLES; ++index)
     {
+        R4_RuntimeStatus status = R4_RuntimeTarget_TestResetLedger();
         uint32_t start = DWT->CYCCNT;
-        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_IRQ_ENTER,
-            R4_HW_MICROBENCH_IRQ_A);
-        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_IRQ_ENTER,
-            R4_HW_MICROBENCH_IRQ_B);
-        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_IRQ_EXIT,
-            R4_HW_MICROBENCH_IRQ_B);
-        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_IRQ_EXIT,
-            R4_HW_MICROBENCH_IRQ_A);
+        if (status == R4_RUNTIME_OK) status = R4_RuntimeTarget_TestApplyEvent(
+            R4_RUNTIME_EVENT_IRQ_ENTER, R4_HW_MICROBENCH_IRQ_A);
+        if (status == R4_RUNTIME_OK) status = R4_RuntimeTarget_TestApplyEvent(
+            R4_RUNTIME_EVENT_IRQ_ENTER, R4_HW_MICROBENCH_IRQ_B);
+        if (status == R4_RUNTIME_OK) status = R4_RuntimeTarget_TestApplyEvent(
+            R4_RUNTIME_EVENT_IRQ_EXIT, R4_HW_MICROBENCH_IRQ_B);
+        if (status == R4_RUNTIME_OK) status = R4_RuntimeTarget_TestApplyEvent(
+            R4_RUNTIME_EVENT_IRQ_EXIT, R4_HW_MICROBENCH_IRQ_A);
         samples[index] = (uint32_t)(DWT->CYCCNT - start);
+        if (status != R4_RUNTIME_OK)
+        {
+            ++g_r4_hw_result.microbench_failure_count;
+            g_r4_hw_result.microbench_last_status = (uint32_t)status;
+        }
     }
     SummarizeSamples(samples, R4_HW_MICROBENCH_SAMPLES,
         &g_r4_hw_result.microbench_nested_min_cycles,
