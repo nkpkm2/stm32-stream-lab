@@ -7,6 +7,9 @@
 #if defined(STREAM_LAB_R4_RUNTIME)
 #include "r4_runtime_target.h"
 #endif
+#if defined(STREAM_LAB_R4_PERTURBATION_AB)
+#include "r4_perturbation_target.h"
+#endif
 #include "r3_command_ledger.h"
 #include "r3_result_store.h"
 #include "r3_worker_tasks.h"
@@ -159,11 +162,17 @@ static void ProcessBlock(void *context, const StreamOwnershipDescriptor *ownersh
 {
     (void)context;
     (void)ownership;
+#if defined(STREAM_LAB_R4_PERTURBATION_AB)
+    R4_PerturbationTarget_OnWorkerStart();
+#endif
     runtime.processing_entered = 1U;
     if (runtime.config.processing_hold_ticks != 0U)
     {
         vTaskDelay(runtime.config.processing_hold_ticks);
     }
+#if defined(STREAM_LAB_R4_PERTURBATION_AB)
+    R4_PerturbationTarget_OnWorkerComplete();
+#endif
 }
 
 static uint32_t InterferenceSegment(void *context)
@@ -263,6 +272,9 @@ static void CompleteCallback(const AdcDbmDriverCompletionEvent *event, void *con
             if ((authority_status == STREAM_RUN_AUTHORITY_OK) &&
                 (runtime.config.suppress_processing_notify == 0U))
             {
+#if defined(STREAM_LAB_R4_PERTURBATION_AB)
+                R4_PerturbationTarget_OnReleaseFromIsr();
+#endif
                 if (R3WorkerTasks_NotifyProcessingWorkFromISR(
                         &higher_priority_task_woken) != R3_WORKER_TASKS_OK)
                 {

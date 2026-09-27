@@ -113,6 +113,15 @@ class R4ClockAuthorityAuditTests(unittest.TestCase):
         self.assertEqual(body.count("R4_RuntimeTarget_ObserveDmaServiceExit()"), 1)
         self.assertEqual(body.count("STREAM_LAB_R4_PERTURBATION_AB"), 2)
 
+    def test_perturbation_response_uses_the_real_r3_publication_and_worker_path(self) -> None:
+        runtime = (RUNTIME / "r3_w3_runtime.c").read_text(encoding="utf-8")
+        probe = (RUNTIME / "r4_perturbation_target.h").read_text(encoding="utf-8")
+        self.assertIn("R4_PerturbationTarget_OnReleaseFromIsr", runtime)
+        self.assertIn("R4_PerturbationTarget_OnWorkerStart", runtime)
+        self.assertIn("R4_PerturbationTarget_OnWorkerComplete", runtime)
+        self.assertIn("STREAM_LAB_R4_PERTURBATION_AB", runtime)
+        self.assertIn("R4_PERTURBATION_RESPONSE_SAMPLES 33U", probe)
+
 
 if __name__ == "__main__":
     unittest.main()

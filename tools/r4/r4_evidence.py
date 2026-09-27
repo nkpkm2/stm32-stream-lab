@@ -18,10 +18,11 @@ import subprocess
 import sys
 import tempfile
 import time
+from statistics import median
 
 PHASES = ("H0", "H1", "H2", "H3", "H4", "H5")
 MAGIC, COMPLETE, SCHEMA = 0x52344857, 0x5234444E, 1
-PREFIX_WORDS, READ_BYTES = 11, 1024
+PREFIX_WORDS, READ_BYTES = 11, 2048
 SYNTHETIC_CREATE_MASK_WORD = 122
 SYNTHETIC_SCHEMA_WORD = 123
 SYNTHETIC_DONE_MASK_WORD = 124
@@ -144,6 +145,23 @@ DMA_SERVICE_COUNT_WORD = 240
 DMA_SERVICE_MAX_WORD = 242
 MICROBENCH_FAILURE_COUNT_WORD = 244
 MICROBENCH_LAST_STATUS_WORD = 245
+PERTURBATION_PROFILE_WORD = 246
+PERTURBATION_ACCOUNTING_WORD = 247
+PERTURBATION_DMA_COUNT_WORD = 248
+PERTURBATION_DMA_MAX_WORD = 250
+PERTURBATION_DRIVER_COMPLETIONS_WORD = 252
+PERTURBATION_DRIVER_KEEP_WORD = 253
+PERTURBATION_DRIVER_REBIND_WORD = 254
+PERTURBATION_DRIVER_FAILURE_WORD = 255
+PERTURBATION_PROCESSING_WAKE_WORD = 256
+PERTURBATION_PROCESSING_COMPLETE_WORD = 257
+PERTURBATION_PROCESSING_CANCEL_WORD = 258
+PERTURBATION_RUNTIME_FAULT_WORD = 259
+PERTURBATION_RESPONSE_RELEASE_COUNT_WORD = 260
+PERTURBATION_RESPONSE_COMPLETE_COUNT_WORD = 261
+PERTURBATION_RESPONSE_OVERFLOW_COUNT_WORD = 262
+PERTURBATION_RESPONSE_SAMPLES_WORD = 263
+PERTURBATION_RESPONSE_SAMPLE_COUNT = 33
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -165,6 +183,7 @@ CASES = {
     "response-synthetic": ("RESPONSE_SYNTHETIC", 14, 0, 8),
     "mask-timing": ("MASK_TIMING", 15, 0, 8),
     "combined-service": ("COMBINED_SERVICE", 16, 65000, 75),
+    "perturbation-ab": ("PERTURBATION_AB", 17, 65000, 75),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -248,8 +267,8 @@ def git(repo: Path, *args: str) -> str:
     return completed.stdout.strip()
 
 
-def definitions(selector: str, soak_ms: int) -> dict[str, str]:
-    return {
+def definitions(selector: str, soak_ms: int, accounting: str | None = None) -> dict[str, str]:
+    result = {
         "STREAM_LAB_FOUNDATION_ADC_DBM_DRIVER": "ON",
         "STREAM_LAB_FOUNDATION_OWNERSHIP_CORE": "ON",
         "STREAM_LAB_FOUNDATION_TOKEN_LEDGER": "ON",
@@ -267,6 +286,11 @@ def definitions(selector: str, soak_ms: int) -> dict[str, str]:
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
     }
+    if accounting is not None:
+        if accounting not in ("MINIMAL", "R4"):
+            raise EvidenceError("unknown accounting profile")
+        result["STREAM_LAB_R4_ACCOUNTING"] = "OFF" if accounting == "MINIMAL" else "ON"
+    return result
 
 
 def parse_words(text: str) -> list[int]:
@@ -283,7 +307,7 @@ def parse_words(text: str) -> list[int]:
     return words
 
 
-def evaluate(case: str, words: list[int]) -> dict:
+def evaluate(case: str, words: list[int], accounting: str | None = None) -> dict:
     selector, case_id, _, _ = CASES[case]
     checks = {
         "result_magic": words[0] == MAGIC,
@@ -572,6 +596,55 @@ def evaluate(case: str, words: list[int]) -> dict:
                 word64(DMA_SERVICE_COUNT_WORD) >= 100 and
                 word64(DMA_SERVICE_COUNT_WORD) == word64(T12_DMA_IRQ_COUNT_WORD) and
                 0 < word64(DMA_SERVICE_MAX_WORD) <= 23040)
+    if case == "perturbation-ab":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) < PERTURBATION_RESPONSE_SAMPLES_WORD + (3 * PERTURBATION_RESPONSE_SAMPLE_COUNT):
+            checks["perturbation_extension_present"] = False
+        else:
+            expected_profile = 0 if accounting == "MINIMAL" else 1
+            response_samples = [
+                tuple(words[PERTURBATION_RESPONSE_SAMPLES_WORD + (3 * index):
+                            PERTURBATION_RESPONSE_SAMPLES_WORD + (3 * index) + 3])
+                for index in range(PERTURBATION_RESPONSE_SAMPLE_COUNT)
+            ]
+            checks.update({
+                "perturbation_profile_identity": (
+                    accounting in ("MINIMAL", "R4") and
+                    words[PERTURBATION_PROFILE_WORD] == expected_profile and
+                    words[PERTURBATION_ACCOUNTING_WORD] == expected_profile),
+                "perturbation_dma_margin": (
+                    word64(PERTURBATION_DMA_COUNT_WORD) >= 50000 and
+                    0 < word64(PERTURBATION_DMA_MAX_WORD) <= 23040),
+                "perturbation_lifecycle_data_plane": (
+                    words[25] == 0 and words[26] == 0 and words[27] == 0 and
+                    words[PERTURBATION_DRIVER_COMPLETIONS_WORD] > 0 and
+                    words[PERTURBATION_DRIVER_REBIND_WORD] > 0 and
+                    words[PERTURBATION_DRIVER_FAILURE_WORD] == 0 and
+                    words[PERTURBATION_RUNTIME_FAULT_WORD] == 0 and
+                    words[PERTURBATION_PROCESSING_WAKE_WORD] > 0 and
+                    words[PERTURBATION_PROCESSING_COMPLETE_WORD] > 0),
+                "perturbation_fixed_real_worker_response_population": (
+                    words[PERTURBATION_RESPONSE_RELEASE_COUNT_WORD] ==
+                    PERTURBATION_RESPONSE_SAMPLE_COUNT and
+                    words[PERTURBATION_RESPONSE_COMPLETE_COUNT_WORD] ==
+                    PERTURBATION_RESPONSE_SAMPLE_COUNT and
+                    words[PERTURBATION_RESPONSE_OVERFLOW_COUNT_WORD] == 0 and
+                    all(release != 0 and start != 0 and complete != 0 and
+                        0 < ((start - release) & 0xFFFFFFFF) <= 5000000 and
+                        0 < ((complete - start) & 0xFFFFFFFF) <= 5000000
+                        for release, start, complete in response_samples)),
+                "perturbation_cpu_profile_semantics": (
+                    (accounting == "R4" and word64(WINDOW_CYCLES_WORD) > 0 and
+                     word64(WINDOW_CYCLES_WORD) ==
+                     word64(TARGET_WINDOW_TASK_WORD) + word64(TARGET_WINDOW_IRQ_WORD) +
+                     word64(TARGET_WINDOW_IDLE_WORD) + word64(TARGET_WINDOW_UNCLASSIFIED_WORD)) or
+                    (accounting == "MINIMAL" and
+                     all(word64(index) == 0xFFFFFFFFFFFFFFFF for index in (
+                         TARGET_WINDOW_TASK_WORD, TARGET_WINDOW_IRQ_WORD,
+                         TARGET_WINDOW_IDLE_WORD, TARGET_WINDOW_UNCLASSIFIED_WORD))))
+            })
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 
@@ -610,6 +683,9 @@ def run_attempt(args: argparse.Namespace) -> int:
     root = Path(tempfile.mkdtemp(prefix=f"r4-{args.case}-", dir=parent))
     log, completed = CommandLog(root), []
     selector, case_id, soak_ms, wait_seconds = CASES[args.case]
+    accounting = args.accounting if args.case == "perturbation-ab" else None
+    if args.case == "perturbation-ab" and accounting is None:
+        raise EvidenceError("perturbation-ab requires --accounting MINIMAL or R4")
     env = {**os.environ, "PATH": str(ARM_DIR) + os.pathsep + str(NINJA_DIR) + os.pathsep + os.environ.get("PATH", "")}
     try:
         _, probe, _ = log.run([PROGRAMMER, "-l"], "probe-list", timeout=30)
@@ -620,7 +696,7 @@ def run_attempt(args: argparse.Namespace) -> int:
         build = root / "build"
         toolchain = repo / "firmware" / "cubemx" / "cmake" / "gcc-arm-none-eabi.cmake"
         command = [CMAKE, "-S", repo / "firmware" / "cubemx", "-B", build, "-G", "Ninja",
-                   f"-DCMAKE_TOOLCHAIN_FILE={toolchain}"] + [f"-D{k}={v}" for k, v in definitions(selector, soak_ms).items()]
+                   f"-DCMAKE_TOOLCHAIN_FILE={toolchain}"] + [f"-D{k}={v}" for k, v in definitions(selector, soak_ms, accounting).items()]
         log.run(command, "configure", env=env, timeout=180)
         log.run([CMAKE, "--build", build, "--parallel", "4"], "build", env=env, timeout=600)
         elf, binary = build / "cubemx.elf", build / "programmed.bin"
@@ -628,7 +704,7 @@ def run_attempt(args: argparse.Namespace) -> int:
             raise EvidenceError("target ELF missing")
         log.run([ARM_DIR / "arm-none-eabi-objcopy.exe", "-O", "binary", elf, binary], "programmed-binary", env=env, timeout=30)
         write_new(root / "H1.json", {"phase": "H1", "selector": selector, "case_id": case_id,
-                  "definitions": definitions(selector, soak_ms), "elf_sha256": digest(elf),
+                  "definitions": definitions(selector, soak_ms, accounting), "elf_sha256": digest(elf),
                   "programmed_image_sha256": digest(binary)})
         completed.append("H1")
         log.run([PROGRAMMER, "-c", "port=SWD", "mode=UR", "-w", elf, "-v", "-rst"], "flash-verify", timeout=120)
@@ -642,7 +718,7 @@ def run_attempt(args: argparse.Namespace) -> int:
         _, readout, _ = log.run([PROGRAMMER, "-c", "port=SWD", "mode=UR", "-r32", f"0x{address:08X}", str(READ_BYTES)], "read-result", timeout=60)
         (root / "raw").mkdir(exist_ok=True)
         (root / "raw" / "target-result.txt").write_text(readout, encoding="utf-8", newline="\n")
-        checked = evaluate(args.case, parse_words(readout))
+        checked = evaluate(args.case, parse_words(readout), accounting)
         write_new(root / "H4.json", {"phase": "H4", "result_address": f"0x{address:08X}", **checked})
         completed.append("H4")
         write_new(root / "identity.json", {"schema_version": "r4-evidence-v2", "git_head": head,
@@ -650,7 +726,8 @@ def run_attempt(args: argparse.Namespace) -> int:
                   "programmer": str(PROGRAMMER), "harness_sha256": digest(repo / "tools" / "r4" / "r4_evidence.py"),
                   "elf_sha256": digest(elf), "programmed_image_sha256": digest(binary)})
         write_new(root / "config.json", {"work_package": "R4", "case_id": args.case, "selector": selector,
-                  "case_numeric_id": case_id, "configured_soak_ms": soak_ms})
+                  "case_numeric_id": case_id, "configured_soak_ms": soak_ms,
+                  "accounting_profile": accounting})
         write_new(root / "state.json", {"work_package": "R4", "case_id": args.case, "completed_phases": list(PHASES),
                   "next_allowed": "COMPLETE", "hardware_state": "SAFE"})
         write_new(root / "acceptance.json", {"result": checked["result"], "first_failure_class": None if checked["result"] == "PASS" else "TARGET_FIRMWARE", "invariants": checked["checks"]})
@@ -698,6 +775,144 @@ def import_attempt(args: argparse.Namespace) -> int:
     return 0
 
 
+def word64(words: list[int], index: int) -> int:
+    return words[index] | (words[index + 1] << 32)
+
+
+def perturbation_metrics(root: Path, profile: str) -> tuple[dict, dict, dict]:
+    """Load one sealed individual profile and derive only raw-record metrics."""
+    verify_root(root)
+    config = json.loads((root / "config.json").read_text(encoding="utf-8"))
+    identity = json.loads((root / "identity.json").read_text(encoding="utf-8"))
+    h1 = json.loads((root / "H1.json").read_text(encoding="utf-8"))
+    if (config.get("case_id") != "perturbation-ab" or
+            config.get("accounting_profile") != profile or
+            config.get("configured_soak_ms") != 65000 or
+            h1.get("selector") != "PERTURBATION_AB" or h1.get("case_id") != 17):
+        raise EvidenceError("attempt is not the required perturbation profile")
+    words = parse_words((root / "raw" / "target-result.txt").read_text(encoding="utf-8"))
+    verdict = evaluate("perturbation-ab", words, profile)
+    if verdict["result"] != "PASS":
+        raise EvidenceError("raw perturbation record does not meet individual gates")
+    samples = [
+        tuple(words[PERTURBATION_RESPONSE_SAMPLES_WORD + (3 * index):
+                    PERTURBATION_RESPONSE_SAMPLES_WORD + (3 * index) + 3])
+        for index in range(PERTURBATION_RESPONSE_SAMPLE_COUNT)
+    ]
+    response = sorted(((complete - release) & 0xFFFFFFFF
+                       for release, _start, complete in samples))
+    completions = words[PERTURBATION_DRIVER_COMPLETIONS_WORD]
+    rebind = words[PERTURBATION_DRIVER_REBIND_WORD]
+    return ({
+        "profile": profile,
+        "attempt": str(root),
+        "dma_count": word64(words, PERTURBATION_DMA_COUNT_WORD),
+        "dma_max_cycles": word64(words, PERTURBATION_DMA_MAX_WORD),
+        "completion_count": completions,
+        "rebind_count": rebind,
+        "keep_count": words[PERTURBATION_DRIVER_KEEP_WORD],
+        "processing_complete_count": words[PERTURBATION_PROCESSING_COMPLETE_WORD],
+        "response_sample_count": len(response),
+        "response_median_cycles": int(median(response)),
+        "response_max_cycles": response[-1],
+    }, identity, h1)
+
+
+def verify_perturbation_pair(minimal_root: Path, r4_root: Path) -> dict:
+    minimal, minimal_identity, minimal_h1 = perturbation_metrics(minimal_root, "MINIMAL")
+    r4, r4_identity, r4_h1 = perturbation_metrics(r4_root, "R4")
+    common_minimal = dict(minimal_h1["definitions"])
+    common_r4 = dict(r4_h1["definitions"])
+    common_minimal.pop("STREAM_LAB_R4_ACCOUNTING", None)
+    common_r4.pop("STREAM_LAB_R4_ACCOUNTING", None)
+    identity_match = (
+        minimal_identity.get("firmware_source_commit") == r4_identity.get("firmware_source_commit") and
+        minimal_identity.get("harness_sha256") == r4_identity.get("harness_sha256") and
+        minimal_identity.get("board_profile") == r4_identity.get("board_profile") and
+        common_minimal == common_r4)
+    have_denominators = (minimal["dma_count"] > 0 and
+                         minimal["completion_count"] > 0 and
+                         minimal["rebind_count"] > 0 and r4["rebind_count"] > 0 and
+                         minimal["response_median_cycles"] > 0 and
+                         minimal["response_max_cycles"] > 0)
+    dma_rate_delta = abs(r4["dma_count"] - minimal["dma_count"]) / max(minimal["dma_count"], 1)
+    completion_delta = abs(r4["completion_count"] - minimal["completion_count"])
+    completion_rate_delta = completion_delta / max(minimal["completion_count"], 1)
+    admission_minimal = minimal["rebind_count"] / max(minimal["completion_count"], 1)
+    admission_r4 = r4["rebind_count"] / max(r4["completion_count"], 1)
+    checks = {
+        "matched_immutable_identity": identity_match,
+        "nonzero_common_denominators": have_denominators,
+        "dma_max_relative_delta": (
+            minimal["dma_max_cycles"] <= 23040 and r4["dma_max_cycles"] <= 23040 and
+            (r4["dma_max_cycles"] - minimal["dma_max_cycles"]) / minimal["dma_max_cycles"] <= 0.25),
+        "dma_observation_rate_delta": dma_rate_delta <= 0.10,
+        "completion_throughput_delta": (
+            completion_rate_delta <= 0.05 or completion_delta <= 1),
+        "admission_delta": abs(admission_r4 - admission_minimal) <= 0.05,
+        "processing_completion_coverage": (
+            minimal["processing_complete_count"] / max(minimal["rebind_count"], 1) >= 0.99 and
+            r4["processing_complete_count"] / max(r4["rebind_count"], 1) >= 0.99),
+        "response_median_delta": (
+            r4["response_median_cycles"] / max(minimal["response_median_cycles"], 1) <= 1.25),
+        "response_max_delta": r4["response_max_cycles"] / max(minimal["response_max_cycles"], 1) <= 1.25,
+    }
+    return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
+            "minimal": minimal, "r4": r4,
+            "deltas": {"dma_observation_rate": dma_rate_delta,
+                       "completion_rate": completion_rate_delta,
+                       "admission_absolute": abs(admission_r4 - admission_minimal)}}
+
+
+def verify_perturbation_pair_command(args: argparse.Namespace) -> int:
+    result = verify_perturbation_pair(args.minimal.resolve(), args.r4.resolve())
+    if args.output is not None:
+        output = args.output.resolve()
+        if output.exists():
+            raise EvidenceError("pair-verifier output must be a new file")
+        write_new(output, result)
+    print(json.dumps(result, ensure_ascii=True, sort_keys=True))
+    return 0 if result["result"] == "PASS" else 2
+
+
+def verify_perturbation_suite(attempts: list[Path]) -> dict:
+    """Validate the frozen six-run anti-cherry-pick order and all pairs."""
+    if len(attempts) != 6 or len({path.resolve() for path in attempts}) != 6:
+        raise EvidenceError("perturbation suite requires six distinct attempts")
+    expected = ("MINIMAL", "R4", "R4", "MINIMAL", "MINIMAL", "R4")
+    actual = []
+    for root, profile in zip(attempts, expected):
+        metrics, identity, h1 = perturbation_metrics(root.resolve(), profile)
+        actual.append({"profile": profile, "attempt": str(root.resolve()),
+                       "identity": identity, "definitions": h1["definitions"],
+                       "metrics": metrics})
+    reference = actual[0]
+    suite_identity = all(
+        entry["identity"].get("firmware_source_commit") ==
+        reference["identity"].get("firmware_source_commit") and
+        entry["identity"].get("harness_sha256") == reference["identity"].get("harness_sha256")
+        for entry in actual)
+    pairs = [
+        verify_perturbation_pair(attempts[0].resolve(), attempts[1].resolve()),
+        verify_perturbation_pair(attempts[3].resolve(), attempts[2].resolve()),
+        verify_perturbation_pair(attempts[4].resolve(), attempts[5].resolve()),
+    ]
+    checks = {"frozen_run_order": True, "suite_identity": suite_identity,
+              "all_three_pairs_pass": all(pair["result"] == "PASS" for pair in pairs)}
+    return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
+            "attempts": actual, "pairs": pairs}
+
+
+def verify_perturbation_suite_command(args: argparse.Namespace) -> int:
+    result = verify_perturbation_suite(args.attempt)
+    output = args.output.resolve()
+    if output.exists():
+        raise EvidenceError("suite-verifier output must be a new file")
+    write_new(output, result)
+    print(json.dumps(result, ensure_ascii=True, sort_keys=True))
+    return 0 if result["result"] == "PASS" else 2
+
+
 def selftest(_: argparse.Namespace) -> int:
     words = [MAGIC, 1, SCHEMA, 1, 0, 0, 0, 0, 0, 0, COMPLETE]
     if evaluate("t12-soak-a", words)["result"] != "PASS":
@@ -715,6 +930,7 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     attempt = sub.add_parser("run-attempt", help="run one fresh, external formal board attempt")
     attempt.add_argument("--case", required=True, choices=sorted(CASES))
+    attempt.add_argument("--accounting", choices=("MINIMAL", "R4"))
     attempt.add_argument("--output-parent", type=Path, required=True)
     attempt.set_defaults(handler=run_attempt)
     imported = sub.add_parser("import-attempt", help="copy one sealed PASS attempt into Git evidence")
@@ -723,6 +939,15 @@ def main() -> int:
     verify = sub.add_parser("verify", help="verify a sealed attempt")
     verify.add_argument("--attempt", type=Path, required=True)
     verify.set_defaults(handler=lambda args: (verify_root(args.attempt.resolve()), print("PASS"), 0)[2])
+    pair = sub.add_parser("verify-perturbation-pair", help="verify one immutable MINIMAL/R4 A/B pair")
+    pair.add_argument("--minimal", type=Path, required=True)
+    pair.add_argument("--r4", type=Path, required=True)
+    pair.add_argument("--output", type=Path)
+    pair.set_defaults(handler=verify_perturbation_pair_command)
+    suite = sub.add_parser("verify-perturbation-suite", help="verify frozen six-run A/B perturbation closure")
+    suite.add_argument("--attempt", type=Path, nargs=6, required=True)
+    suite.add_argument("--output", type=Path, required=True)
+    suite.set_defaults(handler=verify_perturbation_suite_command)
     test = sub.add_parser("selftest", help="exercise the target-record parser without hardware")
     test.set_defaults(handler=selftest)
     args = parser.parse_args()

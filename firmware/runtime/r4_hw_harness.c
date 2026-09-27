@@ -8,6 +8,7 @@
 
 #include "r4_runtime_target.h"
 #include "r4_tick_service_target.h"
+#include "r4_perturbation_target.h"
 #include "r3_w3_runtime.h"
 
 #define R4_HW_STACK_WORDS 1280U
@@ -599,8 +600,8 @@ static void EvaluateFormalInvariants(void)
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
 #elif (R4_HW_CASE_ID == 17U)
-    /* This is an individual-profile foundation only.  The paired verifier
-     * owns cross-profile deltas, response samples and aggregate policy. */
+    /* Pair deltas remain external policy, but every individual image must
+     * contain a complete fixed raw-DWT population from the real R3 worker. */
     if ((g_r4_hw_result.lifecycle_init_status != (uint32_t)R3_W3_RUNTIME_OK) ||
         (g_r4_hw_result.lifecycle_start_status != (uint32_t)R3_W3_RUNTIME_OK) ||
         (g_r4_hw_result.lifecycle_stop_status != (uint32_t)R3_W3_RUNTIME_OK) ||
@@ -615,8 +616,27 @@ static void EvaluateFormalInvariants(void)
         (g_r4_hw_result.perturbation_dma_max_cycles >
          R4_HW_DMA_SERVICE_LIMIT_CYCLES) ||
         (g_r4_hw_result.perturbation_driver_completions == 0U) ||
+        (g_r4_hw_result.perturbation_response_release_count !=
+         R4_HW_PERTURBATION_RESPONSE_SAMPLE_COUNT) ||
+        (g_r4_hw_result.perturbation_response_complete_count !=
+         R4_HW_PERTURBATION_RESPONSE_SAMPLE_COUNT) ||
+        (g_r4_hw_result.perturbation_response_overflow_count != 0U) ||
         (g_r4_hw_result.perturbation_driver_failure != 0U) ||
-        (g_r4_hw_result.perturbation_runtime_fault != 0U))
+        (g_r4_hw_result.perturbation_runtime_fault != 0U) ||
+#if (R4_HW_ACCOUNTING_ENABLED != 0U)
+        (g_r4_hw_result.window_cycles == 0U) ||
+        (g_r4_hw_result.window_cycles !=
+         (g_r4_hw_result.target_window_task_cycles +
+          g_r4_hw_result.target_window_irq_cycles +
+          g_r4_hw_result.target_window_idle_cycles +
+          g_r4_hw_result.target_window_unclassified_cycles))
+#else
+        (g_r4_hw_result.target_window_task_cycles != UINT64_MAX) ||
+        (g_r4_hw_result.target_window_irq_cycles != UINT64_MAX) ||
+        (g_r4_hw_result.target_window_idle_cycles != UINT64_MAX) ||
+        (g_r4_hw_result.target_window_unclassified_cycles != UINT64_MAX)
+#endif
+        )
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
@@ -719,6 +739,7 @@ static void HarnessTask(void *argument)
 #endif
 #if (R4_HW_CASE_ID == 17U)
     R3W3RuntimeSnapshot runtime_snapshot;
+    R4_PerturbationResponseSnapshot perturbation_response;
 #endif
 #if (R4_HW_CASE_ID == 8U)
     R4_RuntimeHealthSnapshot tick_gap_health;
@@ -933,6 +954,9 @@ static void HarnessTask(void *argument)
 #if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U) || \
     (R4_HW_CASE_ID == 12U) || (R4_HW_CASE_ID == 16U) || (R4_HW_CASE_ID == 17U)
     (void)memset(&config, 0, sizeof(config));
+#if (R4_HW_CASE_ID == 17U)
+    R4_PerturbationTarget_Reset();
+#endif
     config.boot_id = R4_HW_BOOT;
     config.k = 4U;
 #if (R4_HW_CASE_ID == 12U)
@@ -1059,6 +1083,25 @@ static void HarnessTask(void *argument)
                     runtime_snapshot.workers.processing_cancel_count;
                 g_r4_hw_result.perturbation_runtime_fault =
                     runtime_snapshot.runtime_fault;
+            }
+            (void)memset(&perturbation_response, 0, sizeof(perturbation_response));
+            R4_PerturbationTarget_GetSnapshot(&perturbation_response);
+            g_r4_hw_result.perturbation_response_release_count =
+                perturbation_response.release_count;
+            g_r4_hw_result.perturbation_response_complete_count =
+                perturbation_response.completed_count;
+            g_r4_hw_result.perturbation_response_overflow_count =
+                perturbation_response.overflow_count;
+            for (uint32_t response_index = 0U;
+                 response_index < R4_HW_PERTURBATION_RESPONSE_SAMPLE_COUNT;
+                 ++response_index)
+            {
+                g_r4_hw_result.perturbation_response_samples[response_index][0] =
+                    perturbation_response.samples[response_index].release_raw;
+                g_r4_hw_result.perturbation_response_samples[response_index][1] =
+                    perturbation_response.samples[response_index].worker_start_raw;
+                g_r4_hw_result.perturbation_response_samples[response_index][2] =
+                    perturbation_response.samples[response_index].worker_complete_raw;
             }
 #endif
 #if (R4_HW_CASE_ID == 7U)
@@ -1188,6 +1231,22 @@ static void HarnessTask(void *argument)
         g_r4_hw_result.irq_cycles = ledger->irq_cycles;
         g_r4_hw_result.window_cycles = ledger->window_cycles[0];
         g_r4_hw_result.irq_depth = ledger->irq_depth;
+#if (R4_HW_CASE_ID == 17U)
+#if (R4_HW_ACCOUNTING_ENABLED != 0U)
+        g_r4_hw_result.target_window_task_cycles = ledger->window_task_cycles[0];
+        g_r4_hw_result.target_window_irq_cycles = ledger->window_irq_cycles[0];
+        g_r4_hw_result.target_window_idle_cycles = ledger->window_idle_cycles[0];
+        g_r4_hw_result.target_window_unclassified_cycles =
+            ledger->window_unclassified_cycles[0];
+#else
+        /* MINIMAL has no task/IRQ/tick/queue accounting.  An unavailable
+         * sentinel avoids the invalid claim that its CPU residency is zero. */
+        g_r4_hw_result.target_window_task_cycles = UINT64_MAX;
+        g_r4_hw_result.target_window_irq_cycles = UINT64_MAX;
+        g_r4_hw_result.target_window_idle_cycles = UINT64_MAX;
+        g_r4_hw_result.target_window_unclassified_cycles = UINT64_MAX;
+#endif
+#endif
 #if (R4_HW_CASE_ID == 13U)
         g_r4_hw_result.target_window_task_cycles = ledger->window_task_cycles[0];
         g_r4_hw_result.target_window_irq_cycles = ledger->window_irq_cycles[0];

@@ -519,6 +519,7 @@ if(STREAM_LAB_R4_RUNTIME)
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_clock64.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_runtime_event.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_runtime_target.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_perturbation_target.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_tick_service.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_tick_service_target.c")
     target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
@@ -527,6 +528,7 @@ if(STREAM_LAB_R4_RUNTIME)
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_clock64.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_runtime_event.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_runtime_target.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_perturbation_target.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_tick_service.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_tick_service_target.c"
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")

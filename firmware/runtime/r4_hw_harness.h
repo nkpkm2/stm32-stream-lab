@@ -146,6 +146,11 @@ extern "C" {
 #define R4_HW_PERTURBATION_PROCESSING_COMPLETE_WORD 257U
 #define R4_HW_PERTURBATION_PROCESSING_CANCEL_WORD 258U
 #define R4_HW_PERTURBATION_RUNTIME_FAULT_WORD 259U
+#define R4_HW_PERTURBATION_RESPONSE_RELEASE_COUNT_WORD 260U
+#define R4_HW_PERTURBATION_RESPONSE_COMPLETE_COUNT_WORD 261U
+#define R4_HW_PERTURBATION_RESPONSE_OVERFLOW_COUNT_WORD 262U
+#define R4_HW_PERTURBATION_RESPONSE_SAMPLES_WORD 263U
+#define R4_HW_PERTURBATION_RESPONSE_SAMPLE_COUNT 33U
 
 #define R4_HW_PERTURBATION_PROFILE_MINIMAL 0U
 #define R4_HW_PERTURBATION_PROFILE_R4 1U
@@ -345,11 +350,24 @@ typedef struct
     uint32_t perturbation_processing_complete;
     uint32_t perturbation_processing_cancel;
     uint32_t perturbation_runtime_fault;
+    uint32_t perturbation_response_release_count;
+    uint32_t perturbation_response_complete_count;
+    uint32_t perturbation_response_overflow_count;
+    uint32_t perturbation_response_samples[R4_HW_PERTURBATION_RESPONSE_SAMPLE_COUNT][3];
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
     (R4_HW_SYNTHETIC_CREATE_MASK_WORD * sizeof(uint32_t)),
     "R4 synthetic evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, perturbation_profile) ==
+    (R4_HW_PERTURBATION_PROFILE_WORD * sizeof(uint32_t)),
+    "R4 perturbation profile evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, perturbation_response_release_count) ==
+    (R4_HW_PERTURBATION_RESPONSE_RELEASE_COUNT_WORD * sizeof(uint32_t)),
+    "R4 perturbation response-count evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, perturbation_response_samples) ==
+    (R4_HW_PERTURBATION_RESPONSE_SAMPLES_WORD * sizeof(uint32_t)),
+    "R4 perturbation response evidence word offset changed");
 _Static_assert(offsetof(R4HwHarnessResult, dma_window_snapshot_status) ==
     (R4_HW_DMA_WINDOW_SNAPSHOT_WORD * sizeof(uint32_t)),
     "R4 DMA-window evidence word offset changed");

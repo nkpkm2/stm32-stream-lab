@@ -1,8 +1,9 @@
 # R4 paired instrumentation-perturbation protocol
 
-Status: **frozen acceptance protocol; implementation and sealed evidence are
-pending.**  This protocol closes neither R4 nor its perturbation claim until
-the required immutable attempts and pair verifier exist.
+Status: **frozen acceptance protocol; target instrumentation and an
+immutable-pair verifier are implemented, sealed evidence is pending.** This
+protocol closes neither R4 nor its perturbation claim until all six required
+external attempts and the aggregate verifier record exist.
 
 ## Question and scope
 
@@ -37,7 +38,7 @@ counts where applicable:
 3. KEEP/REBIND/admission-drop identities and fault counts under a declared
    controlled backpressure stimulus;
 4. at least 33 fixed raw-DWT response samples (release, worker-start and
-   completion) from the same priority/worker path;
+   completion) from the real DMA-publication to R3 Processing worker path;
 5. for `R4` only, a sealed CPU-window partition.  `MINIMAL` must encode CPU
    accounting as **not available**, never as zero.
 

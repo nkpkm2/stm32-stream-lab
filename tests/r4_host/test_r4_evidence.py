@@ -249,3 +249,33 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("combined-service", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["combined_dma_service_margin"])
+
+    def test_perturbation_requires_real_worker_population_and_profile_semantics(self) -> None:
+        words = [0] * (EVIDENCE.PERTURBATION_RESPONSE_SAMPLES_WORD + 99)
+        words[:11] = [EVIDENCE.MAGIC, 17, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[25:28] = [0, 0, 0]
+        words[EVIDENCE.WINDOW_CYCLES_WORD] = 100
+        words[EVIDENCE.TARGET_WINDOW_TASK_WORD] = 40
+        words[EVIDENCE.TARGET_WINDOW_IRQ_WORD] = 30
+        words[EVIDENCE.TARGET_WINDOW_IDLE_WORD] = 20
+        words[EVIDENCE.TARGET_WINDOW_UNCLASSIFIED_WORD] = 10
+        words[EVIDENCE.PERTURBATION_PROFILE_WORD] = 1
+        words[EVIDENCE.PERTURBATION_ACCOUNTING_WORD] = 1
+        words[EVIDENCE.PERTURBATION_DMA_COUNT_WORD] = 50000
+        words[EVIDENCE.PERTURBATION_DMA_MAX_WORD] = 23040
+        words[EVIDENCE.PERTURBATION_DRIVER_COMPLETIONS_WORD] = 100
+        words[EVIDENCE.PERTURBATION_DRIVER_REBIND_WORD] = 100
+        words[EVIDENCE.PERTURBATION_PROCESSING_WAKE_WORD] = 100
+        words[EVIDENCE.PERTURBATION_PROCESSING_COMPLETE_WORD] = 100
+        words[EVIDENCE.PERTURBATION_RESPONSE_RELEASE_COUNT_WORD] = 33
+        words[EVIDENCE.PERTURBATION_RESPONSE_COMPLETE_COUNT_WORD] = 33
+        for index in range(EVIDENCE.PERTURBATION_RESPONSE_SAMPLE_COUNT):
+            offset = EVIDENCE.PERTURBATION_RESPONSE_SAMPLES_WORD + (index * 3)
+            words[offset:offset + 3] = [100, 120, 220]
+        verdict = EVIDENCE.evaluate("perturbation-ab", words, "R4")
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["perturbation_fixed_real_worker_response_population"])
+        words[EVIDENCE.PERTURBATION_PROFILE_WORD] = 0
+        verdict = EVIDENCE.evaluate("perturbation-ab", words, "R4")
+        self.assertEqual(verdict["result"], "FAIL")
