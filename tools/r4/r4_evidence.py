@@ -139,7 +139,9 @@ CASES = {
     "microbenchmark": ("MICROBENCH", 9, 0, 8),
     "mask-restore": ("MASK_RESTORE", 10, 0, 8),
     "time-regression": ("TIME_REGRESSION", 11, 0, 8),
-    "commit-pending-irq": ("COMMIT_PENDING_IRQ", 12, 0, 8),
+    # This composes the directed IRQ witness with the released full-lock
+    # budget gate, which requires the representative completion population.
+    "commit-pending-irq": ("COMMIT_PENDING_IRQ", 12, 65000, 75),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
