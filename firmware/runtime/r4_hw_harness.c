@@ -465,6 +465,8 @@ static void EvaluateFormalInvariants(void)
     }
 #elif (R4_HW_CASE_ID == 9U)
     if ((g_r4_hw_result.microbench_sample_count != R4_HW_MICROBENCH_SAMPLES) ||
+        (g_r4_hw_result.microbench_failure_count != 0U) ||
+        (g_r4_hw_result.microbench_last_status != (uint32_t)R4_RUNTIME_OK) ||
         (g_r4_hw_result.microbench_task_min_cycles == 0U) ||
         (g_r4_hw_result.microbench_task_min_cycles >
          g_r4_hw_result.microbench_task_median_cycles) ||
@@ -785,6 +787,12 @@ static void HarnessTask(void *argument)
 #endif
 #if (R4_HW_CASE_ID == 9U)
     RunMicrobenchmark();
+    /* RunMicrobenchmark intentionally leaves its last isolated ledger in a
+     * fresh, valid state.  Recreate the ordinary harness window on that same
+     * ledger so the common window/tick witnesses remain meaningful. */
+    g_r4_hw_result.window_open_status = (uint32_t)R4_RuntimeTarget_OpenWindow(0U);
+    g_r4_hw_result.window_close_status = (uint32_t)R4_RuntimeTarget_CloseWindow(0U);
+    g_r4_hw_result.checkpoint_status = (uint32_t)R4_RuntimeTarget_Checkpoint();
     /* Benchmark samples must not include a tick wait, but the formal image
      * still has to witness the normal production SysTick/tick-hook route. */
     vTaskDelay(pdMS_TO_TICKS(2U));
