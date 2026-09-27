@@ -591,6 +591,9 @@ static void HarnessTask(void *argument)
 #endif
 #if (R4_HW_CASE_ID == 9U)
     RunMicrobenchmark();
+    /* Benchmark samples must not include a tick wait, but the formal image
+     * still has to witness the normal production SysTick/tick-hook route. */
+    vTaskDelay(pdMS_TO_TICKS(2U));
 #endif
 #if (R4_HW_CASE_ID == 4U)
     ledger = R4_RuntimeTarget_GetLedger();
