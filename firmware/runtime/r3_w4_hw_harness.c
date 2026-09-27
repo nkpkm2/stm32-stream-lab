@@ -155,6 +155,17 @@ static void ControllerTask(void *argument)
     {
         g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_STOP;
     }
+#if (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_STOP_D)
+    if (R3W3Runtime_StopRunning(R3_W4_HW_STOP_ID) != R3_W3_RUNTIME_OK ||
+        !Snapshot(&snapshot) || snapshot.lifecycle.rollback_count != 1U)
+    {
+        g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_STOP;
+    }
+    else
+    {
+        g_r3_w4_hw_result.duplicate_stop_ok = 1U;
+    }
+#endif
     if ((snapshot.lifecycle.state != R3_LIFECYCLE_IDLE) ||
         (snapshot.lifecycle.acquisition_publish_allowed != 0U) ||
         (snapshot.lifecycle.processing_claim_allowed != 0U) ||

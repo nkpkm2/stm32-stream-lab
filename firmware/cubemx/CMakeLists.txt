@@ -120,9 +120,9 @@ set(STREAM_LAB_R3_W3_HW_CASE "" CACHE STRING
 set_property(CACHE STREAM_LAB_R3_W3_HW_CASE PROPERTY STRINGS
     START_A T06_A T06_B START_C)
 set(STREAM_LAB_R3_W4_HW_CASE "" CACHE STRING
-    "R3-W4 target hardware case: T04_A, STOP_A, or STOP_B")
+    "R3-W4 target hardware case: T04_A, STOP_A, STOP_B, or STOP_D")
 set_property(CACHE STREAM_LAB_R3_W4_HW_CASE PROPERTY STRINGS
-    T04_A STOP_A STOP_B)
+    T04_A STOP_A STOP_B STOP_D)
 set(STREAM_LAB_R3_W2_HW_CASE "" CACHE STRING
     "R3-W2 target hardware case: T03_A, T03_C, T03_D, T05_A, or T05_B")
 set_property(CACHE STREAM_LAB_R3_W2_HW_CASE PROPERTY STRINGS
@@ -177,8 +177,10 @@ if(STREAM_LAB_R3_W3_HW OR STREAM_LAB_R3_W4_HW)
             set(R3_W4_HW_CASE_ID_VALUE 2)
         elseif(STREAM_LAB_R3_W4_HW_CASE STREQUAL "STOP_B")
             set(R3_W4_HW_CASE_ID_VALUE 3)
+        elseif(STREAM_LAB_R3_W4_HW_CASE STREQUAL "STOP_D")
+            set(R3_W4_HW_CASE_ID_VALUE 4)
         else()
-            message(FATAL_ERROR "STREAM_LAB_R3_W4_HW_CASE must be T04_A, STOP_A, or STOP_B.")
+            message(FATAL_ERROR "STREAM_LAB_R3_W4_HW_CASE must be T04_A, STOP_A, STOP_B, or STOP_D.")
         endif()
     endif()
 elseif(NOT STREAM_LAB_R3_W3_HW_CASE STREQUAL "")

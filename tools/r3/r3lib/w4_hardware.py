@@ -16,8 +16,8 @@ from .w2_build_validation import CommandLog, configure, select_tools, verify_cac
 from .w3_hardware import digest, manifest, validate_manifest, write_new
 
 CASES = {"W4-T04-A": ("T04_A", 1), "W4-STOP-A": ("STOP_A", 2),
-         "W4-STOP-B": ("STOP_B", 3)}
-MAGIC, COMPLETE, WORDS = 0x52335734, 0xA44C0DE4, 25
+         "W4-STOP-B": ("STOP_B", 3), "W4-STOP-D": ("STOP_D", 4)}
+MAGIC, COMPLETE, WORDS = 0x52335734, 0xA44C0DE4, 26
 TARGET_BOUND_S, HOST_TIMEOUT_S = 0.5, 3.0
 
 
@@ -72,7 +72,7 @@ def evaluate(case: str, words: list[int]) -> dict:
         "begin_report": words[12] == 1, "begin_timer_closed": (words[14] & 1) == 0,
         "finish_report": words[15] == 1, "dma_disabled": (words[16] & 1) == 0,
         "worker_acks": words[17] == 0x300, "worker_clean": words[21:24] == [0, 0, 0],
-        "completion_magic": words[24] == COMPLETE,
+        "completion_magic": words[25] == COMPLETE,
     }
     if selector == "T04_A":
         checks.update({"partial_only": 0 < words[13] < 256,
@@ -81,8 +81,11 @@ def evaluate(case: str, words: list[int]) -> dict:
     elif selector == "STOP_A":
         checks["ready_cancelled_by_processing"] = words[20] > 0
     else:
-        checks.update({"processing_entered": words[18] == 1,
-                       "current_completed": words[19] > 0})
+        if selector == "STOP_B":
+            checks.update({"processing_entered": words[18] == 1,
+                           "current_completed": words[19] > 0})
+        else:
+            checks["duplicate_stop_same_transaction"] = words[24] == 1
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "words": [f"0x{word:08X}" for word in words]}
 
