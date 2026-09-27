@@ -1,0 +1,6 @@
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w6-a-x28b_oso/build/CMakeFiles/cubemx.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w6-a-x28b_oso/build/CMakeFiles/edit_cache.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w6-a-x28b_oso/build/CMakeFiles/rebuild_cache.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w6-a-x28b_oso/build/cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w6-a-x28b_oso/build/cmake/stm32cubemx/CMakeFiles/edit_cache.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w6-a-x28b_oso/build/cmake/stm32cubemx/CMakeFiles/rebuild_cache.dir
