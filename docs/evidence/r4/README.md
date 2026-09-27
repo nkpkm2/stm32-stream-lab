@@ -14,6 +14,10 @@ case-specific `docs/evidence/r4/<case>/attempt-0001/` directory containing
 H0--H5, `identity.json`, `state.json`, raw command output and
 `MANIFEST.sha256`.
 
+The broader Principal acceptance standard is tracked separately in the
+[`R4 Principal audit`](../../r4/R4_PRINCIPAL_ACCEPTANCE_AUDIT.md); sealed
+T12/T15/T17/timing records below close only their stated rows.
+
 * [`R4 implementation candidate`](../../r4/R4_IMPLEMENTATION_AND_ACCEPTANCE.md)
 * [`IRQ and queue callsite table`](r4-callsite-table.md)
 * [`Final board SRAM capture`](r4-hw-final-sram.txt)
