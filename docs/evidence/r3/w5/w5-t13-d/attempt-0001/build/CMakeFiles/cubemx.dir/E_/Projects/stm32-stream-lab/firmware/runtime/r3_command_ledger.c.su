@@ -1,0 +1,11 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_command_ledger.c:5:12:BindingMatches	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_command_ledger.c:14:12:TicketMatches	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_command_ledger.c:23:12:StopMatches	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_command_ledger.c:32:6:R3CommandLedger_Initialize	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_command_ledger.c:39:23:R3CommandLedger_BeginStart	32	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_command_ledger.c:84:23:R3CommandLedger_RecordPrepared	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_command_ledger.c:99:23:R3CommandLedger_RecordRunning	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_command_ledger.c:112:23:R3CommandLedger_AbortStart	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_command_ledger.c:123:23:R3CommandLedger_BeginStop	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_command_ledger.c:138:23:R3CommandLedger_RecordStopped	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_command_ledger.c:149:23:R3CommandLedger_GetSnapshot	24	static

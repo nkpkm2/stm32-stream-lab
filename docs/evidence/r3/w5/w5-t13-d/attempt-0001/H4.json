@@ -1,0 +1,42 @@
+{
+  "phase": "H4",
+  "result_address": "0x2000352C",
+  "result": "PASS",
+  "checks": {
+    "result_magic": true,
+    "schema": true,
+    "case_identity": true,
+    "terminal_pass": true,
+    "no_invariant": true,
+    "idle": true,
+    "ledger_stopped": true,
+    "worker_clean": true,
+    "runtime_clean": true,
+    "completion_magic": true,
+    "old_boot_rejected": true
+  },
+  "words": [
+    "0x52335735",
+    "0x00000001",
+    "0x00000003",
+    "0x00000001",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000003",
+    "0x00000041",
+    "0x00000001",
+    "0x00000001",
+    "0x00000001",
+    "0x00000001",
+    "0x00000001",
+    "0x00000000",
+    "0x00000051",
+    "0x00000000",
+    "0x00000009",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0xA55C0DE5"
+  ]
+}

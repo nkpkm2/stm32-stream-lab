@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "first_failure_class": null,
+  "invariants": {
+    "result_magic": true,
+    "schema": true,
+    "case_identity": true,
+    "terminal_pass": true,
+    "no_invariant": true,
+    "idle": true,
+    "ledger_stopped": true,
+    "worker_clean": true,
+    "runtime_clean": true,
+    "completion_magic": true,
+    "old_boot_rejected": true
+  }
+}
