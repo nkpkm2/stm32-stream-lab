@@ -122,6 +122,15 @@ class R4ClockAuthorityAuditTests(unittest.TestCase):
         self.assertIn("STREAM_LAB_R4_PERTURBATION_AB", runtime)
         self.assertIn("R4_PERTURBATION_RESPONSE_SAMPLES 33U", probe)
 
+    def test_perturbation_uses_a_declared_bounded_processing_workload(self) -> None:
+        runtime = (RUNTIME / "r3_w3_runtime.c").read_text(encoding="utf-8")
+        header = (RUNTIME / "r3_w3_runtime.h").read_text(encoding="utf-8")
+        harness = (RUNTIME / "r4_hw_harness.c").read_text(encoding="utf-8")
+        self.assertIn("uint32_t processing_work_iterations;", header)
+        self.assertIn("runtime.config.processing_work_iterations", runtime)
+        self.assertIn("R4_HW_PERTURBATION_WORK_ITERATIONS 5000U", harness)
+        self.assertIn("config.processing_work_iterations = R4_HW_PERTURBATION_WORK_ITERATIONS", harness)
+
 
 if __name__ == "__main__":
     unittest.main()

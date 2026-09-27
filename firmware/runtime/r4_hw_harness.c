@@ -32,6 +32,7 @@
 #define R4_HW_DMA_WINDOW_MIN_POST_CLOSE_SEQUENCE 5U
 #define R4_HW_DMA_WINDOW_WAIT_TICKS 2000U
 #define R4_HW_RESPONSE_WORK_ITERATIONS 50000U
+#define R4_HW_PERTURBATION_WORK_ITERATIONS 5000U
 #define R4_HW_RESPONSE_MAX_CYCLES UINT32_C(5000000)
 #define R4_HW_RESPONSE_OWNER_COVERAGE_PERMILLE UINT64_C(990)
 #define R4_HW_MASK_TIMING_LIMIT_CYCLES UINT64_C(1800)
@@ -959,6 +960,9 @@ static void HarnessTask(void *argument)
 #endif
     config.boot_id = R4_HW_BOOT;
     config.k = 4U;
+#if (R4_HW_CASE_ID == 17U)
+    config.processing_work_iterations = R4_HW_PERTURBATION_WORK_ITERATIONS;
+#endif
 #if (R4_HW_CASE_ID == 12U)
     g_r4_hw_result.commit_pending_arm_status =
         (uint32_t)R4_RuntimeTarget_TestArmPendingCompletionIrq();

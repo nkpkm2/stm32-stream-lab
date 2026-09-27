@@ -47,6 +47,7 @@ typedef struct
 static R3W3RuntimeStorage runtime;
 /* DMA-visible storage is deliberately static SRAM, never task stack memory. */
 static uint16_t sample_blocks[R2_BUFFER_POOL_MAX_BUFFERS][R3_W3_RUNTIME_BLOCK_SAMPLES];
+static volatile uint32_t processing_work_sink;
 
 static int CoordinatorCaller(void)
 {
@@ -160,12 +161,20 @@ static R3InterferenceReleaseDecision TryBeginInterference(
 
 static void ProcessBlock(void *context, const StreamOwnershipDescriptor *ownership)
 {
+    uint32_t index;
     (void)context;
     (void)ownership;
 #if defined(STREAM_LAB_R4_PERTURBATION_AB)
     R4_PerturbationTarget_OnWorkerStart();
 #endif
     runtime.processing_entered = 1U;
+    for (index = 0U; index < runtime.config.processing_work_iterations; ++index)
+    {
+        /* Volatile sink keeps this declared bounded workload observable in
+         * the target image without affecting ownership or queue semantics. */
+        processing_work_sink = (processing_work_sink * UINT32_C(1664525)) +
+            UINT32_C(1013904223);
+    }
     if (runtime.config.processing_hold_ticks != 0U)
     {
         vTaskDelay(runtime.config.processing_hold_ticks);

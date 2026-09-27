@@ -14,7 +14,8 @@ can report CPU residency without R4 accounting.
 
 Each profile is built from the same committed source, NUCLEO-F446RE, 180 MHz,
 Release/LTO configuration, ADC DBM setup (200 kSamples/s, 256-sample blocks),
-R3 lifecycle/worker configuration, priorities, and 65,000 ms real-DMA soak.
+R3 lifecycle/worker configuration (including a fixed 5,000-iteration bounded
+Processing workload), priorities, and 65,000 ms real-DMA soak.
 The sole intentional axis is `STREAM_LAB_R4_ACCOUNTING`:
 
 | Profile | Setting | Meaning |

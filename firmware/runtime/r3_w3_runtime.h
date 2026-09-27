@@ -51,6 +51,10 @@ typedef struct
      * deliberately hold a lease. */
     uint32_t suppress_processing_notify;
     uint32_t processing_hold_ticks;
+    /* Optional bounded CPU work performed by the real Processing worker.
+     * Production defaults to zero; R4 A/B uses an explicit nonzero value so
+     * its response metric reflects a representative worker computation. */
+    uint32_t processing_work_iterations;
 } R3W3RuntimeConfig;
 
 typedef struct
