@@ -58,6 +58,7 @@ def print_status(repo: Path) -> None:
     print(f"W2B_TASK_GLUE: {progress.w2b_task_glue}")
     print(f"W2_HW_HARNESS_FREEZE: {progress.w2_hw_harness_freeze}")
     print(f"W2_EVIDENCE: {progress.w2_evidence}")
+    print(f"W3_EVIDENCE: {progress.w3_evidence}")
     print(f"CURRENT_WORK_PACKAGE: {progress.current_work_package}")
     print(f"TECHNICAL_NEXT_ALLOWED: {progress.next_allowed}")
     print(f"OPERATOR_GATE: {gate.state}")
@@ -246,6 +247,16 @@ def selftest() -> int:
     case(
         "w2_hw_timeout_policy",
         lambda: validate_host_timeout(W2_HW_TARGET_BOUND_S, W2_HW_HOST_TIMEOUT_S),
+    )
+    case(
+        "w3_progress_after_evidence",
+        lambda: __import__("r3lib.control_state", fromlist=["derive_progress"])
+        .derive_progress(
+            w1_sealed=True, w2a_sealed=True, w2b_sealed=True,
+            w2_evidence_present=True, w2_evidence_complete=True,
+            w3_evidence_complete=True, w2_hw_freeze_sealed=True,
+        ).next_allowed == "W4_SAFE_STOP_IMPLEMENTATION"
+        or (_ for _ in ()).throw(AssertionError()),
     )
 
     for name, ok, detail in tests:
