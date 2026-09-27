@@ -48,6 +48,24 @@ T17_LOW_IRQ_AFTER_WORD = 54
 T17_HIGH_IRQ_AFTER_WORD = 56
 T17_WINDOW_AT_CLOSE_WORD = 58
 T17_WINDOW_AFTER_CLOSE_WORD = 60
+T12_SOAK_CONFIGURED_MS_WORD = 88
+T12_SOAK_START_HIGH_WORD = 89
+T12_SOAK_END_HIGH_WORD = 90
+T12_DMA_TAIL_STATUS_WORD = 91
+T12_DMA_IRQ_COUNT_WORD = 96
+T12_DMA_YIELD_COUNT_WORD = 98
+T12_DMA_NO_YIELD_COUNT_WORD = 100
+T12_NO_EVENT_STATUS_WORD = 102
+T12_NO_EVENT_IRQ_BEFORE_WORD = 104
+T12_NO_EVENT_IRQ_AFTER_WORD = 106
+T12_NO_EVENT_NO_YIELD_BEFORE_WORD = 108
+T12_NO_EVENT_NO_YIELD_AFTER_WORD = 110
+T12_HEALTH_STATUS_WORD = 112
+T12_HEALTH_FIRST_FAULT_WORD = 113
+T12_HEALTH_FAIL_CLOSED_WORD = 114
+T12_HEALTH_SERVICE_COUNT_WORD = 116
+T12_HEALTH_MAX_INTERVAL_WORD = 118
+T12_HEALTH_INTERVAL_LIMIT_WORD = 120
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -256,6 +274,38 @@ def evaluate(case: str, words: list[int]) -> dict:
                 "t17_sealed_window": (
                     word64(T17_WINDOW_AT_CLOSE_WORD) ==
                     word64(T17_WINDOW_AFTER_CLOSE_WORD)),
+            })
+    if case in ("t12-soak-a", "t12-soak-b"):
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= T12_HEALTH_INTERVAL_LIMIT_WORD + 1:
+            checks["t12_extension_present"] = False
+        else:
+            checks.update({
+                "t12_lifecycle": (
+                    words[25] == 0 and words[26] == 0 and words[27] == 0),
+                "t12_wrap_and_duration": (
+                    words[T12_SOAK_CONFIGURED_MS_WORD] >= 60000 and
+                    words[T12_SOAK_END_HIGH_WORD] >
+                    words[T12_SOAK_START_HIGH_WORD]),
+                "t12_dma_yield_path": (
+                    words[T12_DMA_TAIL_STATUS_WORD] == 0 and
+                    word64(T12_DMA_IRQ_COUNT_WORD) > 0 and
+                    word64(T12_DMA_YIELD_COUNT_WORD) > 0),
+                "t12_dma_no_event_path": (
+                    words[T12_NO_EVENT_STATUS_WORD] == 0 and
+                    word64(T12_NO_EVENT_IRQ_AFTER_WORD) ==
+                    word64(T12_NO_EVENT_IRQ_BEFORE_WORD) + 1 and
+                    word64(T12_NO_EVENT_NO_YIELD_AFTER_WORD) ==
+                    word64(T12_NO_EVENT_NO_YIELD_BEFORE_WORD) + 1),
+                "t12_health_service": (
+                    words[T12_HEALTH_STATUS_WORD] == 0 and
+                    words[T12_HEALTH_FIRST_FAULT_WORD] == 0 and
+                    words[T12_HEALTH_FAIL_CLOSED_WORD] == 0 and
+                    word64(T12_HEALTH_SERVICE_COUNT_WORD) >= 60 and
+                    word64(T12_HEALTH_MAX_INTERVAL_WORD) <=
+                    word64(T12_HEALTH_INTERVAL_LIMIT_WORD)),
             })
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}

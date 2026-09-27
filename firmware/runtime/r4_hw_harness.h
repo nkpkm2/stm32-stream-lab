@@ -28,6 +28,24 @@ extern "C" {
 #define R4_HW_T17_HIGH_IRQ_AFTER_WORD 56U
 #define R4_HW_T17_WINDOW_AT_CLOSE_WORD 58U
 #define R4_HW_T17_WINDOW_AFTER_CLOSE_WORD 60U
+#define R4_HW_T12_SOAK_CONFIGURED_MS_WORD 88U
+#define R4_HW_T12_SOAK_START_HIGH_WORD 89U
+#define R4_HW_T12_SOAK_END_HIGH_WORD 90U
+#define R4_HW_T12_DMA_TAIL_STATUS_WORD 91U
+#define R4_HW_T12_DMA_IRQ_COUNT_WORD 96U
+#define R4_HW_T12_DMA_YIELD_COUNT_WORD 98U
+#define R4_HW_T12_DMA_NO_YIELD_COUNT_WORD 100U
+#define R4_HW_T12_NO_EVENT_STATUS_WORD 102U
+#define R4_HW_T12_NO_EVENT_IRQ_BEFORE_WORD 104U
+#define R4_HW_T12_NO_EVENT_IRQ_AFTER_WORD 106U
+#define R4_HW_T12_NO_EVENT_NO_YIELD_BEFORE_WORD 108U
+#define R4_HW_T12_NO_EVENT_NO_YIELD_AFTER_WORD 110U
+#define R4_HW_T12_HEALTH_STATUS_WORD 112U
+#define R4_HW_T12_HEALTH_FIRST_FAULT_WORD 113U
+#define R4_HW_T12_HEALTH_FAIL_CLOSED_WORD 114U
+#define R4_HW_T12_HEALTH_SERVICE_COUNT_WORD 116U
+#define R4_HW_T12_HEALTH_MAX_INTERVAL_WORD 118U
+#define R4_HW_T12_HEALTH_INTERVAL_LIMIT_WORD 120U
 #define R4_HW_SYNTHETIC_CREATE_MASK_WORD 122U
 #define R4_HW_SYNTHETIC_A_CYCLES_WORD 128U
 #define R4_HW_SYNTHETIC_B_CYCLES_WORD 130U
@@ -185,6 +203,21 @@ _Static_assert(offsetof(R4HwHarnessResult, t17_high_irq_cycles_after) ==
 _Static_assert(offsetof(R4HwHarnessResult, t17_window_cycles_after_close) ==
     (R4_HW_T17_WINDOW_AFTER_CLOSE_WORD * sizeof(uint32_t)),
     "R4 T17 sealed-window evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, soak_configured_ms) ==
+    (R4_HW_T12_SOAK_CONFIGURED_MS_WORD * sizeof(uint32_t)),
+    "R4 T12 soak-duration evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, dma_irq_count) ==
+    (R4_HW_T12_DMA_IRQ_COUNT_WORD * sizeof(uint32_t)),
+    "R4 T12 DMA-IRQ evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, dma_yield_requested_count) ==
+    (R4_HW_T12_DMA_YIELD_COUNT_WORD * sizeof(uint32_t)),
+    "R4 T12 DMA-yield evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, dma_no_event_irq_before) ==
+    (R4_HW_T12_NO_EVENT_IRQ_BEFORE_WORD * sizeof(uint32_t)),
+    "R4 T12 no-event IRQ-before evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, health_monitor_service_count) ==
+    (R4_HW_T12_HEALTH_SERVICE_COUNT_WORD * sizeof(uint32_t)),
+    "R4 T12 health-service evidence word offset changed");
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_a_cycles) ==
     (R4_HW_SYNTHETIC_A_CYCLES_WORD * sizeof(uint32_t)),
     "R4 synthetic-A evidence word offset changed");
