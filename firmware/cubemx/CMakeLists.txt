@@ -106,6 +106,8 @@ option(STREAM_LAB_R3_WORKER_CONTRACT
 
 option(STREAM_LAB_R3_WORKER_TASKS
     "Compile the R3-W2 persistent Processing/Interference task glue" OFF)
+option(STREAM_LAB_R3_LIFECYCLE
+    "Compile the R3 transactional lifecycle coordinator foundation" OFF)
 
 option(STREAM_LAB_R3_W2_HW
     "Build the R3-W2 target-only worker hardware harness" OFF)
@@ -350,6 +352,28 @@ if(STREAM_LAB_R3_WORKER_TASKS)
     )
 endif()
 # === R3-W2B WORKER TASK GLUE END ===
+
+# === R3-W3 TRANSACTIONAL LIFECYCLE FOUNDATION BEGIN ===
+if(STREAM_LAB_R3_LIFECYCLE)
+    if(NOT STREAM_LAB_FOUNDATION_QUEUE_ADAPTER OR
+       NOT STREAM_LAB_FOUNDATION_ADC_DBM_DRIVER OR
+       NOT STREAM_LAB_R3_WORKER_TASKS)
+        message(FATAL_ERROR
+            "R3 lifecycle requires QueueAdapter/RunAuthority, ADC DBM driver, and persistent workers.")
+    endif()
+    if(STREAM_LAB_R3_W2_HW)
+        message(FATAL_ERROR "R3 lifecycle is not part of the frozen W2 hardware profile.")
+    endif()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R3_LIFECYCLE=1)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_lifecycle.c")
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime")
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_lifecycle.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
+endif()
+# === R3-W3 TRANSACTIONAL LIFECYCLE FOUNDATION END ===
 
 # === R3-W2 TARGET HARDWARE HARNESS BEGIN ===
 if(STREAM_LAB_R3_W2_HW)

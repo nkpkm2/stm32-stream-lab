@@ -5,6 +5,21 @@ if(CMAKE_CROSSCOMPILING OR CMAKE_C_COMPILER MATCHES "arm-none-eabi")
     message(FATAL_ERROR "R2 native tests need a HOST compiler, not the STM32 toolchain.")
 endif()
 
+option(R3_LIFECYCLE_NATIVE_TESTS "Build R3 lifecycle transaction tests" OFF)
+if(R3_LIFECYCLE_NATIVE_TESTS)
+    add_executable(test_r3_lifecycle
+        test_r3_lifecycle.c
+        ../../firmware/runtime/r3_lifecycle.c)
+    target_include_directories(test_r3_lifecycle PRIVATE
+        freertos_stubs ../../firmware/runtime ../../firmware/buffer_pool ../../firmware/acquisition)
+    set_target_properties(test_r3_lifecycle PROPERTIES C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_r3_lifecycle)
+    r2_apply_sanitizers(test_r3_lifecycle)
+    foreach(case_name normal invalid arm_rollback stop_before_commit commit_failure stale)
+        add_test(NAME r3.lifecycle.${case_name} COMMAND test_r3_lifecycle ${case_name})
+    endforeach()
+endif()
+
 function(r2_apply_strict_warnings target_name)
     if(MSVC)
         target_compile_options(${target_name} PRIVATE /W4 /WX)
