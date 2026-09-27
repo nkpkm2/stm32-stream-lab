@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "E:\\DevTools\\STM32CubeCLT-1.22.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-nm.exe",
+    "-n",
+    "C:\\Users\\CHJ\\.codex\\visualizations\\2026\\09\\27\\01a0e1a1-c295-7233-b3f5-e371851ee2f5\\r4-principal\\r4-t15-q0-xi0kq3np\\build\\cubemx.elf"
+  ],
+  "automatic_retry": false,
+  "cwd": null,
+  "timeout_seconds": 30
+}

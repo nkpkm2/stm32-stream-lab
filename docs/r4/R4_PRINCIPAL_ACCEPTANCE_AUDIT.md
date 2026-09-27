@@ -14,7 +14,7 @@ hardware test is not a substitute.
 | A07–A13 IRQ pairing, no-yield/yield, SysTick | `t17-atomic/attempt-0005` sealed real TIM7→TIM6 nesting; fresh T12 semantic attempts exercise DMA `pdTRUE` and no-event `pdFALSE` tails | PARTIAL | exact task-switch attribution and one-pair SysTick evidence |
 | A14–A15 task/idle known workload | `task-synthetic/attempt-0004` sealed target PASS on the corrected ABI reader; H4 checks fixed A/B iterations, owner ratio, Idle residency, and formal conservation | PARTIAL | add known IRQ contribution and retain this workload in final integrated regression |
 | A16–A24 CPU window clipping, immutability, conservation | `dma-window/attempt-0001` sealed target PASS at `cf78c83`: real DMA completion sequence opens at S0=1, seals at S1=4, and observes a later sequence >=5 without a boundary fault; per-window buckets and directed native source cases remain available | PARTIAL | execute native cases on a host and add final target intersection/conservation plus no-outside-window evidence |
-| A25–A29 error/overhead/phase | tick DWT history and lock budget | PARTIAL | RuntimeEvent microbench, error budget, perturbation A/B, q0-to-TIM2 bound |
+| A25–A29 error/overhead/phase | current T15 q0 target PASS directly brackets physical TIM2 CEN at planned q0 and accepts <=1800-cycle start interval; tick DWT history and lock budget remain available | PARTIAL | refresh release under the same phase gate, then RuntimeEvent microbench, error budget, and perturbation A/B |
 | A30–A37 TickService and suspension | Current independent T15 q0/release target PASSes prove `SysTick enter = exit = real-hook service`, registration, DWT history, and exact suspension callback/start/release/skip semantics | PARTIAL | add explicit tick-gap fault-injection and q0-to-TIM2 phase evidence |
 | A38–A44 T12/T17 cutoff and formal/live separation | T12/T17 sealed attempts | PARTIAL | nested/cutoff interleaving and machine-readable formal-vs-live result split |
 | A45–A51 response/utilization/critical composition | full lock bound twice | PARTIAL | known response-time test, utilization schema, RuntimeEvent masking bound, pending-IRQ-at-lock case |
@@ -26,11 +26,11 @@ hardware test is not a substitute.
   `docs/evidence/r4/t12-soak-b/attempt-0002`. Both current H4 records verify
   wrap/duration, lifecycle, DMA `pdTRUE`, no-event `pdFALSE`, and Clock64
   health service.
-* T15: current target passes are `docs/evidence/r4/t15-q0/attempt-0003` and
-  `docs/evidence/r4/t15-release/attempt-0004`. Each H4 oracle proves the
-  physical SysTick trace has exactly one enter and one exit for every real
-  tick-hook service, in addition to its q0 or one-release suspension contract.
-  Earlier attempts remain immutable history.
+* T15: `docs/evidence/r4/t15-q0/attempt-0004` is the current target PASS. Its
+  H4 oracle proves one physical SysTick enter/exit per real hook service and
+  directly brackets the planned-q0 physical TIM2 CEN write. The release case
+  will be refreshed on that same phase gate before this evidence family is
+  advanced. Earlier attempts remain immutable history.
 * T17: `docs/evidence/r4/t17-atomic/attempt-0005` (current semantic H4
   verifies pending-IRQ ordering, real nesting, duplicate-exit rejection, and
   sealed-window immutability). Earlier attempts remain immutable history.
