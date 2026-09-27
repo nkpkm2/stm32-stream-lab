@@ -1,0 +1,14 @@
+{
+  "case_id": "response-synthetic",
+  "completed_phases": [
+    "H0",
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "H5"
+  ],
+  "hardware_state": "SAFE",
+  "next_allowed": "COMPLETE",
+  "work_package": "R4"
+}

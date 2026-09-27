@@ -1,0 +1,15 @@
+{
+  "first_failure_class": null,
+  "invariants": {
+    "case_identity": true,
+    "completed_magic": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "response_direct_wall_endpoints": true,
+    "response_owner_known_work_coverage": true,
+    "result_magic": true,
+    "schema_version": true,
+    "terminal_pass": true
+  },
+  "result": "PASS"
+}
