@@ -1,0 +1,19 @@
+{
+  "result": "PASS",
+  "first_failure_class": null,
+  "invariants": {
+    "result_magic": true,
+    "schema": true,
+    "case_identity": true,
+    "terminal_pass": true,
+    "no_invariant": true,
+    "no_runtime_fault": true,
+    "completion_magic": true,
+    "idle": true,
+    "all_gates_closed": true,
+    "hardware_released": true,
+    "tim2_never_started": true,
+    "rollback_acks": true,
+    "rollback_recorded": true
+  }
+}
