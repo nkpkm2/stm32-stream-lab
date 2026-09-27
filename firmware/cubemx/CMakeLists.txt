@@ -113,10 +113,16 @@ option(STREAM_LAB_R3_W2_HW
     "Build the R3-W2 target-only worker hardware harness" OFF)
 option(STREAM_LAB_R3_W3_HW
     "Build the R3-W3 transactional START target hardware harness" OFF)
+option(STREAM_LAB_R3_W4_HW
+    "Build the R3-W4 safe STOP target hardware harness" OFF)
 set(STREAM_LAB_R3_W3_HW_CASE "" CACHE STRING
     "R3-W3 target hardware case: START_A, T06_A, T06_B, or START_C")
 set_property(CACHE STREAM_LAB_R3_W3_HW_CASE PROPERTY STRINGS
     START_A T06_A T06_B START_C)
+set(STREAM_LAB_R3_W4_HW_CASE "" CACHE STRING
+    "R3-W4 target hardware case: T04_A, STOP_A, or STOP_B")
+set_property(CACHE STREAM_LAB_R3_W4_HW_CASE PROPERTY STRINGS
+    T04_A STOP_A STOP_B)
 set(STREAM_LAB_R3_W2_HW_CASE "" CACHE STRING
     "R3-W2 target hardware case: T03_A, T03_C, T03_D, T05_A, or T05_B")
 set_property(CACHE STREAM_LAB_R3_W2_HW_CASE PROPERTY STRINGS
@@ -140,26 +146,45 @@ if(R2_DIAGNOSTIC_PROFILE_COUNT GREATER 1)
     message(FATAL_ERROR "R2 diagnostic profiles W3/W4/W5/W6 are mutually exclusive")
 endif()
 
-if(STREAM_LAB_R3_W3_HW)
-    if(R2_DIAGNOSTIC_PROFILE_COUNT GREATER 0 OR STREAM_LAB_R3_W2_HW)
-        message(FATAL_ERROR "R3-W3 hardware harness is exclusive with R2 and W2 harness profiles.")
+if(STREAM_LAB_R3_W3_HW OR STREAM_LAB_R3_W4_HW)
+    if(R2_DIAGNOSTIC_PROFILE_COUNT GREATER 0 OR STREAM_LAB_R3_W2_HW OR
+       (STREAM_LAB_R3_W3_HW AND STREAM_LAB_R3_W4_HW))
+        message(FATAL_ERROR "R3 W3/W4 hardware harnesses are exclusive with R2 and W2 harness profiles.")
     endif()
-    if(NOT STREAM_LAB_R3_LIFECYCLE)
-        message(FATAL_ERROR "R3-W3 hardware harness requires STREAM_LAB_R3_LIFECYCLE=ON.")
+    if(STREAM_LAB_R3_W3_HW)
+        if(NOT STREAM_LAB_R3_LIFECYCLE)
+            message(FATAL_ERROR "R3-W3 hardware harness requires STREAM_LAB_R3_LIFECYCLE=ON.")
+        endif()
+        if(STREAM_LAB_R3_W3_HW_CASE STREQUAL "START_A")
+            set(R3_W3_HW_CASE_ID_VALUE 1)
+        elseif(STREAM_LAB_R3_W3_HW_CASE STREQUAL "T06_A")
+            set(R3_W3_HW_CASE_ID_VALUE 2)
+        elseif(STREAM_LAB_R3_W3_HW_CASE STREQUAL "T06_B")
+            set(R3_W3_HW_CASE_ID_VALUE 3)
+        elseif(STREAM_LAB_R3_W3_HW_CASE STREQUAL "START_C")
+            set(R3_W3_HW_CASE_ID_VALUE 4)
+        else()
+            message(FATAL_ERROR "STREAM_LAB_R3_W3_HW_CASE must be START_A, T06_A, T06_B, or START_C.")
+        endif()
     endif()
-    if(STREAM_LAB_R3_W3_HW_CASE STREQUAL "START_A")
-        set(R3_W3_HW_CASE_ID_VALUE 1)
-    elseif(STREAM_LAB_R3_W3_HW_CASE STREQUAL "T06_A")
-        set(R3_W3_HW_CASE_ID_VALUE 2)
-    elseif(STREAM_LAB_R3_W3_HW_CASE STREQUAL "T06_B")
-        set(R3_W3_HW_CASE_ID_VALUE 3)
-    elseif(STREAM_LAB_R3_W3_HW_CASE STREQUAL "START_C")
-        set(R3_W3_HW_CASE_ID_VALUE 4)
-    else()
-        message(FATAL_ERROR "STREAM_LAB_R3_W3_HW_CASE must be START_A, T06_A, T06_B, or START_C.")
+    if(STREAM_LAB_R3_W4_HW)
+        if(NOT STREAM_LAB_R3_LIFECYCLE)
+            message(FATAL_ERROR "R3-W4 hardware harness requires STREAM_LAB_R3_LIFECYCLE=ON.")
+        endif()
+        if(STREAM_LAB_R3_W4_HW_CASE STREQUAL "T04_A")
+            set(R3_W4_HW_CASE_ID_VALUE 1)
+        elseif(STREAM_LAB_R3_W4_HW_CASE STREQUAL "STOP_A")
+            set(R3_W4_HW_CASE_ID_VALUE 2)
+        elseif(STREAM_LAB_R3_W4_HW_CASE STREQUAL "STOP_B")
+            set(R3_W4_HW_CASE_ID_VALUE 3)
+        else()
+            message(FATAL_ERROR "STREAM_LAB_R3_W4_HW_CASE must be T04_A, STOP_A, or STOP_B.")
+        endif()
     endif()
 elseif(NOT STREAM_LAB_R3_W3_HW_CASE STREQUAL "")
     message(FATAL_ERROR "STREAM_LAB_R3_W3_HW_CASE requires STREAM_LAB_R3_W3_HW=ON.")
+elseif(NOT STREAM_LAB_R3_W4_HW_CASE STREQUAL "")
+    message(FATAL_ERROR "STREAM_LAB_R3_W4_HW_CASE requires STREAM_LAB_R3_W4_HW=ON.")
 elseif(STREAM_LAB_R3_W2_HW)
     if(R2_DIAGNOSTIC_PROFILE_COUNT GREATER 0)
         message(FATAL_ERROR
@@ -168,13 +193,12 @@ elseif(STREAM_LAB_R3_W2_HW)
     if(NOT STREAM_LAB_R3_WORKER_CONTRACT OR
        NOT STREAM_LAB_R3_WORKER_TASKS)
         message(FATAL_ERROR
-            "STREAM_LAB_R3_W2_HW requires the production R3 worker contract and worker tasks.")
+            "STREAM_LAB_R3_W2_HW requires R3 worker contract and task glue.")
     endif()
     if(STREAM_LAB_FOUNDATION_QUEUE_ADAPTER)
         message(FATAL_ERROR
             "STREAM_LAB_R3_W2_HW uses its test authority shim and must not link the production queue-adapter/RunAuthority profile.")
     endif()
-
     if(STREAM_LAB_R3_W2_HW_CASE STREQUAL "T03_A")
         set(R3_W2_HW_CASE_ID_VALUE 1)
     elseif(STREAM_LAB_R3_W2_HW_CASE STREQUAL "T03_C")
@@ -186,13 +210,10 @@ elseif(STREAM_LAB_R3_W2_HW)
     elseif(STREAM_LAB_R3_W2_HW_CASE STREQUAL "T05_B")
         set(R3_W2_HW_CASE_ID_VALUE 5)
     else()
-        message(FATAL_ERROR
-            "STREAM_LAB_R3_W2_HW_CASE must be one of T03_A, T03_C, T03_D, T05_A, T05_B.")
+        message(FATAL_ERROR "STREAM_LAB_R3_W2_HW_CASE must select one frozen W2 case.")
     endif()
-elseif(NOT STREAM_LAB_R3_W2_HW_CASE STREQUAL "")
-    message(FATAL_ERROR
-        "STREAM_LAB_R3_W2_HW_CASE requires STREAM_LAB_R3_W2_HW=ON.")
 endif()
+
 if(STREAM_LAB_R2_CT AND NOT STREAM_LAB_R2_W6)
     message(FATAL_ERROR "STREAM_LAB_R2_CT is a modifier of STREAM_LAB_R2_W6 and requires W6")
 endif()
@@ -416,6 +437,19 @@ if(STREAM_LAB_R3_W3_HW)
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w3_hw_harness.c")
     set_source_files_properties(
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w3_hw_harness.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
+elseif(STREAM_LAB_R3_W4_HW)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        STREAM_LAB_R3_W4_HW=1
+        R3_W4_HW_CASE_ID=${R3_W4_HW_CASE_ID_VALUE}U)
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition")
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w4_hw_harness.c")
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w4_hw_harness.c"
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
 elseif(STREAM_LAB_R3_W2_HW)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
