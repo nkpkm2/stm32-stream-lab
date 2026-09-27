@@ -35,6 +35,10 @@
 #include "r2_w4_roundtrip.h"
 #elif defined(STREAM_LAB_R2_W3)
 #include "r2_w3_rebind.h"
+#elif defined(STREAM_LAB_R3_LIFECYCLE)
+#include "FreeRTOS.h"
+#include "task.h"
+#include "r3_w3_runtime.h"
 #else
 #include "r1_acquisition.h"
 #endif
@@ -216,6 +220,22 @@ void TIM7_IRQHandler(void)
   /* USER CODE END TIM7_IRQn 1 */
 }
 
+#if defined(STREAM_LAB_R4_HW)
+/**
+  * @brief Board-only T17 software-pended IRQ.
+  * The handler has the same single entry/single common-tail contract as a
+  * production peripheral handler.  It deliberately has no HAL callback.
+  */
+void TIM6_DAC_IRQHandler(void)
+{
+  BaseType_t higher_priority_task_woken = pdFALSE;
+
+  traceISR_ENTER();
+  NVIC_ClearPendingIRQ(TIM6_DAC_IRQn);
+  portYIELD_FROM_ISR(higher_priority_task_woken);
+}
+#endif
+
 #if defined(STREAM_LAB_R2_CT)
 /**
   * @brief This function handles DMA1 stream6 global interrupt.
@@ -247,6 +267,13 @@ void USART2_IRQHandler(void)
   */
 void DMA2_Stream0_IRQHandler(void)
 {
+#if defined(STREAM_LAB_R4_RUNTIME)
+  BaseType_t higher_priority_task_woken = pdFALSE;
+  /* The one hardware-IRQ entry for all DMA completion/error paths.  HAL
+   * callbacks only accumulate their wake request; the tail below emits the
+   * sole matching traceISR_EXIT via portYIELD_FROM_ISR. */
+  traceISR_ENTER();
+#endif
   /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
 #if defined(STREAM_LAB_R2_W6)
   R2_W6_IrqEnter(DMA2->LISR);
@@ -274,6 +301,13 @@ void DMA2_Stream0_IRQHandler(void)
   R2_W4_IrqExit();
 #elif defined(STREAM_LAB_R2_W3)
   R2_W3_IrqExit();
+#endif
+
+#if defined(STREAM_LAB_R4_RUNTIME)
+#if defined(STREAM_LAB_R3_LIFECYCLE)
+  higher_priority_task_woken = R3W3Runtime_TakeDmaYieldRequest();
+#endif
+  portYIELD_FROM_ISR(higher_priority_task_woken);
 #endif
 
   /* USER CODE END DMA2_Stream0_IRQn 1 */

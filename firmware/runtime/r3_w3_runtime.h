@@ -94,6 +94,11 @@ R3W3RuntimeStatus R3W3Runtime_AcquireResult(uint32_t result_id,
 R3W3RuntimeStatus R3W3Runtime_ReleaseResult(uint32_t result_id);
 R3W3RuntimeStatus R3W3Runtime_GetSnapshot(R3W3RuntimeSnapshot *out);
 
+/* R4-only outer-IRQ tail handoff.  The DMA callback accumulates a wake request
+ * but never invokes portYIELD_FROM_ISR itself, so the real hardware IRQ has
+ * exactly one traceISR_EXIT path at its outer handler tail. */
+BaseType_t R3W3Runtime_TakeDmaYieldRequest(void);
+
 #ifdef __cplusplus
 }
 #endif

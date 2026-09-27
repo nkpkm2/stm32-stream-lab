@@ -119,6 +119,10 @@ option(STREAM_LAB_R3_W5_HW
     "Build the R3-W5 command/isolation target hardware harness" OFF)
 option(STREAM_LAB_R3_W6_HW
     "Build the R3-W6 500-cycle lifecycle target harness" OFF)
+option(STREAM_LAB_R4_RUNTIME
+    "Compile the R4 Clock64/RuntimeEvent/TickService integration" OFF)
+option(STREAM_LAB_R4_HW
+    "Build the R4 target Clock64/runtime-window harness" OFF)
 set(STREAM_LAB_R3_W3_HW_CASE "" CACHE STRING
     "R3-W3 target hardware case: START_A, T06_A, T06_B, or START_C")
 set_property(CACHE STREAM_LAB_R3_W3_HW_CASE PROPERTY STRINGS
@@ -480,6 +484,59 @@ if(STREAM_LAB_R3_LIFECYCLE)
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
 endif()
 # === R3-W3 TRANSACTIONAL LIFECYCLE FOUNDATION END ===
+
+# === R4 RUNTIME ACCOUNTING FOUNDATION BEGIN ===
+if(STREAM_LAB_R4_RUNTIME)
+    if(NOT STREAM_LAB_R3_LIFECYCLE)
+        message(FATAL_ERROR
+            "R4 runtime requires the R3 lifecycle/queue integration profile.")
+    endif()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R4_RUNTIME=1)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_clock64.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_runtime_event.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_runtime_target.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_tick_service.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_tick_service_target.c")
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime")
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_clock64.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_runtime_event.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_runtime_target.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_tick_service.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_tick_service_target.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
+endif()
+# === R4 RUNTIME ACCOUNTING FOUNDATION END ===
+
+if(STREAM_LAB_R4_HW)
+    if(NOT STREAM_LAB_R4_RUNTIME)
+        message(FATAL_ERROR "R4 hardware harness requires STREAM_LAB_R4_RUNTIME=ON.")
+    endif()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R4_HW=1)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_hw_harness.c")
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_hw_harness.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
+    # The R4 timing gate is a benchmark profile, not the size-oriented default
+    # Release build.  Make the exact optimisation choice explicit and local to
+    # the complete queue/ledger/RuntimeEvent path that is under measurement.
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_clock64.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_runtime_event.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_runtime_target.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_tick_service_target.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/stream_queue_adapter.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/stream_token_ledger.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/stream_ownership_core.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool/r2_buffer_pool.c"
+        "${FREERTOS_KERNEL_DIR}/queue.c"
+        PROPERTIES COMPILE_OPTIONS "-O3;-Wall;-Wextra;-Werror;-mthumb")
+    target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -flto)
+    target_link_options(${CMAKE_PROJECT_NAME} PRIVATE -flto)
+endif()
 
 # === R3 TARGET HARDWARE HARNESSES BEGIN ===
 if(STREAM_LAB_R3_W3_HW)

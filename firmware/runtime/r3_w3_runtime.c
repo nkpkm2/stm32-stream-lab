@@ -29,6 +29,7 @@ typedef struct
     uint32_t last_stop_result_valid;
     uint32_t rollback_ack_mask;
     uint32_t processing_entered;
+    BaseType_t dma_woken;
     uint32_t stop_begin_report_valid;
     uint32_t stop_report_valid;
     AdcDbmDriverStopBeginReport stop_begin_report;
@@ -265,7 +266,14 @@ static void CompleteCallback(const AdcDbmDriverCompletionEvent *event, void *con
         (void)AdcDbmDriver_FailActiveCompletion(event);
         LatchFault();
     }
+#if defined(STREAM_LAB_R4_RUNTIME)
+    if (higher_priority_task_woken != pdFALSE)
+    {
+        runtime.dma_woken = pdTRUE;
+    }
+#else
     portYIELD_FROM_ISR(higher_priority_task_woken);
+#endif
 }
 
 static void ErrorCallback(uint32_t dma_error, uint32_t adc_status, void *context)
@@ -688,4 +696,13 @@ R3W3RuntimeStatus R3W3Runtime_GetSnapshot(R3W3RuntimeSnapshot *out)
         return R3_W3_RUNTIME_INVALID_STATE;
     }
     return R3_W3_RUNTIME_OK;
+}
+
+BaseType_t R3W3Runtime_TakeDmaYieldRequest(void)
+{
+    BaseType_t result;
+
+    result = runtime.dma_woken;
+    runtime.dma_woken = pdFALSE;
+    return result;
 }

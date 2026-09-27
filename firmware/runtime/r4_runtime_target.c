@@ -1,0 +1,335 @@
+#include "r4_runtime_target.h"
+#include "r4_tick_service_target.h"
+
+#include "stm32f4xx.h"
+
+static R4_Clock64 target_clock;
+static R4_RuntimeLedger target_ledger;
+static uint32_t target_initialized;
+static R4_RuntimeStatus target_boot_error = R4_RUNTIME_NOT_INITIALIZED;
+static R4_CompletionTimingSnapshot completion_timing;
+#if defined(STREAM_LAB_R4_HW)
+static uint32_t target_test_pend_irq_after_mask;
+#endif
+
+static uint32_t TargetReadCycle(void *context)
+{
+    (void)context;
+    return DWT->CYCCNT;
+}
+
+static uint32_t TargetSaveAndDisable(void *context)
+{
+    uint32_t primask;
+
+    (void)context;
+    primask = __get_PRIMASK();
+    __disable_irq();
+    __DMB();
+#if defined(STREAM_LAB_R4_HW)
+    if (target_test_pend_irq_after_mask != 0U)
+    {
+        /* PRIMASK is already set.  TIM6 therefore becomes pending in the
+         * RuntimeEvent transaction and cannot observe a partial ledger. */
+        target_test_pend_irq_after_mask = 0U;
+        NVIC_SetPendingIRQ(TIM6_DAC_IRQn);
+    }
+#endif
+    return primask;
+}
+
+static void TargetRestore(uint32_t saved_mask, void *context)
+{
+    (void)context;
+    __DMB();
+    __set_PRIMASK(saved_mask);
+}
+
+/* A timing boundary only snapshots the private DWT-derived clock.  It neither
+ * publishes queue state nor touches a device register, so the DMB pair used
+ * by the RuntimeEvent transaction is unnecessary here.  Keeping the barriers
+ * on the commit path preserves the accounting transaction's ordering while
+ * making t_lock/t_unlock measure the queue critical section rather than the
+ * measurement scaffold. */
+static uint32_t TargetSaveAndDisableBoundary(void)
+{
+    uint32_t primask = __get_PRIMASK();
+
+    __disable_irq();
+    return primask;
+}
+
+static void TargetRestoreBoundary(uint32_t saved_mask)
+{
+    __set_PRIMASK(saved_mask);
+}
+
+static R4_RuntimeStatus Apply(R4_RuntimeEventKind kind, uintptr_t identity)
+{
+    R4_RuntimeEvent event;
+    R4_RuntimeEventReceipt receipt;
+
+    if (target_initialized == 0U)
+    {
+        return target_boot_error;
+    }
+
+    event.kind = kind;
+    event.identity = identity;
+    return R4_RuntimeEvent_Apply(&target_ledger, &event, &receipt);
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_Initialize(void)
+{
+    R4_RuntimePlatform platform;
+    R4_RuntimeContext initial;
+    uint32_t saved_mask;
+    R4_Clock64Status clock_status;
+
+    if (target_initialized != 0U)
+    {
+        return R4_RuntimeLedger_GetStatus(&target_ledger);
+    }
+
+    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+    __DMB();
+
+    saved_mask = TargetSaveAndDisable(NULL);
+    clock_status = R4_Clock64_InitializeLocked(&target_clock, DWT->CYCCNT);
+    TargetRestore(saved_mask, NULL);
+    if (clock_status != R4_CLOCK64_OK)
+    {
+        target_boot_error = R4_RUNTIME_CLOCK_ERROR;
+        return target_boot_error;
+    }
+
+    platform.read_cycle = TargetReadCycle;
+    platform.save_and_disable = TargetSaveAndDisable;
+    platform.restore = TargetRestore;
+    platform.context = NULL;
+    initial.kind = R4_RUNTIME_CONTEXT_IDLE;
+    initial.identity = 0U;
+    target_boot_error = R4_RuntimeLedger_Initialize(
+        &target_ledger, &target_clock, &platform, initial);
+    if (target_boot_error == R4_RUNTIME_OK)
+    {
+        target_initialized = 1U;
+        if (R4_TickServiceTarget_Initialize() != R4_TICK_SERVICE_OK)
+        {
+            target_initialized = 0U;
+            target_boot_error = R4_RUNTIME_PLATFORM_ERROR;
+        }
+    }
+    return target_boot_error;
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_OpenWindow(uint32_t window)
+{
+    return Apply(R4_RUNTIME_EVENT_WINDOW_OPEN, (uintptr_t)window);
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_CloseWindow(uint32_t window)
+{
+    return Apply(R4_RUNTIME_EVENT_WINDOW_CLOSE, (uintptr_t)window);
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_Checkpoint(void)
+{
+    return Apply(R4_RUNTIME_EVENT_CHECKPOINT, 0U);
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_ReadNow(uint64_t *out)
+{
+    uint32_t saved_mask;
+    R4_Clock64Status status;
+
+    if (out == NULL)
+    {
+        return R4_RUNTIME_INVALID_ARGUMENT;
+    }
+    if (target_initialized == 0U)
+    {
+        return target_boot_error;
+    }
+    saved_mask = TargetSaveAndDisable(NULL);
+    status = R4_Clock64_ReadLocked(&target_clock, DWT->CYCCNT, out);
+    TargetRestore(saved_mask, NULL);
+    return status == R4_CLOCK64_OK ? R4_RUNTIME_OK : R4_RUNTIME_CLOCK_ERROR;
+}
+
+static uint64_t CompletionCommitNow(void)
+{
+    uint32_t saved_mask;
+    uint64_t now;
+
+    saved_mask = TargetSaveAndDisable(NULL);
+    if (R4_RuntimeLedger_CheckpointLockedTime(&target_ledger, DWT->CYCCNT,
+            &now) != R4_RUNTIME_OK)
+    {
+        TargetRestore(saved_mask, NULL);
+        ++completion_timing.malformed_count;
+        return 0U;
+    }
+    TargetRestore(saved_mask, NULL);
+    return now;
+}
+
+/* t_lock/t_unlock are diagnostic boundaries, not ledger mutations.  They use
+ * the same Clock64 extension but do not add two redundant RuntimeEvent
+ * settlements to the bounded queue critical section.  t_commit remains the
+ * one atomic accounting transaction mandated by the architecture. */
+static uint64_t CompletionBoundaryNow(void)
+{
+    uint32_t saved_mask;
+    uint64_t now;
+
+    saved_mask = TargetSaveAndDisableBoundary();
+    if (R4_Clock64_ReadLocked(&target_clock, DWT->CYCCNT, &now) != R4_CLOCK64_OK)
+    {
+        TargetRestoreBoundary(saved_mask);
+        ++completion_timing.malformed_count;
+        return 0U;
+    }
+    TargetRestoreBoundary(saved_mask);
+    return now;
+}
+
+void R4_RuntimeTarget_CompletionLock(uint32_t operation)
+{
+    if (target_initialized == 0U)
+    {
+        return;
+    }
+    if (completion_timing.active != 0U)
+    {
+        ++completion_timing.malformed_count;
+        return;
+    }
+    completion_timing.active = 1U;
+    completion_timing.operation = operation;
+    completion_timing.t_commit = 0U;
+    completion_timing.t_unlock = 0U;
+    completion_timing.t_lock = CompletionBoundaryNow();
+    ++completion_timing.lock_count;
+}
+
+void R4_RuntimeTarget_CompletionCommit(uint32_t operation)
+{
+    if ((target_initialized == 0U) || (completion_timing.active == 0U) ||
+        (completion_timing.operation != operation) ||
+        (completion_timing.t_commit != 0U))
+    {
+        ++completion_timing.malformed_count;
+        return;
+    }
+    completion_timing.t_commit = CompletionCommitNow();
+    ++completion_timing.commit_count;
+}
+
+void R4_RuntimeTarget_CompletionUnlock(uint32_t operation)
+{
+    uint64_t now;
+
+    if ((target_initialized == 0U) || (completion_timing.active == 0U) ||
+        (completion_timing.operation != operation) ||
+        (completion_timing.t_lock == 0U))
+    {
+        ++completion_timing.malformed_count;
+        completion_timing.active = 0U;
+        return;
+    }
+    if (completion_timing.t_commit == 0U)
+    {
+        /* An aborted attempt never reached semantic completion, so it is not
+         * a timing sample.  Keep it visible without forging a paired event. */
+        ++completion_timing.discarded_count;
+        completion_timing.active = 0U;
+        return;
+    }
+    now = CompletionBoundaryNow();
+    ++completion_timing.unlock_count;
+    if (now == 0U)
+    {
+        completion_timing.active = 0U;
+        return;
+    }
+    completion_timing.t_unlock = now;
+    if ((completion_timing.t_unlock < completion_timing.t_commit) ||
+        (completion_timing.t_commit < completion_timing.t_lock))
+    {
+        ++completion_timing.malformed_count;
+    }
+    else
+    {
+        uint64_t prefix = completion_timing.t_commit - completion_timing.t_lock;
+        uint64_t suffix = completion_timing.t_unlock - completion_timing.t_commit;
+        uint64_t total = completion_timing.t_unlock - completion_timing.t_lock;
+        if (prefix > completion_timing.max_prefix_cycles) completion_timing.max_prefix_cycles = prefix;
+        if (suffix > completion_timing.max_suffix_cycles) completion_timing.max_suffix_cycles = suffix;
+        if (total > completion_timing.max_total_cycles) completion_timing.max_total_cycles = total;
+        ++completion_timing.completed_count;
+    }
+    completion_timing.active = 0U;
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_GetCompletionTiming(
+    R4_CompletionTimingSnapshot *out)
+{
+    if (out == NULL)
+    {
+        return R4_RUNTIME_INVALID_ARGUMENT;
+    }
+    *out = completion_timing;
+    return target_initialized != 0U ? R4_RuntimeLedger_GetStatus(&target_ledger) :
+        target_boot_error;
+}
+
+void R4_RuntimeTarget_TraceIsrEnter(void)
+{
+    (void)Apply(R4_RUNTIME_EVENT_IRQ_ENTER, (uintptr_t)__get_IPSR());
+}
+
+void R4_RuntimeTarget_TraceIsrExit(void)
+{
+    (void)Apply(R4_RUNTIME_EVENT_IRQ_EXIT, (uintptr_t)__get_IPSR());
+}
+
+void R4_RuntimeTarget_TraceTaskSwitchedOut(void *task)
+{
+    (void)Apply(R4_RUNTIME_EVENT_TASK_SWITCHED_OUT, (uintptr_t)task);
+}
+
+void R4_RuntimeTarget_TraceTaskSwitchedIn(void *task)
+{
+    (void)Apply(R4_RUNTIME_EVENT_TASK_SWITCHED_IN, (uintptr_t)task);
+}
+
+const R4_RuntimeLedger *R4_RuntimeTarget_GetLedger(void)
+{
+    return target_initialized != 0U ? &target_ledger : NULL;
+}
+
+#if defined(STREAM_LAB_R4_HW)
+R4_RuntimeStatus R4_RuntimeTarget_TestArmPendingIrq(void)
+{
+    if (target_initialized == 0U)
+    {
+        return target_boot_error;
+    }
+    /* Priority 5 is above SysTick (15), but the injected edge is held by the
+     * RuntimeEvent's PRIMASK transaction, which is precisely T17's case. */
+    NVIC_ClearPendingIRQ(TIM6_DAC_IRQn);
+    NVIC_SetPriority(TIM6_DAC_IRQn, 5U);
+    NVIC_EnableIRQ(TIM6_DAC_IRQn);
+    target_test_pend_irq_after_mask = 1U;
+    return R4_RUNTIME_OK;
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_TestInjectDuplicateExit(uint32_t irq_id)
+{
+    /* This intentionally illegal second exit follows the real TIM6 exit.
+     * RuntimeEvent must latch it; it is never enabled in a normal image. */
+    return Apply(R4_RUNTIME_EVENT_IRQ_EXIT, (uintptr_t)irq_id);
+}
+#endif

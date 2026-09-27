@@ -285,6 +285,10 @@ StreamQueueAdapterStatus StreamQueueAdapter_GetSnapshot(
 /* Sole project hook bound from FreeRTOSConfig.h when the foundation queue
  * adapter profile is enabled. Called by FreeRTOS queue.c; never call directly. */
 void StreamQueueAdapter_TraceQueueSend(void *queue_handle);
+/* R4's surrounding V11.1.0 queue.c hooks.  They do nothing for every queue
+ * other than this adapter's private FreeBufferQueue. */
+void StreamQueueAdapter_TraceQueueSendLock(void *queue_handle);
+void StreamQueueAdapter_TraceQueueSendUnlock(void *queue_handle);
 
 #ifdef __cplusplus
 }

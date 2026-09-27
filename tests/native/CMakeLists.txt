@@ -28,6 +28,23 @@ function(r2_apply_sanitizers target_name)
     endif()
 endfunction()
 
+option(R4_TICK_SERVICE_NATIVE_TESTS "Build R4 TickService tests" OFF)
+if(R4_TICK_SERVICE_NATIVE_TESTS)
+    add_executable(test_r4_tick_service
+        test_r4_tick_service.c
+        ../../firmware/runtime/r4_tick_service.c)
+    target_include_directories(test_r4_tick_service PRIVATE ../../firmware/runtime)
+    set_target_properties(test_r4_tick_service PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_r4_tick_service)
+    r2_apply_sanitizers(test_r4_tick_service)
+    foreach(case_name suspension no_catchup future_ticket)
+        add_test(NAME r4.tick.${case_name}
+            COMMAND test_r4_tick_service ${case_name})
+        set_tests_properties(r4.tick.${case_name} PROPERTIES TIMEOUT 10)
+    endforeach()
+endif()
+
 option(R3_LIFECYCLE_NATIVE_TESTS "Build R3 lifecycle transaction tests" OFF)
 if(R3_LIFECYCLE_NATIVE_TESTS)
     add_executable(test_r3_lifecycle
@@ -40,6 +57,25 @@ if(R3_LIFECYCLE_NATIVE_TESTS)
     r2_apply_sanitizers(test_r3_lifecycle)
     foreach(case_name normal invalid prepare_rollback arm_rollback stop_before_commit commit_failure stale rollback_failure running_stop duplicate_running_stop stale_running_stop)
         add_test(NAME r3.lifecycle.${case_name} COMMAND test_r3_lifecycle ${case_name})
+    endforeach()
+endif()
+
+option(R4_RUNTIME_NATIVE_TESTS "Build R4 Clock64/RuntimeEvent tests" OFF)
+if(R4_RUNTIME_NATIVE_TESTS)
+    add_executable(test_r4_runtime_event
+        test_r4_runtime_event.c
+        ../../firmware/runtime/r4_clock64.c
+        ../../firmware/runtime/r4_runtime_event.c)
+    target_include_directories(test_r4_runtime_event PRIVATE
+        ../../firmware/runtime)
+    set_target_properties(test_r4_runtime_event PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_r4_runtime_event)
+    r2_apply_sanitizers(test_r4_runtime_event)
+    foreach(case_name clock_wrap atomic_window nested_irq duplicate_exit task_switch locked_checkpoint locked_checkpoint_time)
+        add_test(NAME r4.runtime.${case_name}
+            COMMAND test_r4_runtime_event ${case_name})
+        set_tests_properties(r4.runtime.${case_name} PROPERTIES TIMEOUT 10)
     endforeach()
 endif()
 

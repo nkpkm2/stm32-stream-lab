@@ -2,6 +2,10 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
+#if defined(STREAM_LAB_R4_RUNTIME)
+#include "r4_runtime_target.h"
+#include "r4_tick_service_target.h"
+#endif
 
 #define R0_SMOKE_STACK_WORDS 256U
 
@@ -16,8 +20,10 @@ static StaticTask_t g_r0_task_b_tcb;
 static StackType_t g_r0_task_a_stack[R0_SMOKE_STACK_WORDS];
 static StackType_t g_r0_task_b_stack[R0_SMOKE_STACK_WORDS];
 
+#if !defined(STREAM_LAB_R4_HW)
 static StaticTask_t g_r0_idle_tcb;
 static StackType_t g_r0_idle_stack[configMINIMAL_STACK_SIZE];
+#endif
 
 static void R0_TaskA(void *argument)
 {
@@ -85,6 +91,7 @@ void R0_FreeRTOS_StartSmoke(void)
     }
 }
 
+#if !defined(STREAM_LAB_R4_HW)
 void vApplicationGetIdleTaskMemory(
     StaticTask_t **ppxIdleTaskTCBBuffer,
     StackType_t **ppxIdleTaskStackBuffer,
@@ -94,14 +101,21 @@ void vApplicationGetIdleTaskMemory(
     *ppxIdleTaskStackBuffer = g_r0_idle_stack;
     *puxIdleTaskStackSize = configMINIMAL_STACK_SIZE;
 }
+#endif
 
 void vApplicationTickHook(void)
 {
+#if defined(STREAM_LAB_R4_RUNTIME)
+    /* This is SysTick-internal work, deliberately not a second IRQ pair. */
+    (void)R4_RuntimeTarget_Checkpoint();
+    (void)R4_TickServiceTarget_OnTickHook();
+#else
     /*
      * R0 observation only.
      * This is NOT the full TickServiceAdapter implementation.
      */
     g_r0_tick_hook_count++;
+#endif
 }
 
 void vApplicationStackOverflowHook(

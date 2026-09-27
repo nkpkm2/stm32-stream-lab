@@ -52,6 +52,37 @@ void R2_W4_TraceQueueSend(void *queue_handle);
 #define traceQUEUE_SEND(pxQueue) R2_W4_TraceQueueSend((void *)(pxQueue))
 #endif
 
+/* R4 owns the one functional accounting route for task selection and IRQ
+ * entry/exit.  SysTick is instrumented by the existing ARM_CM4F port macros;
+ * application IRQ handlers add only traceISR_ENTER and use the single
+ * portYIELD_FROM_ISR tail for exactly one exit. */
+#if defined(STREAM_LAB_R4_RUNTIME)
+void StreamQueueAdapter_TraceQueueSendLock(void *queue_handle);
+void StreamQueueAdapter_TraceQueueSendUnlock(void *queue_handle);
+void R4_RuntimeTarget_TraceIsrEnter(void);
+void R4_RuntimeTarget_TraceIsrExit(void);
+void R4_RuntimeTarget_TraceTaskSwitchedOut(void *task);
+void R4_RuntimeTarget_TraceTaskSwitchedIn(void *task);
+#define traceISR_ENTER() R4_RuntimeTarget_TraceIsrEnter()
+#define traceISR_EXIT() R4_RuntimeTarget_TraceIsrExit()
+#define traceISR_EXIT_TO_SCHEDULER() R4_RuntimeTarget_TraceIsrExit()
+#define traceTASK_SWITCHED_OUT() \
+    R4_RuntimeTarget_TraceTaskSwitchedOut((void *)xTaskGetCurrentTaskHandle())
+#define traceTASK_SWITCHED_IN() \
+    R4_RuntimeTarget_TraceTaskSwitchedIn((void *)xTaskGetCurrentTaskHandle())
+#define traceQUEUE_SEND_LOCK(pxQueue) \
+    StreamQueueAdapter_TraceQueueSendLock((void *)(pxQueue))
+#define traceQUEUE_SEND_UNLOCK(pxQueue) \
+    StreamQueueAdapter_TraceQueueSendUnlock((void *)(pxQueue))
+#endif
+
+#ifndef traceQUEUE_SEND_LOCK
+#define traceQUEUE_SEND_LOCK(pxQueue)
+#endif
+#ifndef traceQUEUE_SEND_UNLOCK
+#define traceQUEUE_SEND_UNLOCK(pxQueue)
+#endif
+
 /* Kernel features needed by the approved architecture */
 #define configUSE_TASK_NOTIFICATIONS            1
 #define configTASK_NOTIFICATION_ARRAY_ENTRIES   1

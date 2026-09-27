@@ -959,6 +959,7 @@ BaseType_t xQueueGenericSend( QueueHandle_t xQueue,
     for( ; ; )
     {
         taskENTER_CRITICAL();
+        traceQUEUE_SEND_LOCK( pxQueue );
         {
             /* Is there room on the queue now?  The running task must be the
              * highest priority task wanting to access the queue.  If the head item
@@ -1064,6 +1065,7 @@ BaseType_t xQueueGenericSend( QueueHandle_t xQueue,
                 }
                 #endif /* configUSE_QUEUE_SETS */
 
+                traceQUEUE_SEND_UNLOCK( pxQueue );
                 taskEXIT_CRITICAL();
 
                 traceRETURN_xQueueGenericSend( pdPASS );
@@ -1076,6 +1078,7 @@ BaseType_t xQueueGenericSend( QueueHandle_t xQueue,
                 {
                     /* The queue was full and no block time is specified (or
                      * the block time has expired) so leave now. */
+                    traceQUEUE_SEND_UNLOCK( pxQueue );
                     taskEXIT_CRITICAL();
 
                     /* Return to the original privilege level before exiting
@@ -1099,6 +1102,7 @@ BaseType_t xQueueGenericSend( QueueHandle_t xQueue,
                 }
             }
         }
+        traceQUEUE_SEND_UNLOCK( pxQueue );
         taskEXIT_CRITICAL();
 
         /* Interrupts and other tasks can send to and receive from the queue

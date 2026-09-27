@@ -1,5 +1,9 @@
 #include "stream_queue_adapter.h"
 
+#if defined(STREAM_LAB_R4_RUNTIME)
+#include "r4_runtime_target.h"
+#endif
+
 #include "queue.h"
 
 #include "stm32f4xx.h"
@@ -1091,6 +1095,17 @@ void StreamQueueAdapter_TraceQueueSend(void *queue_handle)
         hook_status = STREAM_QUEUE_ADAPTER_HOOK_REJECTED;
     }
 
+#if defined(STREAM_LAB_R4_RUNTIME)
+    /* INIT/CANCEL use the same fixed-kernel send hook for ownership, but they
+     * are not a normal Processing completion and have no t_lock/t_unlock
+     * sample.  Never let them masquerade as a logical completion commit. */
+    if ((hook_status == STREAM_QUEUE_ADAPTER_OK) &&
+        (adapter.send_context.operation == STREAM_QUEUE_ADAPTER_OP_COMPLETE))
+    {
+        R4_RuntimeTarget_CompletionCommit((uint32_t)adapter.send_context.operation);
+    }
+#endif
+
     if (hook_status != STREAM_QUEUE_ADAPTER_OK)
     {
         (void)LatchFault(hook_status);
@@ -1098,4 +1113,32 @@ void StreamQueueAdapter_TraceQueueSend(void *queue_handle)
 
     adapter.send_context.hook_status = hook_status;
     adapter.send_context.commit_serial = commit_serial;
+}
+
+void StreamQueueAdapter_TraceQueueSendLock(void *queue_handle)
+{
+#if defined(STREAM_LAB_R4_RUNTIME)
+    if ((queue_handle == (void *)adapter.free_queue) &&
+        (adapter.send_context.active != 0U) &&
+        (adapter.send_context.operation == STREAM_QUEUE_ADAPTER_OP_COMPLETE))
+    {
+        R4_RuntimeTarget_CompletionLock((uint32_t)adapter.send_context.operation);
+    }
+#else
+    (void)queue_handle;
+#endif
+}
+
+void StreamQueueAdapter_TraceQueueSendUnlock(void *queue_handle)
+{
+#if defined(STREAM_LAB_R4_RUNTIME)
+    if ((queue_handle == (void *)adapter.free_queue) &&
+        (adapter.send_context.active != 0U) &&
+        (adapter.send_context.operation == STREAM_QUEUE_ADAPTER_OP_COMPLETE))
+    {
+        R4_RuntimeTarget_CompletionUnlock((uint32_t)adapter.send_context.operation);
+    }
+#else
+    (void)queue_handle;
+#endif
 }

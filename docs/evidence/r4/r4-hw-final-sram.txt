@@ -1,0 +1,44 @@
+R4 hardware harness final capture
+Date: 2026-09-27
+Target: STM32F446xx, ST-LINK SN 067AFF545754655087043860
+Image SHA-256: 7C1DBF93E22AAD4FAE9AD8C80846AA4457CE29EE77271EBE131602516C99F255
+Build flags: Release, STREAM_LAB_R3_LIFECYCLE=ON, STREAM_LAB_R4_RUNTIME=ON,
+STREAM_LAB_R4_HW=ON, LTO enabled; selected measured path compiled -O3.
+Result symbol: g_r4_hw_result @ 0x20004B70
+
+STM32CubeProgrammer successful flash verification preceded this read.
+One subsequent reset-and-read repeat produced the same decoded R4 result,
+including the 1735-cycle maximum.
+
+0x20004B70 : 52344857 00000000 00000000 00000000
+0x20004B80 : 00000000 00000000 5234444E 00000000
+0x20004B90 : 000000D6 00000000 2F8501A8 00000000
+0x20004BA0 : 0048070E 00000000 00025928 00000000
+0x20004BB0 : 004A8ED2 00000000 00000000 00000000
+0x20004BC0 : 00000000 00000000 00000000 00000000
+0x20004BD0 : 0000000F 00000001 0000000F 0000000F
+0x20004BE0 : 0000000F 00000000 000006C7 00000000
+0x20004BF0 : 00000519 00000000 000001AE 00000000
+0x20004C00 : 00000000 00000000 00000000 00000007
+0x20004C10 : 00000014 00000000 00000017 00000000
+0x20004C20 : 004A8ED2 00000000 004A8ED2 00000000
+0x20004C30 : 00000000 00000000 00000000 00000001
+0x20004C40 : 00000001 00000000 0000001B 00000000
+0x20004C50 : 00000001 00000000 00000001 00000000
+0x20004C60 : 0000000C 00000000 00000006 00000000
+
+Decoded checks:
+
+* magic `0x52344857`, completed magic `0x5234444E`; all lifecycle/window/
+  checkpoint status fields are zero.
+* 15 lock/commit/unlock/completed samples, malformed=0 and budget_pass=1.
+  Maximum total/prefix/suffix are 1735/1305/430 DWT cycles.  At 180 MHz,
+  1735 cycles is 9.639 µs, below the 1800-cycle (10 µs) gate.
+* T17: checkpoint status=0; event serial advances 20→23, proving checkpoint
+  plus exactly one TIM6 enter/exit pair.  Closed-window cycles are identical
+  before/after post-close checkpoint (`0x004A8ED2`).  Deliberate second TIM6
+  exit returns status 7 (`R4_RUNTIME_IRQ_EXIT_MISMATCH`).
+* T15: register/arm/snapshot status=0; start and release callback counts are
+  1/1; final service/start/release/skipped counts are 27/1/1/12.  The snapshot
+  immediately after a 6 ms scheduler suspension is service_seq=6, showing the
+  real hook crossed q0 and release slots without later synthetic catch-up.

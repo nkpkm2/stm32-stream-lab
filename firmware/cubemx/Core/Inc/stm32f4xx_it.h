@@ -57,6 +57,9 @@ void PendSV_Handler(void);
 void SysTick_Handler(void);
 void EXTI15_10_IRQHandler(void);
 void TIM7_IRQHandler(void);
+#if defined(STREAM_LAB_R4_HW)
+void TIM6_DAC_IRQHandler(void);
+#endif
 void DMA2_Stream0_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 #if defined(STREAM_LAB_R2_CT)
