@@ -123,6 +123,8 @@ option(STREAM_LAB_R4_RUNTIME
     "Compile the R4 Clock64/RuntimeEvent/TickService integration" OFF)
 option(STREAM_LAB_R4_HW
     "Build the R4 target Clock64/runtime-window harness" OFF)
+set(STREAM_LAB_R4_HW_SOAK_MS "0" CACHE STRING
+    "R4 target-harness real DMA/IRQ soak duration in milliseconds (0 disables)")
 option(STREAM_LAB_R5_METRICS
     "Compile the R5 cohort/cutoff/sealed-results core" OFF)
 option(STREAM_LAB_R5_HW
@@ -578,6 +580,11 @@ if(STREAM_LAB_R4_HW)
         message(FATAL_ERROR "R4 hardware harness requires STREAM_LAB_R4_RUNTIME=ON.")
     endif()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R4_HW=1)
+    if(NOT STREAM_LAB_R4_HW_SOAK_MS MATCHES "^[0-9]+$")
+        message(FATAL_ERROR "STREAM_LAB_R4_HW_SOAK_MS must be an unsigned integer.")
+    endif()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        R4_HW_SOAK_MS=${STREAM_LAB_R4_HW_SOAK_MS}U)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_hw_harness.c")
     set_source_files_properties(

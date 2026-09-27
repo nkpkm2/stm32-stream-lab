@@ -17,6 +17,21 @@ typedef struct
     void *context;
 } R4_TickServiceTargetCallbacks;
 
+/* DWT evidence for the one real vApplicationTickHook service domain.  A
+ * profile sets the permitted gap threshold; callers do not infer it from the
+ * raw FreeRTOS tick count. */
+typedef struct
+{
+    uint64_t service_count;
+    uint64_t first_service_cycle;
+    uint64_t last_service_cycle;
+    uint64_t max_interval_cycles;
+    uint64_t max_phase_error_cycles;
+    uint64_t over_limit_interval_count;
+    uint64_t expected_tick_cycles;
+    uint64_t interval_limit_cycles;
+} R4_TickServiceTiming;
+
 R4_TickServiceStatus R4_TickServiceTarget_Initialize(void);
 R4_TickServiceStatus R4_TickServiceTarget_Register(
     const R4_TickServiceTargetCallbacks *callbacks);
@@ -30,6 +45,9 @@ R4_TickServiceStatus R4_TickServiceTarget_CompleteJob(void);
  * vApplicationTickHook invocation, never by a catch-up or test helper. */
 R4_TickServiceStatus R4_TickServiceTarget_OnTickHook(void);
 R4_TickServiceStatus R4_TickServiceTarget_GetSnapshot(R4_TickService *out);
+R4_TickServiceStatus R4_TickServiceTarget_ConfigureTiming(
+    uint64_t expected_tick_cycles, uint64_t interval_limit_cycles);
+R4_TickServiceStatus R4_TickServiceTarget_GetTiming(R4_TickServiceTiming *out);
 
 #ifdef __cplusplus
 }

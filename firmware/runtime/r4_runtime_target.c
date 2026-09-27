@@ -8,6 +8,7 @@ static R4_RuntimeLedger target_ledger;
 static uint32_t target_initialized;
 static R4_RuntimeStatus target_boot_error = R4_RUNTIME_NOT_INITIALIZED;
 static R4_CompletionTimingSnapshot completion_timing;
+static R4_DmaTailSnapshot dma_tail;
 #if defined(STREAM_LAB_R4_HW)
 static uint32_t target_test_pend_irq_after_mask;
 #endif
@@ -114,6 +115,9 @@ R4_RuntimeStatus R4_RuntimeTarget_Initialize(void)
         &target_ledger, &target_clock, &platform, initial);
     if (target_boot_error == R4_RUNTIME_OK)
     {
+        dma_tail.dma_irq_count = 0U;
+        dma_tail.dma_yield_requested_count = 0U;
+        dma_tail.dma_no_yield_count = 0U;
         target_initialized = 1U;
         if (R4_TickServiceTarget_Initialize() != R4_TICK_SERVICE_OK)
         {
@@ -303,6 +307,31 @@ void R4_RuntimeTarget_TraceTaskSwitchedOut(void *task)
 void R4_RuntimeTarget_TraceTaskSwitchedIn(void *task)
 {
     (void)Apply(R4_RUNTIME_EVENT_TASK_SWITCHED_IN, (uintptr_t)task);
+}
+
+void R4_RuntimeTarget_TraceDmaTailYield(uint32_t higher_priority_task_woken)
+{
+    if (target_initialized == 0U) return;
+    ++dma_tail.dma_irq_count;
+    if (higher_priority_task_woken != 0U)
+    {
+        ++dma_tail.dma_yield_requested_count;
+    }
+    else
+    {
+        ++dma_tail.dma_no_yield_count;
+    }
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_GetDmaTailSnapshot(R4_DmaTailSnapshot *out)
+{
+    uint32_t saved_mask;
+    if (out == NULL) return R4_RUNTIME_INVALID_ARGUMENT;
+    if (target_initialized == 0U) return target_boot_error;
+    saved_mask = TargetSaveAndDisable(NULL);
+    *out = dma_tail;
+    TargetRestore(saved_mask, NULL);
+    return R4_RuntimeLedger_GetStatus(&target_ledger);
 }
 
 const R4_RuntimeLedger *R4_RuntimeTarget_GetLedger(void)

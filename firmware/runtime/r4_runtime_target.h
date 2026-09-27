@@ -36,6 +36,13 @@ typedef struct
     uint64_t max_suffix_cycles;
 } R4_CompletionTimingSnapshot;
 
+typedef struct
+{
+    uint64_t dma_irq_count;
+    uint64_t dma_yield_requested_count;
+    uint64_t dma_no_yield_count;
+} R4_DmaTailSnapshot;
+
 /* These three calls are bound around the exact V11.1.0 xQueueGenericSend
  * critical section.  They are intentionally separate from QueueAdapter's
  * semantic validation: t_commit is emitted only after its legal operation has
@@ -50,6 +57,10 @@ void R4_RuntimeTarget_TraceIsrEnter(void);
 void R4_RuntimeTarget_TraceIsrExit(void);
 void R4_RuntimeTarget_TraceTaskSwitchedOut(void *task);
 void R4_RuntimeTarget_TraceTaskSwitchedIn(void *task);
+/* Called exactly once from the real DMA IRQ common tail, before the port's
+ * yield macro chooses either the no-switch or scheduler-request exit. */
+void R4_RuntimeTarget_TraceDmaTailYield(uint32_t higher_priority_task_woken);
+R4_RuntimeStatus R4_RuntimeTarget_GetDmaTailSnapshot(R4_DmaTailSnapshot *out);
 
 const R4_RuntimeLedger *R4_RuntimeTarget_GetLedger(void);
 

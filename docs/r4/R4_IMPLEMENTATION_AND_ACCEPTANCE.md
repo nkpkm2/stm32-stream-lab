@@ -33,10 +33,12 @@ SKIPPED and is never caught up later.
 | Requirement | Code/test evidence | Result |
 |---|---|---|
 | Clock64 wrap, monotonic atomic RuntimeEvent, nested IRQ, task transitions and sealed windows | `test_r4_runtime_event` (six directed native cases) | PASS |
-| T12 unique real IRQ wiring | [`r4-callsite-table.md`](../evidence/r4/r4-callsite-table.md) and fixed V11.1.0 source | PASS |
-| T15 q0/period single service domain, occupied skip and no catch-up | `test_r4_tick_service` (three directed native cases), board record | PASS |
+| T12 >60 s Clock64/IRQ wiring, wrap, DMA wake/no-yield tails and SysTick/TIM7 | native directed cases plus 65-second real DMA/Tick soak | PASS |
+| T15 q0/period single service domain, occupied skip/no catch-up and DWT audit | `test_r4_tick_service` (three directed native cases), board soak | PASS |
 | T17 high IRQ pending inside masked RuntimeEvent; close sealing; duplicate exit | board-only TIM6 diagnostic and raw SRAM record | PASS |
 | full t_lock→t_commit→t_unlock budget | 15 board samples, max 1735 cycles ≤ 1800 | PASS |
 
-The board-only T17 hooks are compiled only with `STREAM_LAB_R4_HW`; production
-R4 profiles cannot arm the diagnostic TIM6 software interrupt.
+The long board profile runs real R3 lifecycle DMA/FreeRTOS/Tick execution. Its
+post-stop pended DMA vector is a narrow no-event-path diagnostic: it has no DMA
+status flag and cannot create a fabricated completion. Board-only T17 and this
+diagnostic are compiled only with `STREAM_LAB_R4_HW`.

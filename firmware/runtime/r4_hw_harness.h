@@ -56,6 +56,26 @@ typedef struct
     uint64_t tick_release_count;
     uint64_t tick_skipped_count;
     uint64_t tick_service_seq_after_suspension;
+    uint32_t tick_timing_configure_status;
+    uint32_t tick_timing_snapshot_status;
+    uint64_t tick_timing_service_count;
+    uint64_t tick_timing_max_interval_cycles;
+    uint64_t tick_timing_max_phase_error_cycles;
+    uint64_t tick_timing_over_limit_count;
+    uint32_t soak_configured_ms;
+    uint32_t soak_start_clock_high_word;
+    uint32_t soak_end_clock_high_word;
+    uint32_t dma_tail_snapshot_status;
+    uint64_t soak_start_cycle;
+    uint64_t soak_end_cycle;
+    uint64_t dma_irq_count;
+    uint64_t dma_yield_requested_count;
+    uint64_t dma_no_yield_count;
+    uint32_t dma_no_event_snapshot_status;
+    uint64_t dma_no_event_irq_before;
+    uint64_t dma_no_event_irq_after;
+    uint64_t dma_no_event_no_yield_before;
+    uint64_t dma_no_event_no_yield_after;
 } R4HwHarnessResult;
 
 extern volatile R4HwHarnessResult g_r4_hw_result;

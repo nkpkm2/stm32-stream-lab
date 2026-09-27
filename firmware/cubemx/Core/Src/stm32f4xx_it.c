@@ -39,6 +39,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "r3_w3_runtime.h"
+#if defined(STREAM_LAB_R4_RUNTIME)
+#include "r4_runtime_target.h"
+#endif
 #else
 #include "r1_acquisition.h"
 #endif
@@ -212,10 +215,16 @@ void EXTI15_10_IRQHandler(void)
 void TIM7_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM7_IRQn 0 */
+#if defined(STREAM_LAB_R4_RUNTIME)
+  traceISR_ENTER();
+#endif
 
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
+#if defined(STREAM_LAB_R4_RUNTIME)
+  traceISR_EXIT();
+#endif
 
   /* USER CODE END TIM7_IRQn 1 */
 }
@@ -307,6 +316,8 @@ void DMA2_Stream0_IRQHandler(void)
 #if defined(STREAM_LAB_R3_LIFECYCLE)
   higher_priority_task_woken = R3W3Runtime_TakeDmaYieldRequest();
 #endif
+  R4_RuntimeTarget_TraceDmaTailYield(
+      higher_priority_task_woken != pdFALSE ? 1U : 0U);
   portYIELD_FROM_ISR(higher_priority_task_woken);
 #endif
 

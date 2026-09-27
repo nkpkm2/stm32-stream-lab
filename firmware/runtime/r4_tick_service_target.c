@@ -10,7 +10,13 @@
 
 static R4_TickService target_service;
 static R4_TickServiceTargetCallbacks target_callbacks;
+static R4_TickServiceTiming target_timing;
 static uint32_t target_initialized;
+
+static uint64_t AbsoluteDifference(uint64_t left, uint64_t right)
+{
+    return left >= right ? left - right : right - left;
+}
 
 static uint64_t TargetNow(void *context)
 {
@@ -50,6 +56,7 @@ R4_TickServiceStatus R4_TickServiceTarget_Initialize(void)
     callbacks.release_job = TargetReleaseJob;
     callbacks.context = NULL;
     (void)memset(&target_callbacks, 0, sizeof(target_callbacks));
+    (void)memset(&target_timing, 0, sizeof(target_timing));
     if (R4_TickService_Initialize(&target_service, &callbacks) !=
         R4_TICK_SERVICE_OK)
     {
@@ -126,8 +133,46 @@ R4_TickServiceStatus R4_TickServiceTarget_CompleteJob(void)
 
 R4_TickServiceStatus R4_TickServiceTarget_OnTickHook(void)
 {
+    R4_TickServiceStatus status;
+    uint64_t now;
+    uint64_t expected;
+
     if (target_initialized == 0U) return R4_TICK_SERVICE_INVALID_STATE;
-    return R4_TickService_OnService(&target_service);
+    now = TargetNow(NULL);
+    if (target_timing.service_count == 0U)
+    {
+        target_timing.first_service_cycle = now;
+    }
+    else
+    {
+        uint64_t interval = now - target_timing.last_service_cycle;
+        if (interval > target_timing.max_interval_cycles)
+        {
+            target_timing.max_interval_cycles = interval;
+        }
+        if ((target_timing.interval_limit_cycles != 0U) &&
+            (interval > target_timing.interval_limit_cycles))
+        {
+            ++target_timing.over_limit_interval_count;
+        }
+    }
+    ++target_timing.service_count;
+    if (target_timing.expected_tick_cycles != 0U)
+    {
+        expected = target_timing.first_service_cycle +
+            ((target_timing.service_count - UINT64_C(1)) *
+             target_timing.expected_tick_cycles);
+        {
+            uint64_t error = AbsoluteDifference(now, expected);
+            if (error > target_timing.max_phase_error_cycles)
+            {
+                target_timing.max_phase_error_cycles = error;
+            }
+        }
+    }
+    target_timing.last_service_cycle = now;
+    status = R4_TickService_OnService(&target_service);
+    return status;
 }
 
 R4_TickServiceStatus R4_TickServiceTarget_GetSnapshot(R4_TickService *out)
@@ -138,6 +183,34 @@ R4_TickServiceStatus R4_TickServiceTarget_GetSnapshot(R4_TickService *out)
     }
     taskENTER_CRITICAL();
     *out = target_service;
+    taskEXIT_CRITICAL();
+    return target_service.first_error;
+}
+
+R4_TickServiceStatus R4_TickServiceTarget_ConfigureTiming(
+    uint64_t expected_tick_cycles, uint64_t interval_limit_cycles)
+{
+    if ((target_initialized == 0U) || (expected_tick_cycles == 0U) ||
+        (interval_limit_cycles < expected_tick_cycles))
+    {
+        return R4_TICK_SERVICE_INVALID_ARGUMENT;
+    }
+    taskENTER_CRITICAL();
+    (void)memset(&target_timing, 0, sizeof(target_timing));
+    target_timing.expected_tick_cycles = expected_tick_cycles;
+    target_timing.interval_limit_cycles = interval_limit_cycles;
+    taskEXIT_CRITICAL();
+    return R4_TICK_SERVICE_OK;
+}
+
+R4_TickServiceStatus R4_TickServiceTarget_GetTiming(R4_TickServiceTiming *out)
+{
+    if ((target_initialized == 0U) || (out == NULL))
+    {
+        return R4_TICK_SERVICE_INVALID_ARGUMENT;
+    }
+    taskENTER_CRITICAL();
+    *out = target_timing;
     taskEXIT_CRITICAL();
     return target_service.first_error;
 }

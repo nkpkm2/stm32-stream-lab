@@ -12,6 +12,11 @@
 #define R4_HW_STACK_WORDS 1280U
 #define R4_HW_BOOT UINT32_C(0x52340001)
 #define R4_HW_COMPLETE_BUDGET_CYCLES 1800U
+#define R4_HW_TICK_CYCLES UINT64_C(180000)
+#define R4_HW_TICK_INTERVAL_LIMIT_CYCLES UINT64_C(270000)
+#ifndef R4_HW_SOAK_MS
+#define R4_HW_SOAK_MS 0U
+#endif
 
 volatile R4HwHarnessResult g_r4_hw_result;
 static StaticTask_t harness_tcb;
@@ -48,6 +53,9 @@ static void HarnessTask(void *argument)
     R3LifecycleStartTicket ticket;
     R3LifecycleStopRequest stop;
     R4_TickService tick_snapshot;
+    R4_TickServiceTiming tick_timing;
+    R4_DmaTailSnapshot dma_tail;
+    uint64_t soak_now;
     R4_TickServiceTargetCallbacks tick_callbacks;
 
     (void)argument;
@@ -59,6 +67,9 @@ static void HarnessTask(void *argument)
     tick_callbacks.context = NULL;
     g_r4_hw_result.tick_register_status = (uint32_t)
         R4_TickServiceTarget_Register(&tick_callbacks);
+    g_r4_hw_result.tick_timing_configure_status = (uint32_t)
+        R4_TickServiceTarget_ConfigureTiming(R4_HW_TICK_CYCLES,
+            R4_HW_TICK_INTERVAL_LIMIT_CYCLES);
     if (g_r4_hw_result.tick_register_status == (uint32_t)R4_TICK_SERVICE_OK)
     {
         g_r4_hw_result.tick_arm_status = (uint32_t)
@@ -117,11 +128,55 @@ static void HarnessTask(void *argument)
             (uint32_t)R3W3Runtime_Start(&start, &ticket);
         if (g_r4_hw_result.lifecycle_start_status == (uint32_t)R3_W3_RUNTIME_OK)
         {
+            ledger = R4_RuntimeTarget_GetLedger();
+            g_r4_hw_result.soak_configured_ms = R4_HW_SOAK_MS;
+            if (ledger != NULL)
+            {
+                g_r4_hw_result.soak_start_clock_high_word = ledger->clock->high_word;
+            }
+            (void)R4_RuntimeTarget_ReadNow(&soak_now);
+            g_r4_hw_result.soak_start_cycle = soak_now;
+#if R4_HW_SOAK_MS > 0U
+            vTaskDelay(pdMS_TO_TICKS(R4_HW_SOAK_MS));
+#endif
+            (void)R4_RuntimeTarget_ReadNow(&soak_now);
+            g_r4_hw_result.soak_end_cycle = soak_now;
+            ledger = R4_RuntimeTarget_GetLedger();
+            if (ledger != NULL)
+            {
+                g_r4_hw_result.soak_end_clock_high_word = ledger->clock->high_word;
+            }
+            g_r4_hw_result.dma_tail_snapshot_status = (uint32_t)
+                R4_RuntimeTarget_GetDmaTailSnapshot(&dma_tail);
+            g_r4_hw_result.dma_irq_count = dma_tail.dma_irq_count;
+            g_r4_hw_result.dma_yield_requested_count =
+                dma_tail.dma_yield_requested_count;
+            g_r4_hw_result.dma_no_yield_count = dma_tail.dma_no_yield_count;
             vTaskDelay(pdMS_TO_TICKS(20U));
             stop.stream_ticket = ticket.stream_ticket;
             stop.stop_id = UINT32_C(0x52340002);
             g_r4_hw_result.lifecycle_stop_status =
                 (uint32_t)R3W3Runtime_Stop(&stop);
+            /* T12's no-switch arm: the real DMA vector is pended only after
+             * sampling is stopped and with no DMA status bit set.  It is not
+             * a fabricated completion; it proves the common handler's
+             * no-event tail still emits exactly one IRQ exit and requests no
+             * scheduler switch. */
+            if (g_r4_hw_result.lifecycle_stop_status == (uint32_t)R3_W3_RUNTIME_OK)
+            {
+                g_r4_hw_result.dma_no_event_snapshot_status = (uint32_t)
+                    R4_RuntimeTarget_GetDmaTailSnapshot(&dma_tail);
+                g_r4_hw_result.dma_no_event_irq_before = dma_tail.dma_irq_count;
+                g_r4_hw_result.dma_no_event_no_yield_before =
+                    dma_tail.dma_no_yield_count;
+                NVIC_SetPendingIRQ(DMA2_Stream0_IRQn);
+                vTaskDelay(pdMS_TO_TICKS(2U));
+                g_r4_hw_result.dma_no_event_snapshot_status = (uint32_t)
+                    R4_RuntimeTarget_GetDmaTailSnapshot(&dma_tail);
+                g_r4_hw_result.dma_no_event_irq_after = dma_tail.dma_irq_count;
+                g_r4_hw_result.dma_no_event_no_yield_after =
+                    dma_tail.dma_no_yield_count;
+            }
         }
     }
     else
@@ -148,6 +203,14 @@ static void HarnessTask(void *argument)
     g_r4_hw_result.tick_start_count = tick_snapshot.start_count;
     g_r4_hw_result.tick_release_count = tick_snapshot.release_count;
     g_r4_hw_result.tick_skipped_count = tick_snapshot.skipped_count;
+    g_r4_hw_result.tick_timing_snapshot_status = (uint32_t)
+        R4_TickServiceTarget_GetTiming(&tick_timing);
+    g_r4_hw_result.tick_timing_service_count = tick_timing.service_count;
+    g_r4_hw_result.tick_timing_max_interval_cycles = tick_timing.max_interval_cycles;
+    g_r4_hw_result.tick_timing_max_phase_error_cycles =
+        tick_timing.max_phase_error_cycles;
+    g_r4_hw_result.tick_timing_over_limit_count =
+        tick_timing.over_limit_interval_count;
     ledger = R4_RuntimeTarget_GetLedger();
     if (ledger != NULL)
     {
