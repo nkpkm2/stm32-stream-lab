@@ -150,7 +150,11 @@ static void CompleteCallback(const AdcDbmDriverCompletionEvent *event, void *con
     AdcDbmDriverInactiveRequest request;
     AdcDbmDriverStatus driver_status;
     StreamOwnershipCompletionPlan plan;
+    StreamOwnershipDescriptor descriptor;
     StreamOwnershipStatus ownership_status;
+    StreamRunAuthorityStatus authority_status;
+    R2_BufferId replacement;
+    BaseType_t higher_priority_task_woken = pdFALSE;
     (void)context;
     if ((event == NULL) || (runtime.authority_active == 0U))
     {
@@ -158,12 +162,28 @@ static void CompleteCallback(const AdcDbmDriverCompletionEvent *event, void *con
         return;
     }
 
-    /* W3 validates lifecycle ownership, not admission throughput.  KEEP is the
-     * explicit controlled-drop path: it performs no MxAR write and preserves
-     * the K+2 mapping while proving every DMA completion has a disposition. */
-    ownership_status = StreamOwnership_PrepareCompletion(
-        event->sequence, (uint32_t)event->completed_slot,
-        STREAM_OWNERSHIP_KEEP, R2_BUFFER_POOL_INVALID_ID, &plan);
+    authority_status = StreamRunAuthority_TakeFreeFromISR(
+        &runtime.stream_ticket, &replacement, &higher_priority_task_woken);
+    if (authority_status == STREAM_RUN_AUTHORITY_EMPTY)
+    {
+        /* No token is a controlled capacity drop.  KEEP makes the no-MxAR
+         * write explicit and preserves the current K+2 mapping. */
+        ownership_status = StreamOwnership_PrepareCompletion(
+            event->sequence, (uint32_t)event->completed_slot,
+            STREAM_OWNERSHIP_KEEP, R2_BUFFER_POOL_INVALID_ID, &plan);
+    }
+    else if (authority_status == STREAM_RUN_AUTHORITY_OK)
+    {
+        ownership_status = StreamOwnership_PrepareCompletion(
+            event->sequence, (uint32_t)event->completed_slot,
+            STREAM_OWNERSHIP_REBIND, replacement, &plan);
+    }
+    else
+    {
+        (void)AdcDbmDriver_FailActiveCompletion(event);
+        LatchFault();
+        return;
+    }
     if (ownership_status != STREAM_OWNERSHIP_OK)
     {
         (void)AdcDbmDriver_FailActiveCompletion(event);
@@ -173,18 +193,55 @@ static void CompleteCallback(const AdcDbmDriverCompletionEvent *event, void *con
     (void)memset(&request, 0, sizeof(request));
     request.sequence = event->sequence;
     request.completed_slot = event->completed_slot;
-    request.action = ADC_DBM_DRIVER_INACTIVE_KEEP;
+    request.action = plan.action == STREAM_OWNERSHIP_REBIND ?
+        ADC_DBM_DRIVER_INACTIVE_REBIND : ADC_DBM_DRIVER_INACTIVE_KEEP;
     request.expected_completed_address =
         (uint32_t)(uintptr_t)sample_blocks[plan.completed_buffer];
     request.expected_active_address =
         (uint32_t)(uintptr_t)sample_blocks[plan.active_buffer];
+    if (plan.action == STREAM_OWNERSHIP_REBIND)
+    {
+        request.replacement_address =
+            (uint32_t)(uintptr_t)sample_blocks[plan.replacement_buffer];
+    }
     driver_status = AdcDbmDriver_ApplyInactiveAction(event, &request, NULL);
-    if ((driver_status != ADC_DBM_DRIVER_OK) ||
-        (StreamOwnership_CommitKeep(&plan) != STREAM_OWNERSHIP_OK))
+    if (driver_status != ADC_DBM_DRIVER_OK)
+    {
+        (void)AdcDbmDriver_FailActiveCompletion(event);
+        LatchFault();
+        return;
+    }
+    if (plan.action == STREAM_OWNERSHIP_KEEP)
+    {
+        ownership_status = StreamOwnership_CommitKeep(&plan);
+    }
+    else
+    {
+        ownership_status = StreamOwnership_CommitRebind(&plan, &descriptor);
+        if (ownership_status == STREAM_OWNERSHIP_OK)
+        {
+            authority_status = StreamRunAuthority_PublishReadyFromISR(
+                &runtime.stream_ticket, &descriptor, &higher_priority_task_woken);
+            if (authority_status == STREAM_RUN_AUTHORITY_OK)
+            {
+                if (R3WorkerTasks_NotifyProcessingWorkFromISR(
+                        &higher_priority_task_woken) != R3_WORKER_TASKS_OK)
+                {
+                    authority_status = STREAM_RUN_AUTHORITY_ADAPTER_ERROR;
+                }
+            }
+        }
+        if (authority_status != STREAM_RUN_AUTHORITY_OK)
+        {
+            ownership_status = STREAM_OWNERSHIP_POST_COMMIT_INVARIANT;
+        }
+    }
+    if (ownership_status != STREAM_OWNERSHIP_OK)
     {
         (void)AdcDbmDriver_FailActiveCompletion(event);
         LatchFault();
     }
+    portYIELD_FROM_ISR(higher_priority_task_woken);
 }
 
 static void ErrorCallback(uint32_t dma_error, uint32_t adc_status, void *context)

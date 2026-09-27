@@ -32,11 +32,14 @@ three gates closed, ADC/DBM ARMED, hardware ownership present, and TIM2 CEN
 clear.  The normal-start record then requires RUNNING, all gates open, driver
 RUNNING, ownership present, and TIM2 CEN set.
 
-The DMA completion callback uses the real `AdcDbmDriver` callback chain.  For
-W3 it deliberately executes the explicit hardware KEEP/controlled-DROP path
-and matching `StreamOwnership_CommitKeep`; this validates that every completed
-DMA event has a disposition without prematurely claiming W4 admission or DSP
-throughput validation.
+The DMA completion callback uses the real `AdcDbmDriver` callback chain.  It
+receives one FREE token when available, derives a logical REBIND plan, performs
+the physical inactive-MxAR commit, commits logical ownership, publishes READY,
+and wakes Processing.  With no FREE token it executes the explicit hardware
+KEEP/controlled-DROP path and matching `StreamOwnership_CommitKeep`.  Thus
+every completed DMA event has one bounded disposition and W4 can exercise a
+real READY backlog/current Processing lease; this remains distinct from R7 DSP
+throughput acceptance.
 
 ## Rollback ordering
 
