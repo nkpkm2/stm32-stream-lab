@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "E:\\DevTools\\STM32CubeProgrammer-2.23.0\\bin\\STM32_Programmer_CLI.exe",
+    "-l"
+  ],
+  "automatic_retry": false,
+  "cwd": null,
+  "timeout_seconds": 30
+}
