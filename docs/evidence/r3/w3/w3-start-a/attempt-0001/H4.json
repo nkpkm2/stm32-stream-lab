@@ -1,0 +1,42 @@
+{
+  "phase": "H4",
+  "result_address": "0x20003454",
+  "result": "PASS",
+  "checks": {
+    "result_magic": true,
+    "schema": true,
+    "case_identity": true,
+    "terminal_pass": true,
+    "no_invariant": true,
+    "no_runtime_fault": true,
+    "completion_magic": true,
+    "running": true,
+    "ticket_revoked": true,
+    "all_gates_open": true,
+    "driver_running_owned": true,
+    "tim2_started": true
+  },
+  "words": [
+    "0x52335733",
+    "0x00000001",
+    "0x00000001",
+    "0x00000001",
+    "0x00000000",
+    "0x00000002",
+    "0x00000000",
+    "0x00000001",
+    "0x00000001",
+    "0x00000001",
+    "0x00000003",
+    "0x00000001",
+    "0x00000001",
+    "0x00062D17",
+    "0x00000001",
+    "0x00000001",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0xA33C0DE3"
+  ]
+}
