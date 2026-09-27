@@ -32,7 +32,7 @@ the result reports the instrumented residency that actually occurred.
 | Term | Bound / treatment |
 |---|---|
 | DWT timestamp granularity | 1 cycle per timestamp; a duration formed by two independently placed C boundaries has up to 2 cycles of endpoint quantization. |
-| RuntimeEvent transaction boundary | The measured path above includes save-PRIMASK, Clock64 read, settlement, owner/window mutation and restore-PRIMASK.  The largest exercised nested ledger transaction is 1600 cycles. |
+| RuntimeEvent transaction boundary | The measured path above includes save-PRIMASK, Clock64 read, settlement, owner/window mutation and restore-PRIMASK.  The largest exercised nested ledger transaction is 1600 cycles.  Fresh `mask-timing/attempt-0001` separately observes 52 actual PRIMASK-held target spans, maximum **559 cycles**, against the frozen 1800-cycle limit. |
 | q0 to physical TIM2 start | The frozen target acceptance bound is <=1800 cycles, directly bracketing the TIM2 CEN write in sealed `t15-q0/attempt-0004` and `t15-release/attempt-0005`; it is a compliance bound, not a post-hoc prediction input. |
 | Completion lock interval | Sealed Release/LTO `t04-commit-budget-a/attempt-0002` and `t04-commit-budget-b/attempt-0001` each retain a maximum complete `t_lock` to `t_unlock` interval of 1715 cycles, below the 1800-cycle gate. |
 
@@ -61,9 +61,9 @@ service margin.  In particular, R2's existing `k8-normal` trace reports a
 1076-cycle `final_window` from a different instrumentation state; it cannot
 be reused as an R4 perturbation proof.
 
-Therefore this document supports R4-A20's required explicit measurement
-semantics and numerical inputs, but does not close R4-A22 or the remaining
-R4-A27 system-budget claim.  Closure still requires representative,
+Therefore this document supports R4-A20 and the RuntimeEvent critical-masking
+portion of R4-A27, but does not close R4-A22 or the remaining combined-service
+system-budget claim.  Closure still requires representative,
 same-configuration target A/B evidence comparing a minimal profile with the
 R4 profile for DMA service, processing throughput, wall response,
 drop/admission and CPU/residual accounting.

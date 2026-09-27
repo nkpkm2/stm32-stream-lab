@@ -1,0 +1,7 @@
+{
+  "case_id": "mask-timing",
+  "case_numeric_id": 15,
+  "configured_soak_ms": 0,
+  "selector": "MASK_TIMING",
+  "work_package": "R4"
+}

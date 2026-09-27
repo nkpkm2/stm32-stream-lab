@@ -1,0 +1,9 @@
+{
+  "case": "mask-timing",
+  "clean_tree": true,
+  "git_head": "836c0ba3cb0c44e3440a6b600607353740781e04",
+  "origin_main": "836c0ba3cb0c44e3440a6b600607353740781e04",
+  "phase": "H0",
+  "probe_list_sha256": "CCCBFBE085110204EF1C7A0761CEB0C21B3CC958696744A58246C881DAC57356",
+  "result": "PASS"
+}

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "E:\\DevTools\\STM32CubeProgrammer-2.23.0\\bin\\STM32_Programmer_CLI.exe",
+    "-c",
+    "port=SWD",
+    "mode=UR",
+    "-r32",
+    "0x200023E0",
+    "1024"
+  ],
+  "automatic_retry": false,
+  "cwd": null,
+  "timeout_seconds": 60
+}
