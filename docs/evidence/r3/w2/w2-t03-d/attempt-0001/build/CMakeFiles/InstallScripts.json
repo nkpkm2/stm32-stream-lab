@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w2-t03-d-amg7um19/build/cmake_install.cmake",
+		"C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w2-t03-d-amg7um19/build/cmake/stm32cubemx/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

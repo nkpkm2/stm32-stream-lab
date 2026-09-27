@@ -1,0 +1,6 @@
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w2-t03-d-amg7um19/build/CMakeFiles/cubemx.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w2-t03-d-amg7um19/build/CMakeFiles/edit_cache.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w2-t03-d-amg7um19/build/CMakeFiles/rebuild_cache.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w2-t03-d-amg7um19/build/cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w2-t03-d-amg7um19/build/cmake/stm32cubemx/CMakeFiles/edit_cache.dir
+C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w2-t03-d-amg7um19/build/cmake/stm32cubemx/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "E:\\DevTools\\STM32CubeCLT-1.22.0\\CMake\\bin\\cmake.exe",
+    "--build",
+    "C:\\Users\\CHJ\\Downloads\\STM32_R3_EVIDENCE\\w2-t03-d-amg7um19\\build",
+    "--parallel",
+    "4"
+  ],
+  "cwd": null,
+  "timeout_seconds": 600,
+  "automatic_retry": false
+}
