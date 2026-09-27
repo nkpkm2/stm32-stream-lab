@@ -93,7 +93,13 @@ static void EvaluateFormalInvariants(void)
         (g_r4_hw_result.tick_timing_configure_status != tick_ok) ||
         (g_r4_hw_result.tick_timing_snapshot_status != tick_ok) ||
         (g_r4_hw_result.tick_timing_service_count == 0U) ||
-        (g_r4_hw_result.tick_timing_over_limit_count != 0U))
+        (g_r4_hw_result.tick_timing_over_limit_count != 0U) ||
+        (g_r4_hw_result.tick_systick_snapshot_status != ok) ||
+        (g_r4_hw_result.tick_systick_enter_count == 0U) ||
+        (g_r4_hw_result.tick_systick_enter_count !=
+         g_r4_hw_result.tick_systick_exit_count) ||
+        (g_r4_hw_result.tick_systick_enter_count !=
+         g_r4_hw_result.tick_timing_service_count))
     {
         FailInvariant(R4_HW_INVARIANT_TICK);
     }
@@ -313,6 +319,7 @@ static void HarnessTask(void *argument)
 #endif
     R4_TickService tick_snapshot;
     R4_TickServiceTiming tick_timing;
+    R4_SysTickTraceSnapshot systick_trace;
     R4_TickServiceTargetCallbacks tick_callbacks;
 
     (void)argument;
@@ -627,6 +634,10 @@ static void HarnessTask(void *argument)
         tick_timing.max_phase_error_cycles;
     g_r4_hw_result.tick_timing_over_limit_count =
         tick_timing.over_limit_interval_count;
+    g_r4_hw_result.tick_systick_snapshot_status = (uint32_t)
+        R4_RuntimeTarget_GetSysTickTraceSnapshot(&systick_trace);
+    g_r4_hw_result.tick_systick_enter_count = systick_trace.enter_count;
+    g_r4_hw_result.tick_systick_exit_count = systick_trace.exit_count;
     ledger = R4_RuntimeTarget_GetLedger();
     if (ledger != NULL)
     {

@@ -67,6 +67,14 @@ typedef struct
     uint64_t dma_no_yield_count;
 } R4_DmaTailSnapshot;
 
+/* Read-only witness of the existing FreeRTOS V11.1.0 traceISR route,
+ * filtered by IPSR=15.  It never creates a second SysTick trace path. */
+typedef struct
+{
+    uint64_t enter_count;
+    uint64_t exit_count;
+} R4_SysTickTraceSnapshot;
+
 /* Hooks/IRQs may only latch a fail-closed request.  The Communication owner
  * consumes it in task context through the normal blocking safe-stop path. */
 typedef enum
@@ -99,6 +107,8 @@ R4_RuntimeStatus R4_RuntimeTarget_GetCompletionTiming(
 
 void R4_RuntimeTarget_TraceIsrEnter(void);
 void R4_RuntimeTarget_TraceIsrExit(void);
+R4_RuntimeStatus R4_RuntimeTarget_GetSysTickTraceSnapshot(
+    R4_SysTickTraceSnapshot *out);
 /* Called by the static-idle-memory application hook before the scheduler
  * starts.  It avoids a FreeRTOS API call from a trace macro while allowing
  * Idle residency to remain distinct from ordinary task residency. */

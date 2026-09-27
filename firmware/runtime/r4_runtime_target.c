@@ -12,6 +12,7 @@ static uint32_t target_initialized;
 static R4_RuntimeStatus target_boot_error = R4_RUNTIME_NOT_INITIALIZED;
 static R4_CompletionTimingSnapshot completion_timing;
 static R4_DmaTailSnapshot dma_tail;
+static R4_SysTickTraceSnapshot systick_trace;
 static R4_DmaWindowSnapshot dma_window;
 static R4_RuntimeHealthSnapshot runtime_health;
 static uintptr_t target_idle_task;
@@ -125,6 +126,8 @@ R4_RuntimeStatus R4_RuntimeTarget_Initialize(void)
         dma_tail.dma_irq_count = 0U;
         dma_tail.dma_yield_requested_count = 0U;
         dma_tail.dma_no_yield_count = 0U;
+        systick_trace.enter_count = 0U;
+        systick_trace.exit_count = 0U;
         dma_window.configured = 0U;
         dma_window.open_status = R4_RUNTIME_NOT_INITIALIZED;
         dma_window.close_status = R4_RUNTIME_NOT_INITIALIZED;
@@ -497,12 +500,40 @@ R4_RuntimeStatus R4_RuntimeTarget_GetCompletionTiming(
 
 void R4_RuntimeTarget_TraceIsrEnter(void)
 {
-    (void)Apply(R4_RUNTIME_EVENT_IRQ_ENTER, (uintptr_t)__get_IPSR());
+    const uint32_t irq_id = __get_IPSR();
+
+    if (irq_id == 15U)
+    {
+        ++systick_trace.enter_count;
+    }
+    (void)Apply(R4_RUNTIME_EVENT_IRQ_ENTER, (uintptr_t)irq_id);
 }
 
 void R4_RuntimeTarget_TraceIsrExit(void)
 {
-    (void)Apply(R4_RUNTIME_EVENT_IRQ_EXIT, (uintptr_t)__get_IPSR());
+    const uint32_t irq_id = __get_IPSR();
+
+    if (irq_id == 15U)
+    {
+        ++systick_trace.exit_count;
+    }
+    (void)Apply(R4_RUNTIME_EVENT_IRQ_EXIT, (uintptr_t)irq_id);
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_GetSysTickTraceSnapshot(
+    R4_SysTickTraceSnapshot *out)
+{
+    uint32_t saved_mask;
+
+    if (out == NULL)
+    {
+        return R4_RUNTIME_INVALID_ARGUMENT;
+    }
+    saved_mask = TargetSaveAndDisableBoundary();
+    *out = systick_trace;
+    TargetRestoreBoundary(saved_mask);
+    return target_initialized != 0U ? R4_RuntimeLedger_GetStatus(&target_ledger) :
+        target_boot_error;
 }
 
 void R4_RuntimeTarget_BindIdleTask(void *task)

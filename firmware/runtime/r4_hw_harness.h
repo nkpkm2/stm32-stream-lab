@@ -70,6 +70,9 @@ extern "C" {
 #define R4_HW_SYNTHETIC_WINDOW_IDLE_WORD 136U
 #define R4_HW_SYNTHETIC_WINDOW_UNCLASSIFIED_WORD 138U
 #define R4_HW_DMA_WINDOW_SNAPSHOT_WORD 140U
+#define R4_HW_T15_SYSTICK_SNAPSHOT_STATUS_WORD 151U
+#define R4_HW_T15_SYSTICK_ENTER_WORD 152U
+#define R4_HW_T15_SYSTICK_EXIT_WORD 154U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -187,6 +190,9 @@ typedef struct
     uint32_t dma_window_open_status;
     uint32_t dma_window_close_status;
     uint32_t dma_window_boundary_status;
+    uint32_t tick_systick_snapshot_status;
+    uint64_t tick_systick_enter_count;
+    uint64_t tick_systick_exit_count;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -261,6 +267,15 @@ _Static_assert(offsetof(R4HwHarnessResult, synthetic_window_idle_cycles) ==
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_window_unclassified_cycles) ==
     (R4_HW_SYNTHETIC_WINDOW_UNCLASSIFIED_WORD * sizeof(uint32_t)),
     "R4 synthetic-unclassified-window evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_systick_snapshot_status) ==
+    (R4_HW_T15_SYSTICK_SNAPSHOT_STATUS_WORD * sizeof(uint32_t)),
+    "R4 SysTick snapshot-status evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_systick_enter_count) ==
+    (R4_HW_T15_SYSTICK_ENTER_WORD * sizeof(uint32_t)),
+    "R4 SysTick enter evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_systick_exit_count) ==
+    (R4_HW_T15_SYSTICK_EXIT_WORD * sizeof(uint32_t)),
+    "R4 SysTick exit evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 

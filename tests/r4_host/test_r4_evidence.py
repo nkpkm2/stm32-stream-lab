@@ -77,7 +77,7 @@ class R4EvidenceTests(unittest.TestCase):
         self.assertTrue(verdict["checks"]["t12_dma_no_event_path"])
 
     def test_t15_release_requires_one_skip_not_catchup(self) -> None:
-        words = [0] * 88
+        words = [0] * 156
         words[:11] = [EVIDENCE.MAGIC, 3, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
                       0, 0, EVIDENCE.COMPLETE]
         words[EVIDENCE.T15_START_CALLBACK_WORD] = 1
@@ -89,6 +89,9 @@ class R4EvidenceTests(unittest.TestCase):
         words[EVIDENCE.T15_SKIPPED_COUNT_WORD] = 1
         words[EVIDENCE.T15_TIMING_SERVICE_COUNT_WORD] = 1
         words[EVIDENCE.T15_TIMING_MAX_INTERVAL_WORD] = 1
+        words[EVIDENCE.T15_SYSTICK_ENTER_WORD] = 1
+        words[EVIDENCE.T15_SYSTICK_EXIT_WORD] = 1
         verdict = EVIDENCE.evaluate("t15-release", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["t15_exact_callbacks"])
+        self.assertTrue(verdict["checks"]["t15_systick_single_pair"])
