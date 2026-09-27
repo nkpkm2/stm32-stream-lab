@@ -1,0 +1,9 @@
+{
+  "case": "task-synthetic",
+  "clean_tree": true,
+  "git_head": "f02123952d29a6796f605ba35edeb91f8dd2aab1",
+  "origin_main": "f02123952d29a6796f605ba35edeb91f8dd2aab1",
+  "phase": "H0",
+  "probe_list_sha256": "CCCBFBE085110204EF1C7A0761CEB0C21B3CC958696744A58246C881DAC57356",
+  "result": "PASS"
+}

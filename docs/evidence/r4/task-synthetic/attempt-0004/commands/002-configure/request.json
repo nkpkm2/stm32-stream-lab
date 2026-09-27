@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "E:\\DevTools\\STM32CubeCLT-1.22.0\\CMake\\bin\\cmake.exe",
+    "-S",
+    "E:\\Projects\\stm32-stream-lab\\firmware\\cubemx",
+    "-B",
+    "C:\\Users\\CHJ\\.codex\\visualizations\\2026\\09\\27\\01a0e1a1-c295-7233-b3f5-e371851ee2f5\\r4-principal\\r4-task-synthetic-iu_838or\\build",
+    "-G",
+    "Ninja",
+    "-DCMAKE_TOOLCHAIN_FILE=E:\\Projects\\stm32-stream-lab\\firmware\\cubemx\\cmake\\gcc-arm-none-eabi.cmake",
+    "-DSTREAM_LAB_FOUNDATION_ADC_DBM_DRIVER=ON",
+    "-DSTREAM_LAB_FOUNDATION_OWNERSHIP_CORE=ON",
+    "-DSTREAM_LAB_FOUNDATION_TOKEN_LEDGER=ON",
+    "-DSTREAM_LAB_FOUNDATION_QUEUE_ADAPTER=ON",
+    "-DSTREAM_LAB_R3_WORKER_CONTRACT=ON",
+    "-DSTREAM_LAB_R3_WORKER_TASKS=ON",
+    "-DSTREAM_LAB_R3_LIFECYCLE=ON",
+    "-DSTREAM_LAB_R4_RUNTIME=ON",
+    "-DSTREAM_LAB_R4_HW=ON",
+    "-DSTREAM_LAB_R4_HW_CASE=SYNTHETIC_TASKS",
+    "-DSTREAM_LAB_R4_HW_SOAK_MS=0",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+  ],
+  "automatic_retry": false,
+  "cwd": null,
+  "timeout_seconds": 180
+}

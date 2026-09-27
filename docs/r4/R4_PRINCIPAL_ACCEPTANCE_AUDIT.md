@@ -12,7 +12,7 @@ hardware test is not a substitute.
 | A01–A03 Clock64 authority, >60 s wrap, service bound | `t12-soak-a/b` sealed target attempts | PARTIAL | add source-uniqueness and invalid-run audit; retain fresh 60 s records |
 | A04–A06 RuntimeEvent atomicity/mask/error ordering | T17 pending IRQ and duplicate-exit evidence; native event tests | PARTIAL | explicit PRIMASK-entry-state and time-regression target/injection evidence |
 | A07–A13 IRQ pairing, no-yield/yield, SysTick | T12 wiring/tails; T17 duplicate exit | PARTIAL | real nested IRQ, exact task-switch attribution and SysTick one-pair evidence |
-| A14–A15 task/idle known workload | `task-synthetic/attempt-0003` raw target record remains reproducible with the corrected ABI reader; its former H4 is superseded because that commit's reader used misaligned 64-bit offsets | PARTIAL | rerun the fixed A/B/Idle workload on the final reader, add known IRQ contribution, and retain it in final integrated regression |
+| A14–A15 task/idle known workload | `task-synthetic/attempt-0004` sealed target PASS on the corrected ABI reader; H4 checks fixed A/B iterations, owner ratio, Idle residency, and formal conservation | PARTIAL | add known IRQ contribution and retain this workload in final integrated regression |
 | A16–A24 CPU window clipping, immutability, conservation | `dma-window/attempt-0001` sealed target PASS at `cf78c83`: real DMA completion sequence opens at S0=1, seals at S1=4, and observes a later sequence >=5 without a boundary fault; per-window buckets and directed native source cases remain available | PARTIAL | execute native cases on a host and add final target intersection/conservation plus no-outside-window evidence |
 | A25–A29 error/overhead/phase | tick DWT history and lock budget | PARTIAL | RuntimeEvent microbench, error budget, perturbation A/B, q0-to-TIM2 bound |
 | A30–A37 TickService and suspension | T15 q0/release; tick history in T12 | PARTIAL | explicit tick-gap fault-injection and phase evidence |
@@ -47,8 +47,8 @@ work, a compile-time offset assertion exposed that the former evidence reader
 had assumed packed offsets for some post-prefix 64-bit fields. The direct
 firmware invariant checks and the raw `task-synthetic/attempt-0003` values are
 consistent when read at their actual offsets, but the old H4 parser hash is
-not final-closure quality. The reader now uses target-asserted offsets; a
-fresh final synthetic attempt is required rather than mutating history.
+not final-closure quality. `task-synthetic/attempt-0004` is the fresh sealed
+replacement from the corrected reader; history was not mutated.
 
 ## Principal-model implementation, not closure evidence
 
