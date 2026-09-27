@@ -281,6 +281,11 @@ def main(argv=None) -> int:
     hw_attempt.add_argument("--out-dir", default=str(Path.home() / "Downloads" / "STM32_R3_EVIDENCE"))
     evidence_import = sub.add_parser("w2-evidence-import", help="import one completed external W2 evidence attempt")
     evidence_import.add_argument("--attempt", required=True)
+    w3_hw_attempt = sub.add_parser("w3-hw-attempt", help="run exactly one formal W3 hardware attempt outside the repository")
+    w3_hw_attempt.add_argument("--case", required=True)
+    w3_hw_attempt.add_argument("--out-dir", default=str(Path.home() / "Downloads" / "STM32_R3_EVIDENCE"))
+    w3_evidence_import = sub.add_parser("w3-evidence-import", help="import one completed external W3 evidence attempt")
+    w3_evidence_import.add_argument("--attempt", required=True)
     ns = parser.parse_args(argv)
     repo = Path(ns.repo).resolve()
 
@@ -293,6 +298,13 @@ def main(argv=None) -> int:
         return attempt(repo, ns.case, Path(ns.out_dir))
     if ns.cmd == "w2-evidence-import":
         from r3lib.w2_hardware import import_attempt
+        print(f"EVIDENCE_IMPORTED: {import_attempt(repo, Path(ns.attempt).resolve())}")
+        return 0
+    if ns.cmd == "w3-hw-attempt":
+        from r3lib.w3_hardware import attempt
+        return attempt(repo, ns.case, Path(ns.out_dir))
+    if ns.cmd == "w3-evidence-import":
+        from r3lib.w3_hardware import import_attempt
         print(f"EVIDENCE_IMPORTED: {import_attempt(repo, Path(ns.attempt).resolve())}")
         return 0
     if ns.cmd == "status":
