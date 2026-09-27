@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w4-stop-e-c1rhebbg/build/cmake_install.cmake",
+		"C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w4-stop-e-c1rhebbg/build/cmake/stm32cubemx/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

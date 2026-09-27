@@ -1,0 +1,47 @@
+{
+  "phase": "H0",
+  "git_head": "64486edc40b6575291d48e777af89502bc92c3ef",
+  "case": "W4-STOP-E",
+  "toolchain": {
+    "executables": {
+      "cmake": {
+        "path": "E:\\DevTools\\STM32CubeCLT-1.22.0\\CMake\\bin\\cmake.exe",
+        "sha256": "F05482595D42888F2BEFE209D8AA4848560C8A05356411043241A15E7D3F86A7"
+      },
+      "ninja": {
+        "path": "E:\\DevTools\\STM32CubeCLT-1.22.0\\Ninja\\bin\\ninja.exe",
+        "sha256": "09478FB9503B6A8884B033F423148844B33F9CAA179BE8244F09B672B6D437D9"
+      },
+      "gcc": {
+        "path": "E:\\DevTools\\arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi\\bin\\arm-none-eabi-gcc.exe",
+        "sha256": "3AE18C728A53BE59486634213DC19BFEDBFCC3E57A8D59C91A27E496049819D5"
+      },
+      "objcopy": {
+        "path": "E:\\DevTools\\arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi\\bin\\arm-none-eabi-objcopy.exe",
+        "sha256": "102429C81CF494E9BEE194DC0156C3495C5E48599EE452DA1135BF97C43E0712"
+      },
+      "nm": {
+        "path": "E:\\DevTools\\arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi\\bin\\arm-none-eabi-nm.exe",
+        "sha256": "DD8B797F4FF458B0A00BEDB5EEC2AA9328FAC1B2281F6AF66561C08AB9605C73"
+      },
+      "readelf": {
+        "path": "E:\\DevTools\\arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi\\bin\\arm-none-eabi-readelf.exe",
+        "sha256": "0516A948576D1154EF72C0AD5EE40596A91D9FCC453B88753AA48C49C22C1C02"
+      }
+    },
+    "arm_version": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
+    "cmake_version": {
+      "isDirty": false,
+      "major": 4,
+      "minor": 3,
+      "patch": 1,
+      "string": "4.3.1",
+      "suffix": ""
+    },
+    "python_version": "3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]",
+    "python_executable": "C:\\Users\\CHJ\\AppData\\Local\\Programs\\Python\\Python310\\python.exe"
+  },
+  "target_bound_s": 0.5,
+  "host_timeout_s": 3.0,
+  "single_execution": true
+}
