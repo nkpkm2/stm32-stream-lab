@@ -66,6 +66,22 @@ T12_HEALTH_FAIL_CLOSED_WORD = 114
 T12_HEALTH_SERVICE_COUNT_WORD = 116
 T12_HEALTH_MAX_INTERVAL_WORD = 118
 T12_HEALTH_INTERVAL_LIMIT_WORD = 120
+T15_REGISTER_STATUS_WORD = 62
+T15_ARM_STATUS_WORD = 63
+T15_SNAPSHOT_STATUS_WORD = 64
+T15_START_CALLBACK_WORD = 65
+T15_RELEASE_CALLBACK_WORD = 66
+T15_SERVICE_SEQ_WORD = 68
+T15_START_COUNT_WORD = 70
+T15_RELEASE_COUNT_WORD = 72
+T15_SKIPPED_COUNT_WORD = 74
+T15_SEQUENCE_AFTER_SUSPENSION_WORD = 76
+T15_TIMING_CONFIGURE_WORD = 78
+T15_TIMING_SNAPSHOT_WORD = 79
+T15_TIMING_SERVICE_COUNT_WORD = 80
+T15_TIMING_MAX_INTERVAL_WORD = 82
+T15_TIMING_PHASE_ERROR_WORD = 84
+T15_TIMING_OVER_LIMIT_WORD = 86
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -306,6 +322,34 @@ def evaluate(case: str, words: list[int]) -> dict:
                     word64(T12_HEALTH_SERVICE_COUNT_WORD) >= 60 and
                     word64(T12_HEALTH_MAX_INTERVAL_WORD) <=
                     word64(T12_HEALTH_INTERVAL_LIMIT_WORD)),
+            })
+    if case in ("t15-q0", "t15-release"):
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= T15_TIMING_OVER_LIMIT_WORD + 1:
+            checks["t15_extension_present"] = False
+        else:
+            expected_skips = 0 if case == "t15-q0" else 1
+            checks.update({
+                "t15_service_registration": (
+                    words[T15_REGISTER_STATUS_WORD] == 0 and
+                    words[T15_ARM_STATUS_WORD] == 0 and
+                    words[T15_SNAPSHOT_STATUS_WORD] == 0),
+                "t15_exact_callbacks": (
+                    words[T15_START_CALLBACK_WORD] == 1 and
+                    words[T15_RELEASE_CALLBACK_WORD] == 1 and
+                    word64(T15_START_COUNT_WORD) == 1 and
+                    word64(T15_RELEASE_COUNT_WORD) == 1 and
+                    word64(T15_SKIPPED_COUNT_WORD) == expected_skips),
+                "t15_tick_history": (
+                    word64(T15_SERVICE_SEQ_WORD) > 0 and
+                    word64(T15_SEQUENCE_AFTER_SUSPENSION_WORD) > 0 and
+                    words[T15_TIMING_CONFIGURE_WORD] == 0 and
+                    words[T15_TIMING_SNAPSHOT_WORD] == 0 and
+                    word64(T15_TIMING_SERVICE_COUNT_WORD) > 0 and
+                    word64(T15_TIMING_MAX_INTERVAL_WORD) > 0 and
+                    word64(T15_TIMING_OVER_LIMIT_WORD) == 0),
             })
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}

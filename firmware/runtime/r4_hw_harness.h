@@ -46,6 +46,22 @@ extern "C" {
 #define R4_HW_T12_HEALTH_SERVICE_COUNT_WORD 116U
 #define R4_HW_T12_HEALTH_MAX_INTERVAL_WORD 118U
 #define R4_HW_T12_HEALTH_INTERVAL_LIMIT_WORD 120U
+#define R4_HW_T15_REGISTER_STATUS_WORD 62U
+#define R4_HW_T15_ARM_STATUS_WORD 63U
+#define R4_HW_T15_SNAPSHOT_STATUS_WORD 64U
+#define R4_HW_T15_START_CALLBACK_WORD 65U
+#define R4_HW_T15_RELEASE_CALLBACK_WORD 66U
+#define R4_HW_T15_SERVICE_SEQ_WORD 68U
+#define R4_HW_T15_START_COUNT_WORD 70U
+#define R4_HW_T15_RELEASE_COUNT_WORD 72U
+#define R4_HW_T15_SKIPPED_COUNT_WORD 74U
+#define R4_HW_T15_SEQUENCE_AFTER_SUSPENSION_WORD 76U
+#define R4_HW_T15_TIMING_CONFIGURE_WORD 78U
+#define R4_HW_T15_TIMING_SNAPSHOT_WORD 79U
+#define R4_HW_T15_TIMING_SERVICE_COUNT_WORD 80U
+#define R4_HW_T15_TIMING_MAX_INTERVAL_WORD 82U
+#define R4_HW_T15_TIMING_PHASE_ERROR_WORD 84U
+#define R4_HW_T15_TIMING_OVER_LIMIT_WORD 86U
 #define R4_HW_SYNTHETIC_CREATE_MASK_WORD 122U
 #define R4_HW_SYNTHETIC_A_CYCLES_WORD 128U
 #define R4_HW_SYNTHETIC_B_CYCLES_WORD 130U
@@ -218,6 +234,15 @@ _Static_assert(offsetof(R4HwHarnessResult, dma_no_event_irq_before) ==
 _Static_assert(offsetof(R4HwHarnessResult, health_monitor_service_count) ==
     (R4_HW_T12_HEALTH_SERVICE_COUNT_WORD * sizeof(uint32_t)),
     "R4 T12 health-service evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_register_status) ==
+    (R4_HW_T15_REGISTER_STATUS_WORD * sizeof(uint32_t)),
+    "R4 T15 register evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_service_seq) ==
+    (R4_HW_T15_SERVICE_SEQ_WORD * sizeof(uint32_t)),
+    "R4 T15 service-sequence evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_timing_service_count) ==
+    (R4_HW_T15_TIMING_SERVICE_COUNT_WORD * sizeof(uint32_t)),
+    "R4 T15 timing-service evidence word offset changed");
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_a_cycles) ==
     (R4_HW_SYNTHETIC_A_CYCLES_WORD * sizeof(uint32_t)),
     "R4 synthetic-A evidence word offset changed");
