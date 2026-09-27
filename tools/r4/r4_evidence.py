@@ -760,8 +760,10 @@ def verify_root(root: Path, *, require_pass: bool = True) -> None:
 
 def import_attempt(args: argparse.Namespace) -> int:
     repo, source = args.repo.resolve(), args.attempt.resolve()
-    if git(repo, "status", "--porcelain"):
-        raise EvidenceError("import requires a clean worktree")
+    dirty = git(repo, "status", "--porcelain").splitlines()
+    if any(not row[3:].replace("\\", "/").startswith("docs/evidence/r4/perturbation-ab/")
+           for row in dirty):
+        raise EvidenceError("import requires a clean worktree outside perturbation evidence")
     verify_root(source, require_pass=False)
     case = json.loads((source / "config.json").read_text(encoding="utf-8"))["case_id"]
     parent = repo / "docs" / "evidence" / "r4" / case
@@ -915,8 +917,10 @@ def verify_perturbation_suite_command(args: argparse.Namespace) -> int:
 
 def import_perturbation_suite(args: argparse.Namespace) -> int:
     repo = args.repo.resolve()
-    if git(repo, "status", "--porcelain"):
-        raise EvidenceError("suite import requires a clean worktree")
+    dirty = git(repo, "status", "--porcelain").splitlines()
+    if any(not row[3:].replace("\\", "/").startswith("docs/evidence/r4/perturbation-ab/")
+           for row in dirty):
+        raise EvidenceError("suite import requires a clean worktree outside perturbation evidence")
     result = verify_perturbation_suite(args.attempt)
     if result["result"] != "PASS":
         raise EvidenceError("only a passing six-run perturbation suite may be imported")

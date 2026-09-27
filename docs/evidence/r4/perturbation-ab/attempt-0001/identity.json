@@ -1,0 +1,10 @@
+{
+  "board_profile": "NUCLEO-F446RE/STM32F446xx",
+  "elf_sha256": "EF891E39EA9870B350B763FBA64D2971266DCA429126D176AB32D7DDA636D447",
+  "firmware_source_commit": "5e333acfedd1a0eb6b5797abc8bfb0f2793ee3ee",
+  "git_head": "5e333acfedd1a0eb6b5797abc8bfb0f2793ee3ee",
+  "harness_sha256": "4B1782A648C3497351891A4DCAD6553F1D6CE5CE8B1481C7EC5CCA1D64F9E5CC",
+  "programmed_image_sha256": "6E3875F6C7794801AD3D56BC5C224566BA33CF3672C8079C997FDE5605BDB73B",
+  "programmer": "E:\\DevTools\\STM32CubeProgrammer-2.23.0\\bin\\STM32_Programmer_CLI.exe",
+  "schema_version": "r4-evidence-v2"
+}
