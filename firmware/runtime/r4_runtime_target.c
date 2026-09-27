@@ -19,6 +19,8 @@ static R4_RuntimeHealthSnapshot runtime_health;
 static uintptr_t target_idle_task;
 static uint32_t dma_service_entry_cycle;
 static uint32_t dma_service_active;
+static uint32_t dma_probe_entry_cycle;
+static uint32_t dma_probe_active;
 #if defined(STREAM_LAB_R4_HW)
 static uint32_t target_test_pend_irq_after_mask;
 static uint32_t target_test_pend_high_from_low;
@@ -152,6 +154,10 @@ R4_RuntimeStatus R4_RuntimeTarget_Initialize(void)
         dma_tail.dma_irq_count = 0U;
         dma_tail.dma_yield_requested_count = 0U;
         dma_tail.dma_no_yield_count = 0U;
+        dma_tail.dma_service_count = 0U;
+        dma_tail.dma_max_service_cycles = 0U;
+        dma_tail.dma_probe_count = 0U;
+        dma_tail.dma_probe_max_cycles = 0U;
         systick_trace.enter_count = 0U;
         systick_trace.exit_count = 0U;
         dma_window.configured = 0U;
@@ -628,6 +634,29 @@ void R4_RuntimeTarget_TraceDmaTailYield(uint32_t higher_priority_task_woken)
     else
     {
         ++dma_tail.dma_no_yield_count;
+    }
+}
+
+void R4_RuntimeTarget_ObserveDmaServiceEnter(void)
+{
+    dma_probe_entry_cycle = DWT->CYCCNT;
+    dma_probe_active = 1U;
+}
+
+void R4_RuntimeTarget_ObserveDmaServiceExit(void)
+{
+    uint32_t elapsed;
+
+    if (dma_probe_active == 0U)
+    {
+        return;
+    }
+    elapsed = DWT->CYCCNT - dma_probe_entry_cycle;
+    dma_probe_active = 0U;
+    ++dma_tail.dma_probe_count;
+    if ((uint64_t)elapsed > dma_tail.dma_probe_max_cycles)
+    {
+        dma_tail.dma_probe_max_cycles = elapsed;
     }
 }
 

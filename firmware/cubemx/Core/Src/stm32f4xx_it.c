@@ -295,6 +295,9 @@ void DMA2_Stream0_IRQHandler(void)
 {
 #if defined(STREAM_LAB_R4_RUNTIME)
   BaseType_t higher_priority_task_woken = pdFALSE;
+#if defined(STREAM_LAB_R4_PERTURBATION_AB)
+  R4_RuntimeTarget_ObserveDmaServiceEnter();
+#endif
   /* The one hardware-IRQ entry for all DMA completion/error paths.  HAL
    * callbacks only accumulate their wake request; the tail below emits the
    * sole matching traceISR_EXIT via portYIELD_FROM_ISR. */
@@ -335,6 +338,9 @@ void DMA2_Stream0_IRQHandler(void)
 #endif
   R4_RuntimeTarget_TraceDmaTailYield(
       higher_priority_task_woken != pdFALSE ? 1U : 0U);
+#if defined(STREAM_LAB_R4_PERTURBATION_AB)
+  R4_RuntimeTarget_ObserveDmaServiceExit();
+#endif
   portYIELD_FROM_ISR(higher_priority_task_woken);
 #endif
 

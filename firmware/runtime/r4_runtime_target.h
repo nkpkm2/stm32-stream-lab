@@ -70,6 +70,11 @@ typedef struct
      * Cortex-M exception entry/return remain explicitly outside this scope. */
     uint64_t dma_service_count;
     uint64_t dma_max_service_cycles;
+    /* Profile-neutral raw-DWT observer used only by the frozen R4
+     * perturbation A/B harness.  Its envelope is DMA vector entry through
+     * the common tail immediately before portYIELD_FROM_ISR. */
+    uint64_t dma_probe_count;
+    uint64_t dma_probe_max_cycles;
 } R4_DmaTailSnapshot;
 
 /* Read-only witness of the existing FreeRTOS V11.1.0 traceISR route,
@@ -123,6 +128,8 @@ void R4_RuntimeTarget_TraceTaskSwitchedIn(void *task);
 /* Called exactly once from the real DMA IRQ common tail, before the port's
  * yield macro chooses either the no-switch or scheduler-request exit. */
 void R4_RuntimeTarget_TraceDmaTailYield(uint32_t higher_priority_task_woken);
+void R4_RuntimeTarget_ObserveDmaServiceEnter(void);
+void R4_RuntimeTarget_ObserveDmaServiceExit(void);
 R4_RuntimeStatus R4_RuntimeTarget_GetDmaTailSnapshot(R4_DmaTailSnapshot *out);
 R4_RuntimeStatus R4_RuntimeTarget_MonitorService(uint64_t interval_limit_cycles);
 void R4_RuntimeTarget_LatchInfrastructureFault(R4_RuntimeInfrastructureFault fault);
