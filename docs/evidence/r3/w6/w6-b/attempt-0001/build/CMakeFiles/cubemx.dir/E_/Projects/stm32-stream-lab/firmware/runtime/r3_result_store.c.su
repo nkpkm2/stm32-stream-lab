@@ -1,0 +1,6 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_result_store.c:5:6:R3ResultStore_Initialize	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_result_store.c:10:21:R3ResultStore_CanBeginRun	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_result_store.c:17:21:R3ResultStore_Seal	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_result_store.c:38:21:R3ResultStore_Acquire	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_result_store.c:52:21:R3ResultStore_Release	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_result_store.c:63:21:R3ResultStore_GetSnapshot	24	static

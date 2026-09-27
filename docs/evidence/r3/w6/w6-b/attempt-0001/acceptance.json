@@ -1,0 +1,14 @@
+{
+  "result": "PASS",
+  "invariants": {
+    "magic": true,
+    "schema": true,
+    "anchor": true,
+    "terminal": true,
+    "all_cycles": true,
+    "no_fault_cycles": true,
+    "complete": true,
+    "all_records_valid": true,
+    "controlled_drop_observed": true
+  }
+}
