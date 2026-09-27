@@ -1,0 +1,13 @@
+{
+  "first_failure_class": "TARGET_FIRMWARE",
+  "invariants": {
+    "case_identity": true,
+    "completed_magic": true,
+    "init_status": true,
+    "no_invariant_failure": false,
+    "result_magic": true,
+    "schema_version": true,
+    "terminal_pass": false
+  },
+  "result": "FAIL"
+}
