@@ -12,6 +12,21 @@ static R4_RuntimeStatus Latch(R4_RuntimeLedger *ledger, R4_RuntimeStatus status)
     return ledger->first_error;
 }
 
+static uint32_t ContextIsValid(R4_RuntimeContext context)
+{
+    if ((context.kind == R4_RUNTIME_CONTEXT_NONE) ||
+        (context.kind == R4_RUNTIME_CONTEXT_IDLE))
+    {
+        return context.identity == 0U ? 1U : 0U;
+    }
+    if ((context.kind == R4_RUNTIME_CONTEXT_TASK) ||
+        (context.kind == R4_RUNTIME_CONTEXT_IRQ))
+    {
+        return context.identity != 0U ? 1U : 0U;
+    }
+    return 0U;
+}
+
 static R4_RuntimeStatus AccountOwner(R4_RuntimeOwnerBucket *buckets,
     uint32_t capacity, uintptr_t identity, uint64_t elapsed)
 {
@@ -132,6 +147,10 @@ R4_RuntimeStatus R4_RuntimeLedger_Initialize(
     {
         return R4_RUNTIME_CLOCK_ERROR;
     }
+    if (ContextIsValid(initial_context) == 0U)
+    {
+        return R4_RUNTIME_INVALID_ARGUMENT;
+    }
 
     ledger->initialized = 1U;
     ledger->faulted = 0U;
@@ -224,7 +243,11 @@ R4_RuntimeStatus R4_RuntimeEvent_Apply(
         else switch (event->kind)
         {
             case R4_RUNTIME_EVENT_IRQ_ENTER:
-                if (ledger->irq_depth >= R4_RUNTIME_MAX_IRQ_NESTING)
+                if (event->identity == 0U)
+                {
+                    status = Latch(ledger, R4_RUNTIME_OWNER_CAPACITY_EXCEEDED);
+                }
+                else if (ledger->irq_depth >= R4_RUNTIME_MAX_IRQ_NESTING)
                 {
                     status = Latch(ledger, R4_RUNTIME_IRQ_NESTING_OVERFLOW);
                 }
@@ -270,6 +293,10 @@ R4_RuntimeStatus R4_RuntimeEvent_Apply(
                 if (ledger->irq_depth != 0U)
                 {
                     status = Latch(ledger, R4_RUNTIME_TASK_SWITCH_MISMATCH);
+                }
+                else if (event->identity == 0U)
+                {
+                    status = Latch(ledger, R4_RUNTIME_OWNER_CAPACITY_EXCEEDED);
                 }
                 else
                 {

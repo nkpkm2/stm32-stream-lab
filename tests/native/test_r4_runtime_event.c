@@ -295,6 +295,29 @@ static void CaseTimeRegressionFaults(void)
         R4_RUNTIME_TIME_REGRESSION);
 }
 
+static void CaseInvalidOwnerFaults(void)
+{
+    FakePlatform platform = { 0U, 0U, 0U, 0U };
+    R4_Clock64 clock;
+    R4_RuntimeLedger ledger = NewLedger(&platform, &clock);
+
+    /* Identity zero denotes an unused fixed bucket.  It must be rejected at
+     * the transition itself, never become an active owner and fault later. */
+    CHECK(Apply(&ledger, &platform, 1U, R4_RUNTIME_EVENT_IRQ_ENTER, 0U) ==
+        R4_RUNTIME_OWNER_CAPACITY_EXCEEDED);
+    CHECK(ledger.active.kind == R4_RUNTIME_CONTEXT_TASK);
+    CHECK(ledger.active.identity == 11U);
+
+    platform.raw = 0U;
+    ledger = NewLedger(&platform, &clock);
+    CHECK(Apply(&ledger, &platform, 1U, R4_RUNTIME_EVENT_TASK_SWITCHED_OUT,
+        11U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 2U, R4_RUNTIME_EVENT_TASK_SWITCHED_IN,
+        0U) == R4_RUNTIME_OWNER_CAPACITY_EXCEEDED);
+    CHECK(ledger.active.kind == R4_RUNTIME_CONTEXT_NONE);
+    CHECK(ledger.active.identity == 0U);
+}
+
 static void CaseNestedIrq(void)
 {
     FakePlatform platform = { 0U, 0U, 0U, 0U };
@@ -420,6 +443,10 @@ static void RunCase(const char *name)
     else if (strcmp(name, "time_regression") == 0)
     {
         CaseTimeRegressionFaults();
+    }
+    else if (strcmp(name, "invalid_owner") == 0)
+    {
+        CaseInvalidOwnerFaults();
     }
     else if (strcmp(name, "window_clipping") == 0)
     {
