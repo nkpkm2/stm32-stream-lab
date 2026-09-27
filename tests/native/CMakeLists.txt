@@ -79,6 +79,24 @@ if(R4_RUNTIME_NATIVE_TESTS)
     endforeach()
 endif()
 
+option(R5_METRICS_NATIVE_TESTS "Build R5 cohort/sealing metrics tests" OFF)
+if(R5_METRICS_NATIVE_TESTS)
+    add_executable(test_r5_run_metrics
+        test_r5_run_metrics.c
+        ../../firmware/runtime/r5_run_metrics.c
+        ../../firmware/runtime/r5_result_store.c)
+    target_include_directories(test_r5_run_metrics PRIVATE ../../firmware/runtime)
+    set_target_properties(test_r5_run_metrics PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_r5_run_metrics)
+    r2_apply_sanitizers(test_r5_run_metrics)
+    foreach(case_name known s2 s2_empty cutoff insufficient overflow store)
+        add_test(NAME r5.metrics.${case_name}
+            COMMAND test_r5_run_metrics ${case_name})
+        set_tests_properties(r5.metrics.${case_name} PROPERTIES TIMEOUT 10)
+    endforeach()
+endif()
+
 option(R3_W5_LEDGER_NATIVE_TESTS "Build R3-W5 command/result ledger tests" OFF)
 if(R3_W5_LEDGER_NATIVE_TESTS)
     add_executable(test_r3_w5_ledger

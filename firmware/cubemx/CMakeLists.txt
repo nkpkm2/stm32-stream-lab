@@ -123,6 +123,10 @@ option(STREAM_LAB_R4_RUNTIME
     "Compile the R4 Clock64/RuntimeEvent/TickService integration" OFF)
 option(STREAM_LAB_R4_HW
     "Build the R4 target Clock64/runtime-window harness" OFF)
+option(STREAM_LAB_R5_METRICS
+    "Compile the R5 cohort/cutoff/sealed-results core" OFF)
+option(STREAM_LAB_R5_HW
+    "Build the R5 target synthetic cohort/sealing harness" OFF)
 set(STREAM_LAB_R3_W3_HW_CASE "" CACHE STRING
     "R3-W3 target hardware case: START_A, T06_A, T06_B, or START_C")
 set_property(CACHE STREAM_LAB_R3_W3_HW_CASE PROPERTY STRINGS
@@ -509,6 +513,35 @@ if(STREAM_LAB_R4_RUNTIME)
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
 endif()
 # === R4 RUNTIME ACCOUNTING FOUNDATION END ===
+
+# === R5 COHORT / SEALED RESULTS FOUNDATION BEGIN ===
+if(STREAM_LAB_R5_METRICS)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R5_METRICS=1)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_run_metrics.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_result_store.c")
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime")
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_run_metrics.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_result_store.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
+endif()
+
+if(STREAM_LAB_R5_HW)
+    if(NOT STREAM_LAB_R5_METRICS)
+        message(FATAL_ERROR "R5 hardware harness requires STREAM_LAB_R5_METRICS=ON.")
+    endif()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R5_HW=1)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_hw_harness.c")
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime")
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_hw_harness.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
+endif()
+# === R5 COHORT / SEALED RESULTS FOUNDATION END ===
 
 if(STREAM_LAB_R4_HW)
     if(NOT STREAM_LAB_R4_RUNTIME)
