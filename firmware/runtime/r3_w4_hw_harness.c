@@ -49,6 +49,7 @@ static void Capture(const R3W3RuntimeSnapshot *s)
     g_r3_w4_hw_result.processing_complete_count = s->workers.processing_complete_count;
     g_r3_w4_hw_result.processing_cancel_count = s->workers.processing_cancel_count;
     g_r3_w4_hw_result.worker_faulted = s->workers.faulted;
+    g_r3_w4_hw_result.worker_first_fault = (uint32_t)s->workers.first_fault;
     g_r3_w4_hw_result.runtime_fault = s->runtime_fault;
 }
 

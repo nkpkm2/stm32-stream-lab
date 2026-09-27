@@ -17,7 +17,7 @@ from .w3_hardware import digest, manifest, validate_manifest, write_new
 
 CASES = {"W4-T04-A": ("T04_A", 1), "W4-STOP-A": ("STOP_A", 2),
          "W4-STOP-B": ("STOP_B", 3)}
-MAGIC, COMPLETE, WORDS = 0x52335734, 0xA44C0DE4, 24
+MAGIC, COMPLETE, WORDS = 0x52335734, 0xA44C0DE4, 25
 TARGET_BOUND_S, HOST_TIMEOUT_S = 0.5, 3.0
 
 
@@ -71,8 +71,8 @@ def evaluate(case: str, words: list[int]) -> dict:
         "hardware_released": words[10] == 0,
         "begin_report": words[12] == 1, "begin_timer_closed": (words[14] & 1) == 0,
         "finish_report": words[15] == 1, "dma_disabled": (words[16] & 1) == 0,
-        "worker_acks": words[17] == 0x300, "worker_clean": words[21:23] == [0, 0],
-        "completion_magic": words[23] == COMPLETE,
+        "worker_acks": words[17] == 0x300, "worker_clean": words[21:24] == [0, 0, 0],
+        "completion_magic": words[24] == COMPLETE,
     }
     if selector == "T04_A":
         checks.update({"partial_only": 0 < words[13] < 256,

@@ -39,6 +39,7 @@ typedef struct
     uint32_t processing_complete_count;
     uint32_t processing_cancel_count;
     uint32_t worker_faulted;
+    uint32_t worker_first_fault;
     uint32_t runtime_fault;
     uint32_t completed_magic;
 } R3W4HwResult;
