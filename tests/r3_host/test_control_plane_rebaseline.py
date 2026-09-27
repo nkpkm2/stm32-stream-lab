@@ -60,6 +60,21 @@ class ControlPlanePureTests(unittest.TestCase):
         self.assertEqual(p.next_allowed, "W2_HARDWARE_EVIDENCE_REMAINING")
         self.assertTrue(p.target_firmware_modification_allowed)
 
+    def test_w4_evidence_advances_to_w5(self):
+        p = derive_progress(
+            w1_sealed=True,
+            w2a_sealed=True,
+            w2b_sealed=True,
+            w2_evidence_present=True,
+            w2_evidence_complete=True,
+            w2_hw_freeze_sealed=True,
+            w3_evidence_complete=True,
+            w4_evidence_complete=True,
+        )
+        self.assertEqual(p.w4_evidence, "SEALED")
+        self.assertEqual(p.current_work_package, "R3-W5")
+        self.assertEqual(p.next_allowed, "W5_ISOLATION_RESTART_IMPLEMENTATION")
+
     def test_operator_gate_blocks_dirty_hardware_progression(self):
         p = derive_progress(
             w1_sealed=True,

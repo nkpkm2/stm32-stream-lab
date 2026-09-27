@@ -59,6 +59,7 @@ def print_status(repo: Path) -> None:
     print(f"W2_HW_HARNESS_FREEZE: {progress.w2_hw_harness_freeze}")
     print(f"W2_EVIDENCE: {progress.w2_evidence}")
     print(f"W3_EVIDENCE: {progress.w3_evidence}")
+    print(f"W4_EVIDENCE: {progress.w4_evidence}")
     print(f"CURRENT_WORK_PACKAGE: {progress.current_work_package}")
     print(f"TECHNICAL_NEXT_ALLOWED: {progress.next_allowed}")
     print(f"OPERATOR_GATE: {gate.state}")
@@ -256,6 +257,17 @@ def selftest() -> int:
             w2_evidence_present=True, w2_evidence_complete=True,
             w3_evidence_complete=True, w2_hw_freeze_sealed=True,
         ).next_allowed == "W4_SAFE_STOP_IMPLEMENTATION"
+        or (_ for _ in ()).throw(AssertionError()),
+    )
+    case(
+        "w4_progress_after_evidence",
+        lambda: __import__("r3lib.control_state", fromlist=["derive_progress"])
+        .derive_progress(
+            w1_sealed=True, w2a_sealed=True, w2b_sealed=True,
+            w2_evidence_present=True, w2_evidence_complete=True,
+            w3_evidence_complete=True, w4_evidence_complete=True,
+            w2_hw_freeze_sealed=True,
+        ).next_allowed == "W5_ISOLATION_RESTART_IMPLEMENTATION"
         or (_ for _ in ()).throw(AssertionError()),
     )
 

@@ -18,9 +18,9 @@ Current assessed state at this plan's creation:
 |---|---|---|
 | W1 specification and evidence rules | SEALED | R3 directed matrix and evidence schema are committed. |
 | W2 worker STOP/quiescence | SEALED | Five required hardware cases have immutable, imported PASS attempts. |
-| W3 transactional START | IN PROGRESS | `r3_lifecycle` supplies a tested transaction core, but is not yet the production Communication/ADC/worker path. |
-| W4 safe STOP | IN PROGRESS | STOP coordinator and driver BeginStop/FinishStop boundary implemented; W4 native/hardware matrix and harness are not yet sealed. |
-| W5 isolation and immediate restart | NOT STARTED | No complete command/idempotence/result-lifetime implementation is sealed. |
+| W3 transactional START | SEALED | Native lifecycle checks and four imported real-board PASS attempts are indexed by the W3 acceptance decision. |
+| W4 safe STOP | SEALED | Seven imported real-board PASS attempts plus native STOP contract/task-glue/lifecycle checks are indexed by the W4 acceptance decision. |
+| W5 isolation and immediate restart | IN PROGRESS | The next package: command ledger, generation isolation, immutable result ownership, and restart interleavings. |
 | W6 1000-cycle lifecycle | NOT STARTED | It is prohibited before W3--W5 directed cases pass. |
 
 ## Non-negotiable acceptance rules
