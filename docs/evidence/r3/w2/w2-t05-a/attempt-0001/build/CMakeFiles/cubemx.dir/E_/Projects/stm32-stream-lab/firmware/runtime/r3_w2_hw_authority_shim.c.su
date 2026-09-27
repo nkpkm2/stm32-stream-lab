@@ -1,0 +1,11 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w2_hw_authority_shim.c:35:6:R1_Acquisition_DmaIrqEnter	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w2_hw_authority_shim.c:45:12:TicketMatches	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w2_hw_authority_shim.c:54:13:FillReceipt	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w2_hw_authority_shim.c:65:26:R3_W2_HW_AuthorityShim_Reset	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w2_hw_authority_shim.c:79:26:R3_W2_HW_AuthorityShim_PublishReady	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w2_hw_authority_shim.c:104:26:R3_W2_HW_AuthorityShim_GetHarnessSnapshot	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w2_hw_authority_shim.c:129:26:StreamRunAuthority_TakeReady	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w2_hw_authority_shim.c:159:26:StreamRunAuthority_ClaimHeldReady	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w2_hw_authority_shim.c:183:26:StreamRunAuthority_CancelHeldReady	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w2_hw_authority_shim.c:210:26:StreamRunAuthority_CompleteAndReleaseBlock	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w2_hw_authority_shim.c:237:26:StreamRunAuthority_GetSnapshot	16	static
