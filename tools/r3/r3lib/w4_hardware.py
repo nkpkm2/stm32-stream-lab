@@ -15,9 +15,9 @@ from .seal import SealRelation, inspect_seal
 from .w2_build_validation import CommandLog, configure, select_tools, verify_cache
 from .w3_hardware import digest, manifest, validate_manifest, write_new
 
-CASES = {"W4-T04-A": ("T04_A", 1), "W4-STOP-A": ("STOP_A", 2),
+CASES = {"W4-T04-A": ("T04_A", 1), "W4-T04-B": ("T04_B", 5), "W4-STOP-A": ("STOP_A", 2),
          "W4-STOP-B": ("STOP_B", 3), "W4-STOP-D": ("STOP_D", 4)}
-MAGIC, COMPLETE, WORDS = 0x52335734, 0xA44C0DE4, 26
+MAGIC, COMPLETE, WORDS = 0x52335734, 0xA44C0DE4, 27
 TARGET_BOUND_S, HOST_TIMEOUT_S = 0.5, 3.0
 
 
@@ -69,23 +69,27 @@ def evaluate(case: str, words: list[int]) -> dict:
         "no_invariant": words[4] == 0, "idle": words[5] == 0,
         "gates_closed": words[6:9] == [0, 0, 0],
         "hardware_released": words[10] == 0,
-        "begin_report": words[12] == 1, "begin_timer_closed": (words[14] & 1) == 0,
-        "finish_report": words[15] == 1, "dma_disabled": (words[16] & 1) == 0,
-        "worker_acks": words[17] == 0x300, "worker_clean": words[21:24] == [0, 0, 0],
-        "completion_magic": words[25] == COMPLETE,
+        "begin_report": words[12] == 1, "begin_timer_closed": (words[15] & 1) == 0,
+        "finish_report": words[16] == 1, "dma_disabled": (words[17] & 1) == 0,
+        "worker_acks": words[18] == 0x300, "worker_clean": words[22:25] == [0, 0, 0],
+        "completion_magic": words[26] == COMPLETE,
     }
     if selector == "T04_A":
         checks.update({"partial_only": 0 < words[13] < 256,
                        "no_completion": words[11] == 0,
-                       "no_ready_cancel": words[20] == 0})
+                       "no_ready_cancel": words[21] == 0})
+    elif selector == "T04_B":
+        checks.update({"pending_tc_at_stop": (words[14] & 0x20) != 0,
+                       "no_old_completion": words[11] == 0,
+                       "no_ready_cancel": words[21] == 0})
     elif selector == "STOP_A":
-        checks["ready_cancelled_by_processing"] = words[20] > 0
+        checks["ready_cancelled_by_processing"] = words[21] > 0
     else:
         if selector == "STOP_B":
-            checks.update({"processing_entered": words[18] == 1,
-                           "current_completed": words[19] > 0})
+            checks.update({"processing_entered": words[19] == 1,
+                           "current_completed": words[20] > 0})
         else:
-            checks["duplicate_stop_same_transaction"] = words[24] == 1
+            checks["duplicate_stop_same_transaction"] = words[25] == 1
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "words": [f"0x{word:08X}" for word in words]}
 

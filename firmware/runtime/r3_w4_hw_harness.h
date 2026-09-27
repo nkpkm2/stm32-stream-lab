@@ -11,6 +11,7 @@
 #define R3_W4_HW_CASE_STOP_A 2UL
 #define R3_W4_HW_CASE_STOP_B 3UL
 #define R3_W4_HW_CASE_STOP_D 4UL
+#define R3_W4_HW_CASE_T04_B  5UL
 
 #define R3_W4_HW_TERMINAL_RUNNING 0UL
 #define R3_W4_HW_TERMINAL_PASS    1UL
@@ -32,6 +33,7 @@ typedef struct
     uint32_t completion_count;
     uint32_t begin_valid;
     uint32_t begin_captured_samples;
+    uint32_t begin_dma_lisr;
     uint32_t begin_tim2_cr1;
     uint32_t finish_valid;
     uint32_t finish_dma_cr;

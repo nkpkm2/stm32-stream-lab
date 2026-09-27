@@ -41,6 +41,7 @@ static void Capture(const R3W3RuntimeSnapshot *s)
     g_r3_w4_hw_result.completion_count = s->driver.completion_count;
     g_r3_w4_hw_result.begin_valid = s->stop_begin_report_valid;
     g_r3_w4_hw_result.begin_captured_samples = s->stop_begin_report.captured_samples;
+    g_r3_w4_hw_result.begin_dma_lisr = s->stop_begin_report.dma_lisr_at_begin;
     g_r3_w4_hw_result.begin_tim2_cr1 = s->stop_begin_report.tim2_cr1_after_begin;
     g_r3_w4_hw_result.finish_valid = s->stop_report_valid;
     g_r3_w4_hw_result.finish_dma_cr = s->stop_report.dma_cr_after_stop;
@@ -75,7 +76,8 @@ static void TerminalLoop(void)
     for (;;) { vTaskDelay(pdMS_TO_TICKS(1000U)); }
 }
 
-#if (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_T04_A)
+#if (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_T04_A) || \
+    (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_T04_B)
 static int WaitForPartial(R3W3RuntimeSnapshot *s)
 {
     uint32_t spins;
@@ -141,6 +143,23 @@ static void ControllerTask(void *argument)
 #if (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_T04_A)
     if (!WaitForPartial(&snapshot))
         g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_PARTIAL;
+#elif (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_T04_B)
+    HAL_NVIC_DisableIRQ(DMA2_Stream0_IRQn);
+    if (!WaitForPartial(&snapshot))
+        g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_PARTIAL;
+    else
+    {
+        uint32_t spins;
+        for (spins = 0U; spins < R3_W4_HW_PARTIAL_SPINS; ++spins)
+        {
+            if (!Snapshot(&snapshot)) break;
+            if (((snapshot.driver.dma_lisr & DMA_LISR_TCIF0) != 0U) &&
+                (snapshot.driver.completion_count == 0U)) break;
+        }
+        if (((snapshot.driver.dma_lisr & DMA_LISR_TCIF0) == 0U) ||
+            (snapshot.driver.completion_count != 0U))
+            g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_PARTIAL;
+    }
 #elif (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_STOP_A)
     vTaskDelay(pdMS_TO_TICKS(8U));
     if (!Snapshot(&snapshot) || (snapshot.authority.publish_count == 0U) ||
@@ -184,6 +203,12 @@ static void ControllerTask(void *argument)
 #if (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_T04_A)
     if ((snapshot.stop_begin_report.captured_samples == 0U) ||
         (snapshot.stop_begin_report.captured_samples >= R3_W3_RUNTIME_BLOCK_SAMPLES) ||
+        (snapshot.driver.completion_count != 0U) ||
+        (snapshot.workers.processing_cancel_count != 0U))
+        g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_PARTIAL;
+#elif (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_T04_B)
+    HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
+    if (((snapshot.stop_begin_report.dma_lisr_at_begin & DMA_LISR_TCIF0) == 0U) ||
         (snapshot.driver.completion_count != 0U) ||
         (snapshot.workers.processing_cancel_count != 0U))
         g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_PARTIAL;
