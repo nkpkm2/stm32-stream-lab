@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "E:\\DevTools\\STM32CubeCLT-1.22.0\\CMake\\bin\\cmake.exe",
+    "--build",
+    "C:\\Users\\CHJ\\.codex\\visualizations\\2026\\09\\27\\01a0e1a1-c295-7233-b3f5-e371851ee2f5\\r4-formal\\r4-t15-release-1nkz70kk\\build",
+    "--parallel",
+    "4"
+  ],
+  "automatic_retry": false,
+  "cwd": null,
+  "timeout_seconds": 600
+}
