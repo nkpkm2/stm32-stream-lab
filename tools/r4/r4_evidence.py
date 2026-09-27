@@ -249,7 +249,7 @@ def run_attempt(args: argparse.Namespace) -> int:
         return 2
 
 
-def verify_root(root: Path) -> None:
+def verify_root(root: Path, *, require_pass: bool = True) -> None:
     required = [root / name for name in ("identity.json", "config.json", "state.json", "acceptance.json", "MANIFEST.sha256", *[f"{p}.json" for p in PHASES])]
     if any(not path.is_file() for path in required):
         raise EvidenceError("attempt is missing a required formal record")
@@ -258,7 +258,9 @@ def verify_root(root: Path) -> None:
     acceptance = json.loads((root / "acceptance.json").read_text(encoding="utf-8"))
     if config.get("case_id") not in CASES or state.get("completed_phases") != list(PHASES) or state.get("next_allowed") != "COMPLETE":
         raise EvidenceError("attempt state/configuration is not terminal")
-    if acceptance.get("result") != "PASS":
+    if acceptance.get("result") not in ("PASS", "FAIL"):
+        raise EvidenceError("attempt acceptance has no terminal verdict")
+    if require_pass and acceptance.get("result") != "PASS":
         raise EvidenceError("attempt acceptance is not PASS")
     validate_manifest(root)
 
@@ -267,13 +269,15 @@ def import_attempt(args: argparse.Namespace) -> int:
     repo, source = args.repo.resolve(), args.attempt.resolve()
     if git(repo, "status", "--porcelain"):
         raise EvidenceError("import requires a clean worktree")
-    verify_root(source)
+    verify_root(source, require_pass=False)
     case = json.loads((source / "config.json").read_text(encoding="utf-8"))["case_id"]
-    destination = repo / "docs" / "evidence" / "r4" / case / "attempt-0001"
-    if destination.exists():
-        raise EvidenceError(f"immutable destination already exists: {destination}")
+    parent = repo / "docs" / "evidence" / "r4" / case
+    number = 1
+    while (parent / f"attempt-{number:04d}").exists():
+        number += 1
+    destination = parent / f"attempt-{number:04d}"
     shutil.copytree(source, destination)
-    verify_root(destination)
+    verify_root(destination, require_pass=False)
     print(destination)
     return 0
 

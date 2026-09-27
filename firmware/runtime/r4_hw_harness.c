@@ -204,7 +204,15 @@ static void HarnessTask(void *argument)
     if (g_r4_hw_result.tick_register_status == (uint32_t)R4_TICK_SERVICE_OK)
     {
         g_r4_hw_result.tick_arm_status = (uint32_t)
-            R4_TickServiceTarget_ArmStart(tick_snapshot.service_seq + 2U, 2U);
+            R4_TickServiceTarget_ArmStart(tick_snapshot.service_seq + 2U,
+#if (R4_HW_CASE_ID == 3U)
+                /* The release test has a four-tick period and a five-tick
+                 * suspension.  That interval contains exactly one later
+                 * occupied release (q0+4), never a second q0+8 release. */
+                4U);
+#else
+                2U);
+#endif
     }
     else
     {
@@ -222,7 +230,12 @@ static void HarnessTask(void *argument)
 #endif
         suspended_at = DWT->CYCCNT;
         vTaskSuspendAll();
-        while ((uint32_t)(DWT->CYCCNT - suspended_at) < UINT32_C(540000))
+        while ((uint32_t)(DWT->CYCCNT - suspended_at) <
+#if (R4_HW_CASE_ID == 3U)
+               UINT32_C(900000))
+#else
+               UINT32_C(540000))
+#endif
         {
         }
         (void)xTaskResumeAll();
