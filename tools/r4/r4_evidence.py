@@ -126,7 +126,10 @@ def definitions(selector: str, soak_ms: int) -> dict[str, str]:
         "STREAM_LAB_R4_HW": "ON",
         "STREAM_LAB_R4_HW_CASE": selector,
         "STREAM_LAB_R4_HW_SOAK_MS": str(soak_ms),
-        "CMAKE_BUILD_TYPE": "Debug",
+        # R4's 1800-cycle gate is a released target benchmark, not a
+        # debug-symbol profile.  The CMake R4 profile additionally applies
+        # LTO and explicit O3 to the measured queue/accounting path.
+        "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
     }
 
