@@ -11,6 +11,23 @@ REPO = Path(__file__).resolve().parents[2]
 RUNTIME = REPO / "firmware" / "runtime"
 TARGET = RUNTIME / "r4_runtime_target.c"
 CLOCK = RUNTIME / "r4_clock64.c"
+CONFIG = REPO / "firmware" / "cubemx" / "Core" / "Inc" / "FreeRTOSConfig.h"
+ISR = REPO / "firmware" / "cubemx" / "Core" / "Src" / "stm32f4xx_it.c"
+HOOKS = REPO / "firmware" / "cubemx" / "Core" / "Src" / "r0_freertos_smoke.c"
+
+
+def function_body(text: str, name: str) -> str:
+    start = text.index(f"void {name}(void)")
+    opening = text.index("{", start)
+    depth = 0
+    for index in range(opening, len(text)):
+        if text[index] == "{":
+            depth += 1
+        elif text[index] == "}":
+            depth -= 1
+            if depth == 0:
+                return text[opening + 1:index]
+    raise AssertionError(f"unterminated function: {name}")
 
 
 class R4ClockAuthorityAuditTests(unittest.TestCase):
@@ -47,6 +64,32 @@ class R4ClockAuthorityAuditTests(unittest.TestCase):
                          source.read_text(encoding="utf-8")) and source != CLOCK:
                 initializers.append(source)
         self.assertEqual(initializers, [TARGET])
+
+    def test_trace_macros_have_one_runtime_endpoint_per_semantic_event(self) -> None:
+        text = CONFIG.read_text(encoding="utf-8")
+        self.assertIn("#define traceISR_ENTER() R4_RuntimeTarget_TraceIsrEnter()", text)
+        self.assertIn("#define traceISR_EXIT() R4_RuntimeTarget_TraceIsrExit()", text)
+        self.assertIn("#define traceISR_EXIT_TO_SCHEDULER() R4_RuntimeTarget_TraceIsrExit()", text)
+        self.assertEqual(text.count("R4_RuntimeTarget_TraceIsrEnter()"), 1)
+        self.assertEqual(text.count("R4_RuntimeTarget_TraceIsrExit()"), 2)
+
+    def test_tick_hook_does_not_emit_a_second_irq_pair(self) -> None:
+        body = function_body(HOOKS.read_text(encoding="utf-8"),
+                             "vApplicationTickHook")
+        self.assertIn("R4_RuntimeTarget_Checkpoint", body)
+        self.assertIn("R4_TickServiceTarget_OnTickHook", body)
+        self.assertNotIn("traceISR_ENTER", body)
+        self.assertNotIn("traceISR_EXIT", body)
+        self.assertNotIn("portYIELD_FROM_ISR", body)
+
+    def test_application_irq_handlers_have_one_entry_and_one_port_tail(self) -> None:
+        text = ISR.read_text(encoding="utf-8")
+        for handler in ("TIM7_IRQHandler", "TIM6_DAC_IRQHandler",
+                        "DMA2_Stream0_IRQHandler"):
+            body = function_body(text, handler)
+            self.assertEqual(body.count("traceISR_ENTER()"), 1, handler)
+            self.assertEqual(body.count("portYIELD_FROM_ISR("), 1, handler)
+            self.assertNotIn("traceISR_EXIT()", body, handler)
 
 
 if __name__ == "__main__":
