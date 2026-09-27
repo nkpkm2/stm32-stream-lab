@@ -43,3 +43,18 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("task-synthetic", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["synthetic_conservation"])
+
+    def test_t17_case_requires_atomicity_and_nesting_witnesses(self) -> None:
+        words = [0] * 62
+        words[:11] = [EVIDENCE.MAGIC, 4, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.T17_SERIAL_BEFORE_WORD] = 2
+        words[EVIDENCE.T17_SERIAL_AFTER_PENDING_WORD] = 5
+        words[EVIDENCE.T17_HIGH_IRQ_AFTER_WORD] = 1
+        words[EVIDENCE.T17_LOW_IRQ_AFTER_WORD] = 1
+        words[EVIDENCE.T17_DUPLICATE_EXIT_STATUS_WORD] = 7
+        words[EVIDENCE.T17_WINDOW_AT_CLOSE_WORD] = 10
+        words[EVIDENCE.T17_WINDOW_AFTER_CLOSE_WORD] = 10
+        verdict = EVIDENCE.evaluate("t17-atomic", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["t17_real_nested_irq"])

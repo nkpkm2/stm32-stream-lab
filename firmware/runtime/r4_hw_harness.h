@@ -15,6 +15,19 @@ extern "C" {
 /* Target-result extension ABI consumed by tools/r4/r4_evidence.py.  The
  * stable eleven-word prefix intentionally remains schema v1. */
 #define R4_HW_WINDOW_CYCLES_WORD 20U
+#define R4_HW_T17_ARM_STATUS_WORD 40U
+#define R4_HW_T17_NESTED_ARM_STATUS_WORD 41U
+#define R4_HW_T17_CHECKPOINT_STATUS_WORD 42U
+#define R4_HW_T17_POST_CLOSE_STATUS_WORD 43U
+#define R4_HW_T17_DUPLICATE_EXIT_STATUS_WORD 44U
+#define R4_HW_T17_SERIAL_BEFORE_WORD 46U
+#define R4_HW_T17_SERIAL_AFTER_PENDING_WORD 48U
+#define R4_HW_T17_LOW_IRQ_BEFORE_WORD 50U
+#define R4_HW_T17_HIGH_IRQ_BEFORE_WORD 52U
+#define R4_HW_T17_LOW_IRQ_AFTER_WORD 54U
+#define R4_HW_T17_HIGH_IRQ_AFTER_WORD 56U
+#define R4_HW_T17_WINDOW_AT_CLOSE_WORD 58U
+#define R4_HW_T17_WINDOW_AFTER_CLOSE_WORD 60U
 #define R4_HW_SYNTHETIC_CREATE_MASK_WORD 122U
 #define R4_HW_SYNTHETIC_A_CYCLES_WORD 128U
 #define R4_HW_SYNTHETIC_B_CYCLES_WORD 130U
@@ -151,6 +164,27 @@ _Static_assert(offsetof(R4HwHarnessResult, dma_window_snapshot_status) ==
 _Static_assert(offsetof(R4HwHarnessResult, window_cycles) ==
     (R4_HW_WINDOW_CYCLES_WORD * sizeof(uint32_t)),
     "R4 window-cycle evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, t17_arm_status) ==
+    (R4_HW_T17_ARM_STATUS_WORD * sizeof(uint32_t)),
+    "R4 T17 arm-status evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, t17_duplicate_exit_status) ==
+    (R4_HW_T17_DUPLICATE_EXIT_STATUS_WORD * sizeof(uint32_t)),
+    "R4 T17 duplicate-exit evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, t17_serial_before) ==
+    (R4_HW_T17_SERIAL_BEFORE_WORD * sizeof(uint32_t)),
+    "R4 T17 serial-before evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, t17_serial_after_pending_irq) ==
+    (R4_HW_T17_SERIAL_AFTER_PENDING_WORD * sizeof(uint32_t)),
+    "R4 T17 serial-after evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, t17_low_irq_cycles_before) ==
+    (R4_HW_T17_LOW_IRQ_BEFORE_WORD * sizeof(uint32_t)),
+    "R4 T17 low-IRQ-before evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, t17_high_irq_cycles_after) ==
+    (R4_HW_T17_HIGH_IRQ_AFTER_WORD * sizeof(uint32_t)),
+    "R4 T17 high-IRQ-after evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, t17_window_cycles_after_close) ==
+    (R4_HW_T17_WINDOW_AFTER_CLOSE_WORD * sizeof(uint32_t)),
+    "R4 T17 sealed-window evidence word offset changed");
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_a_cycles) ==
     (R4_HW_SYNTHETIC_A_CYCLES_WORD * sizeof(uint32_t)),
     "R4 synthetic-A evidence word offset changed");

@@ -35,6 +35,19 @@ SYNTHETIC_WINDOW_IRQ_WORD = 134
 SYNTHETIC_WINDOW_IDLE_WORD = 136
 SYNTHETIC_WINDOW_UNCLASSIFIED_WORD = 138
 DMA_WINDOW_SNAPSHOT_WORD = 140
+T17_ARM_STATUS_WORD = 40
+T17_NESTED_ARM_STATUS_WORD = 41
+T17_CHECKPOINT_STATUS_WORD = 42
+T17_POST_CLOSE_STATUS_WORD = 43
+T17_DUPLICATE_EXIT_STATUS_WORD = 44
+T17_SERIAL_BEFORE_WORD = 46
+T17_SERIAL_AFTER_PENDING_WORD = 48
+T17_LOW_IRQ_BEFORE_WORD = 50
+T17_HIGH_IRQ_BEFORE_WORD = 52
+T17_LOW_IRQ_AFTER_WORD = 54
+T17_HIGH_IRQ_AFTER_WORD = 56
+T17_WINDOW_AT_CLOSE_WORD = 58
+T17_WINDOW_AFTER_CLOSE_WORD = 60
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -216,6 +229,33 @@ def evaluate(case: str, words: list[int]) -> dict:
                 "dma_window_statuses": (
                     words[snapshot + 8] == 0 and words[snapshot + 9] == 0 and
                     words[snapshot + 10] == 0),
+            })
+    if case == "t17-atomic":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= T17_WINDOW_AFTER_CLOSE_WORD + 1:
+            checks["t17_extension_present"] = False
+        else:
+            checks.update({
+                "t17_atomic_statuses": (
+                    words[T17_ARM_STATUS_WORD] == 0 and
+                    words[T17_CHECKPOINT_STATUS_WORD] == 0 and
+                    words[T17_POST_CLOSE_STATUS_WORD] == 0),
+                "t17_pending_irq_ordered": (
+                    word64(T17_SERIAL_AFTER_PENDING_WORD) >
+                    word64(T17_SERIAL_BEFORE_WORD)),
+                "t17_duplicate_exit_rejected": (
+                    words[T17_DUPLICATE_EXIT_STATUS_WORD] == 7),
+                "t17_real_nested_irq": (
+                    words[T17_NESTED_ARM_STATUS_WORD] == 0 and
+                    word64(T17_LOW_IRQ_AFTER_WORD) >
+                    word64(T17_LOW_IRQ_BEFORE_WORD) and
+                    word64(T17_HIGH_IRQ_AFTER_WORD) >
+                    word64(T17_HIGH_IRQ_BEFORE_WORD)),
+                "t17_sealed_window": (
+                    word64(T17_WINDOW_AT_CLOSE_WORD) ==
+                    word64(T17_WINDOW_AFTER_CLOSE_WORD)),
             })
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}

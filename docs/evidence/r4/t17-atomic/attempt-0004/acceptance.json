@@ -1,0 +1,13 @@
+{
+  "first_failure_class": null,
+  "invariants": {
+    "case_identity": true,
+    "completed_magic": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "result_magic": true,
+    "schema_version": true,
+    "terminal_pass": true
+  },
+  "result": "PASS"
+}
