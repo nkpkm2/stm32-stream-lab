@@ -1,0 +1,16 @@
+{
+  "first_failure_class": null,
+  "invariants": {
+    "case_identity": true,
+    "completed_magic": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "result_magic": true,
+    "schema_version": true,
+    "t15_exact_callbacks": true,
+    "t15_service_registration": true,
+    "t15_tick_history": true,
+    "terminal_pass": true
+  },
+  "result": "PASS"
+}
