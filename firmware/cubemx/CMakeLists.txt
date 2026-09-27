@@ -121,6 +121,8 @@ option(STREAM_LAB_R3_W6_HW
     "Build the R3-W6 500-cycle lifecycle target harness" OFF)
 option(STREAM_LAB_R4_RUNTIME
     "Compile the R4 Clock64/RuntimeEvent/TickService integration" OFF)
+option(STREAM_LAB_R4_ACCOUNTING
+    "Enable R4 accounting trace hooks; OFF is reserved for the paired R4 perturbation reference profile" ON)
 option(STREAM_LAB_R4_HW
     "Build the R4 target Clock64/runtime-window harness" OFF)
 set(STREAM_LAB_R4_HW_SOAK_MS "0" CACHE STRING
@@ -505,7 +507,14 @@ if(STREAM_LAB_R4_RUNTIME)
         message(FATAL_ERROR
             "R4 runtime requires the R3 lifecycle/queue integration profile.")
     endif()
-    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R4_RUNTIME=1)
+    if(STREAM_LAB_R4_ACCOUNTING)
+        set(R4_ACCOUNTING_VALUE 1)
+    else()
+        set(R4_ACCOUNTING_VALUE 0)
+    endif()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        STREAM_LAB_R4_RUNTIME=1
+        STREAM_LAB_R4_ACCOUNTING=${R4_ACCOUNTING_VALUE})
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_clock64.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_runtime_event.c"

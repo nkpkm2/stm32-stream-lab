@@ -2,7 +2,7 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
-#if defined(STREAM_LAB_R4_RUNTIME)
+#if defined(STREAM_LAB_R4_RUNTIME) && (STREAM_LAB_R4_ACCOUNTING != 0)
 #include "r4_runtime_target.h"
 #include "r4_tick_service_target.h"
 #endif
@@ -100,7 +100,7 @@ void vApplicationGetIdleTaskMemory(
     *ppxIdleTaskTCBBuffer = &g_r0_idle_tcb;
     *ppxIdleTaskStackBuffer = g_r0_idle_stack;
     *puxIdleTaskStackSize = configMINIMAL_STACK_SIZE;
-#if defined(STREAM_LAB_R4_RUNTIME)
+#if defined(STREAM_LAB_R4_RUNTIME) && (STREAM_LAB_R4_ACCOUNTING != 0)
     R4_RuntimeTarget_BindIdleTask((void *)&g_r0_idle_tcb);
 #endif
 }
@@ -108,7 +108,7 @@ void vApplicationGetIdleTaskMemory(
 
 void vApplicationTickHook(void)
 {
-#if defined(STREAM_LAB_R4_RUNTIME)
+#if defined(STREAM_LAB_R4_RUNTIME) && (STREAM_LAB_R4_ACCOUNTING != 0)
     /* This is SysTick-internal work, deliberately not a second IRQ pair. */
     (void)R4_RuntimeTarget_Checkpoint();
     (void)R4_TickServiceTarget_OnTickHook();

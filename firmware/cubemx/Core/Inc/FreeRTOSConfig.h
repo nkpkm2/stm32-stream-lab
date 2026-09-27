@@ -56,7 +56,7 @@ void R2_W4_TraceQueueSend(void *queue_handle);
  * entry/exit.  SysTick is instrumented by the existing ARM_CM4F port macros;
  * application IRQ handlers add only traceISR_ENTER and use the single
  * portYIELD_FROM_ISR tail for exactly one exit. */
-#if defined(STREAM_LAB_R4_RUNTIME)
+#if defined(STREAM_LAB_R4_RUNTIME) && (STREAM_LAB_R4_ACCOUNTING != 0)
 void StreamQueueAdapter_TraceQueueSendLock(void *queue_handle);
 void StreamQueueAdapter_TraceQueueSendUnlock(void *queue_handle);
 void R4_RuntimeTarget_TraceIsrEnter(void);

@@ -1,6 +1,6 @@
 #include "stream_queue_adapter.h"
 
-#if defined(STREAM_LAB_R4_RUNTIME)
+#if defined(STREAM_LAB_R4_RUNTIME) && (STREAM_LAB_R4_ACCOUNTING != 0)
 #include "r4_runtime_target.h"
 #endif
 
@@ -1095,7 +1095,7 @@ void StreamQueueAdapter_TraceQueueSend(void *queue_handle)
         hook_status = STREAM_QUEUE_ADAPTER_HOOK_REJECTED;
     }
 
-#if defined(STREAM_LAB_R4_RUNTIME)
+#if defined(STREAM_LAB_R4_RUNTIME) && (STREAM_LAB_R4_ACCOUNTING != 0)
     /* INIT/CANCEL use the same fixed-kernel send hook for ownership, but they
      * are not a normal Processing completion and have no t_lock/t_unlock
      * sample.  Never let them masquerade as a logical completion commit. */
@@ -1117,7 +1117,7 @@ void StreamQueueAdapter_TraceQueueSend(void *queue_handle)
 
 void StreamQueueAdapter_TraceQueueSendLock(void *queue_handle)
 {
-#if defined(STREAM_LAB_R4_RUNTIME)
+#if defined(STREAM_LAB_R4_RUNTIME) && (STREAM_LAB_R4_ACCOUNTING != 0)
     if ((queue_handle == (void *)adapter.free_queue) &&
         (adapter.send_context.active != 0U) &&
         (adapter.send_context.operation == STREAM_QUEUE_ADAPTER_OP_COMPLETE))
@@ -1131,7 +1131,7 @@ void StreamQueueAdapter_TraceQueueSendLock(void *queue_handle)
 
 void StreamQueueAdapter_TraceQueueSendUnlock(void *queue_handle)
 {
-#if defined(STREAM_LAB_R4_RUNTIME)
+#if defined(STREAM_LAB_R4_RUNTIME) && (STREAM_LAB_R4_ACCOUNTING != 0)
     if ((queue_handle == (void *)adapter.free_queue) &&
         (adapter.send_context.active != 0U) &&
         (adapter.send_context.operation == STREAM_QUEUE_ADAPTER_OP_COMPLETE))
