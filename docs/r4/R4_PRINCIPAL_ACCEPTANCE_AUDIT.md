@@ -14,7 +14,7 @@ hardware test is not a substitute.
 | A07–A13 IRQ pairing, no-yield/yield, SysTick | `t17-atomic/attempt-0005` sealed real TIM7→TIM6 nesting; fresh T12 semantic attempts exercise DMA `pdTRUE` and no-event `pdFALSE` tails; `test_r4_source_audit.py` locks macro wiring, TickHook non-duplication, and one-entry/one-port-tail application handlers | PARTIAL | exact task-switch attribution and one-pair SysTick evidence |
 | A14–A15 task/idle known workload | `task-synthetic/attempt-0004` sealed target PASS on the corrected ABI reader; H4 checks fixed A/B iterations, owner ratio, Idle residency, and formal conservation | PARTIAL | add known IRQ contribution and retain this workload in final integrated regression |
 | A16–A24 CPU window clipping, immutability, conservation | `dma-window/attempt-0001` sealed target PASS at `cf78c83`: real DMA completion sequence opens at S0=1, seals at S1=4, and observes a later sequence >=5 without a boundary fault; `window-intersection/attempt-0001` adds target partition conservation and a post-CLOSE real SysTick/tick-hook witness with no formal-window mutation; `R4_NATIVE_RUNTIME_EXECUTION.md` records 20/20 host model cases including clipping and outside-window exclusion | PARTIAL | carry these directed proofs through the final R2/R3 regression anchor |
-| A25–A29 error/overhead/phase | `R4_MEASUREMENT_ERROR_BUDGET.md` binds 33-sample RuntimeEvent costs, DWT resolution, phase and completion bounds to sealed target evidence; `mask-timing/attempt-0001` independently observes 52 actual PRIMASK-held RuntimeEvent spans, maximum 559 cycles <= 1800; `R4_PERTURBATION_AB_PROTOCOL.md` freezes the pre-run paired criteria; T15 q0/release independently bracket physical TIM2 CEN | PARTIAL | implement and seal same-configuration perturbation A/B |
+| A25–A29 error/overhead/phase | `R4_MEASUREMENT_ERROR_BUDGET.md` binds 33-sample RuntimeEvent costs, DWT resolution, phase and completion bounds to sealed target evidence; `mask-timing/attempt-0001` independently observes 52 actual PRIMASK-held RuntimeEvent spans, maximum 559 cycles <= 1800; `perturbation-ab/attempt-0001` through `attempt-0006` plus `suite-0001.json` seal the frozen three-pair same-source A/B protocol; T15 q0/release independently bracket physical TIM2 CEN | PARTIAL | retain the perturbation result in the final R2/R3 regression anchor |
 | A30–A37 TickService and suspension | Current independent T15 q0/release target PASSes prove `SysTick enter = exit = real-hook service`, registration, DWT history, exact suspension callback/start/release/skip semantics, and q0→TIM2 CEN; `tick-gap/attempt-0001` proves a late real SysTick latches `TICK_SERVICE_GAP` fail-closed | PARTIAL | integrate these directed proofs into the final R2/R3 regression anchor |
 | A38–A44 T12/T17 cutoff and formal/live separation | T12/T17 sealed attempts | PARTIAL | nested/cutoff interleaving and machine-readable formal-vs-live result split |
 | A45–A51 response/utilization/critical composition | Two independent uninstrumented full-lock bound runs plus `commit-pending-irq/attempt-0001`: a real TIM6 IRQ is pended at the FreeRTOS syscall ceiling during the actual queue lock and is observed only after actual unlock; `response-synthetic/attempt-0001` records independent direct-DWT release/start/completion endpoints around a fixed worker workload and requires >=99.0% sealed owner-bucket coverage; `mask-timing/attempt-0001` separately bounds actual PRIMASK-held RuntimeEvent spans; `combined-service/attempt-0001` measures 50,781 real DMA trace-entry-to-post-`RuntimeEvent`-exit spans, maximum 10,734 <= 23,040 cycles; `R4_UTILIZATION_SCHEMA.md` freezes typed sealed-window denominator/numerator and residual treatment | PARTIAL | final integrated R2/R3 representative regression anchor |
@@ -65,6 +65,17 @@ hardware test is not a substitute.
   **1595/1597/3358 cycles** (min/median/max).  These bracket guarded
   `RuntimeEvent_Apply` ledger sequences; the multi-event rows do not claim to
   be one PRIMASK-held interval or to include Cortex-M exception entry/return.
+
+* Instrumentation perturbation: `docs/evidence/r4/perturbation-ab/attempt-0001`
+  through `attempt-0006` are a single-source `5e333ac` NUCLEO-F446RE cohort in
+  the frozen order MINIMAL, R4, R4, MINIMAL, MINIMAL, R4.  Every attempt has
+  an H0--H5 manifest, >=50,781 raw DMA observations and 33 direct
+  DMA-publication-to-real-Processing-worker response triplets.  The immutable
+  `suite-0001.json` verifies all three pairs: 8,837/10,244-cycle DMA maxima,
+  55,307/57,736-cycle response medians, 55,542/59,427-cycle response maxima,
+  identical completion/admission counts, and the required R4 sealed
+  CPU-partition versus MINIMAL-unavailable distinction.  This closes A/B
+  perturbation only; it does not substitute for the required R2/R3 anchors.
 
 Historical failed attempts are intentionally retained alongside their PASS
 successors.  They establish that the harness rejects over-broad release
