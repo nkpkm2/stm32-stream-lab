@@ -75,6 +75,10 @@ R4_RuntimeStatus R4_RuntimeTarget_GetCompletionTiming(
 
 void R4_RuntimeTarget_TraceIsrEnter(void);
 void R4_RuntimeTarget_TraceIsrExit(void);
+/* Called by the static-idle-memory application hook before the scheduler
+ * starts.  It avoids a FreeRTOS API call from a trace macro while allowing
+ * Idle residency to remain distinct from ordinary task residency. */
+void R4_RuntimeTarget_BindIdleTask(void *task);
 void R4_RuntimeTarget_TraceTaskSwitchedOut(void *task);
 void R4_RuntimeTarget_TraceTaskSwitchedIn(void *task);
 /* Called exactly once from the real DMA IRQ common tail, before the port's

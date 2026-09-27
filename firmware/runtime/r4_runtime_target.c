@@ -13,6 +13,7 @@ static R4_RuntimeStatus target_boot_error = R4_RUNTIME_NOT_INITIALIZED;
 static R4_CompletionTimingSnapshot completion_timing;
 static R4_DmaTailSnapshot dma_tail;
 static R4_RuntimeHealthSnapshot runtime_health;
+static uintptr_t target_idle_task;
 #if defined(STREAM_LAB_R4_HW)
 static uint32_t target_test_pend_irq_after_mask;
 static uint32_t target_test_pend_high_from_low;
@@ -381,14 +382,33 @@ void R4_RuntimeTarget_TraceIsrExit(void)
     (void)Apply(R4_RUNTIME_EVENT_IRQ_EXIT, (uintptr_t)__get_IPSR());
 }
 
+void R4_RuntimeTarget_BindIdleTask(void *task)
+{
+    target_idle_task = (uintptr_t)task;
+}
+
 void R4_RuntimeTarget_TraceTaskSwitchedOut(void *task)
 {
-    (void)Apply(R4_RUNTIME_EVENT_TASK_SWITCHED_OUT, (uintptr_t)task);
+    if ((target_idle_task != 0U) && ((uintptr_t)task == target_idle_task))
+    {
+        (void)Apply(R4_RUNTIME_EVENT_IDLE_SWITCHED_OUT, 0U);
+    }
+    else
+    {
+        (void)Apply(R4_RUNTIME_EVENT_TASK_SWITCHED_OUT, (uintptr_t)task);
+    }
 }
 
 void R4_RuntimeTarget_TraceTaskSwitchedIn(void *task)
 {
-    (void)Apply(R4_RUNTIME_EVENT_TASK_SWITCHED_IN, (uintptr_t)task);
+    if ((target_idle_task != 0U) && ((uintptr_t)task == target_idle_task))
+    {
+        (void)Apply(R4_RUNTIME_EVENT_IDLE_SWITCHED_IN, 0U);
+    }
+    else
+    {
+        (void)Apply(R4_RUNTIME_EVENT_TASK_SWITCHED_IN, (uintptr_t)task);
+    }
 }
 
 void R4_RuntimeTarget_TraceDmaTailYield(uint32_t higher_priority_task_woken)

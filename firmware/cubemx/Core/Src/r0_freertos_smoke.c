@@ -100,6 +100,9 @@ void vApplicationGetIdleTaskMemory(
     *ppxIdleTaskTCBBuffer = &g_r0_idle_tcb;
     *ppxIdleTaskStackBuffer = g_r0_idle_stack;
     *puxIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+#if defined(STREAM_LAB_R4_RUNTIME)
+    R4_RuntimeTarget_BindIdleTask((void *)&g_r0_idle_tcb);
+#endif
 }
 #endif
 

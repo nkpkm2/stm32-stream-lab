@@ -305,6 +305,31 @@ R4_RuntimeStatus R4_RuntimeEvent_Apply(
                 }
                 break;
 
+            case R4_RUNTIME_EVENT_IDLE_SWITCHED_OUT:
+                if ((ledger->irq_depth != 0U) ||
+                    (ledger->active.kind != R4_RUNTIME_CONTEXT_IDLE))
+                {
+                    status = Latch(ledger, R4_RUNTIME_TASK_SWITCH_MISMATCH);
+                }
+                else
+                {
+                    ledger->active.kind = R4_RUNTIME_CONTEXT_NONE;
+                    ledger->active.identity = 0U;
+                }
+                break;
+
+            case R4_RUNTIME_EVENT_IDLE_SWITCHED_IN:
+                if (ledger->irq_depth != 0U)
+                {
+                    status = Latch(ledger, R4_RUNTIME_TASK_SWITCH_MISMATCH);
+                }
+                else
+                {
+                    ledger->active.kind = R4_RUNTIME_CONTEXT_IDLE;
+                    ledger->active.identity = 0U;
+                }
+                break;
+
             case R4_RUNTIME_EVENT_WINDOW_OPEN:
             case R4_RUNTIME_EVENT_WINDOW_CLOSE:
                 if (event->identity >= R4_RUNTIME_WINDOW_COUNT)

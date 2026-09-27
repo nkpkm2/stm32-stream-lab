@@ -279,6 +279,29 @@ static void CaseIdleInterruptedByIrq(void)
         31U) == 10U);
 }
 
+static void CaseIdleSwitchAttribution(void)
+{
+    FakePlatform platform = { 0U, 0U, 0U, 0U };
+    R4_Clock64 clock;
+    R4_RuntimeLedger ledger = NewLedger(&platform, &clock);
+
+    CHECK(Apply(&ledger, &platform, 5U, R4_RUNTIME_EVENT_TASK_SWITCHED_OUT,
+        11U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 5U, R4_RUNTIME_EVENT_IDLE_SWITCHED_IN,
+        0U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 15U, R4_RUNTIME_EVENT_IDLE_SWITCHED_OUT,
+        0U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 15U, R4_RUNTIME_EVENT_TASK_SWITCHED_IN,
+        19U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 25U, R4_RUNTIME_EVENT_CHECKPOINT, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(ledger.idle_cycles == 10U);
+    CHECK(BucketCycles(ledger.task_buckets, R4_RUNTIME_MAX_TASK_BUCKETS,
+        11U) == 5U);
+    CHECK(BucketCycles(ledger.task_buckets, R4_RUNTIME_MAX_TASK_BUCKETS,
+        19U) == 10U);
+}
+
 static void CaseTimeRegressionFaults(void)
 {
     FakePlatform platform = { 0U, 0U, 0U, 0U };
@@ -463,6 +486,10 @@ static void RunCase(const char *name)
     else if (strcmp(name, "idle_irq") == 0)
     {
         CaseIdleInterruptedByIrq();
+    }
+    else if (strcmp(name, "idle_switch") == 0)
+    {
+        CaseIdleSwitchAttribution();
     }
     else if (strcmp(name, "nested_irq") == 0)
     {

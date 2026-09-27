@@ -630,4 +630,5 @@ void vApplicationGetIdleTaskMemory(
     *ppxIdleTaskTCBBuffer = &idle_tcb;
     *ppxIdleTaskStackBuffer = idle_stack;
     *puxIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+    R4_RuntimeTarget_BindIdleTask((void *)&idle_tcb);
 }
