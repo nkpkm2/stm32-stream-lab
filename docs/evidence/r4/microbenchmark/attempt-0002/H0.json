@@ -1,0 +1,9 @@
+{
+  "case": "microbenchmark",
+  "clean_tree": true,
+  "git_head": "d709eb62a29664ff3b5286a9b77fa217c3ba2df4",
+  "origin_main": "d709eb62a29664ff3b5286a9b77fa217c3ba2df4",
+  "phase": "H0",
+  "probe_list_sha256": "CCCBFBE085110204EF1C7A0761CEB0C21B3CC958696744A58246C881DAC57356",
+  "result": "PASS"
+}
