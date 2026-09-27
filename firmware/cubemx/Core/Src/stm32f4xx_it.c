@@ -214,6 +214,7 @@ void EXTI15_10_IRQHandler(void)
   */
 void TIM7_IRQHandler(void)
 {
+  BaseType_t higher_priority_task_woken = pdFALSE;
   /* USER CODE BEGIN TIM7_IRQn 0 */
 #if defined(STREAM_LAB_R4_RUNTIME)
   traceISR_ENTER();
@@ -226,7 +227,10 @@ void TIM7_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
 #if defined(STREAM_LAB_R4_RUNTIME)
-  traceISR_EXIT();
+  /* All peripheral IRQ return paths use the port-owned common tail.  The
+   * HAL tick cannot wake a task, so this deliberately exercises pdFALSE
+   * while retaining exactly one R4 IRQ_EXIT from the ARM_CM4F port macro. */
+  portYIELD_FROM_ISR(higher_priority_task_woken);
 #endif
 
   /* USER CODE END TIM7_IRQn 1 */
@@ -256,6 +260,11 @@ void DMA1_Stream6_IRQHandler(void)
 {
   BaseType_t higher_priority_task_woken;
 
+#if defined(STREAM_LAB_R4_RUNTIME)
+  /* R2 control traffic may be combined with an R4 profile.  Its existing
+   * portYIELD_FROM_ISR tail owns the single matching exit. */
+  traceISR_ENTER();
+#endif
   higher_priority_task_woken =
       R2_CT_TxDmaIrqHandler() != 0U ? pdTRUE : pdFALSE;
   portYIELD_FROM_ISR(higher_priority_task_woken);
@@ -268,6 +277,10 @@ void USART2_IRQHandler(void)
 {
   BaseType_t higher_priority_task_woken;
 
+#if defined(STREAM_LAB_R4_RUNTIME)
+  /* See DMA1_Stream6_IRQHandler: one outer entry, port-owned common exit. */
+  traceISR_ENTER();
+#endif
   higher_priority_task_woken =
       R2_CT_UsartIrqHandler() != 0U ? pdTRUE : pdFALSE;
   portYIELD_FROM_ISR(higher_priority_task_woken);

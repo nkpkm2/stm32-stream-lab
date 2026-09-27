@@ -102,6 +102,43 @@ static void CaseClockWrap(void)
     CHECK(clock.wrap_count == 1U);
 }
 
+static void CaseClockNoWrapAndSameCycle(void)
+{
+    R4_Clock64 clock;
+    uint64_t value;
+
+    CHECK(R4_Clock64_InitializeLocked(&clock, 100U) == R4_CLOCK64_OK);
+    /* Equal DWT timestamps are legal; event sequencing, not a fabricated
+     * clock increment, orders same-cycle RuntimeEvent calls. */
+    CHECK(R4_Clock64_ReadLocked(&clock, 100U, &value) == R4_CLOCK64_OK);
+    CHECK(value == 100U);
+    CHECK(R4_Clock64_ReadLocked(&clock, 101U, &value) == R4_CLOCK64_OK);
+    CHECK(value == 101U);
+    CHECK(clock.high_word == 0U);
+    CHECK(clock.wrap_count == 0U);
+    CHECK(clock.read_count == 3U);
+}
+
+static void CaseClockMultipleSyntheticWraps(void)
+{
+    R4_Clock64 clock;
+    uint64_t value;
+
+    CHECK(R4_Clock64_InitializeLocked(&clock, UINT32_MAX - 1U) ==
+        R4_CLOCK64_OK);
+    CHECK(R4_Clock64_ReadLocked(&clock, 1U, &value) == R4_CLOCK64_OK);
+    CHECK(value == UINT64_C(0x100000001));
+    /* Advance to the high end of the first extended epoch, then cross a
+     * second synthetic wrap.  Each raw decrease must advance exactly one
+     * high word and preserve the 64-bit monotonic sequence. */
+    CHECK(R4_Clock64_ReadLocked(&clock, UINT32_MAX, &value) == R4_CLOCK64_OK);
+    CHECK(value == UINT64_C(0x1FFFFFFFF));
+    CHECK(R4_Clock64_ReadLocked(&clock, 0U, &value) == R4_CLOCK64_OK);
+    CHECK(value == UINT64_C(0x200000000));
+    CHECK(clock.high_word == 2U);
+    CHECK(clock.wrap_count == 2U);
+}
+
 static void CaseAtomicWindow(void)
 {
     FakePlatform platform = { 100U, 0U, 0U, 0U };
@@ -363,6 +400,14 @@ static void RunCase(const char *name)
     if (strcmp(name, "clock_wrap") == 0)
     {
         CaseClockWrap();
+    }
+    else if (strcmp(name, "clock_no_wrap_same_cycle") == 0)
+    {
+        CaseClockNoWrapAndSameCycle();
+    }
+    else if (strcmp(name, "clock_multiple_wraps") == 0)
+    {
+        CaseClockMultipleSyntheticWraps();
     }
     else if (strcmp(name, "atomic_window") == 0)
     {
