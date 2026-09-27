@@ -95,6 +95,19 @@ TICK_GAP_FAIL_CLOSED_WORD = 165
 TICK_GAP_OVER_LIMIT_WORD = 166
 TICK_GAP_MAX_INTERVAL_WORD = 168
 TICK_GAP_INTERVAL_LIMIT_WORD = 170
+MICROBENCH_SAMPLE_COUNT_WORD = 172
+MICROBENCH_TASK_MIN_WORD = 174
+MICROBENCH_TASK_MEDIAN_WORD = 176
+MICROBENCH_TASK_MAX_WORD = 178
+MICROBENCH_IRQ_MIN_WORD = 180
+MICROBENCH_IRQ_MEDIAN_WORD = 182
+MICROBENCH_IRQ_MAX_WORD = 184
+MICROBENCH_WINDOW_MIN_WORD = 186
+MICROBENCH_WINDOW_MEDIAN_WORD = 188
+MICROBENCH_WINDOW_MAX_WORD = 190
+MICROBENCH_NESTED_MIN_WORD = 192
+MICROBENCH_NESTED_MEDIAN_WORD = 194
+MICROBENCH_NESTED_MAX_WORD = 196
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -106,6 +119,7 @@ CASES = {
     "task-synthetic": ("SYNTHETIC_TASKS", 6, 0, 8),
     "dma-window": ("DMA_WINDOW", 7, 0, 8),
     "tick-gap": ("TICK_GAP", 8, 0, 8),
+    "microbenchmark": ("MICROBENCH", 9, 0, 8),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -393,6 +407,27 @@ def evaluate(case: str, words: list[int]) -> dict:
                 word64(TICK_GAP_OVER_LIMIT_WORD) >= 1 and
                 word64(TICK_GAP_MAX_INTERVAL_WORD) >
                 word64(TICK_GAP_INTERVAL_LIMIT_WORD))
+    if case == "microbenchmark":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= MICROBENCH_NESTED_MAX_WORD + 1:
+            checks["microbenchmark_extension_present"] = False
+        else:
+            paths = (
+                (MICROBENCH_TASK_MIN_WORD, MICROBENCH_TASK_MEDIAN_WORD,
+                 MICROBENCH_TASK_MAX_WORD),
+                (MICROBENCH_IRQ_MIN_WORD, MICROBENCH_IRQ_MEDIAN_WORD,
+                 MICROBENCH_IRQ_MAX_WORD),
+                (MICROBENCH_WINDOW_MIN_WORD, MICROBENCH_WINDOW_MEDIAN_WORD,
+                 MICROBENCH_WINDOW_MAX_WORD),
+                (MICROBENCH_NESTED_MIN_WORD, MICROBENCH_NESTED_MEDIAN_WORD,
+                 MICROBENCH_NESTED_MAX_WORD),
+            )
+            checks["runtime_event_microbenchmark"] = (
+                words[MICROBENCH_SAMPLE_COUNT_WORD] >= 17 and
+                all(0 < word64(low) <= word64(mid) <= word64(high)
+                    for low, mid, high in paths))
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 

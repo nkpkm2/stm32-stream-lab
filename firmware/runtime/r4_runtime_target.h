@@ -132,6 +132,11 @@ R4_RuntimeStatus R4_RuntimeTarget_TestArmPendingIrq(void);
 R4_RuntimeStatus R4_RuntimeTarget_TestArmNestedIrq(void);
 void R4_RuntimeTarget_TestPendHighFromLowIrq(void);
 R4_RuntimeStatus R4_RuntimeTarget_TestInjectDuplicateExit(uint32_t irq_id);
+/* Diagnostic-only direct entrance used by the R4 microbenchmark.  It calls
+ * the same RuntimeEvent Apply transaction as production trace endpoints; it
+ * is never present in a production build. */
+R4_RuntimeStatus R4_RuntimeTarget_TestApplyEvent(R4_RuntimeEventKind kind,
+    uintptr_t identity);
 #endif
 
 #ifdef __cplusplus

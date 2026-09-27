@@ -112,3 +112,26 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("tick-gap", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["tick_gap_fail_closed"])
+
+    def test_microbenchmark_requires_all_runtime_event_paths(self) -> None:
+        words = [0] * 198
+        words[:11] = [EVIDENCE.MAGIC, 9, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.MICROBENCH_SAMPLE_COUNT_WORD] = 33
+        for low, median, high in (
+                (EVIDENCE.MICROBENCH_TASK_MIN_WORD,
+                 EVIDENCE.MICROBENCH_TASK_MEDIAN_WORD,
+                 EVIDENCE.MICROBENCH_TASK_MAX_WORD),
+                (EVIDENCE.MICROBENCH_IRQ_MIN_WORD,
+                 EVIDENCE.MICROBENCH_IRQ_MEDIAN_WORD,
+                 EVIDENCE.MICROBENCH_IRQ_MAX_WORD),
+                (EVIDENCE.MICROBENCH_WINDOW_MIN_WORD,
+                 EVIDENCE.MICROBENCH_WINDOW_MEDIAN_WORD,
+                 EVIDENCE.MICROBENCH_WINDOW_MAX_WORD),
+                (EVIDENCE.MICROBENCH_NESTED_MIN_WORD,
+                 EVIDENCE.MICROBENCH_NESTED_MEDIAN_WORD,
+                 EVIDENCE.MICROBENCH_NESTED_MAX_WORD)):
+            words[low], words[median], words[high] = 1, 2, 3
+        verdict = EVIDENCE.evaluate("microbenchmark", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["runtime_event_microbenchmark"])

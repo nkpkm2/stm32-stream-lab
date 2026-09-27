@@ -643,4 +643,10 @@ R4_RuntimeStatus R4_RuntimeTarget_TestInjectDuplicateExit(uint32_t irq_id)
      * RuntimeEvent must latch it; it is never enabled in a normal image. */
     return Apply(R4_RUNTIME_EVENT_IRQ_EXIT, (uintptr_t)irq_id);
 }
+
+R4_RuntimeStatus R4_RuntimeTarget_TestApplyEvent(R4_RuntimeEventKind kind,
+    uintptr_t identity)
+{
+    return Apply(kind, identity);
+}
 #endif

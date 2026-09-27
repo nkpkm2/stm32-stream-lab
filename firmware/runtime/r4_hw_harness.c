@@ -17,6 +17,9 @@
 #define R4_HW_TICK_INTERVAL_LIMIT_CYCLES UINT64_C(270000)
 #define R4_HW_TICK_GAP_MASK_CYCLES UINT32_C(540000)
 #define R4_HW_TIM2_START_PHASE_BOUND_CYCLES UINT64_C(1800)
+#define R4_HW_MICROBENCH_SAMPLES 33U
+#define R4_HW_MICROBENCH_IRQ_A ((uintptr_t)UINT32_C(0xE1))
+#define R4_HW_MICROBENCH_IRQ_B ((uintptr_t)UINT32_C(0xE2))
 #define R4_HW_MONITOR_INTERVAL_LIMIT_CYCLES UINT64_C(1800000000)
 #define R4_HW_MONITOR_PERIOD_MS 1000U
 #define R4_HW_SYNTHETIC_A_ITERATIONS 50000U
@@ -65,6 +68,111 @@ static uint64_t OwnerCycles(const R4_RuntimeOwnerBucket *buckets,
         }
     }
     return 0U;
+}
+#endif
+
+#if (R4_HW_CASE_ID == 9U)
+static void SummarizeSamples(uint32_t *samples, uint32_t count,
+    volatile uint64_t *minimum, volatile uint64_t *median,
+    volatile uint64_t *maximum)
+{
+    uint32_t index;
+    uint32_t inner;
+
+    for (index = 1U; index < count; ++index)
+    {
+        uint32_t value = samples[index];
+        inner = index;
+        while ((inner > 0U) && (samples[inner - 1U] > value))
+        {
+            samples[inner] = samples[inner - 1U];
+            --inner;
+        }
+        samples[inner] = value;
+    }
+    *minimum = samples[0];
+    *median = samples[count / 2U];
+    *maximum = samples[count - 1U];
+}
+
+static void MeasureRuntimeEventPath(uint32_t *samples,
+    R4_RuntimeEventKind first, R4_RuntimeEventKind second,
+    R4_RuntimeEventKind third, R4_RuntimeEventKind fourth,
+    uint32_t events)
+{
+    uint32_t index;
+
+    for (index = 0U; index < R4_HW_MICROBENCH_SAMPLES; ++index)
+    {
+        uint32_t start = DWT->CYCCNT;
+        (void)R4_RuntimeTarget_TestApplyEvent(first, R4_HW_MICROBENCH_IRQ_A);
+        if (events > 1U)
+        {
+            (void)R4_RuntimeTarget_TestApplyEvent(second, R4_HW_MICROBENCH_IRQ_A);
+        }
+        if (events > 2U)
+        {
+            (void)R4_RuntimeTarget_TestApplyEvent(third, R4_HW_MICROBENCH_IRQ_B);
+        }
+        if (events > 3U)
+        {
+            (void)R4_RuntimeTarget_TestApplyEvent(fourth, R4_HW_MICROBENCH_IRQ_B);
+        }
+        samples[index] = (uint32_t)(DWT->CYCCNT - start);
+    }
+}
+
+static void RunMicrobenchmark(void)
+{
+    uint32_t samples[R4_HW_MICROBENCH_SAMPLES];
+    uint32_t index;
+
+    /* The diagnostic entrance is the same guarded Apply transaction used by
+     * production trace endpoints.  IRQ/nested rows time ledger semantics,
+     * not Cortex-M exception-entry/return machine cycles. */
+    MeasureRuntimeEventPath(samples, R4_RUNTIME_EVENT_CHECKPOINT,
+        R4_RUNTIME_EVENT_CHECKPOINT, R4_RUNTIME_EVENT_CHECKPOINT,
+        R4_RUNTIME_EVENT_CHECKPOINT, 1U);
+    SummarizeSamples(samples, R4_HW_MICROBENCH_SAMPLES,
+        &g_r4_hw_result.microbench_task_min_cycles,
+        &g_r4_hw_result.microbench_task_median_cycles,
+        &g_r4_hw_result.microbench_task_max_cycles);
+    MeasureRuntimeEventPath(samples, R4_RUNTIME_EVENT_IRQ_ENTER,
+        R4_RUNTIME_EVENT_IRQ_EXIT, R4_RUNTIME_EVENT_CHECKPOINT,
+        R4_RUNTIME_EVENT_CHECKPOINT, 2U);
+    SummarizeSamples(samples, R4_HW_MICROBENCH_SAMPLES,
+        &g_r4_hw_result.microbench_irq_min_cycles,
+        &g_r4_hw_result.microbench_irq_median_cycles,
+        &g_r4_hw_result.microbench_irq_max_cycles);
+    for (index = 0U; index < R4_HW_MICROBENCH_SAMPLES; ++index)
+    {
+        uint32_t start = DWT->CYCCNT;
+        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_WINDOW_OPEN, 1U);
+        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_WINDOW_CLOSE, 1U);
+        samples[index] = (uint32_t)(DWT->CYCCNT - start);
+    }
+    SummarizeSamples(samples, R4_HW_MICROBENCH_SAMPLES,
+        &g_r4_hw_result.microbench_window_min_cycles,
+        &g_r4_hw_result.microbench_window_median_cycles,
+        &g_r4_hw_result.microbench_window_max_cycles);
+    for (index = 0U; index < R4_HW_MICROBENCH_SAMPLES; ++index)
+    {
+        uint32_t start = DWT->CYCCNT;
+        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_IRQ_ENTER,
+            R4_HW_MICROBENCH_IRQ_A);
+        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_IRQ_ENTER,
+            R4_HW_MICROBENCH_IRQ_B);
+        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_IRQ_EXIT,
+            R4_HW_MICROBENCH_IRQ_B);
+        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_IRQ_EXIT,
+            R4_HW_MICROBENCH_IRQ_A);
+        samples[index] = (uint32_t)(DWT->CYCCNT - start);
+    }
+    SummarizeSamples(samples, R4_HW_MICROBENCH_SAMPLES,
+        &g_r4_hw_result.microbench_nested_min_cycles,
+        &g_r4_hw_result.microbench_nested_median_cycles,
+        &g_r4_hw_result.microbench_nested_max_cycles);
+    g_r4_hw_result.microbench_sample_count = R4_HW_MICROBENCH_SAMPLES;
 }
 #endif
 
@@ -262,6 +370,31 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
+#elif (R4_HW_CASE_ID == 9U)
+    if ((g_r4_hw_result.microbench_sample_count != R4_HW_MICROBENCH_SAMPLES) ||
+        (g_r4_hw_result.microbench_task_min_cycles == 0U) ||
+        (g_r4_hw_result.microbench_task_min_cycles >
+         g_r4_hw_result.microbench_task_median_cycles) ||
+        (g_r4_hw_result.microbench_task_median_cycles >
+         g_r4_hw_result.microbench_task_max_cycles) ||
+        (g_r4_hw_result.microbench_irq_min_cycles == 0U) ||
+        (g_r4_hw_result.microbench_irq_min_cycles >
+         g_r4_hw_result.microbench_irq_median_cycles) ||
+        (g_r4_hw_result.microbench_irq_median_cycles >
+         g_r4_hw_result.microbench_irq_max_cycles) ||
+        (g_r4_hw_result.microbench_window_min_cycles == 0U) ||
+        (g_r4_hw_result.microbench_window_min_cycles >
+         g_r4_hw_result.microbench_window_median_cycles) ||
+        (g_r4_hw_result.microbench_window_median_cycles >
+         g_r4_hw_result.microbench_window_max_cycles) ||
+        (g_r4_hw_result.microbench_nested_min_cycles == 0U) ||
+        (g_r4_hw_result.microbench_nested_min_cycles >
+         g_r4_hw_result.microbench_nested_median_cycles) ||
+        (g_r4_hw_result.microbench_nested_median_cycles >
+         g_r4_hw_result.microbench_nested_max_cycles))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -455,6 +588,9 @@ static void HarnessTask(void *argument)
     }
     __set_PRIMASK(tick_gap_saved_primask);
     vTaskDelay(pdMS_TO_TICKS(2U));
+#endif
+#if (R4_HW_CASE_ID == 9U)
+    RunMicrobenchmark();
 #endif
 #if (R4_HW_CASE_ID == 4U)
     ledger = R4_RuntimeTarget_GetLedger();

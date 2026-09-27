@@ -83,6 +83,19 @@ extern "C" {
 #define R4_HW_TICK_GAP_OVER_LIMIT_WORD 166U
 #define R4_HW_TICK_GAP_MAX_INTERVAL_WORD 168U
 #define R4_HW_TICK_GAP_INTERVAL_LIMIT_WORD 170U
+#define R4_HW_MICROBENCH_SAMPLE_COUNT_WORD 172U
+#define R4_HW_MICROBENCH_TASK_MIN_WORD 174U
+#define R4_HW_MICROBENCH_TASK_MEDIAN_WORD 176U
+#define R4_HW_MICROBENCH_TASK_MAX_WORD 178U
+#define R4_HW_MICROBENCH_IRQ_MIN_WORD 180U
+#define R4_HW_MICROBENCH_IRQ_MEDIAN_WORD 182U
+#define R4_HW_MICROBENCH_IRQ_MAX_WORD 184U
+#define R4_HW_MICROBENCH_WINDOW_MIN_WORD 186U
+#define R4_HW_MICROBENCH_WINDOW_MEDIAN_WORD 188U
+#define R4_HW_MICROBENCH_WINDOW_MAX_WORD 190U
+#define R4_HW_MICROBENCH_NESTED_MIN_WORD 192U
+#define R4_HW_MICROBENCH_NESTED_MEDIAN_WORD 194U
+#define R4_HW_MICROBENCH_NESTED_MAX_WORD 196U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -213,6 +226,22 @@ typedef struct
     uint64_t tick_gap_over_limit_count;
     uint64_t tick_gap_max_interval_cycles;
     uint64_t tick_gap_interval_limit_cycles;
+    /* Diagnostic R4-A21 measurements.  Each number brackets the complete
+     * production RuntimeEvent Apply transaction; sample values themselves
+     * remain outside the timed interval. */
+    uint32_t microbench_sample_count;
+    uint64_t microbench_task_min_cycles;
+    uint64_t microbench_task_median_cycles;
+    uint64_t microbench_task_max_cycles;
+    uint64_t microbench_irq_min_cycles;
+    uint64_t microbench_irq_median_cycles;
+    uint64_t microbench_irq_max_cycles;
+    uint64_t microbench_window_min_cycles;
+    uint64_t microbench_window_median_cycles;
+    uint64_t microbench_window_max_cycles;
+    uint64_t microbench_nested_min_cycles;
+    uint64_t microbench_nested_median_cycles;
+    uint64_t microbench_nested_max_cycles;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -314,6 +343,15 @@ _Static_assert(offsetof(R4HwHarnessResult, tick_gap_health_status) ==
 _Static_assert(offsetof(R4HwHarnessResult, tick_gap_over_limit_count) ==
     (R4_HW_TICK_GAP_OVER_LIMIT_WORD * sizeof(uint32_t)),
     "R4 tick-gap over-limit evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, microbench_sample_count) ==
+    (R4_HW_MICROBENCH_SAMPLE_COUNT_WORD * sizeof(uint32_t)),
+    "R4 microbenchmark sample-count evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, microbench_task_min_cycles) ==
+    (R4_HW_MICROBENCH_TASK_MIN_WORD * sizeof(uint32_t)),
+    "R4 microbenchmark task evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, microbench_nested_max_cycles) ==
+    (R4_HW_MICROBENCH_NESTED_MAX_WORD * sizeof(uint32_t)),
+    "R4 microbenchmark nested evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 
