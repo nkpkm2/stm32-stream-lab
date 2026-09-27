@@ -1,0 +1,33 @@
+{
+  "checks": {
+    "case_identity": true,
+    "completed_magic": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "result_magic": true,
+    "schema_version": true,
+    "t17_atomic_statuses": true,
+    "t17_duplicate_exit_rejected": true,
+    "t17_pending_irq_ordered": true,
+    "t17_real_nested_irq": true,
+    "t17_sealed_window": true,
+    "terminal_pass": true
+  },
+  "phase": "H4",
+  "prefix_words": [
+    "0x52344857",
+    "0x00000004",
+    "0x00000001",
+    "0x00000001",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x5234444E"
+  ],
+  "result": "PASS",
+  "result_address": "0x200023A8",
+  "selector": "T17_ATOMIC"
+}

@@ -1,0 +1,7 @@
+{
+  "configured_soak_ms": 0,
+  "phase": "H3",
+  "result": "COMPLETE",
+  "single_execution": true,
+  "wait_seconds": 8
+}

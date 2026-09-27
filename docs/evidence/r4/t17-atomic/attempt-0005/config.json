@@ -1,0 +1,7 @@
+{
+  "case_id": "t17-atomic",
+  "case_numeric_id": 4,
+  "configured_soak_ms": 0,
+  "selector": "T17_ATOMIC",
+  "work_package": "R4"
+}

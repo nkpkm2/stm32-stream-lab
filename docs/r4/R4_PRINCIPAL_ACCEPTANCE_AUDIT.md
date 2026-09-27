@@ -10,8 +10,8 @@ hardware test is not a substitute.
 | Domain | Current evidence | Status | Closure required |
 |---|---|---|---|
 | A01–A03 Clock64 authority, >60 s wrap, service bound | `t12-soak-a/b` sealed target attempts | PARTIAL | add source-uniqueness and invalid-run audit; retain fresh 60 s records |
-| A04–A06 RuntimeEvent atomicity/mask/error ordering | T17 pending IRQ and duplicate-exit evidence; native event tests | PARTIAL | explicit PRIMASK-entry-state and time-regression target/injection evidence |
-| A07–A13 IRQ pairing, no-yield/yield, SysTick | T12 wiring/tails; T17 duplicate exit | PARTIAL | real nested IRQ, exact task-switch attribution and SysTick one-pair evidence |
+| A04–A06 RuntimeEvent atomicity/mask/error ordering | `t17-atomic/attempt-0005` sealed target PASS checks pending IRQ ordering, duplicate-exit rejection, and post-close immutability; native event tests cover time/error paths | PARTIAL | explicit PRIMASK-entry-state and time-regression target/injection evidence |
+| A07–A13 IRQ pairing, no-yield/yield, SysTick | `t17-atomic/attempt-0005` sealed real TIM7→TIM6 nesting evidence; T12 wiring/tails remain historical | PARTIAL | fresh actual DMA pdFALSE/pdTRUE, exact task-switch attribution, and one-pair SysTick evidence |
 | A14–A15 task/idle known workload | `task-synthetic/attempt-0004` sealed target PASS on the corrected ABI reader; H4 checks fixed A/B iterations, owner ratio, Idle residency, and formal conservation | PARTIAL | add known IRQ contribution and retain this workload in final integrated regression |
 | A16–A24 CPU window clipping, immutability, conservation | `dma-window/attempt-0001` sealed target PASS at `cf78c83`: real DMA completion sequence opens at S0=1, seals at S1=4, and observes a later sequence >=5 without a boundary fault; per-window buckets and directed native source cases remain available | PARTIAL | execute native cases on a host and add final target intersection/conservation plus no-outside-window evidence |
 | A25–A29 error/overhead/phase | tick DWT history and lock budget | PARTIAL | RuntimeEvent microbench, error budget, perturbation A/B, q0-to-TIM2 bound |
@@ -26,7 +26,9 @@ hardware test is not a substitute.
   `docs/evidence/r4/t12-soak-b/attempt-0001`.
 * T15: `docs/evidence/r4/t15-q0/attempt-0001` and
   `docs/evidence/r4/t15-release/attempt-0002`.
-* T17: `docs/evidence/r4/t17-atomic/attempt-0002`.
+* T17: `docs/evidence/r4/t17-atomic/attempt-0005` (current semantic H4
+  verifies pending-IRQ ordering, real nesting, duplicate-exit rejection, and
+  sealed-window immutability). Earlier attempts remain immutable history.
 * Full `t_lock` to `t_unlock` bound: Release/LTO
   `t04-commit-budget-a/attempt-0002` and
   `t04-commit-budget-b/attempt-0001`.
