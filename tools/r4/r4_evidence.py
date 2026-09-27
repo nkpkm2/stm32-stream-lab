@@ -85,6 +85,10 @@ T15_TIMING_OVER_LIMIT_WORD = 86
 T15_SYSTICK_SNAPSHOT_STATUS_WORD = 151
 T15_SYSTICK_ENTER_WORD = 152
 T15_SYSTICK_EXIT_WORD = 154
+T15_PHASE_Q0_WORD = 156
+T15_PHASE_TIM2_BEFORE_WORD = 158
+T15_PHASE_TIM2_AFTER_WORD = 160
+T15_PHASE_TIM2_CEN_WORD = 162
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -330,7 +334,7 @@ def evaluate(case: str, words: list[int]) -> dict:
         def word64(index: int) -> int:
             return words[index] | (words[index + 1] << 32)
 
-        if len(words) <= T15_SYSTICK_EXIT_WORD + 1:
+        if len(words) <= T15_PHASE_TIM2_CEN_WORD:
             checks["t15_extension_present"] = False
         else:
             expected_skips = 0 if case == "t15-q0" else 1
@@ -360,6 +364,13 @@ def evaluate(case: str, words: list[int]) -> dict:
                     word64(T15_SYSTICK_EXIT_WORD) and
                     word64(T15_SYSTICK_ENTER_WORD) ==
                     word64(T15_TIMING_SERVICE_COUNT_WORD)),
+                "t15_q0_to_tim2_phase": (
+                    word64(T15_PHASE_Q0_WORD) > 0 and
+                    words[T15_PHASE_TIM2_CEN_WORD] == 1 and
+                    word64(T15_PHASE_TIM2_AFTER_WORD) >=
+                    word64(T15_PHASE_TIM2_BEFORE_WORD) and
+                    (word64(T15_PHASE_TIM2_AFTER_WORD) -
+                     word64(T15_PHASE_TIM2_BEFORE_WORD)) <= 1800),
             })
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}

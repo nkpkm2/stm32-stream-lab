@@ -73,6 +73,10 @@ extern "C" {
 #define R4_HW_T15_SYSTICK_SNAPSHOT_STATUS_WORD 151U
 #define R4_HW_T15_SYSTICK_ENTER_WORD 152U
 #define R4_HW_T15_SYSTICK_EXIT_WORD 154U
+#define R4_HW_T15_PHASE_Q0_WORD 156U
+#define R4_HW_T15_PHASE_TIM2_BEFORE_WORD 158U
+#define R4_HW_T15_PHASE_TIM2_AFTER_WORD 160U
+#define R4_HW_T15_PHASE_TIM2_CEN_WORD 162U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -193,6 +197,10 @@ typedef struct
     uint32_t tick_systick_snapshot_status;
     uint64_t tick_systick_enter_count;
     uint64_t tick_systick_exit_count;
+    uint64_t tick_phase_q0;
+    uint64_t tick_phase_tim2_before;
+    uint64_t tick_phase_tim2_after;
+    uint32_t tick_phase_tim2_cen;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -276,6 +284,18 @@ _Static_assert(offsetof(R4HwHarnessResult, tick_systick_enter_count) ==
 _Static_assert(offsetof(R4HwHarnessResult, tick_systick_exit_count) ==
     (R4_HW_T15_SYSTICK_EXIT_WORD * sizeof(uint32_t)),
     "R4 SysTick exit evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_phase_q0) ==
+    (R4_HW_T15_PHASE_Q0_WORD * sizeof(uint32_t)),
+    "R4 TIM2 phase-q0 evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_phase_tim2_before) ==
+    (R4_HW_T15_PHASE_TIM2_BEFORE_WORD * sizeof(uint32_t)),
+    "R4 TIM2 phase-before evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_phase_tim2_after) ==
+    (R4_HW_T15_PHASE_TIM2_AFTER_WORD * sizeof(uint32_t)),
+    "R4 TIM2 phase-after evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_phase_tim2_cen) ==
+    (R4_HW_T15_PHASE_TIM2_CEN_WORD * sizeof(uint32_t)),
+    "R4 TIM2 phase-CEN evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 

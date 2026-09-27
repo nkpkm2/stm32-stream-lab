@@ -4,6 +4,7 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "stm32f4xx.h"
 
 #include "r4_runtime_target.h"
 #include "r4_tick_service_target.h"
@@ -14,6 +15,7 @@
 #define R4_HW_COMPLETE_BUDGET_CYCLES 1800U
 #define R4_HW_TICK_CYCLES UINT64_C(180000)
 #define R4_HW_TICK_INTERVAL_LIMIT_CYCLES UINT64_C(270000)
+#define R4_HW_TIM2_START_PHASE_BOUND_CYCLES UINT64_C(1800)
 #define R4_HW_MONITOR_INTERVAL_LIMIT_CYCLES UINT64_C(1800000000)
 #define R4_HW_MONITOR_PERIOD_MS 1000U
 #define R4_HW_SYNTHETIC_A_ITERATIONS 50000U
@@ -136,7 +138,14 @@ static void EvaluateFormalInvariants(void)
         (g_r4_hw_result.tick_release_callback_count != 1U) ||
         (g_r4_hw_result.tick_start_count != UINT64_C(1)) ||
         (g_r4_hw_result.tick_release_count != UINT64_C(1)) ||
-        (g_r4_hw_result.tick_skipped_count != UINT64_C(0)))
+        (g_r4_hw_result.tick_skipped_count != UINT64_C(0)) ||
+        (g_r4_hw_result.tick_phase_q0 == 0U) ||
+        (g_r4_hw_result.tick_phase_tim2_cen != 1U) ||
+        (g_r4_hw_result.tick_phase_tim2_after <
+         g_r4_hw_result.tick_phase_tim2_before) ||
+        ((g_r4_hw_result.tick_phase_tim2_after -
+          g_r4_hw_result.tick_phase_tim2_before) >
+         R4_HW_TIM2_START_PHASE_BOUND_CYCLES))
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
@@ -146,7 +155,14 @@ static void EvaluateFormalInvariants(void)
         (g_r4_hw_result.tick_release_callback_count != 1U) ||
         (g_r4_hw_result.tick_start_count != UINT64_C(1)) ||
         (g_r4_hw_result.tick_release_count != UINT64_C(1)) ||
-        (g_r4_hw_result.tick_skipped_count != UINT64_C(1)))
+        (g_r4_hw_result.tick_skipped_count != UINT64_C(1)) ||
+        (g_r4_hw_result.tick_phase_q0 == 0U) ||
+        (g_r4_hw_result.tick_phase_tim2_cen != 1U) ||
+        (g_r4_hw_result.tick_phase_tim2_after <
+         g_r4_hw_result.tick_phase_tim2_before) ||
+        ((g_r4_hw_result.tick_phase_tim2_after -
+          g_r4_hw_result.tick_phase_tim2_before) >
+         R4_HW_TIM2_START_PHASE_BOUND_CYCLES))
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
@@ -239,8 +255,20 @@ static void EvaluateFormalInvariants(void)
 
 static int HarnessTickStart(uint64_t service_seq, void *context)
 {
-    (void)service_seq;
     (void)context;
+#if (R4_HW_CASE_ID == 2U) || (R4_HW_CASE_ID == 3U)
+    /* q0 arrives solely through the real tick hook.  Bracket the physical
+     * TIM2 CEN write directly; do not infer a start time from a later DMA IRQ. */
+    g_r4_hw_result.tick_phase_q0 = service_seq;
+    TIM2->CNT = 0U;
+    g_r4_hw_result.tick_phase_tim2_before = DWT->CYCCNT;
+    TIM2->CR1 |= TIM_CR1_CEN;
+    g_r4_hw_result.tick_phase_tim2_after = DWT->CYCCNT;
+    g_r4_hw_result.tick_phase_tim2_cen =
+        (TIM2->CR1 & TIM_CR1_CEN) != 0U ? 1U : 0U;
+#else
+    (void)service_seq;
+#endif
     ++tick_start_callback_count;
     return 1;
 }
