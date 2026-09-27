@@ -1,0 +1,11 @@
+{
+  "schema_version": "r3-evidence-v1",
+  "git_head": "673f92923b474eb1a72d444db92c36ccb8e7e945",
+  "firmware_source_commit": "673f92923b474eb1a72d444db92c36ccb8e7e945",
+  "elf_sha256": "C65E2F68AC147AC2F4D15141126CC6D8AFDDE69D87359E8A86D8D2D65D1F2F48",
+  "programmed_image_sha256": "AF24CDF2728E855AE35FCC6D6BBE0A066DA175158BAE14804E55E9874A7268E6",
+  "harness_version": "0.3.2-w2-hw-build-validation",
+  "harness_sha256": "87660E030735BB0FB10ACA2FAED513F1830701093850D0D4A77DE313CC1D4458",
+  "board_profile": "NUCLEO-F446RE",
+  "toolchain_identity": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119"
+}

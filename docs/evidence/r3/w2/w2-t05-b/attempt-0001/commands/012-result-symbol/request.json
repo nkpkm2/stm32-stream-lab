@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "E:\\DevTools\\arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi\\bin\\arm-none-eabi-nm.exe",
+    "-n",
+    "C:\\Users\\CHJ\\Downloads\\STM32_R3_EVIDENCE\\w2-t05-b-map5gm68\\build\\cubemx.elf"
+  ],
+  "cwd": null,
+  "timeout_seconds": 30,
+  "automatic_retry": false
+}
