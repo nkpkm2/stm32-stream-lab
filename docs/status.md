@@ -11,7 +11,7 @@ Architecture baseline: v3.2.2
 | R0 | PASS | `9ade715` | Final Principal acceptance granted; `r0-pass` created |
 | R1 | PASS | `5ebf62e` | Final Principal acceptance granted; `r1-pass` created |
 | R2 | IN PROGRESS | `bbc3bf6` | W1-W6 implemented; W6 mandatory K matrix 8/8 hardware PASS; final control-traffic/service-margin acceptance pending |
-| R3 | NOT STARTED | — | — |
+| R3 | IN PROGRESS | `53d2bca` | W2 hardware quiescence is sealed; W3 transactional-start foundation is committed, with production wiring and W3--W6 acceptance still pending. See [`R3 completion plan`](r3/R3_COMPLETION_PLAN.md). |
 | R4 | NOT STARTED | — | — |
 | R5 | NOT STARTED | — | — |
 | R6 | NOT STARTED | — | — |

@@ -213,13 +213,26 @@ class CommandLog:
                 except subprocess.TimeoutExpired:
                     timed_out = True
                     if os.name == "nt":
-                        # Only our own spawned process tree, never a board/debug process.
+                        # Terminate only the tree rooted at our own subprocess.  taskkill
+                        # can return before inherited log handles are released, so the
+                        # direct Popen fallback below is mandatory before evidence files
+                        # are read or their temporary directory is removed.
                         killer = Path(os.environ.get("SystemRoot", r"C:\Windows")) / "System32/taskkill.exe"
-                        subprocess.run([str(killer), "/PID", str(proc.pid), "/T", "/F"],
-                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=20)
+                        try:
+                            subprocess.run([str(killer), "/PID", str(proc.pid), "/T", "/F"],
+                                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=20,
+                                           check=False)
+                        except (OSError, subprocess.SubprocessError):
+                            # The timed-out outcome remains authoritative.  Reap the
+                            # directly-held process below even if tree cleanup failed.
+                            pass
                     else:
                         os.killpg(proc.pid, signal.SIGKILL)
-                    rc = proc.wait(timeout=20)
+                    try:
+                        rc = proc.wait(timeout=20)
+                    except subprocess.TimeoutExpired:
+                        proc.kill()
+                        rc = proc.wait(timeout=20)
             except (OSError, subprocess.SubprocessError) as exc:
                 spawn_error = repr(exc)
         out = (folder / "stdout.bin").read_bytes().decode("utf-8", "replace")
