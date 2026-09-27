@@ -256,6 +256,9 @@ void DMA2_Stream0_IRQHandler(void)
   R2_W4_IrqEnter(DMA2->LISR);
 #elif defined(STREAM_LAB_R2_W3)
   R2_W3_IrqEnter(DMA2->LISR);
+#elif defined(STREAM_LAB_R3_LIFECYCLE)
+  /* AdcDbmDriver owns the R3 DMA completion callback chain.  In particular,
+   * do not enter the historical R1 acquisition state machine here. */
 #else
   R1_Acquisition_DmaIrqEnter(DMA2->LISR);
 #endif
