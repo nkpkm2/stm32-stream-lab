@@ -1,0 +1,1615 @@
+00000200 A _Min_Heap_Size
+00000400 A _Min_Stack_Size
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f N 
+0001761f W main.c.fa1f28f8
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb N 
+00018adb W stm32f4xx_it.c.c0802da5
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 N 
+000195b4 W stm32f4xx_hal_msp.c.4c6feb2f
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 N 
+0001a550 W stm32f4xx_hal_timebase_tim.c.73982a97
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 N 
+0001b148 W sysmem.c.51d2e8a4
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c N 
+0001b28c W syscalls.c.3198a08d
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a N 
+0001b81a W tasks.c.c913beac
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e N 
+0001cc6e W queue.c.f2096e25
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d N 
+0001dc5d W list.c.a571737f
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac N 
+0001deac W port.c.a5edc775
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c N 
+0001e19c W r0_freertos_smoke.c.6381c149
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 N 
+0001e5f9 W adc_dbm_driver.c.4a474813
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac N 
+000204ac W stream_ownership_core.c.ac6209ea
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 N 
+00020e04 W r2_buffer_pool.c.999ae2a0
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d N 
+0002124d W r2_dma_slots.c.7df5de98
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 N 
+00021775 W stream_token_ledger.c.4448f8da
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 N 
+00021d98 W stream_queue_adapter.c.f224e823
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e N 
+0002326e W stream_run_authority.c.76b0b1b3
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 N 
+00023f11 W r3_worker_contract.c.2284cb2f
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 N 
+00024535 W r3_worker_tasks.c.81e65249
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 N 
+00025a22 W r3_lifecycle.c.40bd0f04
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 N 
+00025fc5 W r3_command_ledger.c.53d239bb
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 N 
+000264c9 W r3_result_store.c.b8c59391
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 N 
+000267a5 W r3_w3_runtime.c.ea9ec107
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 N 
+00028c28 W r4_clock64.c.ca849974
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 N 
+00028df2 W r4_runtime_event.c.b15f8e16
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 N 
+000294a7 W r4_runtime_target.c.7f55be1a
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 N 
+0002a809 W r4_tick_service.c.c27a68c8
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f N 
+0002ab3f W r4_tick_service_target.c.29cf1d99
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 N 
+0002b1f5 W r4_hw_harness.c.3d6d3de8
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 N 
+0002c8c6 W r1_acquisition.c.b1a70453
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 N 
+0002dd47 W r1_bringup.c.06a04810
+08000000 R g_pfnVectors
+080001d0 t __do_global_dtors_aux
+080001f4 t frame_dummy
+08000210 T __aeabi_uldivmod
+08000240 T __udivmoddi4
+08000538 W __aeabi_idiv0
+08000538 W __aeabi_ldiv0
+0800053c T SystemInit
+08000560 T HAL_TIM_Base_Init
+08000600 T HAL_TIM_Base_Start
+080006d0 T HAL_TIM_Base_Stop
+08000720 T HAL_TIM_Base_Start_IT
+08000800 T HAL_TIM_IRQHandler
+080009e0 T HAL_TIM_ConfigClockSource
+08000b6e W HAL_TIM_OC_DelayElapsedCallback
+08000b82 W HAL_TIM_IC_CaptureCallback
+08000b96 W HAL_TIM_PWM_PulseFinishedCallback
+08000baa W HAL_TIM_TriggerCallback
+08000bc0 T TIM_Base_SetConfig
+08000d0c t TIM_TI1_ConfigInputStage
+08000d6a t TIM_TI2_ConfigInputStage
+08000dca t TIM_ITRx_SetConfig
+08000e00 T TIM_ETR_SetConfig
+08000e40 T HAL_TIMEx_MasterConfigSynchronization
+08000f38 W HAL_TIMEx_CommutCallback
+08000f4c W HAL_TIMEx_BreakCallback
+08000f60 T HAL_ADC_Init
+08000fe8 T HAL_ADC_Start
+0800118c T HAL_ADC_Stop
+080011f2 T HAL_ADC_Stop_DMA
+080012a8 T HAL_ADC_ConfigChannel
+0800150c t ADC_Init
+08001704 T HAL_RCC_ClockConfig
+080018d0 T HAL_RCC_GetHCLKFreq
+080018e8 T HAL_RCC_GetPCLK1Freq
+08001910 T HAL_RCC_GetPCLK2Freq
+08001938 T HAL_RCC_GetClockConfig
+0800199c T HAL_RCC_GetSysClockFreq
+08001dfc T HAL_RCC_OscConfig
+08002338 T HAL_GPIO_Init
+08002660 T HAL_GPIO_WritePin
+08002694 T HAL_GPIO_EXTI_IRQHandler
+080026c4 W HAL_GPIO_EXTI_Callback
+080026dc T HAL_DMAEx_MultiBufferStart_IT
+0800396c t DMA_MultiBufferSetConfig
+080039b8 T HAL_DMA_Init
+08003b14 T HAL_DMA_Abort
+08003bf4 T HAL_DMA_IRQHandler
+08003f08 t DMA_CalcBaseAndBitshift
+08003f74 t DMA_CheckFifoParam
+0800406c T HAL_PWREx_EnableOverDrive
+0800410c t __NVIC_SetPriorityGrouping
+08004154 t __NVIC_GetPriorityGrouping
+08004170 t __NVIC_EnableIRQ
+080041ac t __NVIC_ClearPendingIRQ
+080041e8 t __NVIC_SetPriority
+0800423c t NVIC_EncodePriority
+080042a2 T HAL_NVIC_SetPriorityGrouping
+080042b8 T HAL_NVIC_SetPriority
+080042f0 T HAL_NVIC_EnableIRQ
+0800430c T HAL_NVIC_GetPriorityGrouping
+0800431a T HAL_NVIC_ClearPendingIRQ
+08004338 T HAL_Init
+0800437c W HAL_IncTick
+080043a4 W HAL_GetTick
+080043bc T HAL_UART_Init
+0800445c t UART_SetConfig
+08004944 T BSP_LED_Init
+080049b0 T BSP_PB_Init
+08004a5c T main
+08004a94 t SystemClock_Config
+08004b78 t MX_ADC1_Init
+08004c1c t MX_TIM2_Init
+08004cb4 t MX_USART2_UART_Init
+08004d08 t MX_DMA_Init
+08004d48 t MX_GPIO_Init
+08004dd0 T HAL_TIM_PeriodElapsedCallback
+08004df4 t Error_Handler
+08004e00 t __NVIC_ClearPendingIRQ
+08004e3c T NMI_Handler
+08004e44 T HardFault_Handler
+08004e4c T MemManage_Handler
+08004e54 T BusFault_Handler
+08004e5c T UsageFault_Handler
+08004e64 T DebugMon_Handler
+08004e72 T EXTI15_10_IRQHandler
+08004e84 T TIM7_IRQHandler
+08004ea0 T TIM6_DAC_IRQHandler
+08004ee0 T DMA2_Stream0_IRQHandler
+08004f3c T HAL_MspInit
+08004f8c T HAL_ADC_MspInit
+0800507c T HAL_TIM_Base_MspInit
+080050bc T HAL_UART_MspInit
+0800514c T HAL_InitTick
+08005244 t prvCreateStaticTask
+080052ce t xTaskCreateStatic
+08005316 t prvInitialiseNewTask
+08005418 t prvAddNewTaskToReadyList
+08005540 t vTaskDelay
+0800559c t prvCreateIdleTasks
+0800566c t vTaskStartScheduler
+080056e4 t vTaskSuspendAll
+08005700 t xTaskResumeAll
+08005900 t uxTaskGetNumberOfTasks
+08005918 t xTaskIncrementTick
+08005b4c T vTaskSwitchContext
+08005c5c t vTaskPlaceOnEventList
+08005c98 t xTaskRemoveFromEventList
+08005e3c t vTaskInternalSetTimeOutState
+08005e68 t xTaskCheckForTimeOut
+08005f08 t vTaskMissedYield
+08005f20 t prvIdleTask
+08005f50 t prvInitialiseTaskLists
+08005fbc t prvCheckTasksWaitingTermination
+08005fcc t prvResetNextTaskUnblockTime
+08006004 t xTaskGetCurrentTaskHandle
+08006024 t xTaskGetSchedulerState
+08006060 t xTaskPriorityDisinherit
+0800618c t xTaskGenericNotifyWait
+080062ac t xTaskGenericNotify
+080064c4 t xTaskGenericNotifyFromISR
+08006754 t prvAddCurrentTaskToDelayedList
+08006800 t vListInitialise
+08006840 t vListInitialiseItem
+0800685a t vListInsert
+080068cc t uxListRemove
+08006920 t pxPortInitialiseStack
+08006988 t prvTaskExitError
+080069e0 T SVC_Handler
+08006a00 t pxCurrentTCBConst2
+08006a08 t prvPortStartFirstTask
+08006a34 t xPortStartScheduler
+08006bb4 t vPortEnterCritical
+08006c08 t vPortExitCritical
+08006c50 T PendSV_Handler
+08006cb0 t pxCurrentTCBConst
+08006cb8 T SysTick_Handler
+08006d0c t vPortSetupTimerInterrupt
+08006d54 t vPortEnableVFP
+08006d6c t vPortValidateInterruptPriority
+08006dd0 t vApplicationTickHook
+08006de0 t vApplicationStackOverflowHook
+08006df2 t AdcDbmRebindGuard_DerivePolicy
+08006e62 t AdcDbmRebindGuard_Check
+08006f30 t __NVIC_GetPriority
+08006f80 t EnterCritical
+08006fae t ExitCritical
+08006fdc t EnsureDwtEnabled
+0800700c t DwtNow
+08007024 t DelayCycles
+08007050 t CurrentCt
+08007074 t AddressRegister
+080070a0 t OtherSlot
+080070c4 t DisableDmaInterrupts
+080070f0 t ClearDmaFlags
+0800829c t HardwareQuiescent
+080082e0 t HardwareHealthyRunning
+08008348 t SpanValid
+080083ac t SpansOverlap
+080083f4 t LatchRealtimeHardwareError
+08008420 t ConfigurationValid
+080085c4 t QuiesceOwnedHardware
+080086dc t CaptureStopBeginReport
+08008750 t AbortFailedArm
+080087d8 t DispatchCompletion
+080088b4 t DmaM0Complete
+080088cc t DmaM1Complete
+080088e4 t DmaError
+08008938 t AdcDbmDriver_Init
+08008a40 t AdcDbmDriver_Arm
+08008d20 t AdcDbmDriver_CommitStart
+08008db4 t AdcDbmDriver_ApplyInactiveAction
+0800925c t AdcDbmDriver_FailActiveCompletion
+080092e4 t AdcDbmDriver_BeginStop
+08009384 t AdcDbmDriver_FinishStop
+080093ec t AdcDbmDriver_GetSnapshot
+080094dc t IsValidBufferId
+080094fe t IsValidSlot
+08009528 t Violation
+08009558 t InvariantsHold.lto_priv.1
+080095d8 t RequireInitialized
+0800960c t DecodeCt
+08009650 t R2_DmaSlots_Reset
+08009680 t R2_DmaSlots_Initialize
+08009714 t R2_DmaSlots_ObserveCt
+080097b0 t R2_DmaSlots_PrepareInactiveRebind
+08009864 t R2_DmaSlots_CheckPlanCt
+08009980 t R2_DmaSlots_CommitPreparedRebind
+08009aac t R2_DmaSlots_GetSnapshot
+08009b14 t R2_DmaSlots_Validate
+08009b32 t SupportedK
+08009b64 t SameIdentity
+08009ba4 t SameOwnership
+08009bf0 t ProvenanceLease
+08009c08 t ProvenanceMatchesIdentity
+08009c50 t FillProvenance
+08009c88 t FillPermit
+08009cbe t SamePermitAndProvenance
+08009d0a t SameReadyDescriptor
+08009d64 t LatchFault.lto_priv.0
+08009da8 t RequireCurrent
+08009e14 t AdapterResult
+08009e60 t ClearHeld
+08009e88 t ClearProcessing
+08009eb4 t CountLiveLeases
+08009ef8 t LeaseEntryMatches
+08009f58 t AuthorizeQueueOperation
+0800a060 t BeginPending
+0800a09c t EndPending
+0800a0c0 t StreamRunAuthority_Initialize
+0800a180 t StreamRunAuthority_ResetOffline
+0800a240 t StreamRunAuthority_BindProcessingTask
+0800a280 t StreamRunAuthority_TakeFreeFromISR
+0800a2cc t StreamRunAuthority_PublishReadyFromISR
+0800a408 t StreamRunAuthority_TakeReady
+0800a548 t StreamRunAuthority_ClaimHeldReady
+0800a650 t StreamRunAuthority_CancelHeldReady
+0800a74c t StreamRunAuthority_CompleteAndReleaseBlock
+0800a848 t StreamRunAuthority_GetSnapshot
+0800a984 t ValidWorkerId
+0800a9ac t SameRun.lto_priv.0
+0800a9ec t Reject
+0800aa1a t R3WorkerContract_Initialize
+0800aa5e t R3WorkerContract_BindRun
+0800ab22 t R3WorkerContract_RequestStop
+0800abf4 t R3WorkerContract_BuildQuiescedAck
+0800ac9a t R3WorkerContract_GetSnapshot
+0800ad1c t R3WorkerContract_NewWorkAllowed
+0800ad5c t R3InterferenceWorker_StopAction
+0800adb0 t SameRun.lto_priv.1
+0800adf0 t TicketMatchesRun
+0800ae30 t LatchFault.lto_priv.1
+0800ae64 t LatchFaultFromISR
+0800aebc t ValidConfig
+0800af28 t ReadControl.lto_priv.0
+0800afe0 t AckPending
+0800b02c t PublishAck
+0800b0dc t ReconcileWorker
+0800b318 t CancelHeldProcessing
+0800b38c t CompleteProcessing
+0800b42c t ProcessingAck
+0800b4b8 t QuiesceProcessing
+0800b598 t ServiceProcessing
+0800b7c4 t InterferenceAck
+0800b840 t HandleInterferenceStop
+0800b8d4 t ServiceInterference
+0800bb20 t ProcessingTask
+0800bb80 t InterferenceTask
+0800bbe0 t R3WorkerTasks_Create
+0800bcf0 t R3WorkerTasks_GetSnapshot
+0800be0c t RequireCommunicationCaller
+0800be44 t NotifyBoth
+0800becc t R3WorkerTasks_NotifyStart
+0800bedc t R3WorkerTasks_NotifyStop
+0800beec t R3WorkerTasks_NotifyProcessingWorkFromISR
+0800bf50 t R3WorkerTasks_TakeAck
+0800bfe4 t CloseGates
+0800c008 t TicketMatches.lto_priv.0
+0800c064 t StopMatches.lto_priv.0
+0800c0b4 t RollbackToIdle
+0800c114 t R3Lifecycle_Init
+0800c18c t R3Lifecycle_PrepareStart
+0800c2c4 t R3Lifecycle_CommitStart
+0800c34c t R3Lifecycle_RequestInfrastructureStopFromIsr
+0800c388 t R3Lifecycle_RequestStop
+0800c438 t R3Lifecycle_GetSnapshot
+0800c480 t BindingMatches
+0800c4cc t TicketMatches.lto_priv.1
+0800c518 t StopMatches.lto_priv.1
+0800c55c t R3CommandLedger_Initialize
+0800c586 t R3CommandLedger_BeginStart
+0800c6c6 t R3CommandLedger_RecordPrepared
+0800c732 t R3CommandLedger_RecordRunning
+0800c782 t R3CommandLedger_AbortStart
+0800c7ce t R3CommandLedger_BeginStop
+0800c83c t R3CommandLedger_RecordStopped
+0800c87a t R3CommandLedger_GetSnapshot
+0800c8c0 t R3ResultStore_Initialize
+0800c8e0 t R3ResultStore_CanBeginRun
+0800c916 t R3ResultStore_Seal
+0800c9a0 t CoordinatorCaller
+0800c9c8 t LatchFault.lto_priv.2
+0800c9e0 t LedgerStatus
+0800ca18 t LifecycleFromDriver
+0800ca3c t ReadControl.lto_priv.1
+0800caa0 t TryClaimHeld
+0800cb60 t TryBeginInterference
+0800cbe4 t ProcessBlock
+0800cc14 t InterferenceSegment
+0800cc2c t CompleteCallback
+0800ce0c t ErrorCallback
+0800ce24 t WaitForWorkersBound
+0800ce78 t WaitForRollbackAcks
+0800cf64 t HookValidate
+0800cfa0 t HookPrepare
+0800d084 t HookArm
+0800d0f8 t HookCommit
+0800d12c t HookRollback
+0800d258 t R3W3Runtime_Initialize
+0800d39c t R3W3Runtime_PrepareStart
+0800d440 t R3W3Runtime_CommitStart
+0800d4a0 t R3W3Runtime_RequestInfrastructureStopFromIsr
+0800d4c8 t R3W3Runtime_Stop
+0800d594 t R3W3Runtime_Start
+0800d5f0 t R3W3Runtime_TakeDmaYieldRequest
+0800d618 t Latch
+0800d642 t R4_TickService_Initialize
+0800d724 t R4_TickService_OnService
+0800d8b8 t __NVIC_SetPendingIRQ
+0800d8f4 t FailInvariant
+0800d91c t EvaluateFormalInvariants
+0800dac4 t HarnessTickStart
+0800daec t HarnessTickRelease
+0800db18 t HarnessTask
+0800e054 t R4_HW_Start
+0800e108 t vApplicationGetIdleTaskMemory
+0800e13c t InvariantsHold.lto_priv.0
+0800e33c t R2_BufferPool_GetState
+0800e588 t StreamTokenLedger_RecordFreeSend
+0800e6b0 t StreamTokenLedger_ValidateStable
+0800e9e8 t StreamQueueAdapter_BindProcessingTask
+0800ea2c t R4_RuntimeLedger_GetStatus
+0800ea48 t TargetReadCycle
+0800ea54 t TargetSaveAndDisable
+0800ea84 t TargetRestore
+0800ea90 t TargetCommitStart
+0800eaa4 t TargetReleaseJob
+0800eac0 t R4_RuntimeTarget_GetHealthSnapshot
+0800eb3c t R4_RuntimeTarget_ReadNow
+0800ebf4 t CompletionBoundaryNow
+0800ec70 t StreamQueueAdapter_TraceQueueSendUnlock.part.0
+0800ed28 t R4_RuntimeTarget_TraceDmaTailYield
+0800ed68 t R4_RuntimeTarget_GetDmaTailSnapshot
+0800ede0 t R4_RuntimeTarget_GetLedger
+0800edf8 t Apply.part.0
+0800f0d0 t R4_RuntimeTarget_OpenWindow
+0800f0ec t R4_RuntimeTarget_CloseWindow
+0800f108 t R4_RuntimeTarget_Checkpoint
+0800f124 t R4_RuntimeTarget_TraceIsrEnter
+0800f13c t R4_RuntimeTarget_TraceIsrExit
+0800f154 t R4_RuntimeTarget_TraceTaskSwitchedOut
+0800f168 t R4_RuntimeTarget_TraceTaskSwitchedIn
+0800f17c t TargetNow
+0800f230 t R2_BufferPool_GetSnapshot
+0800f4d4 t R4_RuntimeTarget_Initialize
+0800f69c t R4_TickServiceTarget_OnTickHook
+0800f85c t R4_RuntimeTarget_MonitorService
+0800fa44 t ReadHealthySnapshots
+0800fb18 t StreamOwnership_CommitKeep
+0800fc48 t StreamOwnership_CommitRebind
+0800ff68 t StreamOwnership_PrepareCompletion
+0801014c t StreamOwnership_ResetOffline
+0801017c t StreamOwnership_Initialize
+080102b8 t StreamQueueAdapter_ResetOffline
+08010520 t R4_TickServiceTarget_Register
+0801056c t R4_TickServiceTarget_GetSnapshot
+0801059c t R4_TickServiceTarget_ConfigureTiming
+080105ec t R4_TickServiceTarget_GetTiming
+08010634 t StreamQueueAdapter_ClaimHeldReady
+08010bc0 t StreamQueueAdapter_TakeFreeFromISR
+08010d94 t StreamQueueAdapter_PublishReadyFromISR
+080110a0 t SendFreeInternal
+08011d54 t StreamQueueAdapter_Initialize
+08012168 t StreamQueueAdapter_CancelHeldReady
+080121cc t StreamQueueAdapter_CompleteAndReleaseBlock
+08012230 t StreamQueueAdapter_TakeReady
+0801270c W Reset_Handler
+0801271e t CopyDataInit
+08012724 t LoopCopyDataInit
+08012732 t FillZerobss
+08012736 t LoopFillZerobss
+0801275c W ADC_IRQHandler
+0801275c W CAN1_RX0_IRQHandler
+0801275c W CAN1_RX1_IRQHandler
+0801275c W CAN1_SCE_IRQHandler
+0801275c W CAN1_TX_IRQHandler
+0801275c W CAN2_RX0_IRQHandler
+0801275c W CAN2_RX1_IRQHandler
+0801275c W CAN2_SCE_IRQHandler
+0801275c W CAN2_TX_IRQHandler
+0801275c W CEC_IRQHandler
+0801275c W DCMI_IRQHandler
+0801275c T Default_Handler
+0801275c W DMA1_Stream0_IRQHandler
+0801275c W DMA1_Stream1_IRQHandler
+0801275c W DMA1_Stream2_IRQHandler
+0801275c W DMA1_Stream3_IRQHandler
+0801275c W DMA1_Stream4_IRQHandler
+0801275c W DMA1_Stream5_IRQHandler
+0801275c W DMA1_Stream6_IRQHandler
+0801275c W DMA1_Stream7_IRQHandler
+0801275c W DMA2_Stream1_IRQHandler
+0801275c W DMA2_Stream2_IRQHandler
+0801275c W DMA2_Stream3_IRQHandler
+0801275c W DMA2_Stream4_IRQHandler
+0801275c W DMA2_Stream5_IRQHandler
+0801275c W DMA2_Stream6_IRQHandler
+0801275c W DMA2_Stream7_IRQHandler
+0801275c W EXTI0_IRQHandler
+0801275c W EXTI1_IRQHandler
+0801275c W EXTI2_IRQHandler
+0801275c W EXTI3_IRQHandler
+0801275c W EXTI4_IRQHandler
+0801275c W EXTI9_5_IRQHandler
+0801275c W FLASH_IRQHandler
+0801275c W FMC_IRQHandler
+0801275c W FMPI2C1_ER_IRQHandler
+0801275c W FMPI2C1_EV_IRQHandler
+0801275c W FPU_IRQHandler
+0801275c W I2C1_ER_IRQHandler
+0801275c W I2C1_EV_IRQHandler
+0801275c W I2C2_ER_IRQHandler
+0801275c W I2C2_EV_IRQHandler
+0801275c W I2C3_ER_IRQHandler
+0801275c W I2C3_EV_IRQHandler
+0801275c t Infinite_Loop
+0801275c W OTG_FS_IRQHandler
+0801275c W OTG_FS_WKUP_IRQHandler
+0801275c W OTG_HS_EP1_IN_IRQHandler
+0801275c W OTG_HS_EP1_OUT_IRQHandler
+0801275c W OTG_HS_IRQHandler
+0801275c W OTG_HS_WKUP_IRQHandler
+0801275c W PVD_IRQHandler
+0801275c W QUADSPI_IRQHandler
+0801275c W RCC_IRQHandler
+0801275c W RTC_Alarm_IRQHandler
+0801275c W RTC_WKUP_IRQHandler
+0801275c W SAI1_IRQHandler
+0801275c W SAI2_IRQHandler
+0801275c W SDIO_IRQHandler
+0801275c W SPDIF_RX_IRQHandler
+0801275c W SPI1_IRQHandler
+0801275c W SPI2_IRQHandler
+0801275c W SPI3_IRQHandler
+0801275c W SPI4_IRQHandler
+0801275c W TAMP_STAMP_IRQHandler
+0801275c W TIM1_BRK_TIM9_IRQHandler
+0801275c W TIM1_CC_IRQHandler
+0801275c W TIM1_TRG_COM_TIM11_IRQHandler
+0801275c W TIM1_UP_TIM10_IRQHandler
+0801275c W TIM2_IRQHandler
+0801275c W TIM3_IRQHandler
+0801275c W TIM4_IRQHandler
+0801275c W TIM5_IRQHandler
+0801275c W TIM8_BRK_TIM12_IRQHandler
+0801275c W TIM8_CC_IRQHandler
+0801275c W TIM8_TRG_COM_TIM14_IRQHandler
+0801275c W TIM8_UP_TIM13_IRQHandler
+0801275c W UART4_IRQHandler
+0801275c W UART5_IRQHandler
+0801275c W USART1_IRQHandler
+0801275c W USART2_IRQHandler
+0801275c W USART3_IRQHandler
+0801275c W USART6_IRQHandler
+0801275c W WWDG_IRQHandler
+0801275e T memset
+08012770 T __libc_init_array
+080127b8 T memcpy
+080127d4 t __EH_FRAME_BEGIN__
+080127d4 T _init
+080127e0 T _fini
+080127ec T _etext
+080127ec R AHBPrescTable
+080127fc R APBPrescTable
+08012804 r flagBitshiftOffset.0
+0801280c r uxTopUsedPriority
+08012840 R __exidx_start
+08012848 R __exidx_end
+08012848 r __frame_dummy_init_array_entry
+08012848 r __init_array_start
+08012848 d __preinit_array_end
+08012848 d __preinit_array_start
+0801284c r __do_global_dtors_aux_fini_array_entry
+0801284c r __init_array_end
+08012850 A _sidata
+20000000 D _sdata
+20000000 D SystemCoreClock
+20000004 D uwTickPrio
+20000008 D uwTickFreq
+2000000c D GPIO_PORT
+20000010 D BUTTON_PORT
+20000014 d uxCriticalNesting
+20000018 d slots
+20000028 d target_boot_error
+2000002c B __bss_start__
+2000002c D _edata
+2000002c B _sbss
+20000030 b completed.1
+20000034 b object.0
+2000004c B uwTick
+20000050 b hadc1
+20000098 b hdma_adc1
+200000f8 b htim2
+20000140 b huart2
+20000188 b htim7
+200001d0 B pxCurrentTCB
+200001d4 b pxReadyTasksLists
+20000274 b xDelayedTaskList1
+20000288 b xDelayedTaskList2
+2000029c b pxDelayedTaskList
+200002a0 b pxOverflowDelayedTaskList
+200002a4 b xPendingReadyList
+200002b8 b uxCurrentNumberOfTasks
+200002bc b xTickCount
+200002c0 b uxTopReadyPriority
+200002c4 b xSchedulerRunning
+200002c8 b xPendedTicks
+200002cc b xYieldPendings
+200002d0 b xNumOfOverflows
+200002d4 b uxTaskNumber
+200002d8 b xNextTaskUnblockTime
+200002dc b xIdleTaskHandles
+200002e0 b uxSchedulerSuspended
+200002e4 b ucMaxSysCallPriority
+200002e8 b ulMaxPRIGROUPValue
+200002ec b driver
+2000035c b authority
+2000043c b storage
+200019e8 b lifecycle
+20001a50 b runtime
+20001b90 b sample_blocks
+20002f90 b g_r4_hw_result
+20003150 b harness_tcb
+200031a4 b harness_stack
+200045a4 b idle_tcb
+200045f8 b idle_stack
+200047f8 b tick_start_callback_count
+200047fc b tick_release_callback_count
+20004800 b target_timing
+20004840 b target_callbacks
+20004850 b target_service
+200048b8 b target_initialized.lto_priv.1
+200048c0 b runtime_health
+200048e8 b dma_tail
+20004900 b target_clock
+20004928 b xQueueRegistry
+20004968 b target_ledger
+20004a48 b target_test_pend_irq_after_mask
+20004a50 b completion_timing
+20004aa0 b target_initialized.lto_priv.0
+20004aa4 b adapter
+20004d30 b ledger
+20004d88 b pool
+20004da0 b ownership
+20004dc0 B __bss_end__
+20004dc0 B _ebss
+20004dc0 B _end
+2001fc00 A _sstack
+20020000 R _estack
