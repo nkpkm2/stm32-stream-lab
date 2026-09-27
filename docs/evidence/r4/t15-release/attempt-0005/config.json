@@ -1,0 +1,7 @@
+{
+  "case_id": "t15-release",
+  "case_numeric_id": 3,
+  "configured_soak_ms": 0,
+  "selector": "T15_RELEASE",
+  "work_package": "R4"
+}
