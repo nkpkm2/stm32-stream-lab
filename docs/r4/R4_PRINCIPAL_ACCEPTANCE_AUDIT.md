@@ -12,7 +12,7 @@ hardware test is not a substitute.
 | A01–A03 Clock64 authority, >60 s wrap, service bound | `t12-soak-a/b` sealed target attempts | PARTIAL | add source-uniqueness and invalid-run audit; retain fresh 60 s records |
 | A04–A06 RuntimeEvent atomicity/mask/error ordering | T17 pending IRQ and duplicate-exit evidence; native event tests | PARTIAL | explicit PRIMASK-entry-state and time-regression target/injection evidence |
 | A07–A13 IRQ pairing, no-yield/yield, SysTick | T12 wiring/tails; T17 duplicate exit | PARTIAL | real nested IRQ, exact task-switch attribution and SysTick one-pair evidence |
-| A14–A15 task/idle known workload | none | MISSING | deterministic two-task/idle-plus-IRQ target workload with declared oracle |
+| A14–A15 task/idle known workload | `task-synthetic/attempt-0003` sealed target PASS; H4 independently checks fixed A/B iteration oracle, owner ratio, Idle residency, and formal conservation | PARTIAL | add known IRQ contribution and retain this workload in final integrated regression |
 | A16–A24 CPU window clipping, immutability, conservation | T12/T17 post-close snapshot; formal per-window task/IRQ/idle/residual buckets and directed native source cases | PARTIAL | execute native cases on a host, bind OPEN/CLOSE to production S0/S1 DMA boundaries, then seal target intersection/conservation evidence |
 | A25–A29 error/overhead/phase | tick DWT history and lock budget | PARTIAL | RuntimeEvent microbench, error budget, perturbation A/B, q0-to-TIM2 bound |
 | A30–A37 TickService and suspension | T15 q0/release; tick history in T12 | PARTIAL | explicit tick-gap fault-injection and phase evidence |
