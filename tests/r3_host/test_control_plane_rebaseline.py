@@ -48,6 +48,18 @@ class ControlPlanePureTests(unittest.TestCase):
         )
         self.assertFalse(p.target_firmware_modification_allowed)
 
+    def test_partial_w2_evidence_remains_in_w2(self):
+        p = derive_progress(
+            w1_sealed=True,
+            w2a_sealed=True,
+            w2b_sealed=True,
+            w2_evidence_present=True,
+            w2_hw_freeze_sealed=True,
+        )
+        self.assertEqual(p.w2_evidence, "IN_PROGRESS")
+        self.assertEqual(p.next_allowed, "W2_HARDWARE_EVIDENCE_REMAINING")
+        self.assertTrue(p.target_firmware_modification_allowed)
+
     def test_operator_gate_blocks_dirty_hardware_progression(self):
         p = derive_progress(
             w1_sealed=True,

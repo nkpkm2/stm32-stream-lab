@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 from pathlib import Path
 
 from .git_state import run_git, status
@@ -67,6 +68,7 @@ def derive_progress(
     w2a_sealed: bool,
     w2b_sealed: bool,
     w2_evidence_present: bool,
+    w2_evidence_complete: bool = False,
     w2_hw_freeze_sealed: bool = False,
 ) -> Progress:
     if not w1_sealed:
@@ -94,12 +96,32 @@ def derive_progress(
             "SEALED", "SEALED", "SEALED", "SEALED", "NOT_STARTED",
             "R3-W2", "W2_HW_HARNESS_IMPLEMENTATION", True,
         )
+    if not w2_evidence_complete:
+        return Progress(
+            "SEALED", "SEALED", "SEALED",
+            "SEALED" if w2_hw_freeze_sealed else "NOT_STARTED",
+            "IN_PROGRESS", "R3-W2", "W2_HARDWARE_EVIDENCE_REMAINING", True,
+        )
     return Progress(
         "SEALED", "SEALED", "SEALED",
         "SEALED" if w2_hw_freeze_sealed else "NOT_STARTED",
-        "PRESENT_UNASSESSED",
-        "R3-W2", "W2_EVIDENCE_REVIEW", False,
+        "SEALED", "R3-W3", "W3_START_TRANSACTION_IMPLEMENTATION", True,
     )
+
+
+def _w2_evidence_complete(repo: Path) -> bool:
+    cases = ("w2-t03-a", "w2-t03-c", "w2-t03-d", "w2-t05-a", "w2-t05-b")
+    for case in cases:
+        rel = f"docs/evidence/r3/w2/{case}/attempt-0001/acceptance.json"
+        cp = run_git(repo, "show", f"HEAD:{rel}", check=False)
+        if cp.returncode != 0:
+            return False
+        try:
+            if json.loads(cp.stdout.decode("utf-8"))["result"] != "PASS":
+                return False
+        except (UnicodeDecodeError, ValueError, KeyError):
+            return False
+    return True
 
 
 def derive_operator_gate(
@@ -121,11 +143,13 @@ def derive_operator_gate(
 
 
 def inspect_progress(repo: Path) -> Progress:
+    evidence_present = _tree_has_prefix(repo, "docs/evidence/r3/w2/")
     return derive_progress(
         w1_sealed=_tree_has_all(repo, W1_PATHS),
         w2a_sealed=_tree_has_all(repo, W2A_PATHS),
         w2b_sealed=_tree_has_all(repo, W2B_PATHS),
-        w2_evidence_present=_tree_has_prefix(repo, "docs/evidence/r3/w2/"),
+        w2_evidence_present=evidence_present,
+        w2_evidence_complete=evidence_present and _w2_evidence_complete(repo),
         w2_hw_freeze_sealed=_tree_has_all(repo, W2_HW_FREEZE_PATHS),
     )
 
