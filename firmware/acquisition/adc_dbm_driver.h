@@ -176,6 +176,16 @@ typedef struct
     uint32_t remaining_samples;
     uint32_t captured_samples;
     uint32_t active_slot;
+    uint32_t dma_lisr_at_begin;
+    uint32_t adc_sr_at_begin;
+    uint32_t tim2_cr1_after_begin;
+} AdcDbmDriverStopBeginReport;
+
+typedef struct
+{
+    uint32_t remaining_samples;
+    uint32_t captured_samples;
+    uint32_t active_slot;
     uint32_t dma_lisr_before_stop;
     uint32_t dma_lisr_after_stop;
     uint32_t adc_sr_before_stop;
@@ -235,7 +245,7 @@ AdcDbmDriverStatus AdcDbmDriver_CommitStart(void);
  * nonoverlapping SRAM span. Any malformed active-callback request, unsafe
  * precheck, missing completion action, or post-action verification failure
  * latches ERROR, stops TIM2 triggers, disables DMA interrupt sources, and
- * leaves final task-context quiescence to AdcDbmDriver_Stop().
+ * leaves final task-context quiescence to AdcDbmDriver_FinishStop().
  */
 AdcDbmDriverStatus AdcDbmDriver_ApplyInactiveAction(
     const AdcDbmDriverCompletionEvent *event,
@@ -254,7 +264,8 @@ AdcDbmDriverStatus AdcDbmDriver_ApplyInactiveAction(
  *
  * The supplied event must identify the currently active completion callback.
  * On success this function stops TIM2 triggers, disables DMA interrupt sources,
- * latches ERROR, and leaves final DMA/ADC quiescence to task-context Stop().
+ * latches ERROR, and leaves final DMA/ADC quiescence to task-context
+ * FinishStop().
  * It performs no HAL wait/abort operation and is therefore safe for the IRQ
  * fail-stop path.
  */
@@ -262,12 +273,23 @@ AdcDbmDriverStatus AdcDbmDriver_FailActiveCompletion(
     const AdcDbmDriverCompletionEvent *event);
 
 /*
- * Stop is the hardware-only quiescence primitive. It only stops hardware that
- * this driver successfully armed. Higher-level R3 gates, READY cancellation
- * and worker ACKs intentionally do not belong here.
+ * BeginStop is the short, nonblocking STOP edge. It changes the driver state
+ * to STOPPING, closes TIM2 triggers, disables DMA IRQ sources and captures a
+ * pre-quiescence partial-block diagnostic. Once it returns, a late DMA IRQ
+ * cannot publish a normal completion.
  */
-AdcDbmDriverStatus AdcDbmDriver_Stop(
+AdcDbmDriverStatus AdcDbmDriver_BeginStop(
+    AdcDbmDriverStopBeginReport *report);
+
+/* FinishStop is task-context-only completion of BeginStop (or ERROR). It
+ * performs bounded HAL quiescence and clears IRQ state only after DMA no
+ * longer owns sample memory. */
+AdcDbmDriverStatus AdcDbmDriver_FinishStop(
     AdcDbmDriverStopReport *report);
+
+/* Compatibility convenience. New R3 STOP paths call BeginStop and FinishStop
+ * separately so the worker protocol observes the hard edge independently. */
+AdcDbmDriverStatus AdcDbmDriver_Stop(AdcDbmDriverStopReport *report);
 
 /*
  * Snapshot is diagnostic only. During RUNNING, disabling CPU interrupts does

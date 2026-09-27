@@ -24,7 +24,9 @@ typedef struct
     uint32_t stop_serial;
     uint32_t rollback_ack_mask;
     uint32_t processing_entered;
+    uint32_t stop_begin_report_valid;
     uint32_t stop_report_valid;
+    AdcDbmDriverStopBeginReport stop_begin_report;
     AdcDbmDriverStopReport stop_report;
 } R3W3RuntimeStorage;
 
@@ -411,11 +413,11 @@ static R3LifecycleStatus HookRollback(void *context, const StreamRunTicket *tick
         return R3_LIFECYCLE_ROLLBACK_FAILED;
     }
     if (driver.hardware_owned != 0U &&
-        AdcDbmDriver_Stop(&runtime.stop_report) != ADC_DBM_DRIVER_OK)
+        AdcDbmDriver_BeginStop(&runtime.stop_begin_report) != ADC_DBM_DRIVER_OK)
     {
         return R3_LIFECYCLE_ROLLBACK_FAILED;
     }
-    runtime.stop_report_valid = driver.hardware_owned != 0U;
+    runtime.stop_begin_report_valid = driver.hardware_owned != 0U;
     if (runtime.control.run_valid != 0U)
     {
         taskENTER_CRITICAL();
@@ -432,6 +434,12 @@ static R3LifecycleStatus HookRollback(void *context, const StreamRunTicket *tick
             return R3_LIFECYCLE_ROLLBACK_FAILED;
         }
     }
+    if (driver.hardware_owned != 0U &&
+        AdcDbmDriver_FinishStop(&runtime.stop_report) != ADC_DBM_DRIVER_OK)
+    {
+        return R3_LIFECYCLE_ROLLBACK_FAILED;
+    }
+    runtime.stop_report_valid = driver.hardware_owned != 0U;
     if (runtime.authority_active != 0U)
     {
         if (StreamRunAuthority_ResetOffline(&runtime.stream_ticket) !=
@@ -551,7 +559,9 @@ R3W3RuntimeStatus R3W3Runtime_GetSnapshot(R3W3RuntimeSnapshot *out)
     out->rollback_ack_mask = runtime.rollback_ack_mask;
     out->runtime_fault = runtime.runtime_fault;
     out->processing_entered = runtime.processing_entered;
+    out->stop_begin_report_valid = runtime.stop_begin_report_valid;
     out->stop_report_valid = runtime.stop_report_valid;
+    out->stop_begin_report = runtime.stop_begin_report;
     out->stop_report = runtime.stop_report;
     if ((R3Lifecycle_GetSnapshot(&out->lifecycle) != R3_LIFECYCLE_OK) ||
         (AdcDbmDriver_GetSnapshot(&out->driver) != ADC_DBM_DRIVER_OK) ||

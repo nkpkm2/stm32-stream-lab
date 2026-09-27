@@ -57,7 +57,9 @@ typedef struct
     uint32_t rollback_ack_mask;
     uint32_t runtime_fault;
     uint32_t processing_entered;
+    uint32_t stop_begin_report_valid;
     uint32_t stop_report_valid;
+    AdcDbmDriverStopBeginReport stop_begin_report;
     AdcDbmDriverStopReport stop_report;
     R3LifecycleSnapshot lifecycle;
     AdcDbmDriverSnapshot driver;

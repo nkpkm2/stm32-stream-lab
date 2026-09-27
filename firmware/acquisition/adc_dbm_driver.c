@@ -339,6 +339,23 @@ static AdcDbmDriverStatus QuiesceOwnedHardware(
     return ADC_DBM_DRIVER_OK;
 }
 
+static void CaptureStopBeginReport(AdcDbmDriverStopBeginReport *report)
+{
+    uint32_t remaining = DMA2_Stream0->NDTR;
+
+    if (report == NULL)
+    {
+        return;
+    }
+    report->remaining_samples = remaining;
+    report->captured_samples = (remaining <= driver.arm.block_samples) ?
+        (driver.arm.block_samples - remaining) : 0U;
+    report->active_slot = CurrentCt();
+    report->dma_lisr_at_begin = DMA2->LISR;
+    report->adc_sr_at_begin = ADC1->SR;
+    report->tim2_cr1_after_begin = TIM2->CR1;
+}
+
 static AdcDbmDriverStatus AbortFailedArm(void)
 {
     HAL_StatusTypeDef dma_status;
@@ -939,11 +956,9 @@ AdcDbmDriverStatus AdcDbmDriver_FailActiveCompletion(
     return ADC_DBM_DRIVER_OK;
 }
 
-AdcDbmDriverStatus AdcDbmDriver_Stop(
-    AdcDbmDriverStopReport *report)
+AdcDbmDriverStatus AdcDbmDriver_BeginStop(
+    AdcDbmDriverStopBeginReport *report)
 {
-    AdcDbmDriverStatus stop_status;
-
     if ((driver.state != ADC_DBM_DRIVER_STATE_RUNNING) &&
         (driver.state != ADC_DBM_DRIVER_STATE_ARMED) &&
         (driver.state != ADC_DBM_DRIVER_STATE_ERROR))
@@ -957,6 +972,30 @@ AdcDbmDriverStatus AdcDbmDriver_Stop(
     }
 
     driver.state = ADC_DBM_DRIVER_STATE_STOPPING;
+    (void)HAL_TIM_Base_Stop(&htim2);
+    __HAL_TIM_SET_COUNTER(&htim2, 0U);
+    __HAL_TIM_CLEAR_FLAG(&htim2, TIM_FLAG_UPDATE);
+    DisableDmaInterrupts();
+    __DSB();
+    CaptureStopBeginReport(report);
+    return ADC_DBM_DRIVER_OK;
+}
+
+AdcDbmDriverStatus AdcDbmDriver_FinishStop(
+    AdcDbmDriverStopReport *report)
+{
+    AdcDbmDriverStatus stop_status;
+
+    if ((driver.state != ADC_DBM_DRIVER_STATE_STOPPING) &&
+        (driver.state != ADC_DBM_DRIVER_STATE_ERROR))
+    {
+        return ADC_DBM_DRIVER_INVALID_STATE;
+    }
+    if (driver.hardware_owned == 0U)
+    {
+        return ADC_DBM_DRIVER_INVALID_STATE;
+    }
+
     stop_status = QuiesceOwnedHardware(report, 1U);
 
     driver.state = (stop_status == ADC_DBM_DRIVER_OK) ?
@@ -964,6 +1003,18 @@ AdcDbmDriverStatus AdcDbmDriver_Stop(
         ADC_DBM_DRIVER_STATE_ERROR;
 
     return stop_status;
+}
+
+AdcDbmDriverStatus AdcDbmDriver_Stop(
+    AdcDbmDriverStopReport *report)
+{
+    AdcDbmDriverStatus status = AdcDbmDriver_BeginStop(NULL);
+
+    if (status != ADC_DBM_DRIVER_OK)
+    {
+        return status;
+    }
+    return AdcDbmDriver_FinishStop(report);
 }
 
 AdcDbmDriverStatus AdcDbmDriver_GetSnapshot(
