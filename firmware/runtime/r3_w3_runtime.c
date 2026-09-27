@@ -23,6 +23,9 @@ typedef struct
     uint32_t runtime_fault;
     uint32_t stop_serial;
     uint32_t rollback_ack_mask;
+    uint32_t processing_entered;
+    uint32_t stop_report_valid;
+    AdcDbmDriverStopReport stop_report;
 } R3W3RuntimeStorage;
 
 static R3W3RuntimeStorage runtime;
@@ -137,6 +140,11 @@ static void ProcessBlock(void *context, const StreamOwnershipDescriptor *ownersh
 {
     (void)context;
     (void)ownership;
+    runtime.processing_entered = 1U;
+    if (runtime.config.processing_hold_ticks != 0U)
+    {
+        vTaskDelay(runtime.config.processing_hold_ticks);
+    }
 }
 
 static uint32_t InterferenceSegment(void *context)
@@ -222,7 +230,8 @@ static void CompleteCallback(const AdcDbmDriverCompletionEvent *event, void *con
         {
             authority_status = StreamRunAuthority_PublishReadyFromISR(
                 &runtime.stream_ticket, &descriptor, &higher_priority_task_woken);
-            if (authority_status == STREAM_RUN_AUTHORITY_OK)
+            if ((authority_status == STREAM_RUN_AUTHORITY_OK) &&
+                (runtime.config.suppress_processing_notify == 0U))
             {
                 if (R3WorkerTasks_NotifyProcessingWorkFromISR(
                         &higher_priority_task_woken) != R3_WORKER_TASKS_OK)
@@ -395,7 +404,6 @@ static R3LifecycleStatus HookCommit(void *context, const StreamRunTicket *ticket
 static R3LifecycleStatus HookRollback(void *context, const StreamRunTicket *ticket)
 {
     AdcDbmDriverSnapshot driver;
-    AdcDbmDriverStopReport stop;
     (void)context;
     (void)ticket;
     if (AdcDbmDriver_GetSnapshot(&driver) != ADC_DBM_DRIVER_OK)
@@ -403,10 +411,11 @@ static R3LifecycleStatus HookRollback(void *context, const StreamRunTicket *tick
         return R3_LIFECYCLE_ROLLBACK_FAILED;
     }
     if (driver.hardware_owned != 0U &&
-        AdcDbmDriver_Stop(&stop) != ADC_DBM_DRIVER_OK)
+        AdcDbmDriver_Stop(&runtime.stop_report) != ADC_DBM_DRIVER_OK)
     {
         return R3_LIFECYCLE_ROLLBACK_FAILED;
     }
+    runtime.stop_report_valid = driver.hardware_owned != 0U;
     if (runtime.control.run_valid != 0U)
     {
         taskENTER_CRITICAL();
@@ -541,6 +550,9 @@ R3W3RuntimeStatus R3W3Runtime_GetSnapshot(R3W3RuntimeSnapshot *out)
     out->current_stop_valid = runtime.control.stop_valid;
     out->rollback_ack_mask = runtime.rollback_ack_mask;
     out->runtime_fault = runtime.runtime_fault;
+    out->processing_entered = runtime.processing_entered;
+    out->stop_report_valid = runtime.stop_report_valid;
+    out->stop_report = runtime.stop_report;
     if ((R3Lifecycle_GetSnapshot(&out->lifecycle) != R3_LIFECYCLE_OK) ||
         (AdcDbmDriver_GetSnapshot(&out->driver) != ADC_DBM_DRIVER_OK) ||
         (StreamOwnership_GetSnapshot(&out->ownership) != STREAM_OWNERSHIP_OK) ||

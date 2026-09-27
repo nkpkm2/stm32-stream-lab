@@ -41,6 +41,11 @@ typedef struct
      * enabled by the ordinary runtime configuration. */
     uint32_t inject_arm_failure;
     uint32_t inject_commit_failure;
+    /* Target-harness-only STOP-edge controls.  Production startup leaves both
+     * at zero: completions notify Processing immediately and callbacks do not
+     * deliberately hold a lease. */
+    uint32_t suppress_processing_notify;
+    uint32_t processing_hold_ticks;
 } R3W3RuntimeConfig;
 
 typedef struct
@@ -51,6 +56,9 @@ typedef struct
     uint32_t current_stop_valid;
     uint32_t rollback_ack_mask;
     uint32_t runtime_fault;
+    uint32_t processing_entered;
+    uint32_t stop_report_valid;
+    AdcDbmDriverStopReport stop_report;
     R3LifecycleSnapshot lifecycle;
     AdcDbmDriverSnapshot driver;
     StreamRunAuthoritySnapshot authority;
