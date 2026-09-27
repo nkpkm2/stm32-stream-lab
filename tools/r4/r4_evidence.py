@@ -27,12 +27,14 @@ SYNTHETIC_SCHEMA_WORD = 123
 SYNTHETIC_DONE_MASK_WORD = 124
 SYNTHETIC_A_ITERATIONS_WORD = 125
 SYNTHETIC_B_ITERATIONS_WORD = 126
-SYNTHETIC_A_CYCLES_WORD = 127
-SYNTHETIC_B_CYCLES_WORD = 129
-SYNTHETIC_WINDOW_TASK_WORD = 131
-SYNTHETIC_WINDOW_IRQ_WORD = 133
-SYNTHETIC_WINDOW_IDLE_WORD = 135
-SYNTHETIC_WINDOW_UNCLASSIFIED_WORD = 137
+WINDOW_CYCLES_WORD = 20
+SYNTHETIC_A_CYCLES_WORD = 128
+SYNTHETIC_B_CYCLES_WORD = 130
+SYNTHETIC_WINDOW_TASK_WORD = 132
+SYNTHETIC_WINDOW_IRQ_WORD = 134
+SYNTHETIC_WINDOW_IDLE_WORD = 136
+SYNTHETIC_WINDOW_UNCLASSIFIED_WORD = 138
+DMA_WINDOW_SNAPSHOT_WORD = 140
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -42,6 +44,7 @@ CASES = {
     "t04-commit-budget-a": ("COMMIT_BUDGET", 5, 65000, 75),
     "t04-commit-budget-b": ("COMMIT_BUDGET", 5, 65000, 75),
     "task-synthetic": ("SYNTHETIC_TASKS", 6, 0, 8),
+    "dma-window": ("DMA_WINDOW", 7, 0, 8),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -194,8 +197,25 @@ def evaluate(case: str, words: list[int]) -> dict:
                 "synthetic_owner_ratio": task_a > (task_b * 2),
                 "synthetic_idle": window_idle > 0,
                 "synthetic_conservation": (
-                    word64(19) == window_task + window_irq + window_idle +
+                    word64(WINDOW_CYCLES_WORD) == window_task + window_irq + window_idle +
                     window_unclassified),
+            })
+    if case == "dma-window":
+        if len(words) <= DMA_WINDOW_SNAPSHOT_WORD + 10:
+            checks["dma_window_extension_present"] = False
+        else:
+            snapshot = DMA_WINDOW_SNAPSHOT_WORD
+            checks.update({
+                "dma_window_snapshot": words[snapshot] == 0,
+                "dma_window_configured": words[snapshot + 1] == 1,
+                "dma_window_opened": words[snapshot + 2] == 1,
+                "dma_window_closed": words[snapshot + 3] == 1,
+                "dma_window_sequences": (
+                    words[snapshot + 4] == 1 and words[snapshot + 5] == 4 and
+                    words[snapshot + 6] >= 5 and words[snapshot + 7] == 0),
+                "dma_window_statuses": (
+                    words[snapshot + 8] == 0 and words[snapshot + 9] == 0 and
+                    words[snapshot + 10] == 0),
             })
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}

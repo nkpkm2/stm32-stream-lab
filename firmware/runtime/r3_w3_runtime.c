@@ -4,6 +4,9 @@
 #include <string.h>
 
 #include "adc_dbm_driver.h"
+#if defined(STREAM_LAB_R4_RUNTIME)
+#include "r4_runtime_target.h"
+#endif
 #include "r3_command_ledger.h"
 #include "r3_result_store.h"
 #include "r3_worker_tasks.h"
@@ -185,6 +188,17 @@ static void CompleteCallback(const AdcDbmDriverCompletionEvent *event, void *con
         LatchFault();
         return;
     }
+#if defined(STREAM_LAB_R4_RUNTIME)
+    /* S0/S1 accounting is bound to the real completion sequence while this
+     * DMA IRQ is active.  A boundary fault rejects the completion before any
+     * ownership mutation, then follows R3's existing fail-closed path. */
+    if (R4_RuntimeTarget_OnDmaInputBoundary(event->sequence) != R4_RUNTIME_OK)
+    {
+        (void)AdcDbmDriver_FailActiveCompletion(event);
+        LatchFault();
+        return;
+    }
+#endif
 
     authority_status = StreamRunAuthority_TakeFreeFromISR(
         &runtime.stream_ticket, &replacement, &higher_priority_task_woken);

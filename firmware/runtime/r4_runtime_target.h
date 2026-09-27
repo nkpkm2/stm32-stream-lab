@@ -18,6 +18,30 @@ R4_RuntimeStatus R4_RuntimeTarget_CloseWindow(uint32_t window);
 R4_RuntimeStatus R4_RuntimeTarget_Checkpoint(void);
 R4_RuntimeStatus R4_RuntimeTarget_ReadNow(uint64_t *out);
 
+/* A CPU accounting window belongs to the acquisition stream, not to a test
+ * task.  Arm it before the stream starts; the production DMA completion
+ * callback then opens it at S0 and seals it at S1. */
+typedef struct
+{
+    uint32_t configured;
+    uint32_t opened;
+    uint32_t closed;
+    uint32_t window;
+    uint32_t open_sequence;
+    uint32_t close_sequence;
+    uint32_t last_sequence;
+    uint32_t first_error_sequence;
+    R4_RuntimeStatus open_status;
+    R4_RuntimeStatus close_status;
+    R4_RuntimeStatus boundary_status;
+} R4_DmaWindowSnapshot;
+
+R4_RuntimeStatus R4_RuntimeTarget_ArmDmaWindow(uint32_t window,
+    uint32_t open_sequence, uint32_t close_sequence);
+R4_RuntimeStatus R4_RuntimeTarget_OnDmaInputBoundary(uint32_t sequence);
+R4_RuntimeStatus R4_RuntimeTarget_GetDmaWindowSnapshot(
+    R4_DmaWindowSnapshot *out);
+
 typedef struct
 {
     uint32_t active;

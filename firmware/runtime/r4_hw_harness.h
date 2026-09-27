@@ -14,7 +14,15 @@ extern "C" {
 #define R4_HW_SYNTHETIC_SCHEMA_VERSION UINT32_C(1)
 /* Target-result extension ABI consumed by tools/r4/r4_evidence.py.  The
  * stable eleven-word prefix intentionally remains schema v1. */
+#define R4_HW_WINDOW_CYCLES_WORD 20U
 #define R4_HW_SYNTHETIC_CREATE_MASK_WORD 122U
+#define R4_HW_SYNTHETIC_A_CYCLES_WORD 128U
+#define R4_HW_SYNTHETIC_B_CYCLES_WORD 130U
+#define R4_HW_SYNTHETIC_WINDOW_TASK_WORD 132U
+#define R4_HW_SYNTHETIC_WINDOW_IRQ_WORD 134U
+#define R4_HW_SYNTHETIC_WINDOW_IDLE_WORD 136U
+#define R4_HW_SYNTHETIC_WINDOW_UNCLASSIFIED_WORD 138U
+#define R4_HW_DMA_WINDOW_SNAPSHOT_WORD 140U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -121,11 +129,46 @@ typedef struct
     uint64_t synthetic_window_irq_cycles;
     uint64_t synthetic_window_idle_cycles;
     uint64_t synthetic_window_unclassified_cycles;
+    uint32_t dma_window_snapshot_status;
+    uint32_t dma_window_configured;
+    uint32_t dma_window_opened;
+    uint32_t dma_window_closed;
+    uint32_t dma_window_open_sequence;
+    uint32_t dma_window_close_sequence;
+    uint32_t dma_window_last_sequence;
+    uint32_t dma_window_first_error_sequence;
+    uint32_t dma_window_open_status;
+    uint32_t dma_window_close_status;
+    uint32_t dma_window_boundary_status;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
     (R4_HW_SYNTHETIC_CREATE_MASK_WORD * sizeof(uint32_t)),
     "R4 synthetic evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, dma_window_snapshot_status) ==
+    (R4_HW_DMA_WINDOW_SNAPSHOT_WORD * sizeof(uint32_t)),
+    "R4 DMA-window evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, window_cycles) ==
+    (R4_HW_WINDOW_CYCLES_WORD * sizeof(uint32_t)),
+    "R4 window-cycle evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, synthetic_task_a_cycles) ==
+    (R4_HW_SYNTHETIC_A_CYCLES_WORD * sizeof(uint32_t)),
+    "R4 synthetic-A evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, synthetic_task_b_cycles) ==
+    (R4_HW_SYNTHETIC_B_CYCLES_WORD * sizeof(uint32_t)),
+    "R4 synthetic-B evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, synthetic_window_task_cycles) ==
+    (R4_HW_SYNTHETIC_WINDOW_TASK_WORD * sizeof(uint32_t)),
+    "R4 synthetic-task-window evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, synthetic_window_irq_cycles) ==
+    (R4_HW_SYNTHETIC_WINDOW_IRQ_WORD * sizeof(uint32_t)),
+    "R4 synthetic-IRQ-window evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, synthetic_window_idle_cycles) ==
+    (R4_HW_SYNTHETIC_WINDOW_IDLE_WORD * sizeof(uint32_t)),
+    "R4 synthetic-idle-window evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, synthetic_window_unclassified_cycles) ==
+    (R4_HW_SYNTHETIC_WINDOW_UNCLASSIFIED_WORD * sizeof(uint32_t)),
+    "R4 synthetic-unclassified-window evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 

@@ -12,6 +12,7 @@ static uint32_t target_initialized;
 static R4_RuntimeStatus target_boot_error = R4_RUNTIME_NOT_INITIALIZED;
 static R4_CompletionTimingSnapshot completion_timing;
 static R4_DmaTailSnapshot dma_tail;
+static R4_DmaWindowSnapshot dma_window;
 static R4_RuntimeHealthSnapshot runtime_health;
 static uintptr_t target_idle_task;
 #if defined(STREAM_LAB_R4_HW)
@@ -124,6 +125,10 @@ R4_RuntimeStatus R4_RuntimeTarget_Initialize(void)
         dma_tail.dma_irq_count = 0U;
         dma_tail.dma_yield_requested_count = 0U;
         dma_tail.dma_no_yield_count = 0U;
+        dma_window.configured = 0U;
+        dma_window.open_status = R4_RUNTIME_NOT_INITIALIZED;
+        dma_window.close_status = R4_RUNTIME_NOT_INITIALIZED;
+        dma_window.boundary_status = R4_RUNTIME_NOT_INITIALIZED;
         runtime_health.first_fault = R4_RUNTIME_INFRA_NONE;
         runtime_health.fail_closed_requested = 0U;
         runtime_health.monitor_service_count = 0U;
@@ -219,6 +224,124 @@ R4_RuntimeStatus R4_RuntimeTarget_OpenWindow(uint32_t window)
 R4_RuntimeStatus R4_RuntimeTarget_CloseWindow(uint32_t window)
 {
     return Apply(R4_RUNTIME_EVENT_WINDOW_CLOSE, (uintptr_t)window);
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_ArmDmaWindow(uint32_t window,
+    uint32_t open_sequence, uint32_t close_sequence)
+{
+    uint32_t saved_mask;
+
+    if ((target_initialized == 0U) || (window >= R4_RUNTIME_WINDOW_COUNT) ||
+        (open_sequence == 0U) || (close_sequence <= open_sequence))
+    {
+        return target_initialized != 0U ? R4_RUNTIME_INVALID_ARGUMENT :
+            target_boot_error;
+    }
+    saved_mask = TargetSaveAndDisable(NULL);
+    if (dma_window.configured != 0U)
+    {
+        TargetRestore(saved_mask, NULL);
+        return R4_RUNTIME_WINDOW_ERROR;
+    }
+    dma_window.configured = 1U;
+    dma_window.opened = 0U;
+    dma_window.closed = 0U;
+    dma_window.window = window;
+    dma_window.open_sequence = open_sequence;
+    dma_window.close_sequence = close_sequence;
+    dma_window.last_sequence = 0U;
+    dma_window.first_error_sequence = 0U;
+    dma_window.open_status = R4_RUNTIME_NOT_INITIALIZED;
+    dma_window.close_status = R4_RUNTIME_NOT_INITIALIZED;
+    dma_window.boundary_status = R4_RUNTIME_OK;
+    TargetRestore(saved_mask, NULL);
+    return R4_RUNTIME_OK;
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_OnDmaInputBoundary(uint32_t sequence)
+{
+    R4_RuntimeEventKind kind = R4_RUNTIME_EVENT_CHECKPOINT;
+    uint32_t window = 0U;
+    uint32_t action = 0U;
+    uint32_t saved_mask;
+    R4_RuntimeStatus status;
+
+    if ((target_initialized == 0U) || (sequence == 0U))
+    {
+        return target_initialized != 0U ? R4_RUNTIME_INVALID_ARGUMENT :
+            target_boot_error;
+    }
+    saved_mask = TargetSaveAndDisable(NULL);
+    if (dma_window.configured == 0U)
+    {
+        TargetRestore(saved_mask, NULL);
+        return R4_RUNTIME_OK;
+    }
+    dma_window.last_sequence = sequence;
+    window = dma_window.window;
+    if ((dma_window.opened == 0U) && (sequence == dma_window.open_sequence))
+    {
+        action = 1U;
+        kind = R4_RUNTIME_EVENT_WINDOW_OPEN;
+    }
+    else if ((dma_window.opened != 0U) && (dma_window.closed == 0U) &&
+             (sequence == dma_window.close_sequence))
+    {
+        action = 2U;
+        kind = R4_RUNTIME_EVENT_WINDOW_CLOSE;
+    }
+    else if (((dma_window.opened == 0U) && (sequence > dma_window.open_sequence)) ||
+             ((dma_window.closed == 0U) && (sequence > dma_window.close_sequence)))
+    {
+        dma_window.boundary_status = R4_RUNTIME_WINDOW_ERROR;
+        if (dma_window.first_error_sequence == 0U)
+        {
+            dma_window.first_error_sequence = sequence;
+        }
+        TargetRestore(saved_mask, NULL);
+        return R4_RUNTIME_WINDOW_ERROR;
+    }
+    TargetRestore(saved_mask, NULL);
+
+    if (action == 0U)
+    {
+        return R4_RUNTIME_OK;
+    }
+    status = Apply(kind, (uintptr_t)window);
+    saved_mask = TargetSaveAndDisable(NULL);
+    if (action == 1U)
+    {
+        dma_window.open_status = status;
+        if (status == R4_RUNTIME_OK) dma_window.opened = 1U;
+    }
+    else
+    {
+        dma_window.close_status = status;
+        if (status == R4_RUNTIME_OK) dma_window.closed = 1U;
+    }
+    if (status != R4_RUNTIME_OK)
+    {
+        dma_window.boundary_status = status;
+        if (dma_window.first_error_sequence == 0U)
+        {
+            dma_window.first_error_sequence = sequence;
+        }
+    }
+    TargetRestore(saved_mask, NULL);
+    return status;
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_GetDmaWindowSnapshot(
+    R4_DmaWindowSnapshot *out)
+{
+    uint32_t saved_mask;
+
+    if (out == NULL) return R4_RUNTIME_INVALID_ARGUMENT;
+    if (target_initialized == 0U) return target_boot_error;
+    saved_mask = TargetSaveAndDisable(NULL);
+    *out = dma_window;
+    TargetRestore(saved_mask, NULL);
+    return R4_RuntimeLedger_GetStatus(&target_ledger);
 }
 
 R4_RuntimeStatus R4_RuntimeTarget_Checkpoint(void)

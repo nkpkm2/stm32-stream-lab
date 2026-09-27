@@ -20,6 +20,10 @@
 #define R4_HW_SYNTHETIC_B_ITERATIONS 10000U
 #define R4_HW_SYNTHETIC_DONE_A UINT32_C(1)
 #define R4_HW_SYNTHETIC_DONE_B UINT32_C(2)
+#define R4_HW_DMA_WINDOW_OPEN_SEQUENCE 1U
+#define R4_HW_DMA_WINDOW_CLOSE_SEQUENCE 4U
+#define R4_HW_DMA_WINDOW_MIN_POST_CLOSE_SEQUENCE 5U
+#define R4_HW_DMA_WINDOW_WAIT_TICKS 2000U
 #ifndef R4_HW_SOAK_MS
 #define R4_HW_SOAK_MS 0U
 #endif
@@ -45,6 +49,7 @@ static TaskHandle_t synthetic_a_task;
 static TaskHandle_t synthetic_b_task;
 #endif
 
+#if (R4_HW_CASE_ID == 4U) || (R4_HW_CASE_ID == 6U)
 static uint64_t OwnerCycles(const R4_RuntimeOwnerBucket *buckets,
     uint32_t capacity, uintptr_t identity)
 {
@@ -58,6 +63,7 @@ static uint64_t OwnerCycles(const R4_RuntimeOwnerBucket *buckets,
     }
     return 0U;
 }
+#endif
 
 static void FailInvariant(R4HwInvariant invariant)
 {
@@ -199,6 +205,27 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
+#elif (R4_HW_CASE_ID == 7U)
+    if ((g_r4_hw_result.lifecycle_init_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_start_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_stop_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.dma_window_snapshot_status != ok) ||
+        (g_r4_hw_result.dma_window_configured != 1U) ||
+        (g_r4_hw_result.dma_window_opened != 1U) ||
+        (g_r4_hw_result.dma_window_closed != 1U) ||
+        (g_r4_hw_result.dma_window_open_sequence !=
+         R4_HW_DMA_WINDOW_OPEN_SEQUENCE) ||
+        (g_r4_hw_result.dma_window_close_sequence !=
+         R4_HW_DMA_WINDOW_CLOSE_SEQUENCE) ||
+        (g_r4_hw_result.dma_window_last_sequence <
+         R4_HW_DMA_WINDOW_MIN_POST_CLOSE_SEQUENCE) ||
+        (g_r4_hw_result.dma_window_first_error_sequence != 0U) ||
+        (g_r4_hw_result.dma_window_open_status != ok) ||
+        (g_r4_hw_result.dma_window_close_status != ok) ||
+        (g_r4_hw_result.dma_window_boundary_status != ok))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -267,7 +294,7 @@ static void HarnessTask(void *argument)
 #if (R4_HW_CASE_ID == 5U)
     R4_CompletionTimingSnapshot timing;
 #endif
-#if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U)
+#if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U)
     R3W3RuntimeConfig config;
     R3LifecycleStartRequest start;
     R3LifecycleStartTicket ticket;
@@ -275,14 +302,30 @@ static void HarnessTask(void *argument)
     R4_DmaTailSnapshot dma_tail;
     R4_RuntimeHealthSnapshot health;
     uint64_t soak_now;
+#if R4_HW_SOAK_MS > 0U
     uint32_t soak_elapsed_ms;
+#endif
+#endif
+#if (R4_HW_CASE_ID == 7U)
+    R4_DmaWindowSnapshot dma_window;
+    R3W3RuntimeSnapshot runtime_snapshot;
+    uint32_t dma_window_wait_tick;
 #endif
     R4_TickService tick_snapshot;
     R4_TickServiceTiming tick_timing;
     R4_TickServiceTargetCallbacks tick_callbacks;
 
     (void)argument;
+#if (R4_HW_CASE_ID == 7U)
+    (void)memset(&dma_window, 0, sizeof(dma_window));
+#endif
+#if (R4_HW_CASE_ID == 7U)
+    g_r4_hw_result.window_open_status = (uint32_t)
+        R4_RuntimeTarget_ArmDmaWindow(0U, R4_HW_DMA_WINDOW_OPEN_SEQUENCE,
+            R4_HW_DMA_WINDOW_CLOSE_SEQUENCE);
+#else
     g_r4_hw_result.window_open_status = (uint32_t)R4_RuntimeTarget_OpenWindow(0U);
+#endif
     g_r4_hw_result.tick_snapshot_status = (uint32_t)
         R4_TickServiceTarget_GetSnapshot(&tick_snapshot);
     tick_callbacks.commit_start = HarnessTickStart;
@@ -399,7 +442,7 @@ static void HarnessTask(void *argument)
      * tasks finish and the actual Idle task receives measurable residency. */
     vTaskDelay(pdMS_TO_TICKS(20U));
 #endif
-#if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U)
+#if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U)
     (void)memset(&config, 0, sizeof(config));
     config.boot_id = R4_HW_BOOT;
     config.k = 4U;
@@ -444,6 +487,29 @@ static void HarnessTask(void *argument)
                 soak_elapsed_ms += delay_ms;
             }
 #endif
+#if (R4_HW_CASE_ID == 7U)
+            /* S0/S1 are not task calls: wait until real DMA completions have
+             * crossed S1 and at least one later completion proves the sealed
+             * window is no longer being extended. */
+            for (dma_window_wait_tick = 0U;
+                 dma_window_wait_tick < R4_HW_DMA_WINDOW_WAIT_TICKS;
+                 ++dma_window_wait_tick)
+            {
+                if ((R3W3Runtime_GetSnapshot(&runtime_snapshot) ==
+                     R3_W3_RUNTIME_OK) &&
+                    (runtime_snapshot.driver.completion_count >=
+                     R4_HW_DMA_WINDOW_MIN_POST_CLOSE_SEQUENCE))
+                {
+                    break;
+                }
+                vTaskDelay(1U);
+            }
+            if (R3W3Runtime_GetSnapshot(&runtime_snapshot) == R3_W3_RUNTIME_OK)
+            {
+                g_r4_hw_result.dma_window_last_sequence =
+                    runtime_snapshot.driver.completion_count;
+            }
+#endif
             (void)R4_RuntimeTarget_ReadNow(&soak_now);
             g_r4_hw_result.soak_end_cycle = soak_now;
             ledger = R4_RuntimeTarget_GetLedger();
@@ -473,6 +539,25 @@ static void HarnessTask(void *argument)
             stop.stop_id = UINT32_C(0x52340002);
             g_r4_hw_result.lifecycle_stop_status =
                 (uint32_t)R3W3Runtime_Stop(&stop);
+#if (R4_HW_CASE_ID == 7U)
+            g_r4_hw_result.dma_window_snapshot_status = (uint32_t)
+                R4_RuntimeTarget_GetDmaWindowSnapshot(&dma_window);
+            g_r4_hw_result.dma_window_configured = dma_window.configured;
+            g_r4_hw_result.dma_window_opened = dma_window.opened;
+            g_r4_hw_result.dma_window_closed = dma_window.closed;
+            g_r4_hw_result.dma_window_open_sequence = dma_window.open_sequence;
+            g_r4_hw_result.dma_window_close_sequence = dma_window.close_sequence;
+            if (dma_window.last_sequence > g_r4_hw_result.dma_window_last_sequence)
+            {
+                g_r4_hw_result.dma_window_last_sequence = dma_window.last_sequence;
+            }
+            g_r4_hw_result.dma_window_first_error_sequence =
+                dma_window.first_error_sequence;
+            g_r4_hw_result.dma_window_open_status = (uint32_t)dma_window.open_status;
+            g_r4_hw_result.dma_window_close_status = (uint32_t)dma_window.close_status;
+            g_r4_hw_result.dma_window_boundary_status =
+                (uint32_t)dma_window.boundary_status;
+#endif
 #if (R4_HW_CASE_ID == 1U)
             /* T12's no-switch arm: the real DMA vector is pended only after
              * sampling is stopped and with no DMA status bit set.  It is not
@@ -510,7 +595,13 @@ static void HarnessTask(void *argument)
     vTaskDelay(pdMS_TO_TICKS(2U));
 #endif
     g_r4_hw_result.checkpoint_status = (uint32_t)R4_RuntimeTarget_Checkpoint();
+#if (R4_HW_CASE_ID == 7U)
+    /* The actual S1 callback already closed the formal window.  Recording a
+     * second CLOSE would turn a production proof into an artificial error. */
+    g_r4_hw_result.window_close_status = g_r4_hw_result.dma_window_close_status;
+#else
     g_r4_hw_result.window_close_status = (uint32_t)R4_RuntimeTarget_CloseWindow(0U);
+#endif
     ledger = R4_RuntimeTarget_GetLedger();
     if (ledger != NULL)
     {
