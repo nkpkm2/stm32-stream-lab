@@ -530,8 +530,11 @@ def evaluate(case: str, words: list[int]) -> dict:
                 words[RESPONSE_START_RAW_WORD] != 0 and
                 words[RESPONSE_COMPLETE_RAW_WORD] != 0 and
                 0 < work <= response <= 5000000)
-            checks["response_owner_contains_known_work"] = (
-                word64(RESPONSE_OWNER_CYCLES_WORD) >= work)
+            # Direct DWT endpoints and RuntimeEvent samples are distinct
+            # boundary observations.  Require >=99.0% sealed-owner coverage,
+            # preserving a bounded C-level/transaction-boundary blind zone.
+            checks["response_owner_known_work_coverage"] = (
+                word64(RESPONSE_OWNER_CYCLES_WORD) * 1000 >= work * 990)
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 

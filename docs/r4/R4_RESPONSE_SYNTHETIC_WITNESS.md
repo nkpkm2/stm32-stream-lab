@@ -19,8 +19,10 @@ The evidence reader accepts a run only when:
 - the worker was created and completed;
 - direct release-to-completion and start-to-completion intervals are positive,
   ordered, and below the fixed 5,000,000-cycle directed-case bound; and
-- the sealed worker owner bucket contains at least the independently observed
-  fixed-work interval.
+- the sealed worker owner bucket covers at least 99.0% of the independently
+  observed fixed-work interval.  The fixed margin is for the two distinct
+  direct-DWT versus RuntimeEvent boundary observations, not an unbounded
+  tolerance for missing accounting.
 
 This is a controlled accounting interpretation check, not a claim about DSP
 end-to-end latency or a production response-time limit.  Raw DWT endpoints are

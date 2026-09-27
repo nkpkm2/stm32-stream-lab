@@ -32,6 +32,7 @@
 #define R4_HW_DMA_WINDOW_WAIT_TICKS 2000U
 #define R4_HW_RESPONSE_WORK_ITERATIONS 50000U
 #define R4_HW_RESPONSE_MAX_CYCLES UINT32_C(5000000)
+#define R4_HW_RESPONSE_OWNER_COVERAGE_PERMILLE UINT64_C(990)
 #ifndef R4_HW_SOAK_MS
 #define R4_HW_SOAK_MS 0U
 #endif
@@ -499,8 +500,9 @@ static void EvaluateFormalInvariants(void)
         (g_r4_hw_result.response_work_raw >
          (g_r4_hw_result.response_complete_raw -
           g_r4_hw_result.response_release_raw)) ||
-        (g_r4_hw_result.response_owner_cycles <
-         (uint64_t)g_r4_hw_result.response_work_raw))
+        ((g_r4_hw_result.response_owner_cycles * UINT64_C(1000)) <
+         ((uint64_t)g_r4_hw_result.response_work_raw *
+          R4_HW_RESPONSE_OWNER_COVERAGE_PERMILLE)))
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }

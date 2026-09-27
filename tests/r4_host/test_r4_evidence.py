@@ -197,4 +197,4 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("response-synthetic", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["response_direct_wall_endpoints"])
-        self.assertTrue(verdict["checks"]["response_owner_contains_known_work"])
+        self.assertTrue(verdict["checks"]["response_owner_known_work_coverage"])
