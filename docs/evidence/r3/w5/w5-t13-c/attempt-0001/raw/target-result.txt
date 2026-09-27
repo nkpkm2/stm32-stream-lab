@@ -1,0 +1,31 @@
+      -------------------------------------------------------------------
+                       STM32CubeProgrammer v2.23.0                  
+      -------------------------------------------------------------------
+
+ST-LINK SN  : 067AFF545754655087043860
+ST-LINK FW  : V2J48M35
+Board       : --
+Voltage     : 3.20V
+SWD freq    : 4000 KHz
+Connect mode: Under Reset
+Reset mode  : Hardware reset
+Device ID   : 0x421
+Revision ID : Rev A
+Device name : STM32F446xx
+NVM size    : 512 KBytes
+Device type : MCU
+Device CPU  : Cortex-M4
+BL Version  : 0x90
+
+
+Reading 32-bit memory content
+  Size          : 88 Bytes
+  Address:      : 0x2000352C
+0x2000352C : 52335735 00000001 00000002 00000001
+0x2000353C : 00000000 00000000 00000000 00000003
+0x2000354C : 00000041 00000001 00000001 00000001
+0x2000355C : 00000001 00000001 00000000 00000051
+0x2000356C : 00000000 00000000 00000000 00000000
+0x2000357C : 00000000 A55C0DE5
+
+
