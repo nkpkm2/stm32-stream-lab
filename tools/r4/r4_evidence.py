@@ -21,7 +21,18 @@ import time
 
 PHASES = ("H0", "H1", "H2", "H3", "H4", "H5")
 MAGIC, COMPLETE, SCHEMA = 0x52344857, 0x5234444E, 1
-PREFIX_WORDS, READ_BYTES = 11, 512
+PREFIX_WORDS, READ_BYTES = 11, 1024
+SYNTHETIC_CREATE_MASK_WORD = 122
+SYNTHETIC_SCHEMA_WORD = 123
+SYNTHETIC_DONE_MASK_WORD = 124
+SYNTHETIC_A_ITERATIONS_WORD = 125
+SYNTHETIC_B_ITERATIONS_WORD = 126
+SYNTHETIC_A_CYCLES_WORD = 127
+SYNTHETIC_B_CYCLES_WORD = 129
+SYNTHETIC_WINDOW_TASK_WORD = 131
+SYNTHETIC_WINDOW_IRQ_WORD = 133
+SYNTHETIC_WINDOW_IDLE_WORD = 135
+SYNTHETIC_WINDOW_UNCLASSIFIED_WORD = 137
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -160,6 +171,32 @@ def evaluate(case: str, words: list[int]) -> dict:
         "init_status": words[5] == 0,
         "completed_magic": words[10] == COMPLETE,
     }
+    if case == "task-synthetic":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= SYNTHETIC_WINDOW_UNCLASSIFIED_WORD + 1:
+            checks["synthetic_extension_present"] = False
+        else:
+            task_a = word64(SYNTHETIC_A_CYCLES_WORD)
+            task_b = word64(SYNTHETIC_B_CYCLES_WORD)
+            window_task = word64(SYNTHETIC_WINDOW_TASK_WORD)
+            window_irq = word64(SYNTHETIC_WINDOW_IRQ_WORD)
+            window_idle = word64(SYNTHETIC_WINDOW_IDLE_WORD)
+            window_unclassified = word64(SYNTHETIC_WINDOW_UNCLASSIFIED_WORD)
+            checks.update({
+                "synthetic_schema": words[SYNTHETIC_SCHEMA_WORD] == 1,
+                "synthetic_created": words[SYNTHETIC_CREATE_MASK_WORD] == 3,
+                "synthetic_done": words[SYNTHETIC_DONE_MASK_WORD] == 3,
+                "synthetic_iterations": (
+                    words[SYNTHETIC_A_ITERATIONS_WORD] == 50000 and
+                    words[SYNTHETIC_B_ITERATIONS_WORD] == 10000),
+                "synthetic_owner_ratio": task_a > (task_b * 2),
+                "synthetic_idle": window_idle > 0,
+                "synthetic_conservation": (
+                    word64(19) == window_task + window_irq + window_idle +
+                    window_unclassified),
+            })
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 

@@ -176,7 +176,9 @@ static void EvaluateFormalInvariants(void)
         FailInvariant(R4_HW_INVARIANT_HEALTH);
     }
 #elif (R4_HW_CASE_ID == 6U)
-    if ((g_r4_hw_result.synthetic_task_create_mask !=
+    if ((g_r4_hw_result.synthetic_schema_version !=
+         R4_HW_SYNTHETIC_SCHEMA_VERSION) ||
+        (g_r4_hw_result.synthetic_task_create_mask !=
          (R4_HW_SYNTHETIC_DONE_A | R4_HW_SYNTHETIC_DONE_B)) ||
         (g_r4_hw_result.synthetic_task_done_mask !=
          (R4_HW_SYNTHETIC_DONE_A | R4_HW_SYNTHETIC_DONE_B)) ||
@@ -600,6 +602,9 @@ void R4_HW_Start(void)
     g_r4_hw_result.magic = R4_HW_MAGIC;
     g_r4_hw_result.case_id = R4_HW_CASE_ID;
     g_r4_hw_result.schema_version = R4_HW_SCHEMA_VERSION;
+#if (R4_HW_CASE_ID == 6U)
+    g_r4_hw_result.synthetic_schema_version = R4_HW_SYNTHETIC_SCHEMA_VERSION;
+#endif
     g_r4_hw_result.init_status = (uint32_t)R4_RuntimeTarget_Initialize();
     if (g_r4_hw_result.init_status != (uint32_t)R4_RUNTIME_OK)
     {

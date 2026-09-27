@@ -1,6 +1,7 @@
 #ifndef R4_HW_HARNESS_H
 #define R4_HW_HARNESS_H
 
+#include <stddef.h>
 #include <stdint.h>
 
 #ifdef __cplusplus
@@ -10,6 +11,10 @@ extern "C" {
 #define R4_HW_MAGIC UINT32_C(0x52344857)
 #define R4_HW_COMPLETE UINT32_C(0x5234444E)
 #define R4_HW_SCHEMA_VERSION UINT32_C(1)
+#define R4_HW_SYNTHETIC_SCHEMA_VERSION UINT32_C(1)
+/* Target-result extension ABI consumed by tools/r4/r4_evidence.py.  The
+ * stable eleven-word prefix intentionally remains schema v1. */
+#define R4_HW_SYNTHETIC_CREATE_MASK_WORD 122U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -106,6 +111,7 @@ typedef struct
     uint64_t health_max_monitor_interval_cycles;
     uint64_t health_monitor_interval_limit_cycles;
     uint32_t synthetic_task_create_mask;
+    uint32_t synthetic_schema_version;
     uint32_t synthetic_task_done_mask;
     uint32_t synthetic_task_a_iterations;
     uint32_t synthetic_task_b_iterations;
@@ -116,6 +122,10 @@ typedef struct
     uint64_t synthetic_window_idle_cycles;
     uint64_t synthetic_window_unclassified_cycles;
 } R4HwHarnessResult;
+
+_Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
+    (R4_HW_SYNTHETIC_CREATE_MASK_WORD * sizeof(uint32_t)),
+    "R4 synthetic evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 

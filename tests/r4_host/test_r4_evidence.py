@@ -25,3 +25,21 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("t12-soak-a", words)
         self.assertEqual(verdict["result"], "FAIL")
         self.assertFalse(verdict["checks"]["no_invariant_failure"])
+
+    def test_synthetic_case_requires_machine_readable_extension(self) -> None:
+        words = [0] * 139
+        words[:11] = [EVIDENCE.MAGIC, 6, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.SYNTHETIC_CREATE_MASK_WORD] = 3
+        words[EVIDENCE.SYNTHETIC_SCHEMA_WORD] = 1
+        words[EVIDENCE.SYNTHETIC_DONE_MASK_WORD] = 3
+        words[EVIDENCE.SYNTHETIC_A_ITERATIONS_WORD] = 50000
+        words[EVIDENCE.SYNTHETIC_B_ITERATIONS_WORD] = 10000
+        words[EVIDENCE.SYNTHETIC_A_CYCLES_WORD] = 300
+        words[EVIDENCE.SYNTHETIC_B_CYCLES_WORD] = 100
+        words[EVIDENCE.SYNTHETIC_WINDOW_TASK_WORD] = 1000
+        words[EVIDENCE.SYNTHETIC_WINDOW_IDLE_WORD] = 200
+        words[19] = 1200
+        verdict = EVIDENCE.evaluate("task-synthetic", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["synthetic_conservation"])
