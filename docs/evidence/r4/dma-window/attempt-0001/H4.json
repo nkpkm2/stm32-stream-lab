@@ -1,0 +1,34 @@
+{
+  "checks": {
+    "case_identity": true,
+    "completed_magic": true,
+    "dma_window_closed": true,
+    "dma_window_configured": true,
+    "dma_window_opened": true,
+    "dma_window_sequences": true,
+    "dma_window_snapshot": true,
+    "dma_window_statuses": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "result_magic": true,
+    "schema_version": true,
+    "terminal_pass": true
+  },
+  "phase": "H4",
+  "prefix_words": [
+    "0x52344857",
+    "0x00000007",
+    "0x00000001",
+    "0x00000001",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x5234444E"
+  ],
+  "result": "PASS",
+  "result_address": "0x20005260",
+  "selector": "DMA_WINDOW"
+}

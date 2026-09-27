@@ -28,7 +28,8 @@ claim that a source route has been exercised on target.
 | `TIM7_IRQHandler()` | one outer `IRQ_ENTER`; `portYIELD_FROM_ISR(pdFALSE)` tail after `HAL_TIM_IRQHandler` | ARM_CM4F port macro | fixed source route; target no-yield evidence remains W5 |
 | `HAL_TIM_PeriodElapsedCallback()` | HAL tick update only | none | no second R4 IRQ pair observed |
 | `DMA1_Stream6_IRQHandler()` / `USART2_IRQHandler()` under `STREAM_LAB_R2_CT` | conditional outer `IRQ_ENTER`; `portYIELD_FROM_ISR` tail | ARM_CM4F port macro | source route is R4-safe if composed; the formal R4 foundation profile intentionally excludes the historical R2_CT profile |
-| `R4_RuntimeTarget_OpenWindow/CloseWindow()` called by `r4_hw_harness.c` | `WINDOW_OPEN` / `WINDOW_CLOSE` RuntimeEvent | not applicable | **gap:** harness-driven, not production S0/S1 DMA-boundary wiring |
+| `R4_RuntimeTarget_OnDmaInputBoundary(event->sequence)` at the start of `R3W3Runtime`'s real DMA completion callback | `WINDOW_OPEN` at configured S0 / `WINDOW_CLOSE` at configured S1 | not applicable | production-bound; a missed boundary fails the active completion before ownership mutation |
+| `R4_RuntimeTarget_OpenWindow/CloseWindow()` called by non-DMA hardware cases | diagnostic `WINDOW_OPEN` / `WINDOW_CLOSE` RuntimeEvent | not applicable | retained only for directed diagnostics; not accepted as production S0/S1 proof |
 | `StreamQueueAdapter_TraceQueueSendLock/Commit/Unlock()` | completion `t_lock`, `t_commit`, `t_unlock` | queue adapter | one adapter path observed; W8 must prove actual kernel lock boundaries |
 
 ## Mapping implementation
@@ -50,7 +51,7 @@ the interrupted context until the later scheduler task-switch hook.
 | Tick hook creates no extra IRQ event | IMPLEMENTED BUT UNVERIFIED | source route is singular; target evidence remains W5/W7 |
 | DMA outer entry/common-tail contract | IMPLEMENTED BUT UNVERIFIED | source route is singular; target no-yield/yield proof remains W5 |
 | All production peripheral paths have frozen unique wiring | IMPLEMENTED BUT UNVERIFIED | TIM7 and optional R2_CT routes use a one-entry/port-tail source pattern; active R4 target paths still require W5 hardware audit |
-| Formal window source is S0/S1 DMA boundary | MISSING | current calls are harness-local, not production boundary wiring |
+| Formal window source is S0/S1 DMA boundary | IMPLEMENTED AND TARGET-EXERCISED | `dma-window/attempt-0001` opens on completion sequence 1, closes on 4, then observes >=5 after closure |
 
 ## Existing R4 asset disposition
 
@@ -79,8 +80,9 @@ raw data is erased or hidden.
 The peripheral source pattern is now frozen as one outer entry plus one
 port-owned common exit, including the optional R2_CT routes.  W1 remains
 unclosed until the static/target audit demonstrates those paths under their
-actual build profiles.  Production S0/S1 window-boundary integration is
-deferred to W6.  No conclusion in this document closes W2--W10.
+actual build profiles. Production S0/S1 window-boundary integration is now
+bound to the real DMA completion callback and has one sealed target exercise.
+No conclusion in this document closes W2--W10 or the broader Principal matrix.
 
 ### Profile-isolation observation
 

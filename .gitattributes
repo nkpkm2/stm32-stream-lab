@@ -17,6 +17,11 @@
 *.sh     text eol=lf
 CMakeLists.txt text eol=lf
 
+# Formal evidence manifests hash their exact bytes. Treat every evidence
+# artifact as byte-for-byte data: a checkout must never rewrite its line
+# endings, including command output and generated CMake records.
+docs/evidence/** binary
+
 # Native Windows command files retain CRLF.
 *.bat    text eol=crlf
 *.cmd    text eol=crlf

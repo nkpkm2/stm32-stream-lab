@@ -1,0 +1,9 @@
+{
+  "case": "dma-window",
+  "clean_tree": true,
+  "git_head": "cf78c83235c56515a453084ecc6f07d6c8872015",
+  "origin_main": "cf78c83235c56515a453084ecc6f07d6c8872015",
+  "phase": "H0",
+  "probe_list_sha256": "CCCBFBE085110204EF1C7A0761CEB0C21B3CC958696744A58246C881DAC57356",
+  "result": "PASS"
+}
