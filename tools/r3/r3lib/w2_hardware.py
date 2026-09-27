@@ -72,7 +72,7 @@ def parse_words(text: str) -> list[int]:
 
 def result_address(elf: Path, nm: Path, env: dict, log: CommandLog) -> int:
     _, output, _ = log.run([nm, "-n", elf], name="result-symbol", env=env, timeout=30)
-    rows = re.findall(r"^([0-9a-fA-F]+)\s+[A-Za-z]\s+g_r3_w2_hw_result$", output, re.M)
+    rows = re.findall(r"^\s*([0-9a-fA-F]+)\s+[A-Za-z]\s+g_r3_w2_hw_result\s*$", output, re.M)
     if len(rows) != 1:
         raise WorkflowError("expected one g_r3_w2_hw_result symbol")
     return int(rows[0], 16)

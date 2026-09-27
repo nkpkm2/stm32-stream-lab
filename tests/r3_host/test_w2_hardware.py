@@ -33,6 +33,10 @@ class W2HardwareEvidenceTests(unittest.TestCase):
         with self.assertRaises(WorkflowError):
             parse_words("0x20000000 : 00000000")
 
+    def test_target_dump_requires_exact_word_count(self):
+        with self.assertRaises(WorkflowError):
+            parse_words(target_dump([0] * 36))
+
 
 if __name__ == "__main__":
     unittest.main()
