@@ -119,6 +119,13 @@ extern "C" {
 #define R4_HW_TARGET_WINDOW_IRQ_WORD 220U
 #define R4_HW_TARGET_WINDOW_IDLE_WORD 222U
 #define R4_HW_TARGET_WINDOW_UNCLASSIFIED_WORD 224U
+#define R4_HW_RESPONSE_CREATED_WORD 226U
+#define R4_HW_RESPONSE_DONE_WORD 227U
+#define R4_HW_RESPONSE_RELEASE_RAW_WORD 228U
+#define R4_HW_RESPONSE_START_RAW_WORD 229U
+#define R4_HW_RESPONSE_COMPLETE_RAW_WORD 230U
+#define R4_HW_RESPONSE_WORK_RAW_WORD 231U
+#define R4_HW_RESPONSE_OWNER_CYCLES_WORD 232U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -286,6 +293,15 @@ typedef struct
     uint64_t target_window_irq_cycles;
     uint64_t target_window_idle_cycles;
     uint64_t target_window_unclassified_cycles;
+    /* Case 14 only.  The raw DWT endpoints are intentionally read directly
+     * by the synthetic worker, outside RuntimeEvent/ledger APIs. */
+    uint32_t response_worker_created;
+    uint32_t response_worker_done;
+    uint32_t response_release_raw;
+    uint32_t response_start_raw;
+    uint32_t response_complete_raw;
+    uint32_t response_work_raw;
+    uint64_t response_owner_cycles;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -414,6 +430,12 @@ _Static_assert(offsetof(R4HwHarnessResult, commit_pending_arm_status) ==
 _Static_assert(offsetof(R4HwHarnessResult, target_window_task_cycles) ==
     (R4_HW_TARGET_WINDOW_TASK_WORD * sizeof(uint32_t)),
     "R4 target-window task evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, response_worker_created) ==
+    (R4_HW_RESPONSE_CREATED_WORD * sizeof(uint32_t)),
+    "R4 response created evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, response_owner_cycles) ==
+    (R4_HW_RESPONSE_OWNER_CYCLES_WORD * sizeof(uint32_t)),
+    "R4 response owner evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 

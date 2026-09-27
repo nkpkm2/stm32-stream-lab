@@ -182,3 +182,19 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("window-intersection", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["target_window_conservation"])
+
+    def test_response_synthetic_requires_independent_wall_and_owner_evidence(self) -> None:
+        words = [0] * 234
+        words[:11] = [EVIDENCE.MAGIC, 14, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.RESPONSE_CREATED_WORD] = 1
+        words[EVIDENCE.RESPONSE_DONE_WORD] = 1
+        words[EVIDENCE.RESPONSE_RELEASE_RAW_WORD] = 100
+        words[EVIDENCE.RESPONSE_START_RAW_WORD] = 120
+        words[EVIDENCE.RESPONSE_COMPLETE_RAW_WORD] = 220
+        words[EVIDENCE.RESPONSE_WORK_RAW_WORD] = 100
+        words[EVIDENCE.RESPONSE_OWNER_CYCLES_WORD] = 110
+        verdict = EVIDENCE.evaluate("response-synthetic", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["response_direct_wall_endpoints"])
+        self.assertTrue(verdict["checks"]["response_owner_contains_known_work"])

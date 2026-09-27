@@ -129,6 +129,13 @@ TARGET_WINDOW_TASK_WORD = 218
 TARGET_WINDOW_IRQ_WORD = 220
 TARGET_WINDOW_IDLE_WORD = 222
 TARGET_WINDOW_UNCLASSIFIED_WORD = 224
+RESPONSE_CREATED_WORD = 226
+RESPONSE_DONE_WORD = 227
+RESPONSE_RELEASE_RAW_WORD = 228
+RESPONSE_START_RAW_WORD = 229
+RESPONSE_COMPLETE_RAW_WORD = 230
+RESPONSE_WORK_RAW_WORD = 231
+RESPONSE_OWNER_CYCLES_WORD = 232
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -147,6 +154,7 @@ CASES = {
     # budget gate, which requires the representative completion population.
     "commit-pending-irq": ("COMMIT_PENDING_IRQ", 12, 65000, 75),
     "window-intersection": ("WINDOW_INTERSECTION", 13, 0, 8),
+    "response-synthetic": ("RESPONSE_SYNTHETIC", 14, 0, 8),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -506,6 +514,24 @@ def evaluate(case: str, words: list[int]) -> dict:
                 word64(T17_WINDOW_AT_CLOSE_WORD) > 0 and
                 word64(T17_WINDOW_AFTER_CLOSE_WORD) ==
                 word64(T17_WINDOW_AT_CLOSE_WORD))
+    if case == "response-synthetic":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= RESPONSE_OWNER_CYCLES_WORD + 1:
+            checks["response_extension_present"] = False
+        else:
+            response = (words[RESPONSE_COMPLETE_RAW_WORD] -
+                        words[RESPONSE_RELEASE_RAW_WORD]) & 0xFFFFFFFF
+            work = words[RESPONSE_WORK_RAW_WORD]
+            checks["response_direct_wall_endpoints"] = (
+                words[RESPONSE_CREATED_WORD] == 1 and
+                words[RESPONSE_DONE_WORD] == 1 and
+                words[RESPONSE_START_RAW_WORD] != 0 and
+                words[RESPONSE_COMPLETE_RAW_WORD] != 0 and
+                0 < work <= response <= 5000000)
+            checks["response_owner_contains_known_work"] = (
+                word64(RESPONSE_OWNER_CYCLES_WORD) >= work)
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 

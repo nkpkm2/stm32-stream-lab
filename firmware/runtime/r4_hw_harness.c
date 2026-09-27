@@ -30,6 +30,8 @@
 #define R4_HW_DMA_WINDOW_CLOSE_SEQUENCE 4U
 #define R4_HW_DMA_WINDOW_MIN_POST_CLOSE_SEQUENCE 5U
 #define R4_HW_DMA_WINDOW_WAIT_TICKS 2000U
+#define R4_HW_RESPONSE_WORK_ITERATIONS 50000U
+#define R4_HW_RESPONSE_MAX_CYCLES UINT32_C(5000000)
 #ifndef R4_HW_SOAK_MS
 #define R4_HW_SOAK_MS 0U
 #endif
@@ -55,7 +57,39 @@ static TaskHandle_t synthetic_a_task;
 static TaskHandle_t synthetic_b_task;
 #endif
 
-#if (R4_HW_CASE_ID == 4U) || (R4_HW_CASE_ID == 6U)
+#if (R4_HW_CASE_ID == 14U)
+static StaticTask_t response_tcb;
+static StackType_t response_stack[configMINIMAL_STACK_SIZE];
+static volatile uint32_t response_sink;
+static TaskHandle_t response_task;
+
+static void ResponseTask(void *argument)
+{
+    uint32_t index;
+    (void)argument;
+
+    /* The task blocks before the harness records its release endpoint. */
+    (void)ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    g_r4_hw_result.response_start_raw = DWT->CYCCNT;
+    (void)R4_RuntimeTarget_Checkpoint();
+    for (index = 0U; index < R4_HW_RESPONSE_WORK_ITERATIONS; ++index)
+    {
+        response_sink = (response_sink * UINT32_C(1664525)) + UINT32_C(1013904223);
+    }
+    g_r4_hw_result.response_complete_raw = DWT->CYCCNT;
+    g_r4_hw_result.response_work_raw =
+        g_r4_hw_result.response_complete_raw - g_r4_hw_result.response_start_raw;
+    (void)R4_RuntimeTarget_Checkpoint();
+    g_r4_hw_result.response_worker_done = 1U;
+
+    for (;;)
+    {
+        vTaskDelay(portMAX_DELAY);
+    }
+}
+#endif
+
+#if (R4_HW_CASE_ID == 4U) || (R4_HW_CASE_ID == 6U) || (R4_HW_CASE_ID == 14U)
 static uint64_t OwnerCycles(const R4_RuntimeOwnerBucket *buckets,
     uint32_t capacity, uintptr_t identity)
 {
@@ -449,6 +483,27 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_WINDOW);
     }
+#elif (R4_HW_CASE_ID == 14U)
+    /* The wall endpoints are direct CYCCNT observations.  They deliberately
+     * do not call through Clock64 or inspect ledger state.  The ledger's
+     * owner bucket must nevertheless contain the known worker interval. */
+    if ((g_r4_hw_result.response_worker_created != 1U) ||
+        (g_r4_hw_result.response_worker_done != 1U) ||
+        (g_r4_hw_result.response_start_raw == 0U) ||
+        (g_r4_hw_result.response_complete_raw == 0U) ||
+        (g_r4_hw_result.response_work_raw == 0U) ||
+        ((g_r4_hw_result.response_start_raw -
+          g_r4_hw_result.response_release_raw) > R4_HW_RESPONSE_MAX_CYCLES) ||
+        ((g_r4_hw_result.response_complete_raw -
+          g_r4_hw_result.response_release_raw) > R4_HW_RESPONSE_MAX_CYCLES) ||
+        (g_r4_hw_result.response_work_raw >
+         (g_r4_hw_result.response_complete_raw -
+          g_r4_hw_result.response_release_raw)) ||
+        (g_r4_hw_result.response_owner_cycles <
+         (uint64_t)g_r4_hw_result.response_work_raw))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -522,7 +577,6 @@ static void SyntheticTaskB(void *argument)
     }
 }
 #endif
-
 static void HarnessTask(void *argument)
 {
     const R4_RuntimeLedger *ledger;
@@ -736,6 +790,23 @@ static void HarnessTask(void *argument)
      * tasks finish and the actual Idle task receives measurable residency. */
     vTaskDelay(pdMS_TO_TICKS(20U));
 #endif
+#if (R4_HW_CASE_ID == 14U)
+    /* Higher priority guarantees the release crosses a real scheduler handoff.
+     * It blocks immediately on creation, then returns to its stable blocked
+     * state after the fixed workload so the harness can seal the window. */
+    response_task = xTaskCreateStatic(ResponseTask, "R4Rsp",
+        configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 4U,
+        response_stack, &response_tcb);
+    if (response_task != NULL)
+    {
+        g_r4_hw_result.response_worker_created = 1U;
+        g_r4_hw_result.response_release_raw = DWT->CYCCNT;
+        (void)xTaskNotifyGive(response_task);
+    }
+    /* Do not close the window in the same tick as release; this also proves
+     * normal SysTick/tick-hook accounting after the synthetic response. */
+    vTaskDelay(pdMS_TO_TICKS(2U));
+#endif
 #if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U) || \
     (R4_HW_CASE_ID == 12U)
     (void)memset(&config, 0, sizeof(config));
@@ -910,7 +981,7 @@ static void HarnessTask(void *argument)
      * the sealed window field. */
     g_r4_hw_result.t17_post_close_status =
         (uint32_t)R4_RuntimeTarget_Checkpoint();
-#if (R4_HW_CASE_ID == 13U)
+#if (R4_HW_CASE_ID == 13U) || (R4_HW_CASE_ID == 14U)
     /* Require real SysTick/tick-hook activity after CLOSE before taking the
      * formal snapshot.  Those events are live-only and must not reopen or
      * extend the sealed CPU window. */
@@ -966,6 +1037,11 @@ static void HarnessTask(void *argument)
         g_r4_hw_result.target_window_idle_cycles = ledger->window_idle_cycles[0];
         g_r4_hw_result.target_window_unclassified_cycles =
             ledger->window_unclassified_cycles[0];
+#endif
+#if (R4_HW_CASE_ID == 14U)
+        g_r4_hw_result.response_owner_cycles = OwnerCycles(
+            ledger->window_task_buckets[0], R4_RUNTIME_MAX_TASK_BUCKETS,
+            (uintptr_t)response_task);
 #endif
 #if (R4_HW_CASE_ID == 6U)
         g_r4_hw_result.synthetic_task_a_cycles = OwnerCycles(
