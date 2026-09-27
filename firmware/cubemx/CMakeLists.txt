@@ -126,9 +126,9 @@ option(STREAM_LAB_R4_HW
 set(STREAM_LAB_R4_HW_SOAK_MS "0" CACHE STRING
     "R4 target-harness real DMA/IRQ soak duration in milliseconds (0 disables)")
 set(STREAM_LAB_R4_HW_CASE "" CACHE STRING
-    "R4 formal hardware case: T12_SOAK, T15_Q0, T15_RELEASE, T17_ATOMIC, or COMMIT_BUDGET")
+    "R4 formal hardware case: T12_SOAK, T15_Q0, T15_RELEASE, T17_ATOMIC, COMMIT_BUDGET, or SYNTHETIC_TASKS")
 set_property(CACHE STREAM_LAB_R4_HW_CASE PROPERTY STRINGS
-    T12_SOAK T15_Q0 T15_RELEASE T17_ATOMIC COMMIT_BUDGET)
+    T12_SOAK T15_Q0 T15_RELEASE T17_ATOMIC COMMIT_BUDGET SYNTHETIC_TASKS)
 option(STREAM_LAB_R5_METRICS
     "Compile the R5 cohort/cutoff/sealed-results core" OFF)
 option(STREAM_LAB_R5_HW
@@ -597,6 +597,8 @@ if(STREAM_LAB_R4_HW)
         set(R4_HW_CASE_ID_VALUE 4)
     elseif(STREAM_LAB_R4_HW_CASE STREQUAL "COMMIT_BUDGET")
         set(R4_HW_CASE_ID_VALUE 5)
+    elseif(STREAM_LAB_R4_HW_CASE STREQUAL "SYNTHETIC_TASKS")
+        set(R4_HW_CASE_ID_VALUE 6)
     else()
         message(FATAL_ERROR "STREAM_LAB_R4_HW_CASE must select one formal R4 case.")
     endif()

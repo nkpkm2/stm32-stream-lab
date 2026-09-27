@@ -105,6 +105,16 @@ typedef struct
     uint64_t health_monitor_service_count;
     uint64_t health_max_monitor_interval_cycles;
     uint64_t health_monitor_interval_limit_cycles;
+    uint32_t synthetic_task_create_mask;
+    uint32_t synthetic_task_done_mask;
+    uint32_t synthetic_task_a_iterations;
+    uint32_t synthetic_task_b_iterations;
+    uint64_t synthetic_task_a_cycles;
+    uint64_t synthetic_task_b_cycles;
+    uint64_t synthetic_window_task_cycles;
+    uint64_t synthetic_window_irq_cycles;
+    uint64_t synthetic_window_idle_cycles;
+    uint64_t synthetic_window_unclassified_cycles;
 } R4HwHarnessResult;
 
 extern volatile R4HwHarnessResult g_r4_hw_result;

@@ -30,6 +30,7 @@ CASES = {
     "t17-atomic": ("T17_ATOMIC", 4, 0, 8),
     "t04-commit-budget-a": ("COMMIT_BUDGET", 5, 65000, 75),
     "t04-commit-budget-b": ("COMMIT_BUDGET", 5, 65000, 75),
+    "task-synthetic": ("SYNTHETIC_TASKS", 6, 0, 8),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")

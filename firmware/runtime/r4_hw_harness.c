@@ -16,6 +16,10 @@
 #define R4_HW_TICK_INTERVAL_LIMIT_CYCLES UINT64_C(270000)
 #define R4_HW_MONITOR_INTERVAL_LIMIT_CYCLES UINT64_C(1800000000)
 #define R4_HW_MONITOR_PERIOD_MS 1000U
+#define R4_HW_SYNTHETIC_A_ITERATIONS 50000U
+#define R4_HW_SYNTHETIC_B_ITERATIONS 10000U
+#define R4_HW_SYNTHETIC_DONE_A UINT32_C(1)
+#define R4_HW_SYNTHETIC_DONE_B UINT32_C(2)
 #ifndef R4_HW_SOAK_MS
 #define R4_HW_SOAK_MS 0U
 #endif
@@ -30,6 +34,16 @@ static StaticTask_t idle_tcb;
 static StackType_t idle_stack[configMINIMAL_STACK_SIZE];
 static volatile uint32_t tick_start_callback_count;
 static volatile uint32_t tick_release_callback_count;
+#if (R4_HW_CASE_ID == 6U)
+static StaticTask_t synthetic_a_tcb;
+static StaticTask_t synthetic_b_tcb;
+static StackType_t synthetic_a_stack[configMINIMAL_STACK_SIZE];
+static StackType_t synthetic_b_stack[configMINIMAL_STACK_SIZE];
+static volatile uint32_t synthetic_a_sink;
+static volatile uint32_t synthetic_b_sink;
+static TaskHandle_t synthetic_a_task;
+static TaskHandle_t synthetic_b_task;
+#endif
 
 static uint64_t OwnerCycles(const R4_RuntimeOwnerBucket *buckets,
     uint32_t capacity, uintptr_t identity)
@@ -161,6 +175,28 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_HEALTH);
     }
+#elif (R4_HW_CASE_ID == 6U)
+    if ((g_r4_hw_result.synthetic_task_create_mask !=
+         (R4_HW_SYNTHETIC_DONE_A | R4_HW_SYNTHETIC_DONE_B)) ||
+        (g_r4_hw_result.synthetic_task_done_mask !=
+         (R4_HW_SYNTHETIC_DONE_A | R4_HW_SYNTHETIC_DONE_B)) ||
+        (g_r4_hw_result.synthetic_task_a_iterations !=
+         R4_HW_SYNTHETIC_A_ITERATIONS) ||
+        (g_r4_hw_result.synthetic_task_b_iterations !=
+         R4_HW_SYNTHETIC_B_ITERATIONS) ||
+        (g_r4_hw_result.synthetic_task_a_cycles == 0U) ||
+        (g_r4_hw_result.synthetic_task_b_cycles == 0U) ||
+        (g_r4_hw_result.synthetic_task_a_cycles <=
+         (g_r4_hw_result.synthetic_task_b_cycles * UINT64_C(2))) ||
+        (g_r4_hw_result.synthetic_window_idle_cycles == 0U) ||
+        (g_r4_hw_result.window_cycles !=
+         (g_r4_hw_result.synthetic_window_task_cycles +
+          g_r4_hw_result.synthetic_window_irq_cycles +
+          g_r4_hw_result.synthetic_window_idle_cycles +
+          g_r4_hw_result.synthetic_window_unclassified_cycles)))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -183,6 +219,45 @@ static int HarnessTickRelease(uint64_t planned_service_seq,
     ++tick_release_callback_count;
     return 1;
 }
+
+#if (R4_HW_CASE_ID == 6U)
+static void SyntheticTaskA(void *argument)
+{
+    uint32_t index;
+    (void)argument;
+    for (index = 0U; index < R4_HW_SYNTHETIC_A_ITERATIONS; ++index)
+    {
+        synthetic_a_sink = (synthetic_a_sink * UINT32_C(1664525)) +
+            UINT32_C(1013904223);
+    }
+    g_r4_hw_result.synthetic_task_a_iterations = index;
+    g_r4_hw_result.synthetic_task_done_mask |= R4_HW_SYNTHETIC_DONE_A;
+    /* The frozen profile intentionally excludes delete/suspend APIs.  A
+     * portMAX_DELAY block keeps the static TCB identity stable while yielding
+     * the CPU to task B and then Idle for this finite hardware experiment. */
+    for (;;)
+    {
+        vTaskDelay(portMAX_DELAY);
+    }
+}
+
+static void SyntheticTaskB(void *argument)
+{
+    uint32_t index;
+    (void)argument;
+    for (index = 0U; index < R4_HW_SYNTHETIC_B_ITERATIONS; ++index)
+    {
+        synthetic_b_sink = (synthetic_b_sink * UINT32_C(22695477)) +
+            UINT32_C(1);
+    }
+    g_r4_hw_result.synthetic_task_b_iterations = index;
+    g_r4_hw_result.synthetic_task_done_mask |= R4_HW_SYNTHETIC_DONE_B;
+    for (;;)
+    {
+        vTaskDelay(portMAX_DELAY);
+    }
+}
+#endif
 
 static void HarnessTask(void *argument)
 {
@@ -302,6 +377,25 @@ static void HarnessTask(void *argument)
             ledger->irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
             (uintptr_t)TIM6_DAC_IRQn + 16U);
     }
+#endif
+#if (R4_HW_CASE_ID == 6U)
+    synthetic_a_task = xTaskCreateStatic(SyntheticTaskA, "R4SynA",
+        configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2U,
+        synthetic_a_stack, &synthetic_a_tcb);
+    synthetic_b_task = xTaskCreateStatic(SyntheticTaskB, "R4SynB",
+        configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1U,
+        synthetic_b_stack, &synthetic_b_tcb);
+    if (synthetic_a_task != NULL)
+    {
+        g_r4_hw_result.synthetic_task_create_mask |= R4_HW_SYNTHETIC_DONE_A;
+    }
+    if (synthetic_b_task != NULL)
+    {
+        g_r4_hw_result.synthetic_task_create_mask |= R4_HW_SYNTHETIC_DONE_B;
+    }
+    /* Yield the higher-priority harness for long enough that both fixed-loop
+     * tasks finish and the actual Idle task receives measurable residency. */
+    vTaskDelay(pdMS_TO_TICKS(20U));
 #endif
 #if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U)
     (void)memset(&config, 0, sizeof(config));
@@ -451,6 +545,19 @@ static void HarnessTask(void *argument)
         g_r4_hw_result.irq_cycles = ledger->irq_cycles;
         g_r4_hw_result.window_cycles = ledger->window_cycles[0];
         g_r4_hw_result.irq_depth = ledger->irq_depth;
+#if (R4_HW_CASE_ID == 6U)
+        g_r4_hw_result.synthetic_task_a_cycles = OwnerCycles(
+            ledger->window_task_buckets[0], R4_RUNTIME_MAX_TASK_BUCKETS,
+            (uintptr_t)synthetic_a_task);
+        g_r4_hw_result.synthetic_task_b_cycles = OwnerCycles(
+            ledger->window_task_buckets[0], R4_RUNTIME_MAX_TASK_BUCKETS,
+            (uintptr_t)synthetic_b_task);
+        g_r4_hw_result.synthetic_window_task_cycles = ledger->window_task_cycles[0];
+        g_r4_hw_result.synthetic_window_irq_cycles = ledger->window_irq_cycles[0];
+        g_r4_hw_result.synthetic_window_idle_cycles = ledger->window_idle_cycles[0];
+        g_r4_hw_result.synthetic_window_unclassified_cycles =
+            ledger->window_unclassified_cycles[0];
+#endif
     }
 #if (R4_HW_CASE_ID == 5U)
     if (R4_RuntimeTarget_GetCompletionTiming(&timing) == R4_RUNTIME_OK)
