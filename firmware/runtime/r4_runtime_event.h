@@ -11,6 +11,8 @@ extern "C" {
 
 #define R4_RUNTIME_MAX_IRQ_NESTING 8U
 #define R4_RUNTIME_WINDOW_COUNT 3U
+#define R4_RUNTIME_MAX_TASK_BUCKETS 8U
+#define R4_RUNTIME_MAX_IRQ_BUCKETS 16U
 
 typedef uint32_t (*R4_RuntimeReadCycleFn)(void *context);
 typedef uint32_t (*R4_RuntimeSaveDisableFn)(void *context);
@@ -47,6 +49,7 @@ typedef enum
     R4_RUNTIME_IRQ_EXIT_MISMATCH,
     R4_RUNTIME_TASK_SWITCH_MISMATCH,
     R4_RUNTIME_WINDOW_ERROR,
+    R4_RUNTIME_OWNER_CAPACITY_EXCEEDED,
     R4_RUNTIME_FAULTED
 } R4_RuntimeStatus;
 
@@ -70,6 +73,15 @@ typedef struct
     R4_RuntimeContext interrupted;
 } R4_RuntimeIrqFrame;
 
+/* Fixed, allocation-free owner accounting.  A full table is a measurement
+ * fault: silently merging a new task or IRQ into another owner is forbidden.
+ * Identity zero is reserved as an unused entry. */
+typedef struct
+{
+    uintptr_t identity;
+    uint64_t cycles;
+} R4_RuntimeOwnerBucket;
+
 typedef struct
 {
     uint32_t initialized;
@@ -90,6 +102,8 @@ typedef struct
     uint64_t irq_cycles;
     uint64_t idle_cycles;
     uint64_t unclassified_cycles;
+    R4_RuntimeOwnerBucket task_buckets[R4_RUNTIME_MAX_TASK_BUCKETS];
+    R4_RuntimeOwnerBucket irq_buckets[R4_RUNTIME_MAX_IRQ_BUCKETS];
 } R4_RuntimeLedger;
 
 typedef struct

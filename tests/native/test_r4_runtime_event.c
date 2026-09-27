@@ -77,6 +77,21 @@ static R4_RuntimeStatus Apply(
     return R4_RuntimeEvent_Apply(ledger, &event, &receipt);
 }
 
+static uint64_t BucketCycles(const R4_RuntimeOwnerBucket *buckets,
+    uint32_t capacity, uintptr_t identity)
+{
+    uint32_t index;
+
+    for (index = 0U; index < capacity; ++index)
+    {
+        if (buckets[index].identity == identity)
+        {
+            return buckets[index].cycles;
+        }
+    }
+    return 0U;
+}
+
 static void CaseClockWrap(void)
 {
     R4_Clock64 clock;
@@ -122,6 +137,15 @@ static void CaseNestedIrq(void)
         R4_RUNTIME_OK);
     CHECK(ledger.irq_cycles == 25U);
     CHECK(ledger.task_cycles == 5U);
+    CHECK(BucketCycles(ledger.task_buckets, R4_RUNTIME_MAX_TASK_BUCKETS,
+        11U) == 5U);
+    /* Low IRQ owns 5--8 and 18--30 only.  The 8--18 high IRQ interval is
+     * exclusive to IRQ 23 and cannot also be charged to the interrupted low
+     * IRQ or task. */
+    CHECK(BucketCycles(ledger.irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
+        17U) == 15U);
+    CHECK(BucketCycles(ledger.irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
+        23U) == 10U);
     CHECK(ledger.irq_depth == 0U);
     CHECK(ledger.active.kind == R4_RUNTIME_CONTEXT_TASK);
     CHECK(ledger.active.identity == 11U);
@@ -159,6 +183,10 @@ static void CaseTaskSwitch(void)
     CHECK(ledger.task_cycles == 10U);
     CHECK(ledger.unclassified_cycles == 1U);
     CHECK(ledger.active.identity == 19U);
+    CHECK(BucketCycles(ledger.task_buckets, R4_RUNTIME_MAX_TASK_BUCKETS,
+        11U) == 4U);
+    CHECK(BucketCycles(ledger.task_buckets, R4_RUNTIME_MAX_TASK_BUCKETS,
+        19U) == 6U);
 }
 
 static void CaseLockedCheckpoint(void)
