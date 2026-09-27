@@ -99,6 +99,10 @@ typedef struct
     uint32_t irq_depth;
 
     uint32_t window_open[R4_RUNTIME_WINDOW_COUNT];
+    /* A formal report is legal only after a real CLOSE.  This separate state
+     * prevents an untouched, zero-length window from being presented as a
+     * measured result.  A window is single-use within one boot ledger. */
+    uint32_t window_sealed[R4_RUNTIME_WINDOW_COUNT];
     /* Closed-window data is the formal result.  It is deliberately distinct
      * from the whole-run counters below: activity after CLOSE remains useful
      * live diagnostics but must never mutate a sealed CPU-window result. */
@@ -136,6 +140,21 @@ typedef struct
     R4_RuntimeStatus status;
 } R4_RuntimeEventReceipt;
 
+/* Frozen utilization/report schema for one sealed CPU window.  All fields
+ * are exact cycle counts; callers may derive ratios only with denominator
+ * `window_cycles`.  `attributed_non_idle_cycles` excludes platform residual;
+ * `occupied_non_idle_cycles` includes it.  Neither field includes Idle. */
+typedef struct
+{
+    uint64_t window_cycles;
+    uint64_t task_cycles;
+    uint64_t irq_cycles;
+    uint64_t idle_cycles;
+    uint64_t unclassified_cycles;
+    uint64_t attributed_non_idle_cycles;
+    uint64_t occupied_non_idle_cycles;
+} R4_RuntimeWindowSummary;
+
 R4_RuntimeStatus R4_RuntimeLedger_Initialize(
     R4_RuntimeLedger *ledger,
     R4_Clock64 *clock,
@@ -167,6 +186,14 @@ R4_RuntimeStatus R4_RuntimeLedger_CheckpointLockedTime(
     R4_RuntimeLedger *ledger,
     uint32_t raw_cycle,
     uint64_t *out_time);
+
+/* Read an immutable formal window.  This never combines whole-run live
+ * counters with the formal denominator and rejects an open/never-closed
+ * window.  Synchronize externally when reading a live target ledger. */
+R4_RuntimeStatus R4_RuntimeLedger_GetSealedWindowSummary(
+    const R4_RuntimeLedger *ledger,
+    uint32_t window,
+    R4_RuntimeWindowSummary *out_summary);
 
 R4_RuntimeStatus R4_RuntimeLedger_GetStatus(const R4_RuntimeLedger *ledger);
 

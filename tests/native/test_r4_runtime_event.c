@@ -208,12 +208,15 @@ static void CaseWindowOwnerAttribution(void)
     FakePlatform platform = { 0U, 0U, 0U, 0U };
     R4_Clock64 clock;
     R4_RuntimeLedger ledger = NewLedger(&platform, &clock);
+    R4_RuntimeWindowSummary summary;
 
     /* [10,35) is formal: task 11 owns [10,15) and [25,35), while IRQ 41
      * owns [15,25).  An event after CLOSE proves that the formal per-owner
      * result freezes even though whole-run accounting continues. */
     CHECK(Apply(&ledger, &platform, 10U, R4_RUNTIME_EVENT_WINDOW_OPEN, 0U) ==
         R4_RUNTIME_OK);
+    CHECK(R4_RuntimeLedger_GetSealedWindowSummary(&ledger, 0U, &summary) ==
+        R4_RUNTIME_WINDOW_ERROR);
     CHECK(Apply(&ledger, &platform, 15U, R4_RUNTIME_EVENT_IRQ_ENTER, 41U) ==
         R4_RUNTIME_OK);
     CHECK(Apply(&ledger, &platform, 25U, R4_RUNTIME_EVENT_IRQ_EXIT, 41U) ==
@@ -225,6 +228,13 @@ static void CaseWindowOwnerAttribution(void)
     CHECK(ledger.window_irq_cycles[0] == 10U);
     CHECK(ledger.window_idle_cycles[0] == 0U);
     CHECK(ledger.window_unclassified_cycles[0] == 0U);
+    CHECK(R4_RuntimeLedger_GetSealedWindowSummary(&ledger, 0U, &summary) ==
+        R4_RUNTIME_OK);
+    CHECK(summary.window_cycles == 25U);
+    CHECK(summary.attributed_non_idle_cycles == 25U);
+    CHECK(summary.occupied_non_idle_cycles == 25U);
+    CHECK(summary.idle_cycles == 0U);
+    CHECK(summary.unclassified_cycles == 0U);
     CHECK(BucketCycles(ledger.window_task_buckets[0],
         R4_RUNTIME_MAX_TASK_BUCKETS, 11U) == 15U);
     CHECK(BucketCycles(ledger.window_irq_buckets[0],

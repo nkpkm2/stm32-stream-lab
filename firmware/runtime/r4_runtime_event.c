@@ -168,6 +168,7 @@ R4_RuntimeStatus R4_RuntimeLedger_Initialize(
     for (index = 0U; index < R4_RUNTIME_WINDOW_COUNT; ++index)
     {
         ledger->window_open[index] = 0U;
+        ledger->window_sealed[index] = 0U;
         ledger->window_cycles[index] = 0U;
         ledger->window_task_cycles[index] = 0U;
         ledger->window_irq_cycles[index] = 0U;
@@ -338,7 +339,8 @@ R4_RuntimeStatus R4_RuntimeEvent_Apply(
                 }
                 else if (event->kind == R4_RUNTIME_EVENT_WINDOW_OPEN)
                 {
-                    if (ledger->window_open[event->identity] != 0U)
+                    if ((ledger->window_open[event->identity] != 0U) ||
+                        (ledger->window_sealed[event->identity] != 0U))
                     {
                         status = Latch(ledger, R4_RUNTIME_WINDOW_ERROR);
                     }
@@ -354,6 +356,7 @@ R4_RuntimeStatus R4_RuntimeEvent_Apply(
                 else
                 {
                     ledger->window_open[event->identity] = 0U;
+                    ledger->window_sealed[event->identity] = 1U;
                 }
                 break;
 
@@ -472,4 +475,44 @@ R4_RuntimeStatus R4_RuntimeLedger_GetStatus(const R4_RuntimeLedger *ledger)
         return R4_RUNTIME_NOT_INITIALIZED;
     }
     return ledger->faulted != 0U ? ledger->first_error : R4_RUNTIME_OK;
+}
+
+R4_RuntimeStatus R4_RuntimeLedger_GetSealedWindowSummary(
+    const R4_RuntimeLedger *ledger,
+    uint32_t window,
+    R4_RuntimeWindowSummary *out_summary)
+{
+    uint64_t accounted;
+
+    if ((ledger == NULL) || (out_summary == NULL) ||
+        (window >= R4_RUNTIME_WINDOW_COUNT))
+    {
+        return R4_RUNTIME_INVALID_ARGUMENT;
+    }
+    if (ledger->initialized == 0U)
+    {
+        return R4_RUNTIME_NOT_INITIALIZED;
+    }
+    if (ledger->faulted != 0U)
+    {
+        return ledger->first_error;
+    }
+    if ((ledger->window_open[window] != 0U) ||
+        (ledger->window_sealed[window] == 0U))
+    {
+        return R4_RUNTIME_WINDOW_ERROR;
+    }
+
+    out_summary->window_cycles = ledger->window_cycles[window];
+    out_summary->task_cycles = ledger->window_task_cycles[window];
+    out_summary->irq_cycles = ledger->window_irq_cycles[window];
+    out_summary->idle_cycles = ledger->window_idle_cycles[window];
+    out_summary->unclassified_cycles = ledger->window_unclassified_cycles[window];
+    out_summary->attributed_non_idle_cycles = out_summary->task_cycles +
+        out_summary->irq_cycles;
+    out_summary->occupied_non_idle_cycles =
+        out_summary->attributed_non_idle_cycles + out_summary->unclassified_cycles;
+    accounted = out_summary->occupied_non_idle_cycles + out_summary->idle_cycles;
+    return accounted == out_summary->window_cycles ? R4_RUNTIME_OK :
+        R4_RUNTIME_WINDOW_ERROR;
 }
