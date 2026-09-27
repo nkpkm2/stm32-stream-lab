@@ -11,7 +11,7 @@ Architecture baseline: v3.2.2
 | R0 | PASS | `9ade715` | Final Principal acceptance granted; `r0-pass` created |
 | R1 | PASS | `5ebf62e` | Final Principal acceptance granted; `r1-pass` created |
 | R2 | IN PROGRESS | `bbc3bf6` | W1-W6 implemented; W6 mandatory K matrix 8/8 hardware PASS; final control-traffic/service-margin acceptance pending |
-| R3 | IN PROGRESS | `31e49ce` | W2 and W3 are sealed: W3 has four real-board PASS records plus native lifecycle evidence. W4--W6 remain required. See [`R3 completion plan`](r3/R3_COMPLETION_PLAN.md) and [`W3 acceptance`](r3/w3/R3_W3_ACCEPTANCE.md). |
+| R3 | PASS | `a932e2f` | W2--W6 sealed. Real board evidence includes all directed W3--W5 cells plus exactly 500 K8/NORMAL and 500 K1/DROP lifecycle records. See [`final acceptance`](r3/R3_FINAL_ACCEPTANCE.md). |
 | R4 | NOT STARTED | — | — |
 | R5 | NOT STARTED | — | — |
 | R6 | NOT STARTED | — | — |

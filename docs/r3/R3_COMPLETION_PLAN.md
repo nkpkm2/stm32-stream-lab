@@ -21,7 +21,7 @@ Current assessed state at this plan's creation:
 | W3 transactional START | SEALED | Native lifecycle checks and four imported real-board PASS attempts are indexed by the W3 acceptance decision. |
 | W4 safe STOP | SEALED | Seven imported real-board PASS attempts plus native STOP contract/task-glue/lifecycle checks are indexed by the W4 acceptance decision. |
 | W5 isolation and immediate restart | SEALED | Command/result ledger, native negative/interleaving suite, and six imported board PASS attempts are indexed by the W5 acceptance decision. |
-| W6 1000-cycle lifecycle | IN PROGRESS | W3--W5 directed prerequisites are sealed; 500+500 hardware lifecycle evidence is next. |
+| W6 1000-cycle lifecycle | SEALED | Two imported target attempts contain exactly 500 K8/NORMAL + 500 K1/DROP raw lifecycle records, all host-verified. |
 
 ## Non-negotiable acceptance rules
 
@@ -174,3 +174,6 @@ the repository is clean; the final evidence verifier passes from a fresh
 checkout; the final firmware and evidence commits are on GitHub; and
 `docs/status.md` identifies the final commit and evidence index.  R4--R7 remain
 separate gates and are not implied by an R3 PASS.
+
+**Final decision:** these conditions are satisfied; see
+[`R3_FINAL_ACCEPTANCE.md`](R3_FINAL_ACCEPTANCE.md).
