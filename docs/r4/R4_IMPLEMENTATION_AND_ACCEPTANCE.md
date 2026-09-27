@@ -1,8 +1,10 @@
 # R4 implementation and acceptance
 
-Status: PASS for the R4 scope defined by architecture v3.2.2 (§7, §9, T12,
-T15 and T17).  This package deliberately does not claim R5 cohort sealing or
-R6 prediction work.
+Status: **implementation candidate; formal PASS reopened**.  The code and
+diagnostic results below are useful inputs, but do not meet the project's
+frozen R3-grade evidence rules.  Formal R4 acceptance is defined in
+[`R4_FORMAL_ACCEPTANCE_PLAN.md`](R4_FORMAL_ACCEPTANCE_PLAN.md).  This package
+does not claim R5 cohort sealing or R6 prediction work.
 
 ## Runtime boundary
 
@@ -32,11 +34,11 @@ SKIPPED and is never caught up later.
 
 | Requirement | Code/test evidence | Result |
 |---|---|---|
-| Clock64 wrap, monotonic atomic RuntimeEvent, nested IRQ, task transitions and sealed windows | `test_r4_runtime_event` (six directed native cases) | PASS |
-| T12 >60 s Clock64/IRQ wiring, wrap, DMA wake/no-yield tails and SysTick/TIM7 | native directed cases plus 65-second real DMA/Tick soak | PASS |
-| T15 q0/period single service domain, occupied skip/no catch-up and DWT audit | `test_r4_tick_service` (three directed native cases), board soak | PASS |
-| T17 high IRQ pending inside masked RuntimeEvent; close sealing; duplicate exit | board-only TIM6 diagnostic and raw SRAM record | PASS |
-| full t_lock→t_commit→t_unlock budget | 15 board samples, max 1735 cycles ≤ 1800 | PASS |
+| Clock64 wrap, monotonic atomic RuntimeEvent, nested IRQ, task transitions and sealed windows | `test_r4_runtime_event` (six directed native cases) | candidate evidence |
+| T12 >60 s Clock64/IRQ wiring, wrap, DMA wake/no-yield tails and SysTick/TIM7 | native directed cases plus 65-second real DMA/Tick soak | diagnostic evidence; formal attempts pending |
+| T15 q0/period single service domain, occupied skip/no catch-up and DWT audit | `test_r4_tick_service` (three directed native cases), board soak | diagnostic evidence; separate q0/release attempts pending |
+| T17 high IRQ pending inside masked RuntimeEvent; close sealing; duplicate exit | board-only TIM6 diagnostic and raw SRAM record | diagnostic evidence; formal attempt pending |
+| full t_lock→t_commit→t_unlock budget | 15 board samples, max 1735 cycles ≤ 1800 | diagnostic evidence; stress sampling and formal attempt pending |
 
 The long board profile runs real R3 lifecycle DMA/FreeRTOS/Tick execution. Its
 post-stop pended DMA vector is a narrow no-event-path diagnostic: it has no DMA

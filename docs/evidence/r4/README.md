@@ -1,6 +1,20 @@
 # R4 evidence index
 
-* [`R4 implementation and acceptance`](../../r4/R4_IMPLEMENTATION_AND_ACCEPTANCE.md)
+## Formal status
+
+R4 is **IN PROGRESS**.  The two historical SRAM captures below are useful
+diagnostics, but they are not formal acceptance records: they lack a committed
+source/harness identity, a clean-tree H0 preflight, immutable phase records,
+raw command logs, and a manifest.  They must not be used to claim R4 PASS.
+
+Formal attempts are governed by
+[`R4_FORMAL_ACCEPTANCE_PLAN.md`](../../r4/R4_FORMAL_ACCEPTANCE_PLAN.md) and
+created/verified by `tools/r4/r4_evidence.py`.  A passing attempt is a
+case-specific `docs/evidence/r4/<case>/attempt-0001/` directory containing
+H0--H5, `identity.json`, `state.json`, raw command output and
+`MANIFEST.sha256`.
+
+* [`R4 implementation candidate`](../../r4/R4_IMPLEMENTATION_AND_ACCEPTANCE.md)
 * [`IRQ and queue callsite table`](r4-callsite-table.md)
 * [`Final board SRAM capture`](r4-hw-final-sram.txt)
 * [`65-second real DMA/Tick soak raw SRAM capture`](r4-hw-soak-final-sram.txt)
