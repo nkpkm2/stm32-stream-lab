@@ -39,6 +39,7 @@ class Progress:
     w2_evidence: str
     w3_evidence: str
     w4_evidence: str
+    w5_evidence: str
     current_work_package: str
     next_allowed: str
     target_firmware_modification_allowed: bool
@@ -73,55 +74,62 @@ def derive_progress(
     w2_evidence_complete: bool = False,
     w3_evidence_complete: bool = False,
     w4_evidence_complete: bool = False,
+    w5_evidence_complete: bool = False,
     w2_hw_freeze_sealed: bool = False,
 ) -> Progress:
     if not w1_sealed:
         return Progress(
-            "MISSING", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
+            "MISSING", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
             "R3-W1", "W1_HOST_QUALITY_GATE", False,
         )
     if not w2a_sealed:
         return Progress(
-            "SEALED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
+            "SEALED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
             "R3-W2", "W2A_IMPLEMENTATION", True,
         )
     if not w2b_sealed:
         return Progress(
-            "SEALED", "SEALED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
+            "SEALED", "SEALED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
             "R3-W2", "W2B_TASK_GLUE_IMPLEMENTATION", True,
         )
     if not w2_evidence_present:
         if not w2_hw_freeze_sealed:
             return Progress(
-                "SEALED", "SEALED", "SEALED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
+                "SEALED", "SEALED", "SEALED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
                 "R3-W2", "W2_DIRECTED_HARDWARE_HARNESS_PREFLIGHT", False,
             )
         return Progress(
-            "SEALED", "SEALED", "SEALED", "SEALED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
+            "SEALED", "SEALED", "SEALED", "SEALED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED",
             "R3-W2", "W2_HW_HARNESS_IMPLEMENTATION", True,
         )
     if not w2_evidence_complete:
         return Progress(
             "SEALED", "SEALED", "SEALED",
             "SEALED" if w2_hw_freeze_sealed else "NOT_STARTED",
-            "IN_PROGRESS", "NOT_STARTED", "NOT_STARTED", "R3-W2", "W2_HARDWARE_EVIDENCE_REMAINING", True,
+            "IN_PROGRESS", "NOT_STARTED", "NOT_STARTED", "NOT_STARTED", "R3-W2", "W2_HARDWARE_EVIDENCE_REMAINING", True,
         )
     if not w3_evidence_complete:
         return Progress(
             "SEALED", "SEALED", "SEALED",
             "SEALED" if w2_hw_freeze_sealed else "NOT_STARTED",
-            "SEALED", "IN_PROGRESS", "NOT_STARTED", "R3-W3", "W3_START_TRANSACTION_IMPLEMENTATION", True,
+            "SEALED", "IN_PROGRESS", "NOT_STARTED", "NOT_STARTED", "R3-W3", "W3_START_TRANSACTION_IMPLEMENTATION", True,
         )
     if not w4_evidence_complete:
         return Progress(
             "SEALED", "SEALED", "SEALED",
             "SEALED" if w2_hw_freeze_sealed else "NOT_STARTED",
-            "SEALED", "SEALED", "IN_PROGRESS", "R3-W4", "W4_SAFE_STOP_IMPLEMENTATION", True,
+            "SEALED", "SEALED", "IN_PROGRESS", "NOT_STARTED", "R3-W4", "W4_SAFE_STOP_IMPLEMENTATION", True,
+        )
+    if not w5_evidence_complete:
+        return Progress(
+            "SEALED", "SEALED", "SEALED",
+            "SEALED" if w2_hw_freeze_sealed else "NOT_STARTED",
+            "SEALED", "SEALED", "SEALED", "IN_PROGRESS", "R3-W5", "W5_ISOLATION_RESTART_IMPLEMENTATION", True,
         )
     return Progress(
         "SEALED", "SEALED", "SEALED",
         "SEALED" if w2_hw_freeze_sealed else "NOT_STARTED",
-        "SEALED", "SEALED", "SEALED", "R3-W5", "W5_ISOLATION_RESTART_IMPLEMENTATION", True,
+        "SEALED", "SEALED", "SEALED", "SEALED", "R3-W6", "W6_1000_CYCLE_HARDWARE_SOAK", True,
     )
 
 
@@ -177,6 +185,23 @@ def _w4_evidence_complete(repo: Path) -> bool:
     ))
 
 
+def _w5_evidence_complete(repo: Path) -> bool:
+    cases = ("w5-t13-a", "w5-t13-c", "w5-t13-d", "w5-t13-g", "w5-t20-a", "w5-t20-b")
+    for case in cases:
+        rel = f"docs/evidence/r3/w5/{case}/attempt-0001/acceptance.json"
+        cp = run_git(repo, "show", f"HEAD:{rel}", check=False)
+        if cp.returncode != 0:
+            return False
+        try:
+            if json.loads(cp.stdout.decode("utf-8"))["result"] != "PASS": return False
+        except (UnicodeDecodeError, ValueError, KeyError):
+            return False
+    return _tree_has_all(repo, (
+        "docs/evidence/r3/w5/native/R3_W5_NATIVE_ISOLATION_20260927.md",
+        "docs/r3/w5/R3_W5_ACCEPTANCE.md",
+    ))
+
+
 def derive_operator_gate(
     progress: Progress,
     *,
@@ -199,6 +224,7 @@ def inspect_progress(repo: Path) -> Progress:
     evidence_present = _tree_has_prefix(repo, "docs/evidence/r3/w2/")
     w3_complete = _w3_evidence_complete(repo)
     w4_complete = _w4_evidence_complete(repo)
+    w5_complete = _w5_evidence_complete(repo)
     return derive_progress(
         w1_sealed=_tree_has_all(repo, W1_PATHS),
         w2a_sealed=_tree_has_all(repo, W2A_PATHS),
@@ -207,6 +233,7 @@ def inspect_progress(repo: Path) -> Progress:
         w2_evidence_complete=evidence_present and _w2_evidence_complete(repo),
         w3_evidence_complete=w3_complete,
         w4_evidence_complete=w4_complete,
+        w5_evidence_complete=w5_complete,
         w2_hw_freeze_sealed=_tree_has_all(repo, W2_HW_FREEZE_PATHS),
     )
 
