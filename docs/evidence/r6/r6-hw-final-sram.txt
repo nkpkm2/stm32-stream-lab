@@ -1,0 +1,27 @@
+R6 target harness final SRAM capture
+Date: 2026-09-27
+Target: NUCLEO-F446RE / STM32F446xx, ST-LINK SN 067AFF545754655087043860
+ELF: build/r6-hw-release/cubemx.elf
+ELF SHA-256: 7491C754844E62AB2DEB6E6CFEA4476693D4C96D7C77A4DF9A951CB1455DD45C
+Result symbol: g_r6_hw_result at 0x20002320
+
+Flash result: Download verified successfully; MCU reset.
+
+0x20002320 : 52364857 00000000 00000000 00000000
+0x20002330 : 00000004 5236434E 00000001 00000002
+0x20002340 : 00000001 00000000 00000064 00000000
+0x20002350 : 0000006E 00000000 00000073 00000000
+0x20002360 : 0000006E 00000000 000000A0 00000000
+0x20002370 : 00000078 00000000 000000A0 00000000
+0x20002380 : 09270001 00002026 00001001 00000000
+0x20002390 : 00001002 00000000 00001003 00000000
+0x200023A0 : 00001004 00000000 00001005 00000000
+0x200023B0 : 00001006 00000000 00001007 00000000
+
+Decoded fields: magic=R6HW; prediction_status=0; binding_status=0;
+freeze_status=0; second_freeze_status=4 (ALREADY_FROZEN); complete_magic=R6CN;
+t10_admitted=1; unlock_epilogue_admitted=2; pass=1.  T10 records nominal=100,
+admission=110 and lock=115.  The separation vector records unlock=110,
+next admission=120, processing availability=160 and next processing start=160.
+The persisted binding is artifact `0x202609270001` with all seven required
+nonzero identity hashes `0x1001` through `0x1007`.

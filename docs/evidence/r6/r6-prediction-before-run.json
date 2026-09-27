@@ -1,0 +1,46 @@
+{
+  "payload": {
+    "binding": {
+      "calibration_hash": "0x1003",
+      "instrumentation_profile_hash": "0x1004",
+      "model_hash": "0x1002",
+      "phase_window_hash": "0x1006",
+      "platform_profile_hash": "0x1005",
+      "prediction_artifact_id": "0x202609270001",
+      "resolved_config_hash": "0x1001",
+      "result_schema_hash": "0x1007"
+    },
+    "cost_key": {
+      "coefficient_version": "0x11",
+      "compile_flags": "0x15",
+      "dac_profile": "0x17",
+      "datatype": "0x14",
+      "feature_set": "0x13",
+      "instrumentation_profile": "0x18",
+      "library_version": "0x16",
+      "pipeline_id": "0x10",
+      "window_version": "0x12"
+    },
+    "prediction": {
+      "t10": {
+        "admission": 110,
+        "admitted": true,
+        "free_visible": 105,
+        "lock": 115,
+        "nominal": 100
+      },
+      "unlock_before_epilogue": {
+        "next_admission": 120,
+        "next_processing_start": 160,
+        "processing_available": 160,
+        "unlock": 110
+      }
+    },
+    "prediction_binding": "BOUND",
+    "purpose": "VALIDATION",
+    "run_kind": "PERFORMANCE",
+    "schema": "stm32-stream-lab.r6.prediction.v1",
+    "tie_order": "FREE_VISIBLE_BEFORE_ADMISSION_AT_EQUAL_CYCLE"
+  },
+  "payload_sha256": "621a543b400a529ad985d0de678f82ba4c66ee4b2b9e3ec0f204f2eef86864c1"
+}

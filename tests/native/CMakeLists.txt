@@ -97,6 +97,22 @@ if(R5_METRICS_NATIVE_TESTS)
     endforeach()
 endif()
 
+option(R6_PREDICTION_NATIVE_TESTS "Build R6 prediction/binding tests" OFF)
+if(R6_PREDICTION_NATIVE_TESTS)
+    add_executable(test_r6_prediction
+        test_r6_prediction.c
+        ../../firmware/runtime/r6_prediction.c
+        ../../firmware/runtime/r6_start_binding.c)
+    target_include_directories(test_r6_prediction PRIVATE ../../firmware/runtime)
+    set_target_properties(test_r6_prediction PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_r6_prediction)
+    r2_apply_sanitizers(test_r6_prediction)
+    foreach(case t10 unlock binding)
+        add_test(NAME r6_${case} COMMAND test_r6_prediction ${case})
+    endforeach()
+endif()
+
 option(R3_W5_LEDGER_NATIVE_TESTS "Build R3-W5 command/result ledger tests" OFF)
 if(R3_W5_LEDGER_NATIVE_TESTS)
     add_executable(test_r3_w5_ledger

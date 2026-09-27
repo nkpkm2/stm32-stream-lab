@@ -127,6 +127,10 @@ option(STREAM_LAB_R5_METRICS
     "Compile the R5 cohort/cutoff/sealed-results core" OFF)
 option(STREAM_LAB_R5_HW
     "Build the R5 target synthetic cohort/sealing harness" OFF)
+option(STREAM_LAB_R6_PREDICTION
+    "Compile the R6 cost/admission prediction and start-binding core" OFF)
+option(STREAM_LAB_R6_HW
+    "Build the R6 target prediction/binding harness" OFF)
 set(STREAM_LAB_R3_W3_HW_CASE "" CACHE STRING
     "R3-W3 target hardware case: START_A, T06_A, T06_B, or START_C")
 set_property(CACHE STREAM_LAB_R3_W3_HW_CASE PROPERTY STRINGS
@@ -542,6 +546,32 @@ if(STREAM_LAB_R5_HW)
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
 endif()
 # === R5 COHORT / SEALED RESULTS FOUNDATION END ===
+
+# === R6 COST / PREDICTION FOUNDATION BEGIN ===
+if(STREAM_LAB_R6_PREDICTION)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R6_PREDICTION=1)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r6_prediction.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r6_start_binding.c")
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime")
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r6_prediction.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r6_start_binding.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
+endif()
+if(STREAM_LAB_R6_HW)
+    if(NOT STREAM_LAB_R6_PREDICTION)
+        message(FATAL_ERROR "R6 hardware harness requires STREAM_LAB_R6_PREDICTION=ON.")
+    endif()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R6_HW=1)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r6_hw_harness.c")
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r6_hw_harness.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
+endif()
+# === R6 COST / PREDICTION FOUNDATION END ===
 
 if(STREAM_LAB_R4_HW)
     if(NOT STREAM_LAB_R4_RUNTIME)
