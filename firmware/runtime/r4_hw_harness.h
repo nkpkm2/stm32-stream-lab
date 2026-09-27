@@ -130,6 +130,8 @@ extern "C" {
 #define R4_HW_MASK_TIMING_SAMPLE_COUNT_WORD 235U
 #define R4_HW_MASK_TIMING_MAX_WORD 236U
 #define R4_HW_MASK_TIMING_LIMIT_WORD 238U
+#define R4_HW_DMA_SERVICE_COUNT_WORD 240U
+#define R4_HW_DMA_SERVICE_MAX_WORD 242U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -310,6 +312,8 @@ typedef struct
     uint32_t mask_timing_sample_count;
     uint64_t mask_timing_max_cycles;
     uint64_t mask_timing_limit_cycles;
+    uint64_t dma_service_count;
+    uint64_t dma_max_service_cycles;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -447,6 +451,9 @@ _Static_assert(offsetof(R4HwHarnessResult, response_owner_cycles) ==
 _Static_assert(offsetof(R4HwHarnessResult, mask_timing_reset_status) ==
     (R4_HW_MASK_TIMING_RESET_WORD * sizeof(uint32_t)),
     "R4 mask timing reset evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, dma_service_count) ==
+    (R4_HW_DMA_SERVICE_COUNT_WORD * sizeof(uint32_t)),
+    "R4 DMA-service count evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 

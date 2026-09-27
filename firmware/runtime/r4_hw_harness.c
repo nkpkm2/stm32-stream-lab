@@ -34,6 +34,7 @@
 #define R4_HW_RESPONSE_MAX_CYCLES UINT32_C(5000000)
 #define R4_HW_RESPONSE_OWNER_COVERAGE_PERMILLE UINT64_C(990)
 #define R4_HW_MASK_TIMING_LIMIT_CYCLES UINT64_C(1800)
+#define R4_HW_DMA_SERVICE_LIMIT_CYCLES UINT64_C(23040)
 #ifndef R4_HW_SOAK_MS
 #define R4_HW_SOAK_MS 0U
 #endif
@@ -536,6 +537,18 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
+#elif (R4_HW_CASE_ID == 16U)
+    if ((g_r4_hw_result.lifecycle_init_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_start_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_stop_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.soak_configured_ms < 60000U) ||
+        (g_r4_hw_result.dma_service_count < 100U) ||
+        (g_r4_hw_result.dma_service_count != g_r4_hw_result.dma_irq_count) ||
+        (g_r4_hw_result.dma_max_service_cycles == 0U) ||
+        (g_r4_hw_result.dma_max_service_cycles > R4_HW_DMA_SERVICE_LIMIT_CYCLES))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -616,7 +629,7 @@ static void HarnessTask(void *argument)
     R4_CompletionTimingSnapshot timing;
 #endif
 #if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U) || \
-    (R4_HW_CASE_ID == 12U)
+    (R4_HW_CASE_ID == 12U) || (R4_HW_CASE_ID == 16U)
     R3W3RuntimeConfig config;
     R3LifecycleStartRequest start;
     R3LifecycleStartTicket ticket;
@@ -844,7 +857,7 @@ static void HarnessTask(void *argument)
     vTaskDelay(pdMS_TO_TICKS(2U));
 #endif
 #if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U) || \
-    (R4_HW_CASE_ID == 12U)
+    (R4_HW_CASE_ID == 12U) || (R4_HW_CASE_ID == 16U)
     (void)memset(&config, 0, sizeof(config));
     config.boot_id = R4_HW_BOOT;
     config.k = 4U;
@@ -929,6 +942,8 @@ static void HarnessTask(void *argument)
             g_r4_hw_result.dma_yield_requested_count =
                 dma_tail.dma_yield_requested_count;
             g_r4_hw_result.dma_no_yield_count = dma_tail.dma_no_yield_count;
+            g_r4_hw_result.dma_service_count = dma_tail.dma_service_count;
+            g_r4_hw_result.dma_max_service_cycles = dma_tail.dma_max_service_cycles;
             g_r4_hw_result.health_snapshot_status = (uint32_t)
                 R4_RuntimeTarget_GetHealthSnapshot(&health);
             g_r4_hw_result.health_first_fault = (uint32_t)health.first_fault;

@@ -16,6 +16,8 @@ static R4_SysTickTraceSnapshot systick_trace;
 static R4_DmaWindowSnapshot dma_window;
 static R4_RuntimeHealthSnapshot runtime_health;
 static uintptr_t target_idle_task;
+static uint32_t dma_service_entry_cycle;
+static uint32_t dma_service_active;
 #if defined(STREAM_LAB_R4_HW)
 static uint32_t target_test_pend_irq_after_mask;
 static uint32_t target_test_pend_high_from_low;
@@ -539,6 +541,11 @@ void R4_RuntimeTarget_TraceIsrEnter(void)
     {
         ++systick_trace.enter_count;
     }
+    if (irq_id == ((uint32_t)DMA2_Stream0_IRQn + 16U))
+    {
+        dma_service_entry_cycle = DWT->CYCCNT;
+        dma_service_active = 1U;
+    }
     (void)Apply(R4_RUNTIME_EVENT_IRQ_ENTER, (uintptr_t)irq_id);
 }
 
@@ -551,6 +558,17 @@ void R4_RuntimeTarget_TraceIsrExit(void)
         ++systick_trace.exit_count;
     }
     (void)Apply(R4_RUNTIME_EVENT_IRQ_EXIT, (uintptr_t)irq_id);
+    if ((irq_id == ((uint32_t)DMA2_Stream0_IRQn + 16U)) &&
+        (dma_service_active != 0U))
+    {
+        uint32_t elapsed = DWT->CYCCNT - dma_service_entry_cycle;
+        dma_service_active = 0U;
+        ++dma_tail.dma_service_count;
+        if ((uint64_t)elapsed > dma_tail.dma_max_service_cycles)
+        {
+            dma_tail.dma_max_service_cycles = elapsed;
+        }
+    }
 }
 
 R4_RuntimeStatus R4_RuntimeTarget_GetSysTickTraceSnapshot(

@@ -140,6 +140,8 @@ MASK_TIMING_RESET_WORD = 234
 MASK_TIMING_SAMPLE_COUNT_WORD = 235
 MASK_TIMING_MAX_WORD = 236
 MASK_TIMING_LIMIT_WORD = 238
+DMA_SERVICE_COUNT_WORD = 240
+DMA_SERVICE_MAX_WORD = 242
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -160,6 +162,7 @@ CASES = {
     "window-intersection": ("WINDOW_INTERSECTION", 13, 0, 8),
     "response-synthetic": ("RESPONSE_SYNTHETIC", 14, 0, 8),
     "mask-timing": ("MASK_TIMING", 15, 0, 8),
+    "combined-service": ("COMBINED_SERVICE", 16, 65000, 75),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -552,6 +555,19 @@ def evaluate(case: str, words: list[int]) -> dict:
                 words[MASK_TIMING_SAMPLE_COUNT_WORD] >= 33 and
                 0 < word64(MASK_TIMING_MAX_WORD) <=
                 word64(MASK_TIMING_LIMIT_WORD) == 1800)
+    if case == "combined-service":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= DMA_SERVICE_MAX_WORD + 1:
+            checks["combined_service_extension_present"] = False
+        else:
+            checks["combined_dma_service_margin"] = (
+                words[25] == 0 and words[26] == 0 and words[27] == 0 and
+                words[T12_SOAK_CONFIGURED_MS_WORD] >= 60000 and
+                word64(DMA_SERVICE_COUNT_WORD) >= 100 and
+                word64(DMA_SERVICE_COUNT_WORD) == word64(T12_DMA_IRQ_COUNT_WORD) and
+                0 < word64(DMA_SERVICE_MAX_WORD) <= 23040)
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 

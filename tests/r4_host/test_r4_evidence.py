@@ -209,3 +209,16 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("mask-timing", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["runtime_event_masked_span_bound"])
+
+    def test_combined_service_requires_real_dma_margin(self) -> None:
+        words = [0] * 244
+        words[:11] = [EVIDENCE.MAGIC, 16, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[25:28] = [0, 0, 0]
+        words[EVIDENCE.T12_SOAK_CONFIGURED_MS_WORD] = 65000
+        words[EVIDENCE.T12_DMA_IRQ_COUNT_WORD] = 100
+        words[EVIDENCE.DMA_SERVICE_COUNT_WORD] = 100
+        words[EVIDENCE.DMA_SERVICE_MAX_WORD] = 23040
+        verdict = EVIDENCE.evaluate("combined-service", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["combined_dma_service_margin"])

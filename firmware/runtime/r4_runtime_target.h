@@ -65,6 +65,11 @@ typedef struct
     uint64_t dma_irq_count;
     uint64_t dma_yield_requested_count;
     uint64_t dma_no_yield_count;
+    /* Real DMA trace-entry to post-RuntimeEvent IRQ-exit span.  It includes
+     * R4 entry/exit accounting, HAL/callback work and the common yield-tail;
+     * Cortex-M exception entry/return remain explicitly outside this scope. */
+    uint64_t dma_service_count;
+    uint64_t dma_max_service_cycles;
 } R4_DmaTailSnapshot;
 
 /* Read-only witness of the existing FreeRTOS V11.1.0 traceISR route,
