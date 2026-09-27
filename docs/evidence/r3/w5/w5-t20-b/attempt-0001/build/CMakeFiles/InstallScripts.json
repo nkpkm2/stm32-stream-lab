@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w5-t20-b-106a1xbs/build/cmake_install.cmake",
+		"C:/Users/CHJ/Downloads/STM32_R3_EVIDENCE/w5-t20-b-106a1xbs/build/cmake/stm32cubemx/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
