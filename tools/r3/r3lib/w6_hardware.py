@@ -16,7 +16,7 @@ from .w2_build_validation import CommandLog, configure, select_tools, verify_cac
 from .w3_hardware import digest, manifest, validate_manifest, write_new
 
 ANCHORS = {"W6-A": ("A", 1, 8), "W6-B": ("B", 2, 1)}
-MAGIC, COMPLETE, CYCLES, HEADER, CYCLE_WORDS = 0x52335736, 0xA66C0DE6, 500, 8, 12
+MAGIC, COMPLETE, CYCLES, HEADER, CYCLE_WORDS = 0x52335736, 0xA66C0DE6, 500, 9, 12
 WORDS = HEADER + CYCLES * CYCLE_WORDS
 TARGET_BOUND_S, HOST_TIMEOUT_S = 20.0, 45.0
 
@@ -39,7 +39,7 @@ def parse_words(text: str) -> list[int]:
 
 def evaluate(case: str, words: list[int]) -> dict:
     anchor, anchor_id, k = ANCHORS[case]
-    checks = {"magic":words[0] == MAGIC, "schema":words[1] == 1, "anchor":words[2] == anchor_id, "terminal":words[3] == 1, "all_cycles":words[4] == CYCLES, "no_fault_cycles":words[5] == 0, "complete":words[7] == COMPLETE}
+    checks = {"magic":words[0] == MAGIC, "schema":words[1] == 1, "anchor":words[2] == anchor_id, "terminal":words[3] == 1, "all_cycles":words[4] == CYCLES, "no_fault_cycles":words[5] == 0, "complete":words[8] == COMPLETE}
     records = []
     for n in range(CYCLES):
         row = words[HEADER + n*CYCLE_WORDS:HEADER + (n+1)*CYCLE_WORDS]
