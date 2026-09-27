@@ -369,6 +369,12 @@ static void HarnessTask(void *argument)
         g_r4_hw_result.lifecycle_stop_status = (uint32_t)R3_W3_RUNTIME_INVALID_STATE;
     }
 #endif
+/* T17's transaction is deliberately very short.  Keep the window open for
+ * two real RTOS ticks after the injected IRQ has returned so this formal
+ * image proves the production tick hook, rather than merely configuring it. */
+#if (R4_HW_CASE_ID == 4U)
+    vTaskDelay(pdMS_TO_TICKS(2U));
+#endif
     g_r4_hw_result.checkpoint_status = (uint32_t)R4_RuntimeTarget_Checkpoint();
     g_r4_hw_result.window_close_status = (uint32_t)R4_RuntimeTarget_CloseWindow(0U);
     ledger = R4_RuntimeTarget_GetLedger();
