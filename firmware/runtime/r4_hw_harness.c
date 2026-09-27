@@ -417,6 +417,26 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
+#elif (R4_HW_CASE_ID == 12U)
+    if ((g_r4_hw_result.lifecycle_init_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_start_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_stop_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.completion_budget_pass == 0U) ||
+        (g_r4_hw_result.completion_count < 100U) ||
+        (g_r4_hw_result.completion_lock_count !=
+         g_r4_hw_result.completion_commit_count) ||
+        (g_r4_hw_result.completion_commit_count !=
+         g_r4_hw_result.completion_unlock_count) ||
+        (g_r4_hw_result.completion_max_total_cycles >
+         R4_HW_COMPLETE_BUDGET_CYCLES) ||
+        (g_r4_hw_result.commit_pending_arm_status != ok) ||
+        (g_r4_hw_result.commit_pending_snapshot_status != ok) ||
+        (g_r4_hw_result.commit_pending_arm_count != 1U) ||
+        (g_r4_hw_result.commit_pending_irq_count != 1U) ||
+        (g_r4_hw_result.commit_pending_active_at_irq != 0U))
+    {
+        FailInvariant(R4_HW_INVARIANT_COMPLETION);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -494,10 +514,11 @@ static void SyntheticTaskB(void *argument)
 static void HarnessTask(void *argument)
 {
     const R4_RuntimeLedger *ledger;
-#if (R4_HW_CASE_ID == 5U)
+#if (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 12U)
     R4_CompletionTimingSnapshot timing;
 #endif
-#if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U)
+#if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U) || \
+    (R4_HW_CASE_ID == 12U)
     R3W3RuntimeConfig config;
     R3LifecycleStartRequest start;
     R3LifecycleStartTicket ticket;
@@ -699,10 +720,15 @@ static void HarnessTask(void *argument)
      * tasks finish and the actual Idle task receives measurable residency. */
     vTaskDelay(pdMS_TO_TICKS(20U));
 #endif
-#if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U)
+#if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U) || \
+    (R4_HW_CASE_ID == 12U)
     (void)memset(&config, 0, sizeof(config));
     config.boot_id = R4_HW_BOOT;
     config.k = 4U;
+#if (R4_HW_CASE_ID == 12U)
+    g_r4_hw_result.commit_pending_arm_status =
+        (uint32_t)R4_RuntimeTarget_TestArmPendingCompletionIrq();
+#endif
     g_r4_hw_result.lifecycle_init_status = (uint32_t)R3W3Runtime_Initialize(&config);
     if (g_r4_hw_result.lifecycle_init_status == (uint32_t)R3_W3_RUNTIME_OK)
     {
@@ -926,7 +952,7 @@ static void HarnessTask(void *argument)
             ledger->window_unclassified_cycles[0];
 #endif
     }
-#if (R4_HW_CASE_ID == 5U)
+#if (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 12U)
     if (R4_RuntimeTarget_GetCompletionTiming(&timing) == R4_RUNTIME_OK)
     {
         g_r4_hw_result.completion_malformed_count = timing.malformed_count;
@@ -942,6 +968,13 @@ static void HarnessTask(void *argument)
             (timing.completed_count != 0U) && (timing.malformed_count == 0U) &&
             (timing.max_total_cycles <= R4_HW_COMPLETE_BUDGET_CYCLES) ? 1U : 0U;
     }
+#endif
+#if (R4_HW_CASE_ID == 12U)
+    g_r4_hw_result.commit_pending_snapshot_status = (uint32_t)
+        R4_RuntimeTarget_TestGetCompletionPendingIrqSnapshot(
+            &g_r4_hw_result.commit_pending_arm_count,
+            &g_r4_hw_result.commit_pending_irq_count,
+            &g_r4_hw_result.commit_pending_active_at_irq);
 #endif
 #if (R4_HW_CASE_ID == 4U)
     /* Deliberately repeat the already-completed TIM6 exit.  This is final:

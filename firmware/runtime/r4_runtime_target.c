@@ -19,6 +19,10 @@ static uintptr_t target_idle_task;
 #if defined(STREAM_LAB_R4_HW)
 static uint32_t target_test_pend_irq_after_mask;
 static uint32_t target_test_pend_high_from_low;
+static uint32_t target_test_pend_completion_irq;
+static uint32_t target_test_completion_irq_arm_count;
+static uint32_t target_test_completion_irq_count;
+static uint32_t target_test_completion_irq_active_at_entry;
 #endif
 
 static uint32_t TargetReadCycle(void *context)
@@ -425,6 +429,16 @@ void R4_RuntimeTarget_CompletionLock(uint32_t operation)
     completion_timing.t_unlock = 0U;
     completion_timing.t_lock = CompletionBoundaryNow();
     ++completion_timing.lock_count;
+#if defined(STREAM_LAB_R4_HW)
+    if (target_test_pend_completion_irq != 0U)
+    {
+        /* The FreeRTOS queue BASEPRI critical section is already active.
+         * TIM6 at the syscall ceiling must wait for the actual unlock. */
+        target_test_pend_completion_irq = 0U;
+        ++target_test_completion_irq_arm_count;
+        NVIC_SetPendingIRQ(TIM6_DAC_IRQn);
+    }
+#endif
 }
 
 void R4_RuntimeTarget_CompletionCommit(uint32_t operation)
@@ -659,6 +673,48 @@ R4_RuntimeStatus R4_RuntimeTarget_TestInjectTimeRegression(void)
     target_ledger.last_time = target_clock.last_time + UINT64_C(0x100000);
     TargetRestore(saved_mask, NULL);
     return Apply(R4_RUNTIME_EVENT_CHECKPOINT, 0U);
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_TestArmPendingCompletionIrq(void)
+{
+    uint32_t saved_mask;
+
+    if (target_initialized == 0U) return target_boot_error;
+    saved_mask = TargetSaveAndDisable(NULL);
+    target_test_pend_completion_irq = 1U;
+    target_test_completion_irq_arm_count = 0U;
+    target_test_completion_irq_count = 0U;
+    target_test_completion_irq_active_at_entry = 0U;
+    NVIC_ClearPendingIRQ(TIM6_DAC_IRQn);
+    NVIC_SetPriority(TIM6_DAC_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
+    NVIC_EnableIRQ(TIM6_DAC_IRQn);
+    TargetRestore(saved_mask, NULL);
+    return R4_RUNTIME_OK;
+}
+
+void R4_RuntimeTarget_TestObserveCompletionPendingIrq(void)
+{
+    if (target_test_completion_irq_arm_count == 0U) return;
+    ++target_test_completion_irq_count;
+    if (completion_timing.active != 0U) target_test_completion_irq_active_at_entry = 1U;
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_TestGetCompletionPendingIrqSnapshot(
+    volatile uint32_t *arm_count, volatile uint32_t *irq_count,
+    volatile uint32_t *active_at_irq)
+{
+    uint32_t saved_mask;
+
+    if ((arm_count == NULL) || (irq_count == NULL) || (active_at_irq == NULL))
+    {
+        return R4_RUNTIME_INVALID_ARGUMENT;
+    }
+    saved_mask = TargetSaveAndDisable(NULL);
+    *arm_count = target_test_completion_irq_arm_count;
+    *irq_count = target_test_completion_irq_count;
+    *active_at_irq = target_test_completion_irq_active_at_entry;
+    TargetRestore(saved_mask, NULL);
+    return R4_RUNTIME_OK;
 }
 
 R4_RuntimeStatus R4_RuntimeTarget_TestApplyEvent(R4_RuntimeEventKind kind,

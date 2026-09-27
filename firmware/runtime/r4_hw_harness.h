@@ -108,6 +108,11 @@ extern "C" {
 #define R4_HW_TIME_REGRESSION_POST_STATUS_WORD 207U
 #define R4_HW_TIME_REGRESSION_SERIAL_BEFORE_WORD 208U
 #define R4_HW_TIME_REGRESSION_SERIAL_AFTER_WORD 210U
+#define R4_HW_COMMIT_PENDING_ARM_STATUS_WORD 212U
+#define R4_HW_COMMIT_PENDING_SNAPSHOT_STATUS_WORD 213U
+#define R4_HW_COMMIT_PENDING_ARM_COUNT_WORD 214U
+#define R4_HW_COMMIT_PENDING_IRQ_COUNT_WORD 215U
+#define R4_HW_COMMIT_PENDING_ACTIVE_AT_IRQ_WORD 216U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -266,6 +271,11 @@ typedef struct
     uint32_t time_regression_post_status;
     uint64_t time_regression_serial_before;
     uint64_t time_regression_serial_after;
+    uint32_t commit_pending_arm_status;
+    uint32_t commit_pending_snapshot_status;
+    uint32_t commit_pending_arm_count;
+    uint32_t commit_pending_irq_count;
+    uint32_t commit_pending_active_at_irq;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -388,6 +398,9 @@ _Static_assert(offsetof(R4HwHarnessResult, time_regression_inject_status) ==
 _Static_assert(offsetof(R4HwHarnessResult, time_regression_serial_before) ==
     (R4_HW_TIME_REGRESSION_SERIAL_BEFORE_WORD * sizeof(uint32_t)),
     "R4 time-regression serial evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, commit_pending_arm_status) ==
+    (R4_HW_COMMIT_PENDING_ARM_STATUS_WORD * sizeof(uint32_t)),
+    "R4 completion-pending arm evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 

@@ -247,6 +247,7 @@ void TIM6_DAC_IRQHandler(void)
   BaseType_t higher_priority_task_woken = pdFALSE;
 
   traceISR_ENTER();
+  R4_RuntimeTarget_TestObserveCompletionPendingIrq();
   NVIC_ClearPendingIRQ(TIM6_DAC_IRQn);
   portYIELD_FROM_ISR(higher_priority_task_woken);
 }

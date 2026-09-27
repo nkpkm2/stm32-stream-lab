@@ -120,6 +120,11 @@ TIME_REGRESSION_INJECT_STATUS_WORD = 206
 TIME_REGRESSION_POST_STATUS_WORD = 207
 TIME_REGRESSION_SERIAL_BEFORE_WORD = 208
 TIME_REGRESSION_SERIAL_AFTER_WORD = 210
+COMMIT_PENDING_ARM_STATUS_WORD = 212
+COMMIT_PENDING_SNAPSHOT_STATUS_WORD = 213
+COMMIT_PENDING_ARM_COUNT_WORD = 214
+COMMIT_PENDING_IRQ_COUNT_WORD = 215
+COMMIT_PENDING_ACTIVE_AT_IRQ_WORD = 216
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -134,6 +139,7 @@ CASES = {
     "microbenchmark": ("MICROBENCH", 9, 0, 8),
     "mask-restore": ("MASK_RESTORE", 10, 0, 8),
     "time-regression": ("TIME_REGRESSION", 11, 0, 8),
+    "commit-pending-irq": ("COMMIT_PENDING_IRQ", 12, 0, 8),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -466,6 +472,16 @@ def evaluate(case: str, words: list[int]) -> dict:
                 words[TIME_REGRESSION_POST_STATUS_WORD] == 5 and
                 word64(TIME_REGRESSION_SERIAL_AFTER_WORD) ==
                 word64(TIME_REGRESSION_SERIAL_BEFORE_WORD))
+    if case == "commit-pending-irq":
+        if len(words) <= COMMIT_PENDING_ACTIVE_AT_IRQ_WORD:
+            checks["commit_pending_irq_extension_present"] = False
+        else:
+            checks["commit_pending_irq_after_unlock"] = (
+                words[COMMIT_PENDING_ARM_STATUS_WORD] == 0 and
+                words[COMMIT_PENDING_SNAPSHOT_STATUS_WORD] == 0 and
+                words[COMMIT_PENDING_ARM_COUNT_WORD] == 1 and
+                words[COMMIT_PENDING_IRQ_COUNT_WORD] == 1 and
+                words[COMMIT_PENDING_ACTIVE_AT_IRQ_WORD] == 0)
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 

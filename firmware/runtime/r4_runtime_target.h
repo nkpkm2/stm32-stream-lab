@@ -135,6 +135,11 @@ R4_RuntimeStatus R4_RuntimeTarget_TestInjectDuplicateExit(uint32_t irq_id);
 /* Fault-injection only: corrupt the next ledger settlement boundary so a
  * normal target Apply must latch TIME_REGRESSION and reject later events. */
 R4_RuntimeStatus R4_RuntimeTarget_TestInjectTimeRegression(void);
+R4_RuntimeStatus R4_RuntimeTarget_TestArmPendingCompletionIrq(void);
+void R4_RuntimeTarget_TestObserveCompletionPendingIrq(void);
+R4_RuntimeStatus R4_RuntimeTarget_TestGetCompletionPendingIrqSnapshot(
+    volatile uint32_t *arm_count, volatile uint32_t *irq_count,
+    volatile uint32_t *active_at_irq);
 /* Diagnostic-only direct entrance used by the R4 microbenchmark.  It calls
  * the same RuntimeEvent Apply transaction as production trace endpoints; it
  * is never present in a production build. */

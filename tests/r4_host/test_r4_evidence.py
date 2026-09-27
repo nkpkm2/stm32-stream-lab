@@ -157,3 +157,13 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("time-regression", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["time_regression_fail_closed"])
+
+    def test_completion_pending_irq_must_observe_unlock(self) -> None:
+        words = [0] * 217
+        words[:11] = [EVIDENCE.MAGIC, 12, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.COMMIT_PENDING_ARM_COUNT_WORD] = 1
+        words[EVIDENCE.COMMIT_PENDING_IRQ_COUNT_WORD] = 1
+        verdict = EVIDENCE.evaluate("commit-pending-irq", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["commit_pending_irq_after_unlock"])
