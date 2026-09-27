@@ -70,12 +70,20 @@ void R4_PerturbationTarget_OnWorkerComplete(void)
 
 void R4_PerturbationTarget_GetSnapshot(R4_PerturbationResponseSnapshot *out)
 {
+    uint32_t index;
+
     if (out == NULL)
     {
         return;
     }
     __DMB();
-    (void)memcpy(out, &storage, sizeof(*out));
+    out->release_count = storage.release_count;
+    out->completed_count = storage.completed_count;
+    out->overflow_count = storage.overflow_count;
+    for (index = 0U; index < R4_PERTURBATION_RESPONSE_SAMPLES; ++index)
+    {
+        out->samples[index] = storage.samples[index];
+    }
 }
 
 #else
