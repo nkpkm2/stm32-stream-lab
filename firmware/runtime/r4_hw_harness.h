@@ -76,6 +76,12 @@ typedef struct
     uint64_t dma_no_event_irq_after;
     uint64_t dma_no_event_no_yield_before;
     uint64_t dma_no_event_no_yield_after;
+    uint32_t health_snapshot_status;
+    uint32_t health_first_fault;
+    uint32_t health_fail_closed_requested;
+    uint64_t health_monitor_service_count;
+    uint64_t health_max_monitor_interval_cycles;
+    uint64_t health_monitor_interval_limit_cycles;
 } R4HwHarnessResult;
 
 extern volatile R4HwHarnessResult g_r4_hw_result;

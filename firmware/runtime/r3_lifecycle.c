@@ -9,6 +9,7 @@ typedef struct
     R3LifecycleSnapshot snapshot;
     StreamRunTicket stream_ticket;
     uint32_t initialized;
+    uint32_t infrastructure_stop_pending;
 } R3LifecycleStorage;
 
 static R3LifecycleStorage lifecycle;
@@ -141,6 +142,23 @@ R3LifecycleStatus R3Lifecycle_CommitStart(const R3LifecycleStartTicket *ticket)
     return R3_LIFECYCLE_OK;
 }
 
+R3LifecycleStatus R3Lifecycle_RequestInfrastructureStopFromIsr(void)
+{
+    if ((lifecycle.initialized == 0U) ||
+        (lifecycle.snapshot.state != R3_LIFECYCLE_RUNNING))
+    {
+        return R3_LIFECYCLE_INVALID_STATE;
+    }
+    /* This is intentionally the complete ISR-side mutation: no queue API,
+     * peripheral operation, worker wait, or lifecycle rollback is legal here.
+     * DMA observes acquisition_publish_allowed before taking a FREE token. */
+    CloseGates();
+    lifecycle.snapshot.state = R3_LIFECYCLE_QUIESCING;
+    lifecycle.infrastructure_stop_pending = 1U;
+    ++lifecycle.snapshot.failure_count;
+    return R3_LIFECYCLE_OK;
+}
+
 R3LifecycleStatus R3Lifecycle_RequestStop(const R3LifecycleStopRequest *request)
 {
     R3LifecycleStatus status;
@@ -152,6 +170,15 @@ R3LifecycleStatus R3Lifecycle_RequestStop(const R3LifecycleStopRequest *request)
     {
         return request->stop_id == lifecycle.snapshot.stop_id ?
             R3_LIFECYCLE_STOPPED : R3_LIFECYCLE_INVALID_STATE;
+    }
+    if ((lifecycle.snapshot.state == R3_LIFECYCLE_QUIESCING) &&
+        (lifecycle.infrastructure_stop_pending != 0U))
+    {
+        lifecycle.snapshot.stop_id = request->stop_id;
+        lifecycle.infrastructure_stop_pending = 0U;
+        status = RollbackToIdle();
+        return status == R3_LIFECYCLE_OK ?
+            R3_LIFECYCLE_STOPPED : R3_LIFECYCLE_STATUS_RESET_REQUIRED;
     }
     if (lifecycle.snapshot.state != R3_LIFECYCLE_RUNNING)
     {

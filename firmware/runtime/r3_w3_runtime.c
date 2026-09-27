@@ -597,6 +597,20 @@ R3W3RuntimeStatus R3W3Runtime_StopRunning(uint32_t stop_id)
     return R3W3Runtime_Stop(&request);
 }
 
+R3W3RuntimeStatus R3W3Runtime_RequestInfrastructureStopFromIsr(void)
+{
+    R3LifecycleStatus status = R3Lifecycle_RequestInfrastructureStopFromIsr();
+
+    if (status != R3_LIFECYCLE_OK)
+    {
+        return R3_W3_RUNTIME_INVALID_STATE;
+    }
+    /* A timing/integrity fault makes the run invalid even if the later
+     * task-context hardware quiescence succeeds. */
+    LatchFault();
+    return R3_W3_RUNTIME_OK;
+}
+
 R3W3RuntimeStatus R3W3Runtime_Stop(const R3LifecycleStopRequest *request)
 {
     R3LifecycleStatus status;

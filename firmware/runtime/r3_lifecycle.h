@@ -92,6 +92,11 @@ R3LifecycleStatus R3Lifecycle_PrepareStart(const R3LifecycleStartRequest *reques
                                             R3LifecycleStartTicket *out_ticket);
 R3LifecycleStatus R3Lifecycle_RequestStopBeforeCommit(const R3LifecycleStartTicket *ticket);
 R3LifecycleStatus R3Lifecycle_CommitStart(const R3LifecycleStartTicket *ticket);
+/* IRQ-safe first half of an infrastructure stop: it only changes the
+ * lifecycle state and closes all admission gates.  It never blocks or touches
+ * a peripheral.  The Communication owner must subsequently call the normal
+ * RequestStop() with the current ticket to perform the rollback. */
+R3LifecycleStatus R3Lifecycle_RequestInfrastructureStopFromIsr(void);
 R3LifecycleStatus R3Lifecycle_RequestStop(const R3LifecycleStopRequest *request);
 R3LifecycleStatus R3Lifecycle_GetSnapshot(R3LifecycleSnapshot *out);
 

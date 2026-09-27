@@ -14,6 +14,8 @@
 #define R4_HW_COMPLETE_BUDGET_CYCLES 1800U
 #define R4_HW_TICK_CYCLES UINT64_C(180000)
 #define R4_HW_TICK_INTERVAL_LIMIT_CYCLES UINT64_C(270000)
+#define R4_HW_MONITOR_INTERVAL_LIMIT_CYCLES UINT64_C(1800000000)
+#define R4_HW_MONITOR_PERIOD_MS 1000U
 #ifndef R4_HW_SOAK_MS
 #define R4_HW_SOAK_MS 0U
 #endif
@@ -55,7 +57,9 @@ static void HarnessTask(void *argument)
     R4_TickService tick_snapshot;
     R4_TickServiceTiming tick_timing;
     R4_DmaTailSnapshot dma_tail;
+    R4_RuntimeHealthSnapshot health;
     uint64_t soak_now;
+    uint32_t soak_elapsed_ms;
     R4_TickServiceTargetCallbacks tick_callbacks;
 
     (void)argument;
@@ -137,7 +141,26 @@ static void HarnessTask(void *argument)
             (void)R4_RuntimeTarget_ReadNow(&soak_now);
             g_r4_hw_result.soak_start_cycle = soak_now;
 #if R4_HW_SOAK_MS > 0U
-            vTaskDelay(pdMS_TO_TICKS(R4_HW_SOAK_MS));
+            /* The coordinator is the R3 lifecycle owner.  It services
+             * Clock64 once per second (well below one DWT wrap) and consumes
+             * any IRQ-latched fail-closed request through the normal Stop(). */
+            soak_elapsed_ms = 0U;
+            while (soak_elapsed_ms < R4_HW_SOAK_MS)
+            {
+                uint32_t remaining = R4_HW_SOAK_MS - soak_elapsed_ms;
+                uint32_t delay_ms = remaining < R4_HW_MONITOR_PERIOD_MS ?
+                    remaining : R4_HW_MONITOR_PERIOD_MS;
+
+                (void)R4_RuntimeTarget_MonitorService(
+                    R4_HW_MONITOR_INTERVAL_LIMIT_CYCLES);
+                if (R4_RuntimeTarget_GetHealthSnapshot(&health) != R4_RUNTIME_OK ||
+                    health.fail_closed_requested != 0U)
+                {
+                    break;
+                }
+                vTaskDelay(pdMS_TO_TICKS(delay_ms));
+                soak_elapsed_ms += delay_ms;
+            }
 #endif
             (void)R4_RuntimeTarget_ReadNow(&soak_now);
             g_r4_hw_result.soak_end_cycle = soak_now;
@@ -152,6 +175,17 @@ static void HarnessTask(void *argument)
             g_r4_hw_result.dma_yield_requested_count =
                 dma_tail.dma_yield_requested_count;
             g_r4_hw_result.dma_no_yield_count = dma_tail.dma_no_yield_count;
+            g_r4_hw_result.health_snapshot_status = (uint32_t)
+                R4_RuntimeTarget_GetHealthSnapshot(&health);
+            g_r4_hw_result.health_first_fault = (uint32_t)health.first_fault;
+            g_r4_hw_result.health_fail_closed_requested =
+                health.fail_closed_requested;
+            g_r4_hw_result.health_monitor_service_count =
+                health.monitor_service_count;
+            g_r4_hw_result.health_max_monitor_interval_cycles =
+                health.max_monitor_interval_cycles;
+            g_r4_hw_result.health_monitor_interval_limit_cycles =
+                health.monitor_interval_limit_cycles;
             vTaskDelay(pdMS_TO_TICKS(20U));
             stop.stream_ticket = ticket.stream_ticket;
             stop.stop_id = UINT32_C(0x52340002);

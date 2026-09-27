@@ -33,9 +33,11 @@ tail, never a fabricated completion.
 1. Clock64 has exactly one extension state and a Monitor-owned periodic
    service interval safely below the 23.86 s DWT wrap interval at 180 MHz.
 2. A detected Tick-service interval violation or Clock64-service deadline
-   violation latches a named infrastructure fault and requests the
-   Communication-owned safe stop.  The request closes acquisition publication,
-   Processing claim and interference release before any later DMA admission.
+   violation latches a named infrastructure fault and a fail-closed request.
+   Its IRQ-safe half immediately closes acquisition publication, Processing
+   claim and interference release; the Communication-owned task then consumes
+   the request through the ordinary safe-stop transaction to quiesce DMA and
+   workers before any later admission can be trusted.
 3. The Tick hook only records and requests; it does not call a blocking
    lifecycle API or invent service ticks.
 4. The generated callsite table covers DMA, TIM7, SysTick, tick hook, queue

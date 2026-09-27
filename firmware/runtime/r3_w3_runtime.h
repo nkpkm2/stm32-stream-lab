@@ -83,6 +83,9 @@ R3W3RuntimeStatus R3W3Runtime_CommitStart(const R3LifecycleStartTicket *ticket);
 R3W3RuntimeStatus R3W3Runtime_StopBeforeCommit(
     const R3LifecycleStartTicket *ticket);
 R3W3RuntimeStatus R3W3Runtime_StopRunning(uint32_t stop_id);
+/* IRQ-safe gate close only.  The coordinator subsequently performs the
+ * regular StopRunning() transaction in task context. */
+R3W3RuntimeStatus R3W3Runtime_RequestInfrastructureStopFromIsr(void);
 /* Atomic Communication command APIs used by the W5 protocol layer. */
 R3W3RuntimeStatus R3W3Runtime_Start(
     const R3LifecycleStartRequest *request,

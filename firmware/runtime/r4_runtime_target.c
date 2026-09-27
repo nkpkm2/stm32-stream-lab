@@ -1,7 +1,10 @@
 #include "r4_runtime_target.h"
 #include "r4_tick_service_target.h"
 
+#include "FreeRTOS.h"
 #include "stm32f4xx.h"
+
+#include "r3_w3_runtime.h"
 
 static R4_Clock64 target_clock;
 static R4_RuntimeLedger target_ledger;
@@ -146,6 +149,10 @@ void R4_RuntimeTarget_LatchInfrastructureFault(R4_RuntimeInfrastructureFault fau
         runtime_health.first_fault = fault;
     }
     runtime_health.fail_closed_requested = 1U;
+    /* This is the only R4-to-lifecycle ISR action.  It is bounded and closes
+     * admission gates immediately; task-context code performs the actual
+     * driver/worker stop after observing the sticky request. */
+    (void)R3W3Runtime_RequestInfrastructureStopFromIsr();
     TargetRestore(saved_mask, NULL);
 }
 
@@ -154,6 +161,7 @@ R4_RuntimeStatus R4_RuntimeTarget_MonitorService(uint64_t interval_limit_cycles)
     uint32_t saved_mask;
     uint64_t now;
     uint64_t interval = 0U;
+    uint32_t limit_exceeded = 0U;
 
     if ((target_initialized == 0U) || (interval_limit_cycles == 0U))
     {
@@ -174,17 +182,18 @@ R4_RuntimeStatus R4_RuntimeTarget_MonitorService(uint64_t interval_limit_cycles)
         }
         if (interval > interval_limit_cycles)
         {
-            if (runtime_health.first_fault == R4_RUNTIME_INFRA_NONE)
-            {
-                runtime_health.first_fault = R4_RUNTIME_INFRA_CLOCK64_MONITOR_GAP;
-            }
-            runtime_health.fail_closed_requested = 1U;
+            limit_exceeded = 1U;
         }
     }
     runtime_health.last_monitor_cycle = now;
     runtime_health.monitor_interval_limit_cycles = interval_limit_cycles;
     ++runtime_health.monitor_service_count;
     TargetRestore(saved_mask, NULL);
+    if (limit_exceeded != 0U)
+    {
+        R4_RuntimeTarget_LatchInfrastructureFault(
+            R4_RUNTIME_INFRA_CLOCK64_MONITOR_GAP);
+    }
     return R4_RuntimeLedger_GetStatus(&target_ledger);
 }
 
