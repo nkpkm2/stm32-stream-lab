@@ -97,7 +97,22 @@ typedef struct
     uint32_t irq_depth;
 
     uint32_t window_open[R4_RUNTIME_WINDOW_COUNT];
+    /* Closed-window data is the formal result.  It is deliberately distinct
+     * from the whole-run counters below: activity after CLOSE remains useful
+     * live diagnostics but must never mutate a sealed CPU-window result. */
     uint64_t window_cycles[R4_RUNTIME_WINDOW_COUNT];
+    uint64_t window_task_cycles[R4_RUNTIME_WINDOW_COUNT];
+    uint64_t window_irq_cycles[R4_RUNTIME_WINDOW_COUNT];
+    uint64_t window_idle_cycles[R4_RUNTIME_WINDOW_COUNT];
+    uint64_t window_unclassified_cycles[R4_RUNTIME_WINDOW_COUNT];
+    R4_RuntimeOwnerBucket
+        window_task_buckets[R4_RUNTIME_WINDOW_COUNT][R4_RUNTIME_MAX_TASK_BUCKETS];
+    R4_RuntimeOwnerBucket
+        window_irq_buckets[R4_RUNTIME_WINDOW_COUNT][R4_RUNTIME_MAX_IRQ_BUCKETS];
+
+    /* Live, whole-runtime diagnostics.  These intentionally continue after
+     * every formal window is closed and must not be combined with a formal
+     * window denominator when reporting utilization. */
     uint64_t task_cycles;
     uint64_t irq_cycles;
     uint64_t idle_cycles;

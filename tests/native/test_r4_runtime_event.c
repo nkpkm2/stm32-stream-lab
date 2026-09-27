@@ -135,6 +135,113 @@ static void CaseMaskedEntryRestored(void)
     CHECK(platform.mask == 1U);
 }
 
+static void CaseWindowClipping(void)
+{
+    FakePlatform platform = { 0U, 0U, 0U, 0U };
+    R4_Clock64 clock;
+    R4_RuntimeLedger ledger = NewLedger(&platform, &clock);
+
+    /* [0,10) is before, [10,30) is inside, [30,50) is after.  The single
+     * continuous task interval deliberately crosses both window boundaries. */
+    CHECK(Apply(&ledger, &platform, 10U, R4_RUNTIME_EVENT_WINDOW_OPEN, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 20U, R4_RUNTIME_EVENT_CHECKPOINT, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 30U, R4_RUNTIME_EVENT_WINDOW_CLOSE, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(ledger.window_cycles[0] == 20U);
+    CHECK(ledger.window_task_cycles[0] == 20U);
+    CHECK(ledger.window_irq_cycles[0] == 0U);
+    CHECK(ledger.window_idle_cycles[0] == 0U);
+    CHECK(ledger.window_unclassified_cycles[0] == 0U);
+    CHECK(BucketCycles(ledger.window_task_buckets[0],
+        R4_RUNTIME_MAX_TASK_BUCKETS, 11U) == 20U);
+    CHECK(Apply(&ledger, &platform, 50U, R4_RUNTIME_EVENT_CHECKPOINT, 0U) ==
+        R4_RUNTIME_OK);
+    /* Formal closed-window data is immutable; live task accounting continues. */
+    CHECK(ledger.window_cycles[0] == 20U);
+    CHECK(ledger.window_task_cycles[0] == 20U);
+    CHECK(BucketCycles(ledger.window_task_buckets[0],
+        R4_RUNTIME_MAX_TASK_BUCKETS, 11U) == 20U);
+    CHECK(ledger.task_cycles == 50U);
+}
+
+static void CaseWindowOwnerAttribution(void)
+{
+    FakePlatform platform = { 0U, 0U, 0U, 0U };
+    R4_Clock64 clock;
+    R4_RuntimeLedger ledger = NewLedger(&platform, &clock);
+
+    /* [10,35) is formal: task 11 owns [10,15) and [25,35), while IRQ 41
+     * owns [15,25).  An event after CLOSE proves that the formal per-owner
+     * result freezes even though whole-run accounting continues. */
+    CHECK(Apply(&ledger, &platform, 10U, R4_RUNTIME_EVENT_WINDOW_OPEN, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 15U, R4_RUNTIME_EVENT_IRQ_ENTER, 41U) ==
+        R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 25U, R4_RUNTIME_EVENT_IRQ_EXIT, 41U) ==
+        R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 35U, R4_RUNTIME_EVENT_WINDOW_CLOSE, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(ledger.window_cycles[0] == 25U);
+    CHECK(ledger.window_task_cycles[0] == 15U);
+    CHECK(ledger.window_irq_cycles[0] == 10U);
+    CHECK(ledger.window_idle_cycles[0] == 0U);
+    CHECK(ledger.window_unclassified_cycles[0] == 0U);
+    CHECK(BucketCycles(ledger.window_task_buckets[0],
+        R4_RUNTIME_MAX_TASK_BUCKETS, 11U) == 15U);
+    CHECK(BucketCycles(ledger.window_irq_buckets[0],
+        R4_RUNTIME_MAX_IRQ_BUCKETS, 41U) == 10U);
+    CHECK(Apply(&ledger, &platform, 45U, R4_RUNTIME_EVENT_CHECKPOINT, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(ledger.window_task_cycles[0] == 15U);
+    CHECK(ledger.window_irq_cycles[0] == 10U);
+    CHECK(ledger.task_cycles == 35U);
+    CHECK(ledger.irq_cycles == 10U);
+}
+
+static void CaseWindowEntirelyOutside(void)
+{
+    FakePlatform platform = { 0U, 0U, 0U, 0U };
+    R4_Clock64 clock;
+    R4_RuntimeLedger ledger = NewLedger(&platform, &clock);
+
+    CHECK(Apply(&ledger, &platform, 10U, R4_RUNTIME_EVENT_CHECKPOINT, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 20U, R4_RUNTIME_EVENT_WINDOW_OPEN, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 20U, R4_RUNTIME_EVENT_WINDOW_CLOSE, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 40U, R4_RUNTIME_EVENT_CHECKPOINT, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(ledger.window_cycles[0] == 0U);
+    CHECK(ledger.task_cycles == 40U);
+}
+
+static void CaseIdleInterruptedByIrq(void)
+{
+    FakePlatform platform = { 0U, 0U, 0U, 0U };
+    R4_Clock64 clock;
+    R4_RuntimeLedger ledger = NewLedger(&platform, &clock);
+
+    /* [0,10) and [20,30) belong to idle; only [10,20) belongs to the IRQ.
+     * This proves the two classifications are exclusive rather than merely
+     * proving that the aggregate ledger happens to conserve elapsed time. */
+    ledger.active.kind = R4_RUNTIME_CONTEXT_IDLE;
+    ledger.active.identity = 0U;
+    CHECK(Apply(&ledger, &platform, 10U, R4_RUNTIME_EVENT_IRQ_ENTER, 31U) ==
+        R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 20U, R4_RUNTIME_EVENT_IRQ_EXIT, 31U) ==
+        R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 30U, R4_RUNTIME_EVENT_CHECKPOINT, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(ledger.idle_cycles == 20U);
+    CHECK(ledger.irq_cycles == 10U);
+    CHECK(ledger.task_cycles == 0U);
+    CHECK(BucketCycles(ledger.irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
+        31U) == 10U);
+}
+
 static void CaseTimeRegressionFaults(void)
 {
     FakePlatform platform = { 0U, 0U, 0U, 0U };
@@ -268,6 +375,22 @@ static void RunCase(const char *name)
     else if (strcmp(name, "time_regression") == 0)
     {
         CaseTimeRegressionFaults();
+    }
+    else if (strcmp(name, "window_clipping") == 0)
+    {
+        CaseWindowClipping();
+    }
+    else if (strcmp(name, "window_outside") == 0)
+    {
+        CaseWindowEntirelyOutside();
+    }
+    else if (strcmp(name, "window_owner") == 0)
+    {
+        CaseWindowOwnerAttribution();
+    }
+    else if (strcmp(name, "idle_irq") == 0)
+    {
+        CaseIdleInterruptedByIrq();
     }
     else if (strcmp(name, "nested_irq") == 0)
     {

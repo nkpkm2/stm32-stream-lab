@@ -70,11 +70,43 @@ static R4_RuntimeStatus Settle(R4_RuntimeLedger *ledger, uint64_t now)
         ledger->unclassified_cycles += elapsed;
     }
 
+    /* Do not let a later window update overwrite a live-owner capacity
+     * failure.  The caller latches this status and invalidates the run. */
+    if (status != R4_RUNTIME_OK)
+    {
+        ledger->last_time = now;
+        return status;
+    }
+
     for (index = 0U; index < R4_RUNTIME_WINDOW_COUNT; ++index)
     {
         if (ledger->window_open[index] != 0U)
         {
             ledger->window_cycles[index] += elapsed;
+            if (ledger->active.kind == R4_RUNTIME_CONTEXT_IRQ)
+            {
+                ledger->window_irq_cycles[index] += elapsed;
+                status = AccountOwner(ledger->window_irq_buckets[index],
+                    R4_RUNTIME_MAX_IRQ_BUCKETS, ledger->active.identity, elapsed);
+            }
+            else if (ledger->active.kind == R4_RUNTIME_CONTEXT_TASK)
+            {
+                ledger->window_task_cycles[index] += elapsed;
+                status = AccountOwner(ledger->window_task_buckets[index],
+                    R4_RUNTIME_MAX_TASK_BUCKETS, ledger->active.identity, elapsed);
+            }
+            else if (ledger->active.kind == R4_RUNTIME_CONTEXT_IDLE)
+            {
+                ledger->window_idle_cycles[index] += elapsed;
+            }
+            else
+            {
+                ledger->window_unclassified_cycles[index] += elapsed;
+            }
+            if (status != R4_RUNTIME_OK)
+            {
+                break;
+            }
         }
     }
     ledger->last_time = now;
@@ -88,6 +120,7 @@ R4_RuntimeStatus R4_RuntimeLedger_Initialize(
     R4_RuntimeContext initial_context)
 {
     uint32_t index;
+    uint32_t owner_index;
 
     if ((ledger == NULL) || (clock == NULL) || (platform == NULL) ||
         (platform->read_cycle == NULL) || (platform->save_and_disable == NULL) ||
@@ -117,6 +150,22 @@ R4_RuntimeStatus R4_RuntimeLedger_Initialize(
     {
         ledger->window_open[index] = 0U;
         ledger->window_cycles[index] = 0U;
+        ledger->window_task_cycles[index] = 0U;
+        ledger->window_irq_cycles[index] = 0U;
+        ledger->window_idle_cycles[index] = 0U;
+        ledger->window_unclassified_cycles[index] = 0U;
+        for (owner_index = 0U; owner_index < R4_RUNTIME_MAX_TASK_BUCKETS;
+            ++owner_index)
+        {
+            ledger->window_task_buckets[index][owner_index].identity = 0U;
+            ledger->window_task_buckets[index][owner_index].cycles = 0U;
+        }
+        for (owner_index = 0U; owner_index < R4_RUNTIME_MAX_IRQ_BUCKETS;
+            ++owner_index)
+        {
+            ledger->window_irq_buckets[index][owner_index].identity = 0U;
+            ledger->window_irq_buckets[index][owner_index].cycles = 0U;
+        }
     }
     for (index = 0U; index < R4_RUNTIME_MAX_TASK_BUCKETS; ++index)
     {

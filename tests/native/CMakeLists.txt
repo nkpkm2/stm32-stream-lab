@@ -72,7 +72,7 @@ if(R4_RUNTIME_NATIVE_TESTS)
         C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
     r2_apply_strict_warnings(test_r4_runtime_event)
     r2_apply_sanitizers(test_r4_runtime_event)
-    foreach(case_name clock_wrap atomic_window masked_entry time_regression nested_irq duplicate_exit task_switch locked_checkpoint locked_checkpoint_time)
+    foreach(case_name clock_wrap atomic_window masked_entry time_regression window_clipping window_outside window_owner idle_irq nested_irq duplicate_exit task_switch locked_checkpoint locked_checkpoint_time)
         add_test(NAME r4.runtime.${case_name}
             COMMAND test_r4_runtime_event ${case_name})
         set_tests_properties(r4.runtime.${case_name} PROPERTIES TIMEOUT 10)
