@@ -81,7 +81,6 @@ static R3WorkerClaimDecision TryClaimHeld(
     {
         return R3_WORKER_CLAIM_ERROR;
     }
-    taskENTER_CRITICAL();
     if ((view.run_valid == 0U) ||
         (view.run.boot_id != run->boot_id) ||
         (view.run.run_id != run->run_id) ||
@@ -90,22 +89,18 @@ static R3WorkerClaimDecision TryClaimHeld(
         (view.stream_ticket.identity.run_id != ticket->identity.run_id) ||
         (view.stream_ticket.identity.generation != ticket->identity.generation))
     {
-        taskEXIT_CRITICAL();
         return R3_WORKER_CLAIM_STALE;
     }
     if (view.stop_valid != 0U)
     {
         *out_stop = view.stop;
-        taskEXIT_CRITICAL();
         return R3_WORKER_CLAIM_STOP_CURRENT;
     }
     if (view.processing_claim_allowed == 0U)
     {
-        taskEXIT_CRITICAL();
         return R3_WORKER_CLAIM_CLOSED;
     }
     authority_status = StreamRunAuthority_ClaimHeldReady(ticket);
-    taskEXIT_CRITICAL();
     return authority_status == STREAM_RUN_AUTHORITY_OK ?
         R3_WORKER_CLAIM_GRANTED : R3_WORKER_CLAIM_ERROR;
 }
