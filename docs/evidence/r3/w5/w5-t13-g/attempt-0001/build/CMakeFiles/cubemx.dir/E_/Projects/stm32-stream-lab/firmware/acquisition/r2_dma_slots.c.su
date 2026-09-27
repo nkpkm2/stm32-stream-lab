@@ -1,0 +1,15 @@
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:23:12:IsValidBufferId	16	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:28:12:IsValidSlot	16	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:33:26:Violation	16	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:42:12:InvariantsHold	8	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:67:26:RequireInitialized	8	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:80:26:DecodeCt	24	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:104:6:R2_DmaSlots_Reset	4	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:113:19:R2_DmaSlots_Initialize	16	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:141:19:R2_DmaSlots_ObserveCt	40	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:178:19:R2_DmaSlots_GetBoundBuffer	24	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:204:19:R2_DmaSlots_PrepareInactiveRebind	64	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:247:19:R2_DmaSlots_CheckPlanCt	24	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:295:19:R2_DmaSlots_CommitPreparedRebind	24	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:345:19:R2_DmaSlots_GetSnapshot	40	static
+E:/Projects/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c:370:19:R2_DmaSlots_Validate	8	static

@@ -1,0 +1,15 @@
+{
+  "work_package": "R3-W5",
+  "case_id": "W5-T13-G",
+  "attempt": 1,
+  "completed_phases": [
+    "H0",
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "H5"
+  ],
+  "next_allowed": "COMPLETE",
+  "hardware_state": "SAFE"
+}
