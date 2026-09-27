@@ -2,6 +2,7 @@
 #include "r4_tick_service_target.h"
 
 #include "FreeRTOS.h"
+#include "task.h"
 #include "stm32f4xx.h"
 
 #include "r3_w3_runtime.h"
@@ -775,8 +776,11 @@ R4_RuntimeStatus R4_RuntimeTarget_TestResetLedger(void)
     platform.save_and_disable = TargetSaveAndDisable;
     platform.restore = TargetRestore;
     platform.context = NULL;
-    initial.kind = R4_RUNTIME_CONTEXT_IDLE;
-    initial.identity = 0U;
+    /* This diagnostic reset runs from the harness task after scheduling has
+     * begun.  Its fresh ledger must agree with the next real task-switch
+     * trace; an Idle initial owner would correctly fault on that mismatch. */
+    initial.kind = R4_RUNTIME_CONTEXT_TASK;
+    initial.identity = (uintptr_t)xTaskGetCurrentTaskHandle();
     saved_mask = TargetSaveAndDisable(NULL);
     /* Preserve target_clock: the production Clock64 extension remains the
      * sole clock authority while each sample receives a fresh ledger. */
