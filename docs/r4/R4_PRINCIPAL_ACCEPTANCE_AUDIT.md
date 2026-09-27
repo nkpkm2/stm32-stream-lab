@@ -15,7 +15,7 @@ hardware test is not a substitute.
 | A14–A15 task/idle known workload | `task-synthetic/attempt-0004` sealed target PASS on the corrected ABI reader; H4 checks fixed A/B iterations, owner ratio, Idle residency, and formal conservation | PARTIAL | add known IRQ contribution and retain this workload in final integrated regression |
 | A16–A24 CPU window clipping, immutability, conservation | `dma-window/attempt-0001` sealed target PASS at `cf78c83`: real DMA completion sequence opens at S0=1, seals at S1=4, and observes a later sequence >=5 without a boundary fault; per-window buckets and directed native source cases remain available | PARTIAL | execute native cases on a host and add final target intersection/conservation plus no-outside-window evidence |
 | A25–A29 error/overhead/phase | current independent T15 q0/release target PASSes directly bracket physical TIM2 CEN at planned q0 and accept <=1800-cycle start interval; tick DWT history and lock budget remain available | PARTIAL | RuntimeEvent microbench, error budget, and perturbation A/B |
-| A30–A37 TickService and suspension | Current independent T15 q0/release target PASSes prove `SysTick enter = exit = real-hook service`, registration, DWT history, and exact suspension callback/start/release/skip semantics | PARTIAL | add explicit tick-gap fault-injection and q0-to-TIM2 phase evidence |
+| A30–A37 TickService and suspension | Current independent T15 q0/release target PASSes prove `SysTick enter = exit = real-hook service`, registration, DWT history, exact suspension callback/start/release/skip semantics, and q0→TIM2 CEN; `tick-gap/attempt-0001` proves a late real SysTick latches `TICK_SERVICE_GAP` fail-closed | PARTIAL | integrate these directed proofs into the final R2/R3 regression anchor |
 | A38–A44 T12/T17 cutoff and formal/live separation | T12/T17 sealed attempts | PARTIAL | nested/cutoff interleaving and machine-readable formal-vs-live result split |
 | A45–A51 response/utilization/critical composition | full lock bound twice | PARTIAL | known response-time test, utilization schema, RuntimeEvent masking bound, pending-IRQ-at-lock case |
 | A52–A58 non-regression/provenance/error preservation | R4 H0–H5 identity/manifests; failed attempts retained | PARTIAL | R2 normal/drop and R3 lifecycle representative target anchors plus acceptance classifier |
@@ -31,6 +31,10 @@ hardware test is not a substitute.
   physical SysTick enter/exit per real hook service and directly brackets the
   planned-q0 physical TIM2 CEN write, in addition to its suspension contract.
   Earlier attempts remain immutable history.
+* Tick DWT integrity: `docs/evidence/r4/tick-gap/attempt-0001` deliberately
+  withholds the physical SysTick IRQ past its configured interval limit. Its
+  H4 oracle verifies the next real hook latches `TICK_SERVICE_GAP` and requests
+  fail-closed; it does not manufacture a hook call or repair `service_seq`.
 * T17: `docs/evidence/r4/t17-atomic/attempt-0005` (current semantic H4
   verifies pending-IRQ ordering, real nesting, duplicate-exit rejection, and
   sealed-window immutability). Earlier attempts remain immutable history.
