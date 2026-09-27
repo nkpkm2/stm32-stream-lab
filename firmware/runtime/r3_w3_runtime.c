@@ -435,12 +435,17 @@ static R3LifecycleStatus HookRollback(void *context, const StreamRunTicket *tick
             return R3_LIFECYCLE_ROLLBACK_FAILED;
         }
     }
-    if (driver.hardware_owned != 0U &&
-        AdcDbmDriver_FinishStop(&runtime.stop_report) != ADC_DBM_DRIVER_OK)
+    if (driver.hardware_owned != 0U)
     {
-        return R3_LIFECYCLE_ROLLBACK_FAILED;
+        R3LifecycleStatus finish_status =
+            AdcDbmDriver_FinishStop(&runtime.stop_report) == ADC_DBM_DRIVER_OK ?
+            R3_LIFECYCLE_OK : R3_LIFECYCLE_ROLLBACK_FAILED;
+        runtime.stop_report_valid = 1U;
+        if (finish_status != R3_LIFECYCLE_OK)
+        {
+            return finish_status;
+        }
     }
-    runtime.stop_report_valid = driver.hardware_owned != 0U;
     if (runtime.authority_active != 0U)
     {
         if (StreamRunAuthority_ResetOffline(&runtime.stream_ticket) !=
