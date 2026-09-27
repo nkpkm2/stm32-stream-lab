@@ -1,0 +1,7 @@
+{
+  "case_id": "commit-pending-irq",
+  "case_numeric_id": 12,
+  "configured_soak_ms": 65000,
+  "selector": "COMMIT_PENDING_IRQ",
+  "work_package": "R4"
+}
