@@ -1,0 +1,22 @@
+{
+  "result": "PASS",
+  "first_failure_class": null,
+  "invariants": {
+    "result_magic": true,
+    "schema": true,
+    "case_identity": true,
+    "terminal_pass": true,
+    "no_invariant": true,
+    "idle": true,
+    "gates_closed": true,
+    "hardware_released": true,
+    "begin_report": true,
+    "begin_timer_closed": true,
+    "finish_report": true,
+    "dma_disabled": true,
+    "worker_acks": true,
+    "worker_clean": true,
+    "completion_magic": true,
+    "ready_cancelled_by_processing": true
+  }
+}
