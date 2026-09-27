@@ -21,7 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#if defined(STREAM_LAB_R3_W4_HW)
+#if defined(STREAM_LAB_R3_W5_HW)
+#include "r3_w5_hw_harness.h"
+#elif defined(STREAM_LAB_R3_W4_HW)
 #include "r3_w4_hw_harness.h"
 #elif defined(STREAM_LAB_R3_W3_HW)
 #include "r3_w3_hw_harness.h"
@@ -127,7 +129,9 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-#if defined(STREAM_LAB_R3_W4_HW)
+#if defined(STREAM_LAB_R3_W5_HW)
+  R3_W5_HW_Start();
+#elif defined(STREAM_LAB_R3_W4_HW)
   R3_W4_HW_Start();
 #elif defined(STREAM_LAB_R3_W3_HW)
   R3_W3_HW_Start();
