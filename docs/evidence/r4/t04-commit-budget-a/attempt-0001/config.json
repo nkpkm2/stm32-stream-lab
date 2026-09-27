@@ -1,0 +1,7 @@
+{
+  "case_id": "t04-commit-budget-a",
+  "case_numeric_id": 5,
+  "configured_soak_ms": 65000,
+  "selector": "COMMIT_BUDGET",
+  "work_package": "R4"
+}
