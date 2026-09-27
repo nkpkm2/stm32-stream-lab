@@ -33,8 +33,29 @@
 #define R4_HW_RESPONSE_WORK_ITERATIONS 50000U
 #define R4_HW_RESPONSE_MAX_CYCLES UINT32_C(5000000)
 #define R4_HW_RESPONSE_OWNER_COVERAGE_PERMILLE UINT64_C(990)
+#define R4_HW_MASK_TIMING_LIMIT_CYCLES UINT64_C(1800)
 #ifndef R4_HW_SOAK_MS
 #define R4_HW_SOAK_MS 0U
+#endif
+
+#if (R4_HW_CASE_ID == 15U)
+static void RunMaskTimingWitness(void)
+{
+    uint32_t index;
+
+    g_r4_hw_result.mask_timing_reset_status = (uint32_t)
+        R4_RuntimeTarget_TestResetMaskTiming();
+    if (g_r4_hw_result.mask_timing_reset_status != (uint32_t)R4_RUNTIME_OK)
+    {
+        return;
+    }
+    /* Repeated production Apply transactions plus later real SysTick/task
+     * trace events exercise the observer without changing ledger semantics. */
+    for (index = 0U; index < R4_HW_MICROBENCH_SAMPLES; ++index)
+    {
+        (void)R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_CHECKPOINT, 0U);
+    }
+}
 #endif
 #ifndef R4_HW_CASE_ID
 #error "R4 formal target build must define R4_HW_CASE_ID"
@@ -506,6 +527,15 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
+#elif (R4_HW_CASE_ID == 15U)
+    if ((g_r4_hw_result.mask_timing_reset_status != ok) ||
+        (g_r4_hw_result.mask_timing_sample_count < R4_HW_MICROBENCH_SAMPLES) ||
+        (g_r4_hw_result.mask_timing_max_cycles == 0U) ||
+        (g_r4_hw_result.mask_timing_max_cycles >
+         g_r4_hw_result.mask_timing_limit_cycles))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -807,6 +837,10 @@ static void HarnessTask(void *argument)
     }
     /* Do not close the window in the same tick as release; this also proves
      * normal SysTick/tick-hook accounting after the synthetic response. */
+    vTaskDelay(pdMS_TO_TICKS(2U));
+#endif
+#if (R4_HW_CASE_ID == 15U)
+    RunMaskTimingWitness();
     vTaskDelay(pdMS_TO_TICKS(2U));
 #endif
 #if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U) || \
@@ -1121,6 +1155,12 @@ static void HarnessTask(void *argument)
     {
         g_r4_hw_result.time_regression_serial_after = ledger->event_serial;
     }
+#endif
+#if (R4_HW_CASE_ID == 15U)
+    g_r4_hw_result.mask_timing_limit_cycles = R4_HW_MASK_TIMING_LIMIT_CYCLES;
+    (void)R4_RuntimeTarget_TestGetMaskTiming(
+        &g_r4_hw_result.mask_timing_sample_count,
+        &g_r4_hw_result.mask_timing_max_cycles);
 #endif
     EvaluateFormalInvariants();
     __DMB();

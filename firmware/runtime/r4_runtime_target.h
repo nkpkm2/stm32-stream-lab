@@ -145,6 +145,11 @@ R4_RuntimeStatus R4_RuntimeTarget_TestGetCompletionPendingIrqSnapshot(
  * is never present in a production build. */
 R4_RuntimeStatus R4_RuntimeTarget_TestApplyEvent(R4_RuntimeEventKind kind,
     uintptr_t identity);
+/* Board-only observer of the actual interval after RuntimeEvent raises
+ * PRIMASK and before it restores the caller's saved value. */
+R4_RuntimeStatus R4_RuntimeTarget_TestResetMaskTiming(void);
+R4_RuntimeStatus R4_RuntimeTarget_TestGetMaskTiming(
+    volatile uint32_t *sample_count, volatile uint64_t *max_cycles);
 #endif
 
 #ifdef __cplusplus

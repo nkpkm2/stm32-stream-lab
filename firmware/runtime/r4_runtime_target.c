@@ -23,6 +23,10 @@ static uint32_t target_test_pend_completion_irq;
 static uint32_t target_test_completion_irq_arm_count;
 static uint32_t target_test_completion_irq_count;
 static uint32_t target_test_completion_irq_active_at_entry;
+static uint32_t target_test_mask_timing_enabled;
+static uint32_t target_test_mask_timing_start;
+static uint32_t target_test_mask_timing_samples;
+static uint64_t target_test_mask_timing_max;
 #endif
 
 static uint32_t TargetReadCycle(void *context)
@@ -40,6 +44,10 @@ static uint32_t TargetSaveAndDisable(void *context)
     __disable_irq();
     __DMB();
 #if defined(STREAM_LAB_R4_HW)
+    if (target_test_mask_timing_enabled != 0U)
+    {
+        target_test_mask_timing_start = DWT->CYCCNT;
+    }
     if (target_test_pend_irq_after_mask != 0U)
     {
         /* PRIMASK is already set.  TIM6 therefore becomes pending in the
@@ -54,6 +62,17 @@ static uint32_t TargetSaveAndDisable(void *context)
 static void TargetRestore(uint32_t saved_mask, void *context)
 {
     (void)context;
+#if defined(STREAM_LAB_R4_HW)
+    if (target_test_mask_timing_enabled != 0U)
+    {
+        uint32_t elapsed = DWT->CYCCNT - target_test_mask_timing_start;
+        ++target_test_mask_timing_samples;
+        if ((uint64_t)elapsed > target_test_mask_timing_max)
+        {
+            target_test_mask_timing_max = elapsed;
+        }
+    }
+#endif
     __DMB();
     __set_PRIMASK(saved_mask);
 }
@@ -721,5 +740,35 @@ R4_RuntimeStatus R4_RuntimeTarget_TestApplyEvent(R4_RuntimeEventKind kind,
     uintptr_t identity)
 {
     return Apply(kind, identity);
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_TestResetMaskTiming(void)
+{
+    uint32_t saved_mask;
+
+    if (target_initialized == 0U) return target_boot_error;
+    saved_mask = __get_PRIMASK();
+    __disable_irq();
+    target_test_mask_timing_samples = 0U;
+    target_test_mask_timing_max = 0U;
+    target_test_mask_timing_enabled = 1U;
+    __set_PRIMASK(saved_mask);
+    return R4_RUNTIME_OK;
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_TestGetMaskTiming(
+    volatile uint32_t *sample_count, volatile uint64_t *max_cycles)
+{
+    uint32_t saved_mask;
+
+    if ((sample_count == NULL) || (max_cycles == NULL))
+        return R4_RUNTIME_INVALID_ARGUMENT;
+    saved_mask = __get_PRIMASK();
+    __disable_irq();
+    target_test_mask_timing_enabled = 0U;
+    *sample_count = target_test_mask_timing_samples;
+    *max_cycles = target_test_mask_timing_max;
+    __set_PRIMASK(saved_mask);
+    return R4_RUNTIME_OK;
 }
 #endif

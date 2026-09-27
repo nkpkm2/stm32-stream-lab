@@ -136,6 +136,10 @@ RESPONSE_START_RAW_WORD = 229
 RESPONSE_COMPLETE_RAW_WORD = 230
 RESPONSE_WORK_RAW_WORD = 231
 RESPONSE_OWNER_CYCLES_WORD = 232
+MASK_TIMING_RESET_WORD = 234
+MASK_TIMING_SAMPLE_COUNT_WORD = 235
+MASK_TIMING_MAX_WORD = 236
+MASK_TIMING_LIMIT_WORD = 238
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -155,6 +159,7 @@ CASES = {
     "commit-pending-irq": ("COMMIT_PENDING_IRQ", 12, 65000, 75),
     "window-intersection": ("WINDOW_INTERSECTION", 13, 0, 8),
     "response-synthetic": ("RESPONSE_SYNTHETIC", 14, 0, 8),
+    "mask-timing": ("MASK_TIMING", 15, 0, 8),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -535,6 +540,18 @@ def evaluate(case: str, words: list[int]) -> dict:
             # preserving a bounded C-level/transaction-boundary blind zone.
             checks["response_owner_known_work_coverage"] = (
                 word64(RESPONSE_OWNER_CYCLES_WORD) * 1000 >= work * 990)
+    if case == "mask-timing":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= MASK_TIMING_LIMIT_WORD + 1:
+            checks["mask_timing_extension_present"] = False
+        else:
+            checks["runtime_event_masked_span_bound"] = (
+                words[MASK_TIMING_RESET_WORD] == 0 and
+                words[MASK_TIMING_SAMPLE_COUNT_WORD] >= 33 and
+                0 < word64(MASK_TIMING_MAX_WORD) <=
+                word64(MASK_TIMING_LIMIT_WORD) == 1800)
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 

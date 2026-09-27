@@ -198,3 +198,14 @@ class R4EvidenceTests(unittest.TestCase):
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["response_direct_wall_endpoints"])
         self.assertTrue(verdict["checks"]["response_owner_known_work_coverage"])
+
+    def test_mask_timing_requires_actual_primask_span_bound(self) -> None:
+        words = [0] * 240
+        words[:11] = [EVIDENCE.MAGIC, 15, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.MASK_TIMING_SAMPLE_COUNT_WORD] = 33
+        words[EVIDENCE.MASK_TIMING_MAX_WORD] = 1200
+        words[EVIDENCE.MASK_TIMING_LIMIT_WORD] = 1800
+        verdict = EVIDENCE.evaluate("mask-timing", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["runtime_event_masked_span_bound"])
