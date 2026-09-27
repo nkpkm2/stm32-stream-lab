@@ -35,6 +35,7 @@ the result reports the instrumented residency that actually occurred.
 | RuntimeEvent transaction boundary | The measured path above includes save-PRIMASK, Clock64 read, settlement, owner/window mutation and restore-PRIMASK.  The largest exercised nested ledger transaction is 1600 cycles.  Fresh `mask-timing/attempt-0001` separately observes 52 actual PRIMASK-held target spans, maximum **559 cycles**, against the frozen 1800-cycle limit. |
 | q0 to physical TIM2 start | The frozen target acceptance bound is <=1800 cycles, directly bracketing the TIM2 CEN write in sealed `t15-q0/attempt-0004` and `t15-release/attempt-0005`; it is a compliance bound, not a post-hoc prediction input. |
 | Completion lock interval | Sealed Release/LTO `t04-commit-budget-a/attempt-0002` and `t04-commit-budget-b/attempt-0001` each retain a maximum complete `t_lock` to `t_unlock` interval of 1715 cycles, below the 1800-cycle gate. |
+| Combined production DMA service | Sealed Release/LTO `combined-service/attempt-0001` executes 65,000 ms of real DMA traffic.  All 50,781 IRQs have one full trace-entry to post-`RuntimeEvent` IRQ-exit service span; the observed maximum is **10,734 cycles**, below the frozen 23,040-cycle (10% of the 256-sample / 200 kSamples/s block period) margin.  Cortex-M exception entry/return remains explicitly outside this C trace interval. |
 
 ## Terms deliberately not claimed as zero
 
@@ -55,15 +56,15 @@ in `time-regression/attempt-0001`.
 ## Budget use and remaining gates
 
 The direct costs establish that one complete nested ledger path is below the
-same 1800-cycle scale used for the completion critical-section gate.  They do
-**not** establish that all combined production ISR work is below every DMA
-service margin.  In particular, R2's existing `k8-normal` trace reports a
-1076-cycle `final_window` from a different instrumentation state; it cannot
-be reused as an R4 perturbation proof.
+same 1800-cycle scale used for the completion critical-section gate.  The
+fresh combined-service witness separately establishes the frozen representative
+DMA service margin in the R4 Release/LTO profile.  R2's existing `k8-normal`
+trace reports a 1076-cycle `final_window` from a different instrumentation
+state; it cannot be reused as an R4 perturbation proof.
 
-Therefore this document supports R4-A20 and the RuntimeEvent critical-masking
-portion of R4-A27, but does not close R4-A22 or the remaining combined-service
-system-budget claim.  Closure still requires representative,
+Therefore this document supports R4-A20, the RuntimeEvent critical-masking
+portion of R4-A27, and the bounded R4-profile combined DMA-service claim.  It
+does not close R4-A22.  Closure still requires representative,
 same-configuration target A/B evidence comparing a minimal profile with the
 R4 profile for DMA service, processing throughput, wall response,
 drop/admission and CPU/residual accounting.

@@ -1,0 +1,7 @@
+{
+  "case_id": "combined-service",
+  "case_numeric_id": 16,
+  "configured_soak_ms": 65000,
+  "selector": "COMBINED_SERVICE",
+  "work_package": "R4"
+}

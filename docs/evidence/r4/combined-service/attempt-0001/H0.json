@@ -1,0 +1,9 @@
+{
+  "case": "combined-service",
+  "clean_tree": true,
+  "git_head": "da4c5de368f1f6188c5c14e2da701019d112b808",
+  "origin_main": "da4c5de368f1f6188c5c14e2da701019d112b808",
+  "phase": "H0",
+  "probe_list_sha256": "CCCBFBE085110204EF1C7A0761CEB0C21B3CC958696744A58246C881DAC57356",
+  "result": "PASS"
+}
