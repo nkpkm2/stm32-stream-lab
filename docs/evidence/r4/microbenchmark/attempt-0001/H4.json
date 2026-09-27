@@ -1,0 +1,29 @@
+{
+  "checks": {
+    "case_identity": true,
+    "completed_magic": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "result_magic": true,
+    "runtime_event_microbenchmark": true,
+    "schema_version": true,
+    "terminal_pass": true
+  },
+  "phase": "H4",
+  "prefix_words": [
+    "0x52344857",
+    "0x00000009",
+    "0x00000001",
+    "0x00000001",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x5234444E"
+  ],
+  "result": "PASS",
+  "result_address": "0x200023B8",
+  "selector": "MICROBENCH"
+}

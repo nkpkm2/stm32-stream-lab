@@ -14,7 +14,7 @@ hardware test is not a substitute.
 | A07–A13 IRQ pairing, no-yield/yield, SysTick | `t17-atomic/attempt-0005` sealed real TIM7→TIM6 nesting; fresh T12 semantic attempts exercise DMA `pdTRUE` and no-event `pdFALSE` tails | PARTIAL | exact task-switch attribution and one-pair SysTick evidence |
 | A14–A15 task/idle known workload | `task-synthetic/attempt-0004` sealed target PASS on the corrected ABI reader; H4 checks fixed A/B iterations, owner ratio, Idle residency, and formal conservation | PARTIAL | add known IRQ contribution and retain this workload in final integrated regression |
 | A16–A24 CPU window clipping, immutability, conservation | `dma-window/attempt-0001` sealed target PASS at `cf78c83`: real DMA completion sequence opens at S0=1, seals at S1=4, and observes a later sequence >=5 without a boundary fault; per-window buckets and directed native source cases remain available | PARTIAL | execute native cases on a host and add final target intersection/conservation plus no-outside-window evidence |
-| A25–A29 error/overhead/phase | current independent T15 q0/release target PASSes directly bracket physical TIM2 CEN at planned q0 and accept <=1800-cycle start interval; tick DWT history and lock budget remain available | PARTIAL | RuntimeEvent microbench, error budget, and perturbation A/B |
+| A25–A29 error/overhead/phase | `microbenchmark/attempt-0001` is a current NUCLEO-F446RE Release/LTO target PASS with 33 DWT samples per complete RuntimeEvent transaction; T15 q0/release independently bracket physical TIM2 CEN and accept <=1800-cycle start interval | PARTIAL | error budget and perturbation A/B |
 | A30–A37 TickService and suspension | Current independent T15 q0/release target PASSes prove `SysTick enter = exit = real-hook service`, registration, DWT history, exact suspension callback/start/release/skip semantics, and q0→TIM2 CEN; `tick-gap/attempt-0001` proves a late real SysTick latches `TICK_SERVICE_GAP` fail-closed | PARTIAL | integrate these directed proofs into the final R2/R3 regression anchor |
 | A38–A44 T12/T17 cutoff and formal/live separation | T12/T17 sealed attempts | PARTIAL | nested/cutoff interleaving and machine-readable formal-vs-live result split |
 | A45–A51 response/utilization/critical composition | full lock bound twice | PARTIAL | known response-time test, utilization schema, RuntimeEvent masking bound, pending-IRQ-at-lock case |
@@ -41,6 +41,16 @@ hardware test is not a substitute.
 * Full `t_lock` to `t_unlock` bound: Release/LTO
   `t04-commit-budget-a/attempt-0002` and
   `t04-commit-budget-b/attempt-0001`.
+* RuntimeEvent microbenchmark: `docs/evidence/r4/microbenchmark/attempt-0001`
+  is a sealed target PASS from commit `3ed3df7084d3c0b553151be2e569c8e3ddb08366`
+  (ELF SHA-256 `ABAF380D73F9F16ECCFB35D8A0DF3F1BDFD0521A244632B53EAFC020B3DE2FD4`).
+  Its raw target words contain 33 samples per row: task checkpoint
+  **308/308/379 cycles**, balanced IRQ enter/exit **778/784/906 cycles**,
+  window open/close **691/691/822 cycles**, and balanced nested IRQ
+  enter/enter/exit/exit **1478/1484/1600 cycles** (min/median/max).  These
+  bracket the complete guarded `RuntimeEvent_Apply` ledger transaction.  The
+  IRQ rows intentionally measure ledger-path cost only; they do not claim to
+  include Cortex-M exception-entry or exception-return machine cycles.
 
 Historical failed attempts are intentionally retained alongside their PASS
 successors.  They establish that the harness rejects over-broad release
