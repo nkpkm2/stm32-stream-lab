@@ -43,6 +43,26 @@ typedef struct
     uint64_t dma_no_yield_count;
 } R4_DmaTailSnapshot;
 
+/* Hooks/IRQs may only latch a fail-closed request.  The Communication owner
+ * consumes it in task context through the normal blocking safe-stop path. */
+typedef enum
+{
+    R4_RUNTIME_INFRA_NONE = 0,
+    R4_RUNTIME_INFRA_TICK_SERVICE_GAP,
+    R4_RUNTIME_INFRA_CLOCK64_MONITOR_GAP,
+    R4_RUNTIME_INFRA_RUNTIME_EVENT
+} R4_RuntimeInfrastructureFault;
+
+typedef struct
+{
+    R4_RuntimeInfrastructureFault first_fault;
+    uint32_t fail_closed_requested;
+    uint64_t monitor_service_count;
+    uint64_t last_monitor_cycle;
+    uint64_t max_monitor_interval_cycles;
+    uint64_t monitor_interval_limit_cycles;
+} R4_RuntimeHealthSnapshot;
+
 /* These three calls are bound around the exact V11.1.0 xQueueGenericSend
  * critical section.  They are intentionally separate from QueueAdapter's
  * semantic validation: t_commit is emitted only after its legal operation has
@@ -61,6 +81,9 @@ void R4_RuntimeTarget_TraceTaskSwitchedIn(void *task);
  * yield macro chooses either the no-switch or scheduler-request exit. */
 void R4_RuntimeTarget_TraceDmaTailYield(uint32_t higher_priority_task_woken);
 R4_RuntimeStatus R4_RuntimeTarget_GetDmaTailSnapshot(R4_DmaTailSnapshot *out);
+R4_RuntimeStatus R4_RuntimeTarget_MonitorService(uint64_t interval_limit_cycles);
+void R4_RuntimeTarget_LatchInfrastructureFault(R4_RuntimeInfrastructureFault fault);
+R4_RuntimeStatus R4_RuntimeTarget_GetHealthSnapshot(R4_RuntimeHealthSnapshot *out);
 
 const R4_RuntimeLedger *R4_RuntimeTarget_GetLedger(void);
 

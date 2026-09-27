@@ -9,6 +9,7 @@ static uint32_t target_initialized;
 static R4_RuntimeStatus target_boot_error = R4_RUNTIME_NOT_INITIALIZED;
 static R4_CompletionTimingSnapshot completion_timing;
 static R4_DmaTailSnapshot dma_tail;
+static R4_RuntimeHealthSnapshot runtime_health;
 #if defined(STREAM_LAB_R4_HW)
 static uint32_t target_test_pend_irq_after_mask;
 #endif
@@ -118,6 +119,12 @@ R4_RuntimeStatus R4_RuntimeTarget_Initialize(void)
         dma_tail.dma_irq_count = 0U;
         dma_tail.dma_yield_requested_count = 0U;
         dma_tail.dma_no_yield_count = 0U;
+        runtime_health.first_fault = R4_RUNTIME_INFRA_NONE;
+        runtime_health.fail_closed_requested = 0U;
+        runtime_health.monitor_service_count = 0U;
+        runtime_health.last_monitor_cycle = 0U;
+        runtime_health.max_monitor_interval_cycles = 0U;
+        runtime_health.monitor_interval_limit_cycles = 0U;
         target_initialized = 1U;
         if (R4_TickServiceTarget_Initialize() != R4_TICK_SERVICE_OK)
         {
@@ -126,6 +133,71 @@ R4_RuntimeStatus R4_RuntimeTarget_Initialize(void)
         }
     }
     return target_boot_error;
+}
+
+void R4_RuntimeTarget_LatchInfrastructureFault(R4_RuntimeInfrastructureFault fault)
+{
+    uint32_t saved_mask;
+
+    if ((target_initialized == 0U) || (fault == R4_RUNTIME_INFRA_NONE)) return;
+    saved_mask = TargetSaveAndDisable(NULL);
+    if (runtime_health.first_fault == R4_RUNTIME_INFRA_NONE)
+    {
+        runtime_health.first_fault = fault;
+    }
+    runtime_health.fail_closed_requested = 1U;
+    TargetRestore(saved_mask, NULL);
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_MonitorService(uint64_t interval_limit_cycles)
+{
+    uint32_t saved_mask;
+    uint64_t now;
+    uint64_t interval = 0U;
+
+    if ((target_initialized == 0U) || (interval_limit_cycles == 0U))
+    {
+        return R4_RUNTIME_INVALID_ARGUMENT;
+    }
+    if (R4_RuntimeTarget_ReadNow(&now) != R4_RUNTIME_OK)
+    {
+        R4_RuntimeTarget_LatchInfrastructureFault(R4_RUNTIME_INFRA_RUNTIME_EVENT);
+        return R4_RUNTIME_CLOCK_ERROR;
+    }
+    saved_mask = TargetSaveAndDisable(NULL);
+    if (runtime_health.monitor_service_count != 0U)
+    {
+        interval = now - runtime_health.last_monitor_cycle;
+        if (interval > runtime_health.max_monitor_interval_cycles)
+        {
+            runtime_health.max_monitor_interval_cycles = interval;
+        }
+        if (interval > interval_limit_cycles)
+        {
+            if (runtime_health.first_fault == R4_RUNTIME_INFRA_NONE)
+            {
+                runtime_health.first_fault = R4_RUNTIME_INFRA_CLOCK64_MONITOR_GAP;
+            }
+            runtime_health.fail_closed_requested = 1U;
+        }
+    }
+    runtime_health.last_monitor_cycle = now;
+    runtime_health.monitor_interval_limit_cycles = interval_limit_cycles;
+    ++runtime_health.monitor_service_count;
+    TargetRestore(saved_mask, NULL);
+    return R4_RuntimeLedger_GetStatus(&target_ledger);
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_GetHealthSnapshot(R4_RuntimeHealthSnapshot *out)
+{
+    uint32_t saved_mask;
+
+    if (out == NULL) return R4_RUNTIME_INVALID_ARGUMENT;
+    if (target_initialized == 0U) return target_boot_error;
+    saved_mask = TargetSaveAndDisable(NULL);
+    *out = runtime_health;
+    TargetRestore(saved_mask, NULL);
+    return R4_RuntimeLedger_GetStatus(&target_ledger);
 }
 
 R4_RuntimeStatus R4_RuntimeTarget_OpenWindow(uint32_t window)

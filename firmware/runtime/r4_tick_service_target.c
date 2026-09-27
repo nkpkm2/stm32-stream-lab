@@ -154,6 +154,10 @@ R4_TickServiceStatus R4_TickServiceTarget_OnTickHook(void)
             (interval > target_timing.interval_limit_cycles))
         {
             ++target_timing.over_limit_interval_count;
+            /* No lifecycle/queue API is legal in the tick hook.  The task
+             * context Monitor consumes this sticky request and safely stops. */
+            R4_RuntimeTarget_LatchInfrastructureFault(
+                R4_RUNTIME_INFRA_TICK_SERVICE_GAP);
         }
     }
     ++target_timing.service_count;
