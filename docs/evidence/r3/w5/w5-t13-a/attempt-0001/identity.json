@@ -1,0 +1,10 @@
+{
+  "schema_version": "r3-evidence-v1",
+  "git_head": "d17641a68d74e3ca4d86e9d0f19fd7300fa46afd",
+  "firmware_source_commit": "d17641a68d74e3ca4d86e9d0f19fd7300fa46afd",
+  "elf_sha256": "DFB0C9FF3AC1B863E101051AAE6AB97C17D86792233A29A68B9FA3C0620BEBD9",
+  "programmed_image_sha256": "6B41EC4EC180603818A05A09E35EE697B1BE9B8CE6955FFCC56032FCF152F3FB",
+  "harness_version": "0.3.2-w2-hw-build-validation",
+  "harness_sha256": "1BECBB8DB6506C20B70D1C24FF3FC7E5A7584F8B1A9A75D417368888494830F5",
+  "board_profile": "NUCLEO-F446RE"
+}
