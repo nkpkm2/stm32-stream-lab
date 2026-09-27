@@ -1,108 +1,290 @@
 #!/usr/bin/env python3
-"""Create and verify immutable R4 H0--H5 evidence attempts.
+"""Run, import, and verify sealed R4 target-evidence attempts.
 
-This tool deliberately does not flash a board or manufacture a PASS.  It
-enforces the provenance and sealing rules around those irreversible actions.
-Hardware commands and their raw output are imported by the phase owner.
+An attempt is first created outside the repository from a clean, pushed
+source commit.  The tool records every external command without retrying,
+then only a sealed PASS attempt can be copied into ``docs/evidence/r4``.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
+from pathlib import Path
+import re
+import shutil
 import subprocess
 import sys
-from pathlib import Path
+import tempfile
+import time
 
 PHASES = ("H0", "H1", "H2", "H3", "H4", "H5")
+MAGIC, COMPLETE, SCHEMA = 0x52344857, 0x5234444E, 1
+PREFIX_WORDS, READ_BYTES = 11, 512
+CASES = {
+    "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
+    "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
+    "t15-q0": ("T15_Q0", 2, 0, 8),
+    "t15-release": ("T15_RELEASE", 3, 0, 8),
+    "t17-atomic": ("T17_ATOMIC", 4, 0, 8),
+    "t04-commit-budget-a": ("COMMIT_BUDGET", 5, 65000, 75),
+    "t04-commit-budget-b": ("COMMIT_BUDGET", 5, 65000, 75),
+}
+PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
+CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
+NINJA_DIR = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\Ninja\bin")
+ARM_DIR = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\GNU-tools-for-STM32\bin")
 
 
-def run(*args: str) -> str:
-    return subprocess.check_output(args, text=True, encoding="utf-8").strip()
+class EvidenceError(RuntimeError):
+    pass
 
 
-def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
+def digest(path: Path) -> str:
+    value = hashlib.sha256()
     with path.open("rb") as stream:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest().upper()
+            value.update(block)
+    return value.hexdigest().upper()
 
 
-def write_json(path: Path, value: object) -> None:
-    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n",
-                    encoding="utf-8", newline="\n")
+def write_new(path: Path, value: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("x", encoding="utf-8", newline="\n") as stream:
+        json.dump(value, stream, ensure_ascii=True, indent=2, sort_keys=True,
+                  allow_nan=False)
+        stream.write("\n")
 
 
-def attempt_path(repo: Path, case: str, attempt: int) -> Path:
-    if not case or any(c not in "abcdefghijklmnopqrstuvwxyz0123456789-" for c in case):
-        raise ValueError("case must be lowercase ASCII letters, digits, or '-' only")
-    if attempt < 1:
-        raise ValueError("attempt must be positive")
-    return repo / "docs" / "evidence" / "r4" / case / f"attempt-{attempt:04d}"
+def manifest(root: Path) -> None:
+    rows = []
+    for path in sorted(root.rglob("*")):
+        if path.is_file() and path.name != "MANIFEST.sha256":
+            rows.append(f"{digest(path)}  {path.relative_to(root).as_posix()}\n")
+    with (root / "MANIFEST.sha256").open("x", encoding="utf-8", newline="\n") as stream:
+        stream.writelines(rows)
 
 
-def preflight(args: argparse.Namespace) -> int:
-    repo = args.repo.resolve()
-    if run("git", "-C", str(repo), "status", "--porcelain"):
-        raise RuntimeError("H0 refuses a dirty worktree")
-    head = run("git", "-C", str(repo), "rev-parse", "HEAD")
-    remote = run("git", "-C", str(repo), "rev-parse", "origin/main")
-    if head != remote:
-        raise RuntimeError("H0 requires HEAD to equal pushed origin/main")
-    destination = attempt_path(repo, args.case, args.attempt)
-    if destination.exists():
-        raise RuntimeError(f"attempt already exists and is immutable: {destination}")
-    (destination / "raw").mkdir(parents=True)
-    (destination / "commands").mkdir()
-    (destination / "derived").mkdir()
-    identity = {
-        "schema_version": "r4-evidence-v1",
-        "git_head": head,
-        "firmware_source_commit": head,
-        "harness_sha256": sha256(repo / "tools" / "r4" / "r4_evidence.py"),
-        "board_profile": "NUCLEO-F446RE/STM32F446xx",
+def validate_manifest(root: Path) -> None:
+    manifest_file = root / "MANIFEST.sha256"
+    if not manifest_file.is_file():
+        raise EvidenceError("missing MANIFEST.sha256")
+    expected: dict[str, str] = {}
+    for row in manifest_file.read_text(encoding="utf-8").splitlines():
+        matched = re.fullmatch(r"([0-9A-F]{64})  ([^\\/]+(?:/[^\\/]+)*)", row)
+        if matched is None or matched.group(2) == "MANIFEST.sha256":
+            raise EvidenceError("malformed manifest row")
+        expected[matched.group(2)] = matched.group(1)
+    actual = {path.relative_to(root).as_posix(): digest(path) for path in root.rglob("*")
+              if path.is_file() and path.name != "MANIFEST.sha256"}
+    if actual != expected:
+        raise EvidenceError("manifest does not exactly cover the attempt")
+
+
+class CommandLog:
+    def __init__(self, root: Path) -> None:
+        self.root, self.number = root, 0
+
+    def run(self, argv: list[Path | str], name: str, *, env: dict[str, str] | None = None,
+            timeout: int = 120) -> tuple[int, str, str]:
+        self.number += 1
+        command_root = self.root / "commands" / f"{self.number:03d}-{name}"
+        command_root.mkdir(parents=True)
+        values = [str(item) for item in argv]
+        write_new(command_root / "request.json", {"argv": values, "cwd": None,
+                  "timeout_seconds": timeout, "automatic_retry": False})
+        completed = subprocess.run(values, capture_output=True, text=True,
+                                   encoding="utf-8", errors="replace", env=env,
+                                   timeout=timeout, check=False)
+        (command_root / "stdout.txt").write_text(completed.stdout, encoding="utf-8", newline="\n")
+        (command_root / "stderr.txt").write_text(completed.stderr, encoding="utf-8", newline="\n")
+        write_new(command_root / "result.json", {"returncode": completed.returncode})
+        if completed.returncode != 0:
+            raise EvidenceError(f"command failed: {name} (exit {completed.returncode})")
+        return completed.returncode, completed.stdout, completed.stderr
+
+
+def git(repo: Path, *args: str) -> str:
+    completed = subprocess.run(["git", "-C", str(repo), *args], capture_output=True,
+                               text=True, encoding="utf-8", errors="replace", check=False)
+    if completed.returncode:
+        raise EvidenceError(f"git {' '.join(args)} failed: {completed.stderr.strip()}")
+    return completed.stdout.strip()
+
+
+def definitions(selector: str, soak_ms: int) -> dict[str, str]:
+    return {
+        "STREAM_LAB_FOUNDATION_ADC_DBM_DRIVER": "ON",
+        "STREAM_LAB_FOUNDATION_OWNERSHIP_CORE": "ON",
+        "STREAM_LAB_FOUNDATION_TOKEN_LEDGER": "ON",
+        "STREAM_LAB_FOUNDATION_QUEUE_ADAPTER": "ON",
+        "STREAM_LAB_R3_WORKER_CONTRACT": "ON",
+        "STREAM_LAB_R3_WORKER_TASKS": "ON",
+        "STREAM_LAB_R3_LIFECYCLE": "ON",
+        "STREAM_LAB_R4_RUNTIME": "ON",
+        "STREAM_LAB_R4_HW": "ON",
+        "STREAM_LAB_R4_HW_CASE": selector,
+        "STREAM_LAB_R4_HW_SOAK_MS": str(soak_ms),
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
     }
-    config = {"work_package": "R4", "case_id": args.case,
-              "attempt": args.attempt, "selector": args.selector}
-    state = {"work_package": "R4", "case_id": args.case,
-             "attempt": args.attempt, "completed_phases": ["H0"],
-             "next_allowed": "H1", "hardware_state": "NOT_TOUCHED"}
-    write_json(destination / "identity.json", identity)
-    write_json(destination / "config.json", config)
-    write_json(destination / "state.json", state)
-    write_json(destination / "H0.json", {"phase": "H0", "result": "PASS",
-                                           "git_head": head, "clean_tree": True,
-                                           "origin_main": remote, "case": args.case})
+
+
+def parse_words(text: str) -> list[int]:
+    words: list[int] = []
+    for line in text.splitlines():
+        if not re.match(r"^0x[0-9A-Fa-f]{8}\s*:", line):
+            continue
+        for token in line.split(":", 1)[1].split():
+            if not re.fullmatch(r"[0-9A-Fa-f]{8}", token):
+                raise EvidenceError(f"malformed target word: {token!r}")
+            words.append(int(token, 16))
+    if len(words) < PREFIX_WORDS:
+        raise EvidenceError(f"target read is too short: {len(words)} words")
+    return words
+
+
+def evaluate(case: str, words: list[int]) -> dict:
+    selector, case_id, _, _ = CASES[case]
+    checks = {
+        "result_magic": words[0] == MAGIC,
+        "case_identity": words[1] == case_id,
+        "schema_version": words[2] == SCHEMA,
+        "terminal_pass": words[3] == 1,
+        "no_invariant_failure": words[4] == 0,
+        "init_status": words[5] == 0,
+        "completed_magic": words[10] == COMPLETE,
+    }
+    return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
+            "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
+
+
+def result_address(elf: Path, log: CommandLog, env: dict[str, str]) -> int:
+    nm = ARM_DIR / "arm-none-eabi-nm.exe"
+    _, listing, _ = log.run([nm, "-n", elf], "result-symbol", env=env, timeout=30)
+    rows = re.findall(r"^\s*([0-9A-Fa-f]+)\s+[A-Za-z]\s+g_r4_hw_result\s*$", listing, re.M)
+    if len(rows) != 1:
+        raise EvidenceError("expected exactly one g_r4_hw_result symbol")
+    return int(rows[0], 16)
+
+
+def assert_tools() -> None:
+    for path in (PROGRAMMER, CMAKE, ARM_DIR / "arm-none-eabi-gcc.exe",
+                 ARM_DIR / "arm-none-eabi-nm.exe", ARM_DIR / "arm-none-eabi-objcopy.exe",
+                 NINJA_DIR / "ninja.exe"):
+        if not path.is_file():
+            raise EvidenceError(f"required tool unavailable: {path}")
+
+
+def run_attempt(args: argparse.Namespace) -> int:
+    if args.case not in CASES:
+        raise EvidenceError(f"unknown formal R4 case: {args.case}")
+    repo = args.repo.resolve()
+    if git(repo, "status", "--porcelain"):
+        raise EvidenceError("formal attempt requires a clean worktree")
+    head = git(repo, "rev-parse", "HEAD")
+    if head != git(repo, "rev-parse", "origin/main"):
+        raise EvidenceError("formal attempt requires HEAD pushed to origin/main")
+    parent = args.output_parent.resolve()
+    if parent.is_relative_to(repo):
+        raise EvidenceError("attempt output must be outside the repository")
+    assert_tools()
+    parent.mkdir(parents=True, exist_ok=True)
+    root = Path(tempfile.mkdtemp(prefix=f"r4-{args.case}-", dir=parent))
+    log, completed = CommandLog(root), []
+    selector, case_id, soak_ms, wait_seconds = CASES[args.case]
+    env = {**os.environ, "PATH": str(ARM_DIR) + os.pathsep + str(NINJA_DIR) + os.pathsep + os.environ.get("PATH", "")}
+    try:
+        _, probe, _ = log.run([PROGRAMMER, "-l"], "probe-list", timeout=30)
+        write_new(root / "H0.json", {"phase": "H0", "result": "PASS", "clean_tree": True,
+                  "git_head": head, "origin_main": head, "case": args.case,
+                  "probe_list_sha256": hashlib.sha256(probe.encode()).hexdigest().upper()})
+        completed.append("H0")
+        build = root / "build"
+        toolchain = repo / "firmware" / "cubemx" / "cmake" / "gcc-arm-none-eabi.cmake"
+        command = [CMAKE, "-S", repo / "firmware" / "cubemx", "-B", build, "-G", "Ninja",
+                   f"-DCMAKE_TOOLCHAIN_FILE={toolchain}"] + [f"-D{k}={v}" for k, v in definitions(selector, soak_ms).items()]
+        log.run(command, "configure", env=env, timeout=180)
+        log.run([CMAKE, "--build", build, "--parallel", "4"], "build", env=env, timeout=600)
+        elf, binary = build / "cubemx.elf", build / "programmed.bin"
+        if not elf.is_file():
+            raise EvidenceError("target ELF missing")
+        log.run([ARM_DIR / "arm-none-eabi-objcopy.exe", "-O", "binary", elf, binary], "programmed-binary", env=env, timeout=30)
+        write_new(root / "H1.json", {"phase": "H1", "selector": selector, "case_id": case_id,
+                  "definitions": definitions(selector, soak_ms), "elf_sha256": digest(elf),
+                  "programmed_image_sha256": digest(binary)})
+        completed.append("H1")
+        log.run([PROGRAMMER, "-c", "port=SWD", "mode=UR", "-w", elf, "-v", "-rst"], "flash-verify", timeout=120)
+        write_new(root / "H2.json", {"phase": "H2", "verified": True, "programmed_image_sha256": digest(binary)})
+        completed.append("H2")
+        time.sleep(wait_seconds)
+        write_new(root / "H3.json", {"phase": "H3", "single_execution": True, "wait_seconds": wait_seconds,
+                  "configured_soak_ms": soak_ms, "result": "COMPLETE"})
+        completed.append("H3")
+        address = result_address(elf, log, env)
+        _, readout, _ = log.run([PROGRAMMER, "-c", "port=SWD", "mode=UR", "-r32", f"0x{address:08X}", str(READ_BYTES)], "read-result", timeout=60)
+        (root / "raw").mkdir(exist_ok=True)
+        (root / "raw" / "target-result.txt").write_text(readout, encoding="utf-8", newline="\n")
+        checked = evaluate(args.case, parse_words(readout))
+        write_new(root / "H4.json", {"phase": "H4", "result_address": f"0x{address:08X}", **checked})
+        completed.append("H4")
+        write_new(root / "identity.json", {"schema_version": "r4-evidence-v2", "git_head": head,
+                  "firmware_source_commit": head, "board_profile": "NUCLEO-F446RE/STM32F446xx",
+                  "programmer": str(PROGRAMMER), "harness_sha256": digest(repo / "tools" / "r4" / "r4_evidence.py"),
+                  "elf_sha256": digest(elf), "programmed_image_sha256": digest(binary)})
+        write_new(root / "config.json", {"work_package": "R4", "case_id": args.case, "selector": selector,
+                  "case_numeric_id": case_id, "configured_soak_ms": soak_ms})
+        write_new(root / "state.json", {"work_package": "R4", "case_id": args.case, "completed_phases": list(PHASES),
+                  "next_allowed": "COMPLETE", "hardware_state": "SAFE"})
+        write_new(root / "acceptance.json", {"result": checked["result"], "first_failure_class": None if checked["result"] == "PASS" else "TARGET_FIRMWARE", "invariants": checked["checks"]})
+        write_new(root / "H5.json", {"phase": "H5", "result": checked["result"], "sealed": True})
+        manifest(root)
+        print(f"ATTEMPT: {root}\nRESULT: {checked['result']}")
+        return 0 if checked["result"] == "PASS" else 2
+    except Exception as error:
+        write_new(root / "failure.json", {"error": str(error), "completed_phases": completed})
+        manifest(root)
+        print(f"ATTEMPT: {root}\nRESULT: FAIL: {error}")
+        return 2
+
+
+def verify_root(root: Path) -> None:
+    required = [root / name for name in ("identity.json", "config.json", "state.json", "acceptance.json", "MANIFEST.sha256", *[f"{p}.json" for p in PHASES])]
+    if any(not path.is_file() for path in required):
+        raise EvidenceError("attempt is missing a required formal record")
+    config = json.loads((root / "config.json").read_text(encoding="utf-8"))
+    state = json.loads((root / "state.json").read_text(encoding="utf-8"))
+    acceptance = json.loads((root / "acceptance.json").read_text(encoding="utf-8"))
+    if config.get("case_id") not in CASES or state.get("completed_phases") != list(PHASES) or state.get("next_allowed") != "COMPLETE":
+        raise EvidenceError("attempt state/configuration is not terminal")
+    if acceptance.get("result") != "PASS":
+        raise EvidenceError("attempt acceptance is not PASS")
+    validate_manifest(root)
+
+
+def import_attempt(args: argparse.Namespace) -> int:
+    repo, source = args.repo.resolve(), args.attempt.resolve()
+    if git(repo, "status", "--porcelain"):
+        raise EvidenceError("import requires a clean worktree")
+    verify_root(source)
+    case = json.loads((source / "config.json").read_text(encoding="utf-8"))["case_id"]
+    destination = repo / "docs" / "evidence" / "r4" / case / "attempt-0001"
+    if destination.exists():
+        raise EvidenceError(f"immutable destination already exists: {destination}")
+    shutil.copytree(source, destination)
+    verify_root(destination)
     print(destination)
     return 0
 
 
-def verify(args: argparse.Namespace) -> int:
-    root = args.attempt.resolve()
-    required = [root / name for name in ("identity.json", "config.json", "state.json",
-                                         "acceptance.json", "MANIFEST.sha256", *[f"{p}.json" for p in PHASES])]
-    missing = [str(path) for path in required if not path.is_file()]
-    if missing:
-        raise RuntimeError("missing required evidence: " + ", ".join(missing))
-    state = json.loads((root / "state.json").read_text(encoding="utf-8"))
-    if state.get("completed_phases") != list(PHASES) or state.get("next_allowed") != "COMPLETE":
-        raise RuntimeError("state is not terminal H0--H5")
-    h0 = json.loads((root / "H0.json").read_text(encoding="utf-8"))
-    identity = json.loads((root / "identity.json").read_text(encoding="utf-8"))
-    acceptance = json.loads((root / "acceptance.json").read_text(encoding="utf-8"))
-    if not h0.get("clean_tree") or h0.get("git_head") != identity.get("git_head"):
-        raise RuntimeError("H0 identity/clean-tree check failed")
-    if acceptance.get("result") != "PASS":
-        raise RuntimeError("acceptance is not PASS")
-    expected = {}
-    for line in (root / "MANIFEST.sha256").read_text(encoding="utf-8").splitlines():
-        digest, relative = line.split("  ", 1)
-        expected[relative] = digest
-    for relative, digest in expected.items():
-        candidate = root / relative
-        if not candidate.is_file() or sha256(candidate) != digest:
-            raise RuntimeError(f"manifest mismatch: {relative}")
+def selftest(_: argparse.Namespace) -> int:
+    words = [MAGIC, 1, SCHEMA, 1, 0, 0, 0, 0, 0, 0, COMPLETE]
+    if evaluate("t12-soak-a", words)["result"] != "PASS":
+        raise EvidenceError("positive parser self-test failed")
+    words[4] = 1
+    if evaluate("t12-soak-a", words)["result"] != "FAIL":
+        raise EvidenceError("negative parser self-test failed")
     print("PASS")
     return 0
 
@@ -111,18 +293,22 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, default=Path.cwd())
     sub = parser.add_subparsers(dest="command", required=True)
-    p = sub.add_parser("preflight", help="create an immutable H0-only attempt")
-    p.add_argument("--case", required=True)
-    p.add_argument("--attempt", type=int, required=True)
-    p.add_argument("--selector", required=True)
-    p.set_defaults(handler=preflight)
-    v = sub.add_parser("verify", help="verify a fully sealed attempt")
-    v.add_argument("--attempt", type=Path, required=True)
-    v.set_defaults(handler=verify)
+    attempt = sub.add_parser("run-attempt", help="run one fresh, external formal board attempt")
+    attempt.add_argument("--case", required=True, choices=sorted(CASES))
+    attempt.add_argument("--output-parent", type=Path, required=True)
+    attempt.set_defaults(handler=run_attempt)
+    imported = sub.add_parser("import-attempt", help="copy one sealed PASS attempt into Git evidence")
+    imported.add_argument("--attempt", type=Path, required=True)
+    imported.set_defaults(handler=import_attempt)
+    verify = sub.add_parser("verify", help="verify a sealed attempt")
+    verify.add_argument("--attempt", type=Path, required=True)
+    verify.set_defaults(handler=lambda args: (verify_root(args.attempt.resolve()), print("PASS"), 0)[2])
+    test = sub.add_parser("selftest", help="exercise the target-record parser without hardware")
+    test.set_defaults(handler=selftest)
     args = parser.parse_args()
     try:
         return args.handler(args)
-    except (OSError, ValueError, subprocess.CalledProcessError) as error:
+    except (EvidenceError, OSError, ValueError, subprocess.SubprocessError) as error:
         print(f"ERROR: {error}", file=sys.stderr)
         return 2
 

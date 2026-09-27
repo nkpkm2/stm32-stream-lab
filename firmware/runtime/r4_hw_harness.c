@@ -31,6 +31,122 @@ static StackType_t idle_stack[configMINIMAL_STACK_SIZE];
 static volatile uint32_t tick_start_callback_count;
 static volatile uint32_t tick_release_callback_count;
 
+static void FailInvariant(R4HwInvariant invariant)
+{
+    g_r4_hw_result.invariant_failure_mask |= (uint32_t)invariant;
+}
+
+static void EvaluateFormalInvariants(void)
+{
+    const uint32_t ok = (uint32_t)R4_RUNTIME_OK;
+    const uint32_t tick_ok = (uint32_t)R4_TICK_SERVICE_OK;
+
+    if (g_r4_hw_result.init_status != ok)
+    {
+        FailInvariant(R4_HW_INVARIANT_INIT);
+    }
+    if ((g_r4_hw_result.window_open_status != ok) ||
+        (g_r4_hw_result.window_close_status != ok) ||
+        (g_r4_hw_result.checkpoint_status != ok) ||
+        (g_r4_hw_result.t17_post_close_status != ok) ||
+        (g_r4_hw_result.t17_window_cycles_at_close !=
+         g_r4_hw_result.t17_window_cycles_after_close))
+    {
+        FailInvariant(R4_HW_INVARIANT_WINDOW);
+    }
+    if ((g_r4_hw_result.tick_register_status != tick_ok) ||
+        (g_r4_hw_result.tick_snapshot_status != tick_ok) ||
+        (g_r4_hw_result.tick_timing_configure_status != tick_ok) ||
+        (g_r4_hw_result.tick_timing_snapshot_status != tick_ok) ||
+        (g_r4_hw_result.tick_timing_service_count == 0U) ||
+        (g_r4_hw_result.tick_timing_over_limit_count != 0U))
+    {
+        FailInvariant(R4_HW_INVARIANT_TICK);
+    }
+
+#if (R4_HW_CASE_ID == 1U)
+    if ((g_r4_hw_result.lifecycle_init_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_start_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_stop_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.soak_configured_ms < 60000U) ||
+        (g_r4_hw_result.soak_end_clock_high_word <=
+         g_r4_hw_result.soak_start_clock_high_word) ||
+        (g_r4_hw_result.dma_irq_count == 0U) ||
+        (g_r4_hw_result.dma_yield_requested_count == 0U) ||
+        (g_r4_hw_result.dma_no_event_snapshot_status != ok) ||
+        ((g_r4_hw_result.dma_no_event_irq_after -
+          g_r4_hw_result.dma_no_event_irq_before) != UINT64_C(1)) ||
+        ((g_r4_hw_result.dma_no_event_no_yield_after -
+          g_r4_hw_result.dma_no_event_no_yield_before) != UINT64_C(1)))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
+    if ((g_r4_hw_result.health_snapshot_status != ok) ||
+        (g_r4_hw_result.health_first_fault != R4_RUNTIME_INFRA_NONE) ||
+        (g_r4_hw_result.health_fail_closed_requested != 0U) ||
+        (g_r4_hw_result.health_monitor_service_count < 60U) ||
+        (g_r4_hw_result.health_max_monitor_interval_cycles >
+         g_r4_hw_result.health_monitor_interval_limit_cycles))
+    {
+        FailInvariant(R4_HW_INVARIANT_HEALTH);
+    }
+#elif (R4_HW_CASE_ID == 2U)
+    if ((g_r4_hw_result.tick_arm_status != tick_ok) ||
+        (g_r4_hw_result.tick_start_callback_count != 1U) ||
+        (g_r4_hw_result.tick_release_callback_count != 1U) ||
+        (g_r4_hw_result.tick_start_count != UINT64_C(1)) ||
+        (g_r4_hw_result.tick_release_count != UINT64_C(1)) ||
+        (g_r4_hw_result.tick_skipped_count != UINT64_C(0)))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
+#elif (R4_HW_CASE_ID == 3U)
+    if ((g_r4_hw_result.tick_arm_status != tick_ok) ||
+        (g_r4_hw_result.tick_start_callback_count != 1U) ||
+        (g_r4_hw_result.tick_release_callback_count != 1U) ||
+        (g_r4_hw_result.tick_start_count != UINT64_C(1)) ||
+        (g_r4_hw_result.tick_release_count != UINT64_C(1)) ||
+        (g_r4_hw_result.tick_skipped_count != UINT64_C(1)))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
+#elif (R4_HW_CASE_ID == 4U)
+    if ((g_r4_hw_result.t17_arm_status != ok) ||
+        (g_r4_hw_result.t17_checkpoint_status != ok) ||
+        (g_r4_hw_result.t17_serial_after_pending_irq <=
+         g_r4_hw_result.t17_serial_before) ||
+        (g_r4_hw_result.irq_depth != 0U) ||
+        (g_r4_hw_result.t17_duplicate_exit_status !=
+         (uint32_t)R4_RUNTIME_IRQ_EXIT_MISMATCH))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
+#elif (R4_HW_CASE_ID == 5U)
+    if ((g_r4_hw_result.lifecycle_init_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_start_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_stop_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.completion_budget_pass == 0U) ||
+        (g_r4_hw_result.completion_count < 100U) ||
+        (g_r4_hw_result.completion_lock_count !=
+         g_r4_hw_result.completion_commit_count) ||
+        (g_r4_hw_result.completion_commit_count !=
+         g_r4_hw_result.completion_unlock_count) ||
+        (g_r4_hw_result.completion_max_total_cycles >
+         R4_HW_COMPLETE_BUDGET_CYCLES))
+    {
+        FailInvariant(R4_HW_INVARIANT_COMPLETION);
+    }
+    if ((g_r4_hw_result.health_snapshot_status != ok) ||
+        (g_r4_hw_result.health_first_fault != R4_RUNTIME_INFRA_NONE) ||
+        (g_r4_hw_result.health_fail_closed_requested != 0U))
+    {
+        FailInvariant(R4_HW_INVARIANT_HEALTH);
+    }
+#endif
+    g_r4_hw_result.terminal_pass =
+        g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
+}
+
 static int HarnessTickStart(uint64_t service_seq, void *context)
 {
     (void)service_seq;
@@ -303,6 +419,7 @@ static void HarnessTask(void *argument)
         (uint32_t)R4_RuntimeTarget_TestInjectDuplicateExit(
             (uint32_t)TIM6_DAC_IRQn + 16U);
 #endif
+    EvaluateFormalInvariants();
     __DMB();
     g_r4_hw_result.completed_magic = R4_HW_COMPLETE;
     for (;;)
@@ -318,6 +435,7 @@ void R4_HW_Start(void)
     (void)memset((void *)&g_r4_hw_result, 0, sizeof(g_r4_hw_result));
     g_r4_hw_result.magic = R4_HW_MAGIC;
     g_r4_hw_result.case_id = R4_HW_CASE_ID;
+    g_r4_hw_result.schema_version = R4_HW_SCHEMA_VERSION;
     g_r4_hw_result.init_status = (uint32_t)R4_RuntimeTarget_Initialize();
     if (g_r4_hw_result.init_status != (uint32_t)R4_RUNTIME_OK)
     {

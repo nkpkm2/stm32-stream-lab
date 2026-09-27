@@ -59,6 +59,13 @@ stimulus, H4 read-only target inspection plus machine verdict, H5 offline
 acceptance.  `tools/r4/r4_evidence.py verify` rejects incomplete phase order,
 non-clean H0, missing identities, a non-terminal state, or a bad manifest.
 
+The board result begins with a versioned, fixed-width evidence ABI: magic,
+case identity, schema, firmware terminal verdict, invariant-failure mask,
+initialisation status and completion magic.  The firmware evaluates the
+detailed case-specific checks; H4 verifies this stable prefix and preserves
+the complete raw SRAM response for independent review.  Therefore the host
+never derives PASS from a guessed offset in an evolving C struct.
+
 R4 may return to PASS only after every matrix cell has a sealed PASS attempt,
 the native suite and ARM builds pass from the final commit, the callsite check
 passes, GitHub contains source and evidence, and `docs/status.md` names the

@@ -9,11 +9,28 @@ extern "C" {
 
 #define R4_HW_MAGIC UINT32_C(0x52344857)
 #define R4_HW_COMPLETE UINT32_C(0x5234444E)
+#define R4_HW_SCHEMA_VERSION UINT32_C(1)
+
+/* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
+ * fields belong after this prefix; its offsets are a target evidence ABI. */
+typedef enum
+{
+    R4_HW_INVARIANT_INIT = UINT32_C(1) << 0,
+    R4_HW_INVARIANT_RUNTIME = UINT32_C(1) << 1,
+    R4_HW_INVARIANT_TICK = UINT32_C(1) << 2,
+    R4_HW_INVARIANT_WINDOW = UINT32_C(1) << 3,
+    R4_HW_INVARIANT_CASE = UINT32_C(1) << 4,
+    R4_HW_INVARIANT_HEALTH = UINT32_C(1) << 5,
+    R4_HW_INVARIANT_COMPLETION = UINT32_C(1) << 6
+} R4HwInvariant;
 
 typedef struct
 {
     uint32_t magic;
     uint32_t case_id;
+    uint32_t schema_version;
+    uint32_t terminal_pass;
+    uint32_t invariant_failure_mask;
     uint32_t init_status;
     uint32_t window_open_status;
     uint32_t window_close_status;
