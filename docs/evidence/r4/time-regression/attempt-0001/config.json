@@ -1,0 +1,7 @@
+{
+  "case_id": "time-regression",
+  "case_numeric_id": 11,
+  "configured_soak_ms": 0,
+  "selector": "TIME_REGRESSION",
+  "work_package": "R4"
+}

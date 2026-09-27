@@ -10,7 +10,7 @@ hardware test is not a substitute.
 | Domain | Current evidence | Status | Closure required |
 |---|---|---|---|
 | A01–A03 Clock64 authority, >60 s wrap, service bound | `t12-soak-a/attempt-0002` and `t12-soak-b/attempt-0002` are independent current target PASSes: >=65 s, observed DWT high-word advance, and >=60 bounded monitor services | PARTIAL | add source-uniqueness and invalid-run audit |
-| A04–A06 RuntimeEvent atomicity/mask/error ordering | `t17-atomic/attempt-0005` sealed target PASS checks pending IRQ ordering, duplicate-exit rejection, and post-close immutability; `mask-restore/attempt-0001` target PASS directly witnesses PRIMASK=0 and PRIMASK=1 preservation plus unchanged BASEPRI | PARTIAL | time-regression target/injection evidence |
+| A04–A06 RuntimeEvent atomicity/mask/error ordering | `t17-atomic/attempt-0005` sealed target PASS checks pending IRQ ordering, duplicate-exit rejection, and post-close immutability; `mask-restore/attempt-0001` witnesses PRIMASK preservation; `time-regression/attempt-0001` proves target fail-closed rejection | PARTIAL | combine these directed proofs in the final R2/R3 regression anchor |
 | A07–A13 IRQ pairing, no-yield/yield, SysTick | `t17-atomic/attempt-0005` sealed real TIM7→TIM6 nesting; fresh T12 semantic attempts exercise DMA `pdTRUE` and no-event `pdFALSE` tails | PARTIAL | exact task-switch attribution and one-pair SysTick evidence |
 | A14–A15 task/idle known workload | `task-synthetic/attempt-0004` sealed target PASS on the corrected ABI reader; H4 checks fixed A/B iterations, owner ratio, Idle residency, and formal conservation | PARTIAL | add known IRQ contribution and retain this workload in final integrated regression |
 | A16–A24 CPU window clipping, immutability, conservation | `dma-window/attempt-0001` sealed target PASS at `cf78c83`: real DMA completion sequence opens at S0=1, seals at S1=4, and observes a later sequence >=5 without a boundary fault; per-window buckets and directed native source cases remain available | PARTIAL | execute native cases on a host and add final target intersection/conservation plus no-outside-window evidence |
@@ -45,6 +45,14 @@ hardware test is not a substitute.
   another entered at PRIMASK=1 to return at PRIMASK=1, and BASEPRI to remain
   unchanged.  The existing T17 pending-high-IRQ case supplies the third
   interleaving witness; this row does not claim to test a time reversal.
+* Time-regression rejection: `docs/evidence/r4/time-regression/attempt-0001`
+  is a sealed NUCLEO-F446RE target PASS from commit
+  `7d5884c547caddd8cdf720f1f81eceaeb450e66b`.  A diagnostic-only corruption
+  advances the ledger boundary while leaving Clock64 as the sole authority;
+  the next normal target Apply returns `R4_RUNTIME_TIME_REGRESSION`, a second
+  Apply returns the same latched status, and the event serial remains frozen.
+  It therefore proves invalid formal timing results are fail-closed rather
+  than becoming an unsigned underflow interval.
 * Full `t_lock` to `t_unlock` bound: Release/LTO
   `t04-commit-budget-a/attempt-0002` and
   `t04-commit-budget-b/attempt-0001`.

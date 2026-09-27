@@ -1,0 +1,9 @@
+{
+  "case": "time-regression",
+  "clean_tree": true,
+  "git_head": "7d5884c547caddd8cdf720f1f81eceaeb450e66b",
+  "origin_main": "7d5884c547caddd8cdf720f1f81eceaeb450e66b",
+  "phase": "H0",
+  "probe_list_sha256": "CCCBFBE085110204EF1C7A0761CEB0C21B3CC958696744A58246C881DAC57356",
+  "result": "PASS"
+}
