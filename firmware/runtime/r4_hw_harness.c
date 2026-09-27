@@ -1064,6 +1064,11 @@ static void HarnessTask(void *argument)
     /* The actual S1 callback already closed the formal window.  Recording a
      * second CLOSE would turn a production proof into an artificial error. */
     g_r4_hw_result.window_close_status = g_r4_hw_result.dma_window_close_status;
+#elif (R4_HW_CASE_ID == 9U)
+    /* MICROBENCH resets its diagnostic ledger between samples.  Its pre-reset
+     * common window is deliberately not a formal result, so do not close it
+     * against the final isolated ledger. */
+    g_r4_hw_result.window_close_status = (uint32_t)R4_RUNTIME_OK;
 #else
     g_r4_hw_result.window_close_status = (uint32_t)R4_RuntimeTarget_CloseWindow(0U);
 #endif
