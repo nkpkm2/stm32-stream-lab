@@ -117,6 +117,8 @@ option(STREAM_LAB_R3_W4_HW
     "Build the R3-W4 safe STOP target hardware harness" OFF)
 option(STREAM_LAB_R3_W5_HW
     "Build the R3-W5 command/isolation target hardware harness" OFF)
+option(STREAM_LAB_R3_W6_HW
+    "Build the R3-W6 500-cycle lifecycle target harness" OFF)
 set(STREAM_LAB_R3_W3_HW_CASE "" CACHE STRING
     "R3-W3 target hardware case: START_A, T06_A, T06_B, or START_C")
 set_property(CACHE STREAM_LAB_R3_W3_HW_CASE PROPERTY STRINGS
@@ -129,6 +131,8 @@ set(STREAM_LAB_R3_W5_HW_CASE "" CACHE STRING
     "R3-W5 target hardware case: T13_A, T13_C, T13_D, T13_G, T20_A, or T20_B")
 set_property(CACHE STREAM_LAB_R3_W5_HW_CASE PROPERTY STRINGS
     T13_A T13_C T13_D T13_G T20_A T20_B)
+set(STREAM_LAB_R3_W6_HW_ANCHOR "" CACHE STRING "R3-W6 target anchor: A or B")
+set_property(CACHE STREAM_LAB_R3_W6_HW_ANCHOR PROPERTY STRINGS A B)
 set(STREAM_LAB_R3_W2_HW_CASE "" CACHE STRING
     "R3-W2 target hardware case: T03_A, T03_C, T03_D, T05_A, or T05_B")
 set_property(CACHE STREAM_LAB_R3_W2_HW_CASE PROPERTY STRINGS
@@ -152,12 +156,13 @@ if(R2_DIAGNOSTIC_PROFILE_COUNT GREATER 1)
     message(FATAL_ERROR "R2 diagnostic profiles W3/W4/W5/W6 are mutually exclusive")
 endif()
 
-if(STREAM_LAB_R3_W3_HW OR STREAM_LAB_R3_W4_HW OR STREAM_LAB_R3_W5_HW)
+if(STREAM_LAB_R3_W3_HW OR STREAM_LAB_R3_W4_HW OR STREAM_LAB_R3_W5_HW OR STREAM_LAB_R3_W6_HW)
     if(R2_DIAGNOSTIC_PROFILE_COUNT GREATER 0 OR STREAM_LAB_R3_W2_HW OR
        (STREAM_LAB_R3_W3_HW AND STREAM_LAB_R3_W4_HW) OR
        (STREAM_LAB_R3_W3_HW AND STREAM_LAB_R3_W5_HW) OR
-       (STREAM_LAB_R3_W4_HW AND STREAM_LAB_R3_W5_HW))
-        message(FATAL_ERROR "R3 W3/W4/W5 hardware harnesses are exclusive with R2 and W2 harness profiles.")
+       (STREAM_LAB_R3_W4_HW AND STREAM_LAB_R3_W5_HW) OR
+       ((STREAM_LAB_R3_W3_HW OR STREAM_LAB_R3_W4_HW OR STREAM_LAB_R3_W5_HW) AND STREAM_LAB_R3_W6_HW))
+        message(FATAL_ERROR "R3 W3/W4/W5/W6 hardware harnesses are exclusive with R2 and W2 harness profiles.")
     endif()
     if(STREAM_LAB_R3_W3_HW)
         if(NOT STREAM_LAB_R3_LIFECYCLE)
@@ -215,6 +220,18 @@ if(STREAM_LAB_R3_W3_HW OR STREAM_LAB_R3_W4_HW OR STREAM_LAB_R3_W5_HW)
             set(R3_W5_HW_CASE_ID_VALUE 6)
         else()
             message(FATAL_ERROR "STREAM_LAB_R3_W5_HW_CASE must be T13_A, T13_C, T13_D, T13_G, T20_A, or T20_B.")
+        endif()
+    endif()
+    if(STREAM_LAB_R3_W6_HW)
+        if(NOT STREAM_LAB_R3_LIFECYCLE)
+            message(FATAL_ERROR "R3-W6 hardware harness requires STREAM_LAB_R3_LIFECYCLE=ON.")
+        endif()
+        if(STREAM_LAB_R3_W6_HW_ANCHOR STREQUAL "A")
+            set(R3_W6_HW_ANCHOR_VALUE 1)
+        elseif(STREAM_LAB_R3_W6_HW_ANCHOR STREQUAL "B")
+            set(R3_W6_HW_ANCHOR_VALUE 2)
+        else()
+            message(FATAL_ERROR "STREAM_LAB_R3_W6_HW_ANCHOR must be A or B.")
         endif()
     endif()
 elseif(NOT STREAM_LAB_R3_W3_HW_CASE STREQUAL "")
@@ -503,6 +520,17 @@ elseif(STREAM_LAB_R3_W5_HW)
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w5_hw_harness.c")
     set_source_files_properties(
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w5_hw_harness.c"
+        PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
+elseif(STREAM_LAB_R3_W6_HW)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        STREAM_LAB_R3_W6_HW=1 R3_W6_HW_ANCHOR=${R3_W6_HW_ANCHOR_VALUE}U)
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime" "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition")
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w6_hw_harness.c")
+    set_source_files_properties(
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w6_hw_harness.c"
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
 elseif(STREAM_LAB_R3_W2_HW)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
