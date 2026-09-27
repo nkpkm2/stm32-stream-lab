@@ -147,6 +147,23 @@ static void ControllerTask(void *argument)
 #if (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_T04_A)
     if (!WaitForPartial(&snapshot))
         g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_PARTIAL;
+#elif (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_STOP_E)
+    {
+        uint32_t ticks;
+        CLEAR_BIT(ADC1->CR2, ADC_CR2_DMA);
+        for (ticks = 0U; ticks < 20U; ++ticks)
+        {
+            vTaskDelay(pdMS_TO_TICKS(1U));
+            if (!Snapshot(&snapshot)) break;
+            if ((snapshot.driver.adc_sr & ADC_SR_OVR) != 0U)
+            {
+                g_r3_w4_hw_result.injected_error_observed = 1U;
+                break;
+            }
+        }
+        if (g_r3_w4_hw_result.injected_error_observed == 0U)
+            g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_PARTIAL;
+    }
 #elif (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_T04_B)
     HAL_NVIC_DisableIRQ(DMA2_Stream0_IRQn);
     if (!WaitForPartial(&snapshot))
@@ -179,8 +196,13 @@ static void ControllerTask(void *argument)
         (snapshot.driver.inactive_keep_success_count == 0U))
         g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_PARTIAL;
 #endif
+#if (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_STOP_E)
+    if (R3W3Runtime_StopRunning(R3_W4_HW_STOP_ID) != R3_W3_RUNTIME_RESET_REQUIRED ||
+        !Snapshot(&snapshot))
+#else
     if (R3W3Runtime_StopRunning(R3_W4_HW_STOP_ID) != R3_W3_RUNTIME_OK ||
         !Snapshot(&snapshot))
+#endif
     {
         g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_STOP;
     }
@@ -195,6 +217,16 @@ static void ControllerTask(void *argument)
         g_r3_w4_hw_result.duplicate_stop_ok = 1U;
     }
 #endif
+#if (R3_W4_HW_CASE_ID == R3_W4_HW_CASE_STOP_E)
+    if ((snapshot.lifecycle.state != R3_LIFECYCLE_RESET_REQUIRED) ||
+        (snapshot.driver.state != ADC_DBM_DRIVER_STATE_ERROR) ||
+        (snapshot.driver.hardware_owned != 0U) ||
+        (snapshot.stop_begin_report_valid == 0U) ||
+        (snapshot.stop_report_valid == 0U))
+    {
+        g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_QUIESCED;
+    }
+#else
     if ((snapshot.lifecycle.state != R3_LIFECYCLE_IDLE) ||
         (snapshot.lifecycle.acquisition_publish_allowed != 0U) ||
         (snapshot.lifecycle.processing_claim_allowed != 0U) ||
@@ -205,6 +237,7 @@ static void ControllerTask(void *argument)
     {
         g_r3_w4_hw_result.invariant_bits |= R3_W4_INV_QUIESCED;
     }
+#endif
     if ((snapshot.rollback_ack_mask != ((1UL << 8) | (1UL << 9))) ||
         (snapshot.workers.faulted != 0U))
     {

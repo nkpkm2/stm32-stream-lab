@@ -42,6 +42,7 @@ typedef struct
     volatile uint32_t inactive_keep_success_count;
     volatile uint32_t inactive_rebind_success_count;
     volatile uint32_t inactive_failure_count;
+    volatile uint32_t stop_error_latched;
 } AdcDbmDriverStorage;
 
 static AdcDbmDriverStorage driver =
@@ -58,6 +59,7 @@ static AdcDbmDriverStorage driver =
     0U,
     0U,
     {0U, 0U},
+    0U,
     0U,
     0U,
     0U,
@@ -971,6 +973,9 @@ AdcDbmDriverStatus AdcDbmDriver_BeginStop(
         return ADC_DBM_DRIVER_INVALID_STATE;
     }
 
+    driver.stop_error_latched =
+        (((DMA2->LISR & ADC_DBM_DMA_ERRORS) != 0U) ||
+         ((ADC1->SR & ADC_SR_OVR) != 0U)) ? 1U : 0U;
     driver.state = ADC_DBM_DRIVER_STATE_STOPPING;
     (void)HAL_TIM_Base_Stop(&htim2);
     __HAL_TIM_SET_COUNTER(&htim2, 0U);
@@ -997,6 +1002,11 @@ AdcDbmDriverStatus AdcDbmDriver_FinishStop(
     }
 
     stop_status = QuiesceOwnedHardware(report, 1U);
+
+    if ((stop_status == ADC_DBM_DRIVER_OK) && (driver.stop_error_latched != 0U))
+    {
+        stop_status = ADC_DBM_DRIVER_HARDWARE_ERROR;
+    }
 
     driver.state = (stop_status == ADC_DBM_DRIVER_OK) ?
         ADC_DBM_DRIVER_STATE_STOPPED :
