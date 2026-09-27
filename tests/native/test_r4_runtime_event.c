@@ -121,6 +121,36 @@ static void CaseAtomicWindow(void)
     CHECK(platform.mask == 0U);
 }
 
+static void CaseMaskedEntryRestored(void)
+{
+    FakePlatform platform = { 100U, 1U, 0U, 0U };
+    R4_Clock64 clock;
+    R4_RuntimeLedger ledger = NewLedger(&platform, &clock);
+
+    CHECK(Apply(&ledger, &platform, 110U, R4_RUNTIME_EVENT_CHECKPOINT, 0U) ==
+        R4_RUNTIME_OK);
+    CHECK(platform.save_count == 1U);
+    CHECK(platform.restore_count == 1U);
+    /* RuntimeEvent must restore the caller's masked state, never unmask it. */
+    CHECK(platform.mask == 1U);
+}
+
+static void CaseTimeRegressionFaults(void)
+{
+    FakePlatform platform = { 0U, 0U, 0U, 0U };
+    R4_Clock64 clock;
+    R4_RuntimeLedger ledger = NewLedger(&platform, &clock);
+
+    /* Model a corrupted/future ledger boundary.  Underflow is forbidden: the
+     * formal measurement latches an error and all later events are rejected. */
+    ledger.last_time = 100U;
+    CHECK(Apply(&ledger, &platform, 50U, R4_RUNTIME_EVENT_CHECKPOINT, 0U) ==
+        R4_RUNTIME_TIME_REGRESSION);
+    CHECK(R4_RuntimeLedger_GetStatus(&ledger) == R4_RUNTIME_TIME_REGRESSION);
+    CHECK(Apply(&ledger, &platform, 101U, R4_RUNTIME_EVENT_CHECKPOINT, 0U) ==
+        R4_RUNTIME_TIME_REGRESSION);
+}
+
 static void CaseNestedIrq(void)
 {
     FakePlatform platform = { 0U, 0U, 0U, 0U };
@@ -230,6 +260,14 @@ static void RunCase(const char *name)
     else if (strcmp(name, "atomic_window") == 0)
     {
         CaseAtomicWindow();
+    }
+    else if (strcmp(name, "masked_entry") == 0)
+    {
+        CaseMaskedEntryRestored();
+    }
+    else if (strcmp(name, "time_regression") == 0)
+    {
+        CaseTimeRegressionFaults();
     }
     else if (strcmp(name, "nested_irq") == 0)
     {
