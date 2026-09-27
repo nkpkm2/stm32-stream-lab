@@ -1,0 +1,87 @@
+{
+  "phase": "H1",
+  "elf_sha256": "264732F8EA4A9816F7E565A650B41E5B216137053644C88E3C72E2FD32882DD4",
+  "audit": {
+    "elf_sha256": "264732F8EA4A9816F7E565A650B41E5B216137053644C88E3C72E2FD32882DD4",
+    "programmed_sha256": "0EFE87D0A1EE0E8ED98D1E3BCFD63A3CEF83FA0FFC7E0E76838CE7CD8063627A",
+    "strong_symbols": {
+      "StreamRunAuthority_TakeReady": [
+        [
+          "T",
+          134247328
+        ]
+      ],
+      "StreamRunAuthority_ClaimHeldReady": [
+        [
+          "T",
+          134247484
+        ]
+      ],
+      "StreamRunAuthority_CancelHeldReady": [
+        [
+          "T",
+          134247604
+        ]
+      ],
+      "StreamRunAuthority_CompleteAndReleaseBlock": [
+        [
+          "T",
+          134247724
+        ]
+      ],
+      "StreamRunAuthority_GetSnapshot": [
+        [
+          "T",
+          134247844
+        ]
+      ],
+      "R3_W2_HW_Start": [
+        [
+          "T",
+          134246544
+        ]
+      ],
+      "TIM6_DAC_IRQHandler": [
+        [
+          "T",
+          134246248
+        ]
+      ],
+      "R3WorkerTasks_Create": [
+        [
+          "T",
+          134242544
+        ]
+      ],
+      "R3WorkerTasks_NotifyProcessingWorkFromISR": [
+        [
+          "T",
+          134243324
+        ]
+      ],
+      "vTaskStartScheduler": [
+        [
+          "T",
+          134232908
+        ]
+      ],
+      "xTaskCreateStatic": [
+        [
+          "T",
+          134231984
+        ]
+      ],
+      "g_r3_w2_hw_result": [
+        [
+          "B",
+          536877784
+        ]
+      ]
+    },
+    "shim_provider": "C:\\Users\\CHJ\\Downloads\\STM32_R3_EVIDENCE\\w2-t03-c-0_z4cse1\\build\\CMakeFiles\\cubemx.dir\\E_\\Projects\\stm32-stream-lab\\firmware\\runtime\\r3_w2_hw_authority_shim.c.obj",
+    "shim_object_sha256": "DE519EAD595EF2065C26E131E8A0FB8D799FEB905B671CE5D5CF53F76BEB89C9",
+    "vector_to_strong_handler": "PASS",
+    "irq_number": 54,
+    "runtime_executed": false
+  }
+}
