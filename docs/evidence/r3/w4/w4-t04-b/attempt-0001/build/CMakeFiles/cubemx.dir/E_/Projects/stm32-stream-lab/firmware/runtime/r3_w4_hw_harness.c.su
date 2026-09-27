@@ -1,0 +1,7 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w4_hw_harness.c:33:13:Capture	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w4_hw_harness.c:57:12:Snapshot	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w4_hw_harness.c:67:13:Publish	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w4_hw_harness.c:74:13:TerminalLoop	8	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w4_hw_harness.c:81:12:WaitForPartial	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w4_hw_harness.c:112:13:ControllerTask	656	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w4_hw_harness.c:228:6:R3_W4_HW_Start	32	static
