@@ -4,6 +4,8 @@
 #include <string.h>
 
 #include "adc_dbm_driver.h"
+#include "r3_command_ledger.h"
+#include "r3_result_store.h"
 #include "r3_worker_tasks.h"
 #include "stream_ownership_core.h"
 
@@ -31,6 +33,8 @@ typedef struct
     uint32_t stop_report_valid;
     AdcDbmDriverStopBeginReport stop_begin_report;
     AdcDbmDriverStopReport stop_report;
+    R3CommandLedger command_ledger;
+    R3ResultStore result_store;
 } R3W3RuntimeStorage;
 
 static R3W3RuntimeStorage runtime;
@@ -46,6 +50,17 @@ static int CoordinatorCaller(void)
 static void LatchFault(void)
 {
     runtime.runtime_fault = 1U;
+}
+
+static R3W3RuntimeStatus LedgerStatus(R3CommandLedgerStatus status)
+{
+    if (status == R3_COMMAND_LEDGER_REQUEST_CONFLICT ||
+        status == R3_COMMAND_LEDGER_STOP_CONFLICT)
+        return R3_W3_RUNTIME_REQUEST_CONFLICT;
+    if ((status == R3_COMMAND_LEDGER_STALE_BOOT) ||
+        (status == R3_COMMAND_LEDGER_STALE_TICKET))
+        return R3_W3_RUNTIME_STALE_COMMAND;
+    return R3_W3_RUNTIME_LIFECYCLE_ERROR;
 }
 
 static R3LifecycleStatus LifecycleFromDriver(AdcDbmDriverStatus status)
@@ -500,6 +515,8 @@ R3W3RuntimeStatus R3W3Runtime_Initialize(const R3W3RuntimeConfig *config)
     hooks.commit_timer = HookCommit;
     hooks.rollback = HookRollback;
     R3Lifecycle_Init(config->boot_id, &hooks);
+    R3CommandLedger_Initialize(&runtime.command_ledger, config->boot_id);
+    R3ResultStore_Initialize(&runtime.result_store);
     return R3_W3_RUNTIME_OK;
 }
 
@@ -507,12 +524,29 @@ R3W3RuntimeStatus R3W3Runtime_PrepareStart(
     const R3LifecycleStartRequest *request, R3LifecycleStartTicket *out_ticket)
 {
     R3LifecycleStatus status;
+    R3CommandLedgerStatus ledger_status;
     if (!CoordinatorCaller()) return R3_W3_RUNTIME_INVALID_STATE;
-    runtime.last_stop_result_valid = 0U;
+    if (R3ResultStore_CanBeginRun(&runtime.result_store) == R3_RESULT_STORE_BUSY)
+        return R3_W3_RUNTIME_RESULT_BUSY;
+    ledger_status = R3CommandLedger_BeginStart(&runtime.command_ledger, request, out_ticket);
+    if (ledger_status == R3_COMMAND_LEDGER_OK_REPLAY)
+        return R3_W3_RUNTIME_OK;
+    if (ledger_status != R3_COMMAND_LEDGER_OK_NEW)
+        return LedgerStatus(ledger_status);
     status = R3Lifecycle_PrepareStart(request, out_ticket);
-    return status == R3_LIFECYCLE_OK ? R3_W3_RUNTIME_OK :
-        (status == R3_LIFECYCLE_STATUS_RESET_REQUIRED ?
-         R3_W3_RUNTIME_RESET_REQUIRED : R3_W3_RUNTIME_LIFECYCLE_ERROR);
+    if (status != R3_LIFECYCLE_OK)
+    {
+        (void)R3CommandLedger_AbortStart(&runtime.command_ledger, request);
+        return status == R3_LIFECYCLE_STATUS_RESET_REQUIRED ?
+            R3_W3_RUNTIME_RESET_REQUIRED : R3_W3_RUNTIME_LIFECYCLE_ERROR;
+    }
+    if (R3CommandLedger_RecordPrepared(&runtime.command_ledger, out_ticket) !=
+        R3_COMMAND_LEDGER_OK_NEW)
+    {
+        LatchFault();
+        return R3_W3_RUNTIME_LIFECYCLE_ERROR;
+    }
+    return R3_W3_RUNTIME_OK;
 }
 
 R3W3RuntimeStatus R3W3Runtime_CommitStart(const R3LifecycleStartTicket *ticket)
@@ -520,6 +554,13 @@ R3W3RuntimeStatus R3W3Runtime_CommitStart(const R3LifecycleStartTicket *ticket)
     R3LifecycleStatus status;
     if (!CoordinatorCaller()) return R3_W3_RUNTIME_INVALID_STATE;
     status = R3Lifecycle_CommitStart(ticket);
+    if (status == R3_LIFECYCLE_OK &&
+        R3CommandLedger_RecordRunning(&runtime.command_ledger, ticket) !=
+            R3_COMMAND_LEDGER_OK_NEW)
+    {
+        LatchFault();
+        return R3_W3_RUNTIME_LIFECYCLE_ERROR;
+    }
     return status == R3_LIFECYCLE_OK ? R3_W3_RUNTIME_OK :
         (status == R3_LIFECYCLE_STATUS_RESET_REQUIRED ?
          R3_W3_RUNTIME_RESET_REQUIRED : R3_W3_RUNTIME_LIFECYCLE_ERROR);
@@ -538,30 +579,75 @@ R3W3RuntimeStatus R3W3Runtime_StopBeforeCommit(const R3LifecycleStartTicket *tic
 R3W3RuntimeStatus R3W3Runtime_StopRunning(uint32_t stop_id)
 {
     R3LifecycleStopRequest request;
-    R3LifecycleStatus status;
     if (!CoordinatorCaller() || (stop_id == 0U))
     {
         return R3_W3_RUNTIME_INVALID_STATE;
     }
-    if (runtime.control.run_valid == 0U)
-    {
-        return (runtime.last_stop_result_valid != 0U &&
-                runtime.last_stop_id == stop_id) ?
-            R3_W3_RUNTIME_OK : R3_W3_RUNTIME_INVALID_STATE;
-    }
     (void)memset(&request, 0, sizeof(request));
     request.stream_ticket = runtime.stream_ticket;
     request.stop_id = stop_id;
-    status = R3Lifecycle_RequestStop(&request);
+    return R3W3Runtime_Stop(&request);
+}
+
+R3W3RuntimeStatus R3W3Runtime_Stop(const R3LifecycleStopRequest *request)
+{
+    R3LifecycleStatus status;
+    R3CommandLedgerStatus ledger_status;
+    if (!CoordinatorCaller() || (request == NULL) || (request->stop_id == 0U))
+        return R3_W3_RUNTIME_INVALID_STATE;
+    ledger_status = R3CommandLedger_BeginStop(&runtime.command_ledger, request);
+    if (ledger_status == R3_COMMAND_LEDGER_OK_REPLAY) return R3_W3_RUNTIME_OK;
+    if (ledger_status != R3_COMMAND_LEDGER_OK_NEW) return LedgerStatus(ledger_status);
+    status = R3Lifecycle_RequestStop(request);
     if (status == R3_LIFECYCLE_STOPPED)
     {
-        runtime.last_stop_ticket = request.stream_ticket;
-        runtime.last_stop_id = stop_id;
+        runtime.last_stop_ticket = request->stream_ticket;
+        runtime.last_stop_id = request->stop_id;
         runtime.last_stop_result_valid = 1U;
+        if (R3CommandLedger_RecordStopped(&runtime.command_ledger, request) !=
+            R3_COMMAND_LEDGER_OK_NEW ||
+            R3ResultStore_Seal(&runtime.result_store,
+                &request->stream_ticket.identity, request->stop_id) != R3_RESULT_STORE_OK)
+        {
+            LatchFault();
+            return R3_W3_RUNTIME_LIFECYCLE_ERROR;
+        }
     }
     return status == R3_LIFECYCLE_STOPPED ? R3_W3_RUNTIME_OK :
         (status == R3_LIFECYCLE_STATUS_RESET_REQUIRED ?
          R3_W3_RUNTIME_RESET_REQUIRED : R3_W3_RUNTIME_LIFECYCLE_ERROR);
+}
+
+R3W3RuntimeStatus R3W3Runtime_Start(
+    const R3LifecycleStartRequest *request, R3LifecycleStartTicket *out_ticket)
+{
+    R3W3RuntimeStatus status = R3W3Runtime_PrepareStart(request, out_ticket);
+    if (status != R3_W3_RUNTIME_OK) return status;
+    /* A replay ticket belongs to an already-running or stopped run; committing
+     * it again would mutate lifecycle state.  The ledger is the authority. */
+    {
+        R3CommandLedgerSnapshot snapshot;
+        if (R3CommandLedger_GetSnapshot(&runtime.command_ledger, &snapshot) !=
+            R3_COMMAND_LEDGER_OK_NEW)
+            return R3_W3_RUNTIME_LIFECYCLE_ERROR;
+        if (snapshot.phase != R3_COMMAND_LEDGER_PREPARING) return R3_W3_RUNTIME_OK;
+    }
+    return R3W3Runtime_CommitStart(out_ticket);
+}
+
+R3W3RuntimeStatus R3W3Runtime_AcquireResult(uint32_t result_id,
+    const uint8_t **out_bytes, uint32_t *out_size)
+{
+    if (!CoordinatorCaller()) return R3_W3_RUNTIME_INVALID_STATE;
+    return R3ResultStore_Acquire(&runtime.result_store, result_id, out_bytes, out_size) ==
+        R3_RESULT_STORE_OK ? R3_W3_RUNTIME_OK : R3_W3_RUNTIME_LIFECYCLE_ERROR;
+}
+
+R3W3RuntimeStatus R3W3Runtime_ReleaseResult(uint32_t result_id)
+{
+    if (!CoordinatorCaller()) return R3_W3_RUNTIME_INVALID_STATE;
+    return R3ResultStore_Release(&runtime.result_store, result_id) ==
+        R3_RESULT_STORE_OK ? R3_W3_RUNTIME_OK : R3_W3_RUNTIME_LIFECYCLE_ERROR;
 }
 
 R3W3RuntimeStatus R3W3Runtime_GetSnapshot(R3W3RuntimeSnapshot *out)
@@ -582,6 +668,13 @@ R3W3RuntimeStatus R3W3Runtime_GetSnapshot(R3W3RuntimeSnapshot *out)
     out->stop_report_valid = runtime.stop_report_valid;
     out->stop_begin_report = runtime.stop_begin_report;
     out->stop_report = runtime.stop_report;
+    if ((R3CommandLedger_GetSnapshot(&runtime.command_ledger, &out->command_ledger) !=
+         R3_COMMAND_LEDGER_OK_NEW) ||
+        (R3ResultStore_GetSnapshot(&runtime.result_store, &out->result_store) !=
+         R3_RESULT_STORE_OK))
+    {
+        return R3_W3_RUNTIME_INVALID_STATE;
+    }
     if ((R3Lifecycle_GetSnapshot(&out->lifecycle) != R3_LIFECYCLE_OK) ||
         (AdcDbmDriver_GetSnapshot(&out->driver) != ADC_DBM_DRIVER_OK) ||
         (StreamOwnership_GetSnapshot(&out->ownership) != STREAM_OWNERSHIP_OK) ||

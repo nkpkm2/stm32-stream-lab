@@ -43,6 +43,22 @@ if(R3_LIFECYCLE_NATIVE_TESTS)
     endforeach()
 endif()
 
+option(R3_W5_LEDGER_NATIVE_TESTS "Build R3-W5 command/result ledger tests" OFF)
+if(R3_W5_LEDGER_NATIVE_TESTS)
+    add_executable(test_r3_w5_ledger
+        test_r3_w5_ledger.c
+        ../../firmware/runtime/r3_command_ledger.c
+        ../../firmware/runtime/r3_result_store.c)
+    target_include_directories(test_r3_w5_ledger PRIVATE
+        freertos_stubs ../../firmware/runtime ../../firmware/buffer_pool ../../firmware/acquisition)
+    set_target_properties(test_r3_w5_ledger PROPERTIES C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_r3_w5_ledger)
+    r2_apply_sanitizers(test_r3_w5_ledger)
+    foreach(case_name duplicate_start request_conflict stop_old_boot result_busy_release)
+        add_test(NAME r3.w5_ledger.${case_name} COMMAND test_r3_w5_ledger ${case_name})
+    endforeach()
+endif()
+
 add_executable(test_r2_buffer_pool
     test_r2_buffer_pool.c
     ../../firmware/buffer_pool/r2_buffer_pool.c

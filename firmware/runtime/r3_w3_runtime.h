@@ -4,7 +4,9 @@
 #include <stdint.h>
 
 #include "adc_dbm_driver.h"
+#include "r3_command_ledger.h"
 #include "r3_lifecycle.h"
+#include "r3_result_store.h"
 #include "r3_worker_tasks.h"
 #include "stream_ownership_core.h"
 
@@ -30,7 +32,10 @@ typedef enum
     R3_W3_RUNTIME_WORKER_ERROR,
     R3_W3_RUNTIME_AUTHORITY_ERROR,
     R3_W3_RUNTIME_DRIVER_ERROR,
-    R3_W3_RUNTIME_RESET_REQUIRED
+    R3_W3_RUNTIME_RESET_REQUIRED,
+    R3_W3_RUNTIME_REQUEST_CONFLICT,
+    R3_W3_RUNTIME_STALE_COMMAND,
+    R3_W3_RUNTIME_RESULT_BUSY
 } R3W3RuntimeStatus;
 
 typedef struct
@@ -59,6 +64,8 @@ typedef struct
     uint32_t processing_entered;
     uint32_t stop_begin_report_valid;
     uint32_t stop_report_valid;
+    R3CommandLedgerSnapshot command_ledger;
+    R3ResultStoreSnapshot result_store;
     AdcDbmDriverStopBeginReport stop_begin_report;
     AdcDbmDriverStopReport stop_report;
     R3LifecycleSnapshot lifecycle;
@@ -76,6 +83,15 @@ R3W3RuntimeStatus R3W3Runtime_CommitStart(const R3LifecycleStartTicket *ticket);
 R3W3RuntimeStatus R3W3Runtime_StopBeforeCommit(
     const R3LifecycleStartTicket *ticket);
 R3W3RuntimeStatus R3W3Runtime_StopRunning(uint32_t stop_id);
+/* Atomic Communication command APIs used by the W5 protocol layer. */
+R3W3RuntimeStatus R3W3Runtime_Start(
+    const R3LifecycleStartRequest *request,
+    R3LifecycleStartTicket *out_ticket);
+R3W3RuntimeStatus R3W3Runtime_Stop(
+    const R3LifecycleStopRequest *request);
+R3W3RuntimeStatus R3W3Runtime_AcquireResult(uint32_t result_id,
+    const uint8_t **out_bytes, uint32_t *out_size);
+R3W3RuntimeStatus R3W3Runtime_ReleaseResult(uint32_t result_id);
 R3W3RuntimeStatus R3W3Runtime_GetSnapshot(R3W3RuntimeSnapshot *out);
 
 #ifdef __cplusplus

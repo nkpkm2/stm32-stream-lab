@@ -422,11 +422,15 @@ if(STREAM_LAB_R3_LIFECYCLE)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R3_LIFECYCLE=1)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_lifecycle.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_command_ledger.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_result_store.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w3_runtime.c")
     target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime")
     set_source_files_properties(
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_lifecycle.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_command_ledger.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_result_store.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r3_w3_runtime.c"
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
 endif()
