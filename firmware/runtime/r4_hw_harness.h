@@ -104,6 +104,10 @@ extern "C" {
 #define R4_HW_MASK_MASKED_PRIMASK_AFTER_WORD 203U
 #define R4_HW_MASK_BASEPRI_BEFORE_WORD 204U
 #define R4_HW_MASK_BASEPRI_AFTER_WORD 205U
+#define R4_HW_TIME_REGRESSION_INJECT_STATUS_WORD 206U
+#define R4_HW_TIME_REGRESSION_POST_STATUS_WORD 207U
+#define R4_HW_TIME_REGRESSION_SERIAL_BEFORE_WORD 208U
+#define R4_HW_TIME_REGRESSION_SERIAL_AFTER_WORD 210U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -258,6 +262,10 @@ typedef struct
     uint32_t mask_masked_primask_after;
     uint32_t mask_basepri_before;
     uint32_t mask_basepri_after;
+    uint32_t time_regression_inject_status;
+    uint32_t time_regression_post_status;
+    uint64_t time_regression_serial_before;
+    uint64_t time_regression_serial_after;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -374,6 +382,12 @@ _Static_assert(offsetof(R4HwHarnessResult, mask_normal_status) ==
 _Static_assert(offsetof(R4HwHarnessResult, mask_basepri_after) ==
     (R4_HW_MASK_BASEPRI_AFTER_WORD * sizeof(uint32_t)),
     "R4 mask-restore BASEPRI evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, time_regression_inject_status) ==
+    (R4_HW_TIME_REGRESSION_INJECT_STATUS_WORD * sizeof(uint32_t)),
+    "R4 time-regression status evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, time_regression_serial_before) ==
+    (R4_HW_TIME_REGRESSION_SERIAL_BEFORE_WORD * sizeof(uint32_t)),
+    "R4 time-regression serial evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 

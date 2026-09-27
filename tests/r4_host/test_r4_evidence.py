@@ -145,3 +145,15 @@ class R4EvidenceTests(unittest.TestCase):
         verdict = EVIDENCE.evaluate("mask-restore", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["runtime_event_mask_restore"])
+
+    def test_time_regression_requires_latched_rejection(self) -> None:
+        words = [0] * 212
+        words[:11] = [EVIDENCE.MAGIC, 11, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.TIME_REGRESSION_INJECT_STATUS_WORD] = 5
+        words[EVIDENCE.TIME_REGRESSION_POST_STATUS_WORD] = 5
+        words[EVIDENCE.TIME_REGRESSION_SERIAL_BEFORE_WORD] = 7
+        words[EVIDENCE.TIME_REGRESSION_SERIAL_AFTER_WORD] = 7
+        verdict = EVIDENCE.evaluate("time-regression", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["time_regression_fail_closed"])

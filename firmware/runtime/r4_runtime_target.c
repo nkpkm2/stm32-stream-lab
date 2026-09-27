@@ -644,6 +644,23 @@ R4_RuntimeStatus R4_RuntimeTarget_TestInjectDuplicateExit(uint32_t irq_id)
     return Apply(R4_RUNTIME_EVENT_IRQ_EXIT, (uintptr_t)irq_id);
 }
 
+R4_RuntimeStatus R4_RuntimeTarget_TestInjectTimeRegression(void)
+{
+    uint32_t saved_mask;
+
+    if (target_initialized == 0U)
+    {
+        return target_boot_error;
+    }
+    /* This is deliberately a ledger-corruption test actuator, excluded from
+     * every production profile.  It creates a future boundary without
+     * touching the sole Clock64 authority or DWT hardware. */
+    saved_mask = TargetSaveAndDisable(NULL);
+    target_ledger.last_time = target_clock.last_time + UINT64_C(0x100000);
+    TargetRestore(saved_mask, NULL);
+    return Apply(R4_RUNTIME_EVENT_CHECKPOINT, 0U);
+}
+
 R4_RuntimeStatus R4_RuntimeTarget_TestApplyEvent(R4_RuntimeEventKind kind,
     uintptr_t identity)
 {

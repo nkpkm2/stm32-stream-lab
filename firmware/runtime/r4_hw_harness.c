@@ -407,6 +407,16 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
+#elif (R4_HW_CASE_ID == 11U)
+    if ((g_r4_hw_result.time_regression_inject_status !=
+         (uint32_t)R4_RUNTIME_TIME_REGRESSION) ||
+        (g_r4_hw_result.time_regression_post_status !=
+         (uint32_t)R4_RUNTIME_TIME_REGRESSION) ||
+        (g_r4_hw_result.time_regression_serial_after !=
+         g_r4_hw_result.time_regression_serial_before))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -626,6 +636,11 @@ static void HarnessTask(void *argument)
         __set_PRIMASK(saved_primask);
     }
     g_r4_hw_result.mask_basepri_after = __get_BASEPRI();
+    vTaskDelay(pdMS_TO_TICKS(2U));
+#endif
+#if (R4_HW_CASE_ID == 11U)
+    /* Observe the normal production SysTick route before deliberately
+     * invalidating the ledger at the very end of this diagnostic case. */
     vTaskDelay(pdMS_TO_TICKS(2U));
 #endif
 #if (R4_HW_CASE_ID == 4U)
@@ -934,6 +949,22 @@ static void HarnessTask(void *argument)
     g_r4_hw_result.t17_duplicate_exit_status =
         (uint32_t)R4_RuntimeTarget_TestInjectDuplicateExit(
             (uint32_t)TIM6_DAC_IRQn + 16U);
+#endif
+#if (R4_HW_CASE_ID == 11U)
+    ledger = R4_RuntimeTarget_GetLedger();
+    if (ledger != NULL)
+    {
+        g_r4_hw_result.time_regression_serial_before = ledger->event_serial;
+    }
+    g_r4_hw_result.time_regression_inject_status = (uint32_t)
+        R4_RuntimeTarget_TestInjectTimeRegression();
+    g_r4_hw_result.time_regression_post_status = (uint32_t)
+        R4_RuntimeTarget_TestApplyEvent(R4_RUNTIME_EVENT_CHECKPOINT, 0U);
+    ledger = R4_RuntimeTarget_GetLedger();
+    if (ledger != NULL)
+    {
+        g_r4_hw_result.time_regression_serial_after = ledger->event_serial;
+    }
 #endif
     EvaluateFormalInvariants();
     __DMB();

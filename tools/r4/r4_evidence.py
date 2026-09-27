@@ -116,6 +116,10 @@ MASK_MASKED_PRIMASK_BEFORE_WORD = 202
 MASK_MASKED_PRIMASK_AFTER_WORD = 203
 MASK_BASEPRI_BEFORE_WORD = 204
 MASK_BASEPRI_AFTER_WORD = 205
+TIME_REGRESSION_INJECT_STATUS_WORD = 206
+TIME_REGRESSION_POST_STATUS_WORD = 207
+TIME_REGRESSION_SERIAL_BEFORE_WORD = 208
+TIME_REGRESSION_SERIAL_AFTER_WORD = 210
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -129,6 +133,7 @@ CASES = {
     "tick-gap": ("TICK_GAP", 8, 0, 8),
     "microbenchmark": ("MICROBENCH", 9, 0, 8),
     "mask-restore": ("MASK_RESTORE", 10, 0, 8),
+    "time-regression": ("TIME_REGRESSION", 11, 0, 8),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -449,6 +454,18 @@ def evaluate(case: str, words: list[int]) -> dict:
                 words[MASK_MASKED_PRIMASK_BEFORE_WORD] == 1 and
                 words[MASK_MASKED_PRIMASK_AFTER_WORD] == 1 and
                 words[MASK_BASEPRI_BEFORE_WORD] == words[MASK_BASEPRI_AFTER_WORD])
+    if case == "time-regression":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= TIME_REGRESSION_SERIAL_AFTER_WORD + 1:
+            checks["time_regression_extension_present"] = False
+        else:
+            checks["time_regression_fail_closed"] = (
+                words[TIME_REGRESSION_INJECT_STATUS_WORD] == 5 and
+                words[TIME_REGRESSION_POST_STATUS_WORD] == 5 and
+                word64(TIME_REGRESSION_SERIAL_AFTER_WORD) ==
+                word64(TIME_REGRESSION_SERIAL_BEFORE_WORD))
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 

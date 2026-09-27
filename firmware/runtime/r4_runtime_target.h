@@ -132,6 +132,9 @@ R4_RuntimeStatus R4_RuntimeTarget_TestArmPendingIrq(void);
 R4_RuntimeStatus R4_RuntimeTarget_TestArmNestedIrq(void);
 void R4_RuntimeTarget_TestPendHighFromLowIrq(void);
 R4_RuntimeStatus R4_RuntimeTarget_TestInjectDuplicateExit(uint32_t irq_id);
+/* Fault-injection only: corrupt the next ledger settlement boundary so a
+ * normal target Apply must latch TIME_REGRESSION and reject later events. */
+R4_RuntimeStatus R4_RuntimeTarget_TestInjectTimeRegression(void);
 /* Diagnostic-only direct entrance used by the R4 microbenchmark.  It calls
  * the same RuntimeEvent Apply transaction as production trace endpoints; it
  * is never present in a production build. */
