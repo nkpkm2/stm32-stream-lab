@@ -95,7 +95,10 @@ static int WaitForProcessingEntry(R3W3RuntimeSnapshot *s)
     uint32_t ticks;
     for (ticks = 0U; ticks < 40U; ++ticks)
     {
-        vTaskDelay(pdMS_TO_TICKS(1U));
+        /* The controller outranks Processing. Leave a full intervening tick
+         * after its wake boundary so the DMA-notified Processing task can run
+         * and enter its deliberate bounded hold before we issue STOP. */
+        vTaskDelay(pdMS_TO_TICKS(2U));
         if (!Snapshot(s)) return 0;
         if (s->processing_entered != 0U) return 1;
     }
