@@ -276,6 +276,11 @@ def main(argv=None) -> int:
     build_check.add_argument("--candidate", action="store_true", required=True)
     build_check.add_argument("--phase", choices=("all", "host", "arm", "negative", "history"), default="all")
     build_check.add_argument("--out-dir", default=str(Path.home() / "Downloads" / "STM32_R3_VALIDATION"))
+    hw_attempt = sub.add_parser("w2-hw-attempt", help="run exactly one formal W2 hardware attempt outside the repository")
+    hw_attempt.add_argument("--case", required=True)
+    hw_attempt.add_argument("--out-dir", default=str(Path.home() / "Downloads" / "STM32_R3_EVIDENCE"))
+    evidence_import = sub.add_parser("w2-evidence-import", help="import one completed external W2 evidence attempt")
+    evidence_import.add_argument("--attempt", required=True)
     ns = parser.parse_args(argv)
     repo = Path(ns.repo).resolve()
 
@@ -283,6 +288,13 @@ def main(argv=None) -> int:
         from r3lib.w2_build_validation import validate
         return validate(repo, candidate=ns.candidate,
                         output_parent=Path(ns.out_dir), phase=ns.phase)
+    if ns.cmd == "w2-hw-attempt":
+        from r3lib.w2_hardware import attempt
+        return attempt(repo, ns.case, Path(ns.out_dir))
+    if ns.cmd == "w2-evidence-import":
+        from r3lib.w2_hardware import import_attempt
+        print(f"EVIDENCE_IMPORTED: {import_attempt(repo, Path(ns.attempt).resolve())}")
+        return 0
     if ns.cmd == "status":
         print_status(repo)
         return 0
