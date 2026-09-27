@@ -77,6 +77,12 @@ extern "C" {
 #define R4_HW_T15_PHASE_TIM2_BEFORE_WORD 158U
 #define R4_HW_T15_PHASE_TIM2_AFTER_WORD 160U
 #define R4_HW_T15_PHASE_TIM2_CEN_WORD 162U
+#define R4_HW_TICK_GAP_HEALTH_STATUS_WORD 163U
+#define R4_HW_TICK_GAP_FIRST_FAULT_WORD 164U
+#define R4_HW_TICK_GAP_FAIL_CLOSED_WORD 165U
+#define R4_HW_TICK_GAP_OVER_LIMIT_WORD 166U
+#define R4_HW_TICK_GAP_MAX_INTERVAL_WORD 168U
+#define R4_HW_TICK_GAP_INTERVAL_LIMIT_WORD 170U
 
 /* Stable prefix consumed by the immutable-evidence reader.  New diagnostic
  * fields belong after this prefix; its offsets are a target evidence ABI. */
@@ -201,6 +207,12 @@ typedef struct
     uint64_t tick_phase_tim2_before;
     uint64_t tick_phase_tim2_after;
     uint32_t tick_phase_tim2_cen;
+    uint32_t tick_gap_health_status;
+    uint32_t tick_gap_first_fault;
+    uint32_t tick_gap_fail_closed_requested;
+    uint64_t tick_gap_over_limit_count;
+    uint64_t tick_gap_max_interval_cycles;
+    uint64_t tick_gap_interval_limit_cycles;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -296,6 +308,12 @@ _Static_assert(offsetof(R4HwHarnessResult, tick_phase_tim2_after) ==
 _Static_assert(offsetof(R4HwHarnessResult, tick_phase_tim2_cen) ==
     (R4_HW_T15_PHASE_TIM2_CEN_WORD * sizeof(uint32_t)),
     "R4 TIM2 phase-CEN evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_gap_health_status) ==
+    (R4_HW_TICK_GAP_HEALTH_STATUS_WORD * sizeof(uint32_t)),
+    "R4 tick-gap health evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, tick_gap_over_limit_count) ==
+    (R4_HW_TICK_GAP_OVER_LIMIT_WORD * sizeof(uint32_t)),
+    "R4 tick-gap over-limit evidence word offset changed");
 
 extern volatile R4HwHarnessResult g_r4_hw_result;
 

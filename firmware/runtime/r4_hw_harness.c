@@ -15,6 +15,7 @@
 #define R4_HW_COMPLETE_BUDGET_CYCLES 1800U
 #define R4_HW_TICK_CYCLES UINT64_C(180000)
 #define R4_HW_TICK_INTERVAL_LIMIT_CYCLES UINT64_C(270000)
+#define R4_HW_TICK_GAP_MASK_CYCLES UINT32_C(540000)
 #define R4_HW_TIM2_START_PHASE_BOUND_CYCLES UINT64_C(1800)
 #define R4_HW_MONITOR_INTERVAL_LIMIT_CYCLES UINT64_C(1800000000)
 #define R4_HW_MONITOR_PERIOD_MS 1000U
@@ -95,7 +96,9 @@ static void EvaluateFormalInvariants(void)
         (g_r4_hw_result.tick_timing_configure_status != tick_ok) ||
         (g_r4_hw_result.tick_timing_snapshot_status != tick_ok) ||
         (g_r4_hw_result.tick_timing_service_count == 0U) ||
+#if (R4_HW_CASE_ID != 8U)
         (g_r4_hw_result.tick_timing_over_limit_count != 0U) ||
+#endif
         (g_r4_hw_result.tick_systick_snapshot_status != ok) ||
         (g_r4_hw_result.tick_systick_enter_count == 0U) ||
         (g_r4_hw_result.tick_systick_enter_count !=
@@ -248,6 +251,17 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
+#elif (R4_HW_CASE_ID == 8U)
+    if ((g_r4_hw_result.tick_gap_health_status != ok) ||
+        (g_r4_hw_result.tick_gap_first_fault !=
+         R4_RUNTIME_INFRA_TICK_SERVICE_GAP) ||
+        (g_r4_hw_result.tick_gap_fail_closed_requested != 1U) ||
+        (g_r4_hw_result.tick_gap_over_limit_count == 0U) ||
+        (g_r4_hw_result.tick_gap_max_interval_cycles <=
+         g_r4_hw_result.tick_gap_interval_limit_cycles))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -345,6 +359,11 @@ static void HarnessTask(void *argument)
     R3W3RuntimeSnapshot runtime_snapshot;
     uint32_t dma_window_wait_tick;
 #endif
+#if (R4_HW_CASE_ID == 8U)
+    R4_RuntimeHealthSnapshot tick_gap_health;
+    uint32_t tick_gap_mask_start;
+    uint32_t tick_gap_saved_primask;
+#endif
     R4_TickService tick_snapshot;
     R4_TickServiceTiming tick_timing;
     R4_SysTickTraceSnapshot systick_trace;
@@ -420,6 +439,22 @@ static void HarnessTask(void *argument)
                 tick_snapshot.service_seq;
         }
     }
+#endif
+#if (R4_HW_CASE_ID == 8U)
+    /* Establish an ordinary real-hook interval first.  Then withhold the
+     * physical SysTick IRQ long enough to exceed the configured DWT bound;
+     * restoring PRIMASK lets the pending real vector—not a test helper—latch
+     * the fault on its next hook entrance. */
+    vTaskDelay(pdMS_TO_TICKS(2U));
+    tick_gap_saved_primask = __get_PRIMASK();
+    __disable_irq();
+    tick_gap_mask_start = DWT->CYCCNT;
+    while ((uint32_t)(DWT->CYCCNT - tick_gap_mask_start) <
+           R4_HW_TICK_GAP_MASK_CYCLES)
+    {
+    }
+    __set_PRIMASK(tick_gap_saved_primask);
+    vTaskDelay(pdMS_TO_TICKS(2U));
 #endif
 #if (R4_HW_CASE_ID == 4U)
     ledger = R4_RuntimeTarget_GetLedger();
@@ -666,6 +701,19 @@ static void HarnessTask(void *argument)
         R4_RuntimeTarget_GetSysTickTraceSnapshot(&systick_trace);
     g_r4_hw_result.tick_systick_enter_count = systick_trace.enter_count;
     g_r4_hw_result.tick_systick_exit_count = systick_trace.exit_count;
+#if (R4_HW_CASE_ID == 8U)
+    g_r4_hw_result.tick_gap_health_status = (uint32_t)
+        R4_RuntimeTarget_GetHealthSnapshot(&tick_gap_health);
+    g_r4_hw_result.tick_gap_first_fault = (uint32_t)tick_gap_health.first_fault;
+    g_r4_hw_result.tick_gap_fail_closed_requested =
+        tick_gap_health.fail_closed_requested;
+    g_r4_hw_result.tick_gap_over_limit_count =
+        tick_timing.over_limit_interval_count;
+    g_r4_hw_result.tick_gap_max_interval_cycles =
+        tick_timing.max_interval_cycles;
+    g_r4_hw_result.tick_gap_interval_limit_cycles =
+        tick_timing.interval_limit_cycles;
+#endif
     ledger = R4_RuntimeTarget_GetLedger();
     if (ledger != NULL)
     {

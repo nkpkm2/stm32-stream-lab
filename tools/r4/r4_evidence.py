@@ -89,6 +89,12 @@ T15_PHASE_Q0_WORD = 156
 T15_PHASE_TIM2_BEFORE_WORD = 158
 T15_PHASE_TIM2_AFTER_WORD = 160
 T15_PHASE_TIM2_CEN_WORD = 162
+TICK_GAP_HEALTH_STATUS_WORD = 163
+TICK_GAP_FIRST_FAULT_WORD = 164
+TICK_GAP_FAIL_CLOSED_WORD = 165
+TICK_GAP_OVER_LIMIT_WORD = 166
+TICK_GAP_MAX_INTERVAL_WORD = 168
+TICK_GAP_INTERVAL_LIMIT_WORD = 170
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -99,6 +105,7 @@ CASES = {
     "t04-commit-budget-b": ("COMMIT_BUDGET", 5, 65000, 75),
     "task-synthetic": ("SYNTHETIC_TASKS", 6, 0, 8),
     "dma-window": ("DMA_WINDOW", 7, 0, 8),
+    "tick-gap": ("TICK_GAP", 8, 0, 8),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -372,6 +379,20 @@ def evaluate(case: str, words: list[int]) -> dict:
                     (word64(T15_PHASE_TIM2_AFTER_WORD) -
                      word64(T15_PHASE_TIM2_BEFORE_WORD)) <= 1800),
             })
+    if case == "tick-gap":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= TICK_GAP_INTERVAL_LIMIT_WORD + 1:
+            checks["tick_gap_extension_present"] = False
+        else:
+            checks["tick_gap_fail_closed"] = (
+                words[TICK_GAP_HEALTH_STATUS_WORD] == 0 and
+                words[TICK_GAP_FIRST_FAULT_WORD] == 1 and
+                words[TICK_GAP_FAIL_CLOSED_WORD] == 1 and
+                word64(TICK_GAP_OVER_LIMIT_WORD) >= 1 and
+                word64(TICK_GAP_MAX_INTERVAL_WORD) >
+                word64(TICK_GAP_INTERVAL_LIMIT_WORD))
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 

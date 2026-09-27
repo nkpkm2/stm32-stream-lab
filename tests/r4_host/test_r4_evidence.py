@@ -99,3 +99,16 @@ class R4EvidenceTests(unittest.TestCase):
         self.assertTrue(verdict["checks"]["t15_exact_callbacks"])
         self.assertTrue(verdict["checks"]["t15_systick_single_pair"])
         self.assertTrue(verdict["checks"]["t15_q0_to_tim2_phase"])
+
+    def test_tick_gap_requires_real_fault_latch(self) -> None:
+        words = [0] * 172
+        words[:11] = [EVIDENCE.MAGIC, 8, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.TICK_GAP_FIRST_FAULT_WORD] = 1
+        words[EVIDENCE.TICK_GAP_FAIL_CLOSED_WORD] = 1
+        words[EVIDENCE.TICK_GAP_OVER_LIMIT_WORD] = 1
+        words[EVIDENCE.TICK_GAP_MAX_INTERVAL_WORD] = 271
+        words[EVIDENCE.TICK_GAP_INTERVAL_LIMIT_WORD] = 270
+        verdict = EVIDENCE.evaluate("tick-gap", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["tick_gap_fail_closed"])
