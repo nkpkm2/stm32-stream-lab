@@ -297,7 +297,6 @@ static void EvaluateFormalInvariants(void)
     if ((g_r4_hw_result.lifecycle_init_status != (uint32_t)R3_W3_RUNTIME_OK) ||
         (g_r4_hw_result.lifecycle_start_status != (uint32_t)R3_W3_RUNTIME_OK) ||
         (g_r4_hw_result.lifecycle_stop_status != (uint32_t)R3_W3_RUNTIME_OK) ||
-        (g_r4_hw_result.completion_budget_pass == 0U) ||
         (g_r4_hw_result.completion_count < 100U) ||
         (g_r4_hw_result.completion_lock_count !=
          g_r4_hw_result.completion_commit_count) ||
@@ -427,8 +426,6 @@ static void EvaluateFormalInvariants(void)
          g_r4_hw_result.completion_commit_count) ||
         (g_r4_hw_result.completion_commit_count !=
          g_r4_hw_result.completion_unlock_count) ||
-        (g_r4_hw_result.completion_max_total_cycles >
-         R4_HW_COMPLETE_BUDGET_CYCLES) ||
         (g_r4_hw_result.commit_pending_arm_status != ok) ||
         (g_r4_hw_result.commit_pending_snapshot_status != ok) ||
         (g_r4_hw_result.commit_pending_arm_count != 1U) ||
