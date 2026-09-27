@@ -1,0 +1,12 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:20:12:SupportedK	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:25:30:RecordFailure	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:39:30:RequireHealthyInitialized	4	static
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:48:30:ReadHealthySnapshots	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:88:12:PlanShapeValid	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:130:12:IsNextSequence	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:139:6:StreamOwnership_ResetOffline	8	static
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:147:23:StreamOwnership_Initialize	80	static
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:192:23:StreamOwnership_PrepareCompletion	160	static
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:301:23:StreamOwnership_CommitKeep	80	static
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:350:23:StreamOwnership_CommitRebind	104	static
+E:/Projects/stm32-stream-lab/firmware/runtime/stream_ownership_core.c:455:23:StreamOwnership_GetSnapshot	16	static

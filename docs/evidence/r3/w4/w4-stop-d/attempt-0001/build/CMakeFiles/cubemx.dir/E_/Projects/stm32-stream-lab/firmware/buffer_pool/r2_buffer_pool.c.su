@@ -1,0 +1,15 @@
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:17:12:IsSupportedK	16	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:22:28:Violation	16	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:32:12:InvariantsHold	24	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:87:28:RequireActive	8	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:100:28:Transition	24	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:122:6:R2_BufferPool_Reset	16	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:134:21:R2_BufferPool_Activate	24	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:171:21:R2_BufferPool_FindFree	24	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:195:21:R2_BufferPool_CommitDmaRotation	24	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:224:21:R2_BufferPool_ClaimReady	16	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:229:21:R2_BufferPool_CancelReady	16	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:234:21:R2_BufferPool_ReleaseProcessing	16	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:239:21:R2_BufferPool_GetState	16	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:259:21:R2_BufferPool_GetSnapshot	80	static
+E:/Projects/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c:293:21:R2_BufferPool_Validate	8	static

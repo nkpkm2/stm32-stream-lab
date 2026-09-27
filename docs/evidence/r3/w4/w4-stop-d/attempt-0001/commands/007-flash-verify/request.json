@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "E:\\DevTools\\STM32CubeCLT-1.22.0\\STM32CubeProgrammer\\bin\\STM32_Programmer_CLI.exe",
+    "-c",
+    "port=SWD",
+    "mode=UR",
+    "-w",
+    "C:\\Users\\CHJ\\Downloads\\STM32_R3_EVIDENCE\\w4-stop-d-my_vm_cj\\build\\cubemx.elf",
+    "-v",
+    "-rst"
+  ],
+  "cwd": null,
+  "timeout_seconds": 120,
+  "automatic_retry": false
+}

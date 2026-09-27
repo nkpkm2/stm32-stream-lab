@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "E:\\DevTools\\STM32CubeCLT-1.22.0\\CMake\\bin\\cmake.exe",
+    "-S",
+    "E:\\Projects\\stm32-stream-lab\\firmware\\cubemx",
+    "-B",
+    "C:\\Users\\CHJ\\Downloads\\STM32_R3_EVIDENCE\\w4-stop-d-my_vm_cj\\build",
+    "-G",
+    "Ninja",
+    "-DCMAKE_BUILD_TYPE=Debug",
+    "-DCMAKE_MAKE_PROGRAM=E:/DevTools/STM32CubeCLT-1.22.0/Ninja/bin/ninja.exe",
+    "-DCMAKE_TOOLCHAIN_FILE=E:/Projects/stm32-stream-lab/firmware/cubemx/cmake/gcc-arm-none-eabi.cmake",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+    "-DSTREAM_LAB_FOUNDATION_ADC_DBM_DRIVER=ON",
+    "-DSTREAM_LAB_FOUNDATION_OWNERSHIP_CORE=ON",
+    "-DSTREAM_LAB_FOUNDATION_QUEUE_ADAPTER=ON",
+    "-DSTREAM_LAB_FOUNDATION_TOKEN_LEDGER=ON",
+    "-DSTREAM_LAB_R3_LIFECYCLE=ON",
+    "-DSTREAM_LAB_R3_W2_HW=OFF",
+    "-DSTREAM_LAB_R3_W2_HW_CASE=",
+    "-DSTREAM_LAB_R3_W3_HW=OFF",
+    "-DSTREAM_LAB_R3_W3_HW_CASE=",
+    "-DSTREAM_LAB_R3_W4_HW=ON",
+    "-DSTREAM_LAB_R3_W4_HW_CASE=STOP_D",
+    "-DSTREAM_LAB_R3_WORKER_CONTRACT=ON",
+    "-DSTREAM_LAB_R3_WORKER_TASKS=ON"
+  ],
+  "cwd": null,
+  "timeout_seconds": 180,
+  "automatic_retry": false
+}
