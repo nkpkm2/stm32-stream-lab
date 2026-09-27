@@ -913,6 +913,26 @@ def verify_perturbation_suite_command(args: argparse.Namespace) -> int:
     return 0 if result["result"] == "PASS" else 2
 
 
+def import_perturbation_suite(args: argparse.Namespace) -> int:
+    repo = args.repo.resolve()
+    if git(repo, "status", "--porcelain"):
+        raise EvidenceError("suite import requires a clean worktree")
+    result = verify_perturbation_suite(args.attempt)
+    if result["result"] != "PASS":
+        raise EvidenceError("only a passing six-run perturbation suite may be imported")
+    source = args.suite.resolve()
+    recorded = json.loads(source.read_text(encoding="utf-8"))
+    if recorded != result:
+        raise EvidenceError("suite record is not the exact current verifier result")
+    parent = repo / "docs" / "evidence" / "r4" / "perturbation-ab"
+    number = 1
+    while (parent / f"suite-{number:04d}.json").exists():
+        number += 1
+    write_new(parent / f"suite-{number:04d}.json", result)
+    print(parent / f"suite-{number:04d}.json")
+    return 0
+
+
 def selftest(_: argparse.Namespace) -> int:
     words = [MAGIC, 1, SCHEMA, 1, 0, 0, 0, 0, 0, 0, COMPLETE]
     if evaluate("t12-soak-a", words)["result"] != "PASS":
@@ -948,6 +968,10 @@ def main() -> int:
     suite.add_argument("--attempt", type=Path, nargs=6, required=True)
     suite.add_argument("--output", type=Path, required=True)
     suite.set_defaults(handler=verify_perturbation_suite_command)
+    imported_suite = sub.add_parser("import-perturbation-suite", help="import an exact passing six-run A/B aggregate")
+    imported_suite.add_argument("--attempt", type=Path, nargs=6, required=True)
+    imported_suite.add_argument("--suite", type=Path, required=True)
+    imported_suite.set_defaults(handler=import_perturbation_suite)
     test = sub.add_parser("selftest", help="exercise the target-record parser without hardware")
     test.set_defaults(handler=selftest)
     args = parser.parse_args()
