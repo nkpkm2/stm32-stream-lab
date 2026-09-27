@@ -9,7 +9,7 @@ hardware test is not a substitute.
 
 | Domain | Current evidence | Status | Closure required |
 |---|---|---|---|
-| A01–A03 Clock64 authority, >60 s wrap, service bound | `t12-soak-a/attempt-0002` and `t12-soak-b/attempt-0002` are independent current target PASSes: >=65 s, observed DWT high-word advance, and >=60 bounded monitor services | PARTIAL | add source-uniqueness and invalid-run audit |
+| A01–A03 Clock64 authority, >60 s wrap, service bound | `t12-soak-a/attempt-0002` and `t12-soak-b/attempt-0002` are independent current target PASSes: >=65 s, observed DWT high-word advance, and >=60 bounded monitor services; `test_r4_source_audit.py` enforces the single production Clock64 authority and boot-only initialization | PARTIAL | add invalid-run audit |
 | A04–A06 RuntimeEvent atomicity/mask/error ordering | `t17-atomic/attempt-0005` sealed target PASS checks pending IRQ ordering, duplicate-exit rejection, and post-close immutability; `mask-restore/attempt-0001` witnesses PRIMASK preservation; `time-regression/attempt-0001` proves target fail-closed rejection | PARTIAL | combine these directed proofs in the final R2/R3 regression anchor |
 | A07–A13 IRQ pairing, no-yield/yield, SysTick | `t17-atomic/attempt-0005` sealed real TIM7→TIM6 nesting; fresh T12 semantic attempts exercise DMA `pdTRUE` and no-event `pdFALSE` tails | PARTIAL | exact task-switch attribution and one-pair SysTick evidence |
 | A14–A15 task/idle known workload | `task-synthetic/attempt-0004` sealed target PASS on the corrected ABI reader; H4 checks fixed A/B iterations, owner ratio, Idle residency, and formal conservation | PARTIAL | add known IRQ contribution and retain this workload in final integrated regression |
