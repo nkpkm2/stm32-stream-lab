@@ -9,9 +9,9 @@ hardware test is not a substitute.
 
 | Domain | Current evidence | Status | Closure required |
 |---|---|---|---|
-| A01–A03 Clock64 authority, >60 s wrap, service bound | `t12-soak-a/b` sealed target attempts | PARTIAL | add source-uniqueness and invalid-run audit; retain fresh 60 s records |
+| A01–A03 Clock64 authority, >60 s wrap, service bound | `t12-soak-a/attempt-0002` and `t12-soak-b/attempt-0002` are independent current target PASSes: >=65 s, observed DWT high-word advance, and >=60 bounded monitor services | PARTIAL | add source-uniqueness and invalid-run audit |
 | A04–A06 RuntimeEvent atomicity/mask/error ordering | `t17-atomic/attempt-0005` sealed target PASS checks pending IRQ ordering, duplicate-exit rejection, and post-close immutability; native event tests cover time/error paths | PARTIAL | explicit PRIMASK-entry-state and time-regression target/injection evidence |
-| A07–A13 IRQ pairing, no-yield/yield, SysTick | `t17-atomic/attempt-0005` sealed real TIM7→TIM6 nesting evidence; T12 wiring/tails remain historical | PARTIAL | fresh actual DMA pdFALSE/pdTRUE, exact task-switch attribution, and one-pair SysTick evidence |
+| A07–A13 IRQ pairing, no-yield/yield, SysTick | `t17-atomic/attempt-0005` sealed real TIM7→TIM6 nesting; fresh T12 semantic attempts exercise DMA `pdTRUE` and no-event `pdFALSE` tails | PARTIAL | exact task-switch attribution and one-pair SysTick evidence |
 | A14–A15 task/idle known workload | `task-synthetic/attempt-0004` sealed target PASS on the corrected ABI reader; H4 checks fixed A/B iterations, owner ratio, Idle residency, and formal conservation | PARTIAL | add known IRQ contribution and retain this workload in final integrated regression |
 | A16–A24 CPU window clipping, immutability, conservation | `dma-window/attempt-0001` sealed target PASS at `cf78c83`: real DMA completion sequence opens at S0=1, seals at S1=4, and observes a later sequence >=5 without a boundary fault; per-window buckets and directed native source cases remain available | PARTIAL | execute native cases on a host and add final target intersection/conservation plus no-outside-window evidence |
 | A25–A29 error/overhead/phase | tick DWT history and lock budget | PARTIAL | RuntimeEvent microbench, error budget, perturbation A/B, q0-to-TIM2 bound |
@@ -22,8 +22,10 @@ hardware test is not a substitute.
 
 ## Evidence already sealed
 
-* T12: `docs/evidence/r4/t12-soak-a/attempt-0001` and
-  `docs/evidence/r4/t12-soak-b/attempt-0001`.
+* T12: `docs/evidence/r4/t12-soak-a/attempt-0002` and
+  `docs/evidence/r4/t12-soak-b/attempt-0002`. Both current H4 records verify
+  wrap/duration, lifecycle, DMA `pdTRUE`, no-event `pdFALSE`, and Clock64
+  health service.
 * T15: `docs/evidence/r4/t15-q0/attempt-0001` and
   `docs/evidence/r4/t15-release/attempt-0002`.
 * T17: `docs/evidence/r4/t17-atomic/attempt-0005` (current semantic H4
