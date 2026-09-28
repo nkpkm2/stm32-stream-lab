@@ -18,7 +18,7 @@ hardware test is not a substitute.
 | A30–A37 TickService and suspension | Current independent T15 q0/release target PASSes prove `SysTick enter = exit = real-hook service`, registration, DWT history, exact suspension callback/start/release/skip semantics, and q0→TIM2 CEN; `tick-gap/attempt-0001` proves a late real SysTick latches `TICK_SERVICE_GAP` fail-closed | PARTIAL | integrate these directed proofs into the final R2/R3 regression anchor |
 | A38–A44 T12/T17 cutoff and formal/live separation | T12/T17 sealed attempts | PARTIAL | nested/cutoff interleaving and machine-readable formal-vs-live result split |
 | A45–A51 response/utilization/critical composition | Two independent uninstrumented full-lock bound runs plus `commit-pending-irq/attempt-0001`: a real TIM6 IRQ is pended at the FreeRTOS syscall ceiling during the actual queue lock and is observed only after actual unlock; `response-synthetic/attempt-0001` records independent direct-DWT release/start/completion endpoints around a fixed worker workload and requires >=99.0% sealed owner-bucket coverage; `mask-timing/attempt-0001` separately bounds actual PRIMASK-held RuntimeEvent spans; `combined-service/attempt-0001` measures 50,781 real DMA trace-entry-to-post-`RuntimeEvent`-exit spans, maximum 10,734 <= 23,040 cycles; `R4_UTILIZATION_SCHEMA.md` freezes typed sealed-window denominator/numerator and residual treatment | PARTIAL | final integrated R2/R3 representative regression anchor |
-| A52–A58 non-regression/provenance/error preservation | R4 H0–H5 identity/manifests and retained failed attempts; R3 lifecycle is now covered by fresh R4-aware W6 A/B target evidence | PARTIAL | R2 normal/drop representative target anchors plus final acceptance classifier |
+| A52–A58 non-regression/provenance/error preservation | R4 H0–H5 identity/manifests, retained failed attempts, sealed 65-second R2 K=8 normal/K=1 drop target anchors, and sealed R4-aware R3 W6 A/B lifecycle evidence | PARTIAL | final committed-source acceptance classifier |
 
 ## Evidence already sealed
 
@@ -89,6 +89,20 @@ hardware test is not a substitute.
   aggregates are A `KEEP=0`, `REBIND=500` and B `KEEP=2500`, `REBIND=500`.
   This closes the R3 representative anchor only; neither cohort substitutes
   for the still-required long R2 normal/drop anchors.
+
+* R4-aware R2 non-regression: `docs/evidence/r4/r2-normal-anchor/attempt-0001`
+  is a sealed 65-second K=8 normal production run from clean commit `2693b7f`.
+  Its H4 requires at least 50,000 real DMA IRQs, at least 50,000 production
+  completions, rebind activity, zero KEEP, processing wake/complete activity,
+  zero driver/runtime fault, healthy R4 monitoring, and a fail-closed target
+  terminal PASS. `docs/evidence/r4/r2-drop-anchor/attempt-0001` is the
+  corresponding sealed 65-second K=1 run from clean commit `b00023d`: it
+  requires the same DMA/completion/health floor, real KEEP/drop activity,
+  zero Processing completions, and no more than the single worker
+  startup/bind wake. The first K=1 attempt, which incorrectly treated that
+  startup wake as a data-plane wake, remains outside the repository as a
+  retained failed external attempt; the corrected source and final PASS are
+  both independently identified by H0--H5 manifests.
 
 Historical failed attempts are intentionally retained alongside their PASS
 successors.  They establish that the harness rejects over-broad release
