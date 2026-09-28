@@ -1,0 +1,32 @@
+{
+  "checks": {
+    "case_identity": true,
+    "completed_magic": true,
+    "cutoff_formal_window_frozen_once": true,
+    "cutoff_live_continues_after_close": true,
+    "cutoff_nested_irq_before_close": true,
+    "cutoff_no_duplicate_ownership": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "result_magic": true,
+    "schema_version": true,
+    "terminal_pass": true
+  },
+  "phase": "H4",
+  "prefix_words": [
+    "0x52344857",
+    "0x00000014",
+    "0x00000001",
+    "0x00000001",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x5234444E"
+  ],
+  "result": "PASS",
+  "result_address": "0x20002430",
+  "selector": "CUTOFF_LIVE"
+}

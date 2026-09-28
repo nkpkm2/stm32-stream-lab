@@ -1,0 +1,8 @@
+{
+  "accounting_profile": null,
+  "case_id": "cutoff-live",
+  "case_numeric_id": 20,
+  "configured_soak_ms": 0,
+  "selector": "CUTOFF_LIVE",
+  "work_package": "R4"
+}

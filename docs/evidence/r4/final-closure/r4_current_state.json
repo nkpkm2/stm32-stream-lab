@@ -88,13 +88,12 @@
     {
       "id": "D08",
       "name": "T12 / T17 cutoff + formal/live",
-      "status": "PARTIAL",
+      "status": "PASS",
       "source": ["firmware/runtime/r4_runtime_event.c", "firmware/runtime/r4_hw_harness.c"],
       "tests": ["tests/native/test_r4_runtime_event.c", "tests/r4_host/test_r4_evidence.py"],
-      "sealed_evidence": ["t12-soak-a/attempt-0002", "t12-soak-b/attempt-0002", "t17-atomic/attempt-0005", "window-intersection/attempt-0001"],
+      "sealed_evidence": ["t12-soak-a/attempt-0002", "t12-soak-b/attempt-0002", "t17-atomic/attempt-0005", "window-intersection/attempt-0001", "cutoff-live/attempt-0001"],
       "verified_manifests": true,
-      "missing": ["A directed machine-readable nested/cutoff interleaving case.", "A record containing formal_window_before/formal_window_after and live_before/live_after that proves frozen formal counters while live counters continue after CLOSE."],
-      "basis": "Existing sealed evidence proves related clipping and immutability, but not the two explicit F2-B/F2-C artifacts."
+      "basis": "cutoff-live/attempt-0001 requires a real nested TIM7-to-TIM6 IRQ before CLOSE, exact formal before/after equality, strict live-after growth, balanced nesting and healthy runtime status."
     },
     {
       "id": "D09",
@@ -126,5 +125,5 @@
   ],
   "f1_result": "PASS",
   "next_package": "R4-F2",
-  "f1_blockers_for_principal_review": ["D08 is PARTIAL: directed nested/cutoff and formal/live split artifacts are absent.", "D10 is PARTIAL: F3 final candidate and source-delta reconciliation have not occurred."]
+  "f1_blockers_for_principal_review": ["D10 is PARTIAL: F3 final candidate and source-delta reconciliation have not occurred."]
 }

@@ -1,0 +1,17 @@
+{
+  "first_failure_class": null,
+  "invariants": {
+    "case_identity": true,
+    "completed_magic": true,
+    "cutoff_formal_window_frozen_once": true,
+    "cutoff_live_continues_after_close": true,
+    "cutoff_nested_irq_before_close": true,
+    "cutoff_no_duplicate_ownership": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "result_magic": true,
+    "schema_version": true,
+    "terminal_pass": true
+  },
+  "result": "PASS"
+}
