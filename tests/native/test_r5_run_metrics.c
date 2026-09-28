@@ -237,6 +237,76 @@ static void CaseExplicitOutcomesAndExact8D(void)
     CHECK(metrics.p99_all_admitted.status == R5_METRICS_P99_CENSORED);
 }
 
+static void CaseDeadlineEquality(void)
+{
+    R5RunMetrics metrics;
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 1U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    Input(&metrics, 0U, 1U, 1U, 1U);
+    /* nominal(0)=100, D=160: equality is formally ON_TIME. */
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 0U, 260U, 2U) == R5_METRICS_OK);
+    Input(&metrics, 1U, 2U, 3U, 1U);
+    Input(&metrics, 2U, 3U, 4U, 1U);
+    Input(&metrics, 3U, 1000U, 5U, 1U);
+    CHECK(metrics.on_time_count == 1U);
+    CHECK(metrics.late_completed_count == 0U);
+    CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
+}
+
+static void CaseNoCompletionP99(void)
+{
+    R5RunMetrics metrics;
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 1U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    Input(&metrics, 0U, 1U, 1U, 0U);
+    Input(&metrics, 1U, 2U, 2U, 1U);
+    Input(&metrics, 2U, 3U, 3U, 1U);
+    Input(&metrics, 3U, 1000U, 4U, 1U);
+    CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
+    CHECK(metrics.p99_completed_by_cutoff.status == R5_METRICS_P99_NOT_AVAILABLE);
+    CHECK(metrics.p99_all_admitted.status == R5_METRICS_P99_NOT_AVAILABLE);
+}
+
+static void CaseP99OverflowRank(void)
+{
+    R5RunMetrics metrics;
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 1U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    Input(&metrics, 0U, 1U, 1U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 0U, 1480U, 2U) == R5_METRICS_OK);
+    Input(&metrics, 1U, 2U, 3U, 1U);
+    Input(&metrics, 2U, 3U, 4U, 1U);
+    Input(&metrics, 3U, 1000U, 5U, 1U);
+    CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
+    CHECK(metrics.p99_completed_by_cutoff.status == R5_METRICS_P99_OUT_OF_RANGE);
+}
+
+static void CaseTailMinimumAndRunIsolation(void)
+{
+    R5RunMetrics first;
+    R5RunMetrics second;
+    R5MetricsConfig config = Config();
+
+    config.tail_blocks = 1U;
+    CHECK(R5RunMetrics_Initialize(&first, &config) == R5_METRICS_INVALID_ARGUMENT);
+    config.tail_blocks = R5_METRICS_DEFAULT_TAIL_BLOCKS;
+    CHECK(R5RunMetrics_Initialize(&first, &config) == R5_METRICS_OK);
+    Input(&first, 0U, 1U, 1U, 1U);
+    CHECK(R5RunMetrics_Initialize(&second, &config) == R5_METRICS_OK);
+    CHECK(second.raw_input_count == 0U);
+    CHECK(second.next_input_sequence == 0U);
+    CHECK(second.s2 == config.s1 + R5_METRICS_DEFAULT_TAIL_BLOCKS);
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) return EXIT_FAILURE;
@@ -249,6 +319,10 @@ int main(int argc, char **argv)
     else if (strcmp(argv[1], "store") == 0) CaseSealedResultStore();
     else if (strcmp(argv[1], "completion_wins") == 0) CaseCompletionWinsBeforeCutoff();
     else if (strcmp(argv[1], "outcomes") == 0) CaseExplicitOutcomesAndExact8D();
+    else if (strcmp(argv[1], "deadline") == 0) CaseDeadlineEquality();
+    else if (strcmp(argv[1], "p99_empty") == 0) CaseNoCompletionP99();
+    else if (strcmp(argv[1], "p99_overflow") == 0) CaseP99OverflowRank();
+    else if (strcmp(argv[1], "tail_isolation") == 0) CaseTailMinimumAndRunIsolation();
     else return EXIT_FAILURE;
     return EXIT_SUCCESS;
 }
