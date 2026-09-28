@@ -27,7 +27,7 @@ int main(int argc,char **argv) {
     if(argc!=2) return 1;
     if(!strcmp(argv[1],"completion_first")) CaseOrder(1U);
     else if(!strcmp(argv[1],"cutoff_first")) CaseOrder(0U);
-    else if(!strcmp(argv[1],"identity")) { begin(&o); x=r(0,1,1); x.run_id=99; C(R5Observer_OnInputReceipt(&o,&x)==R5_METRICS_INVALID_ARGUMENT); }
+    else if(!strcmp(argv[1],"identity")) { begin(&o); x=r(0,1,1); x.run_id=99; C(R5Observer_OnInputReceipt(&o,&x)==R5_METRICS_INVALID_ARGUMENT); C(o.metrics.phase==R5_METRICS_INVALID); }
     else if(!strcmp(argv[1],"duplicate")) { begin(&o); input(&o,0,1,1,1); C(R5Observer_ArmComplete(&o,0)==R5_METRICS_OK); x=r(0,100,2); x.operation=R5_OBSERVER_COMPLETE; C(R5Observer_CaptureComplete(&o,&x)==R5_METRICS_OK); C(R5Observer_ArmComplete(&o,0)==R5_METRICS_OK); C(R5Observer_CaptureComplete(&o,&x)==R5_METRICS_DUPLICATE_COMPLETION); }
     else return 1; return 0;
 }

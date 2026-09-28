@@ -3,7 +3,10 @@
 
 #include "r5_run_metrics.h"
 
-typedef enum { R5_OBSERVER_COMPLETE = 1 } R5ObserverOperation;
+typedef enum {
+    R5_OBSERVER_INPUT = 0,
+    R5_OBSERVER_COMPLETE = 1
+} R5ObserverOperation;
 
 typedef struct {
     uint32_t boot_id, run_id, generation, sequence;
@@ -35,5 +38,7 @@ R5MetricsStatus R5Observer_ArmComplete(R5Observer *observer,
 R5MetricsStatus R5Observer_CaptureComplete(R5Observer *observer,
     const R5ObserverReceipt *receipt);
 R5MetricsStatus R5Observer_Drain(R5Observer *observer, uint64_t before_serial);
+uint32_t R5Observer_RequiresAdmission(const R5Observer *observer,
+    uint32_t sequence);
 
 #endif

@@ -445,3 +445,13 @@ R5MetricsStatus R5RunMetrics_GetSnapshot(const R5RunMetrics *metrics,
     *out = *metrics;
     return R5_METRICS_OK;
 }
+
+R5MetricsStatus R5RunMetrics_Invalidate(R5RunMetrics *metrics,
+    R5MetricsStatus reason)
+{
+    if (metrics == NULL)
+    {
+        return R5_METRICS_INVALID_ARGUMENT;
+    }
+    return Fail(metrics, reason);
+}

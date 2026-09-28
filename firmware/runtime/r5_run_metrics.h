@@ -191,6 +191,12 @@ R5MetricsStatus R5RunMetrics_Seal(R5RunMetrics *metrics,
 R5MetricsStatus R5RunMetrics_GetSnapshot(const R5RunMetrics *metrics,
     R5RunMetrics *out);
 
+/* The bridge uses this only for a proven authority violation (identity,
+ * operation, or serial ordering).  It is deliberately distinct from an
+ * ordinary metric outcome: a corrupt receipt invalidates the whole run. */
+R5MetricsStatus R5RunMetrics_Invalidate(R5RunMetrics *metrics,
+    R5MetricsStatus reason);
+
 #ifdef __cplusplus
 }
 #endif

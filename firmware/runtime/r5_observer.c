@@ -9,6 +9,15 @@ static int Match(const R5Observer *o, const R5ObserverReceipt *r)
         r->generation == o->metrics.config.generation;
 }
 
+static R5MetricsStatus Reject(R5Observer *o, R5MetricsStatus reason)
+{
+    if ((o != NULL) && (o->active != 0U))
+    {
+        (void)R5RunMetrics_Invalidate(&o->metrics, reason);
+    }
+    return reason;
+}
+
 R5MetricsStatus R5Observer_Begin(R5Observer *o, const R5MetricsConfig *c)
 {
     R5MetricsStatus s;
@@ -45,7 +54,8 @@ R5MetricsStatus R5Observer_Drain(R5Observer *o, uint64_t before)
 R5MetricsStatus R5Observer_OnInputReceipt(R5Observer *o, const R5ObserverReceipt *r)
 {
     R5MetricsStatus s;
-    if (!Match(o, r) || r->operation != 0) return R5_METRICS_INVALID_ARGUMENT;
+    if (!Match(o, r) || r->operation != R5_OBSERVER_INPUT)
+        return Reject(o, R5_METRICS_INVALID_ARGUMENT);
     s = R5Observer_Drain(o, r->serial);
     if (s != R5_METRICS_OK) return s;
     return R5RunMetrics_OnInputBoundary(&o->metrics, r->sequence, r->time, r->serial);
@@ -60,7 +70,8 @@ R5MetricsStatus R5Observer_OnAdmission(R5Observer *o, uint32_t seq,
 
 R5MetricsStatus R5Observer_ArmComplete(R5Observer *o, uint32_t seq)
 {
-    if (o == NULL || o->active == 0U || o->armed_sequence != 0U) return R5_METRICS_INVALID_STATE;
+    if (o == NULL || o->active == 0U || o->armed_sequence != 0U ||
+        seq == UINT32_MAX) return Reject(o, R5_METRICS_INVALID_STATE);
     o->armed_sequence = seq + 1U;
     return R5_METRICS_OK;
 }
@@ -69,12 +80,21 @@ R5MetricsStatus R5Observer_CaptureComplete(R5Observer *o, const R5ObserverReceip
 {
     uint32_t i;
     if (!Match(o, r) || r->operation != R5_OBSERVER_COMPLETE ||
-        o->armed_sequence == 0U || r->sequence + 1U != o->armed_sequence) return R5_METRICS_INVALID_STATE;
+        o->armed_sequence == 0U || r->sequence == UINT32_MAX ||
+        r->sequence + 1U != o->armed_sequence)
+        return Reject(o, R5_METRICS_INVALID_STATE);
     o->armed_sequence = 0U;
     if (r->sequence < o->metrics.config.s0 || r->sequence >= o->metrics.config.s1) return R5_METRICS_OK;
     i = r->sequence - o->metrics.config.s0;
-    if (o->complete[i].captured != 0U) return R5_METRICS_DUPLICATE_COMPLETION;
+    if (o->complete[i].captured != 0U)
+        return Reject(o, R5_METRICS_DUPLICATE_COMPLETION);
     o->complete[i].receipt = *r;
     o->complete[i].captured = 1U;
     return R5_METRICS_OK;
+}
+
+uint32_t R5Observer_RequiresAdmission(const R5Observer *o, uint32_t sequence)
+{
+    return (o != NULL) ? R5RunMetrics_RequiresAdmissionDecision(&o->metrics,
+        sequence) : 0U;
 }
