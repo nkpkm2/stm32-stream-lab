@@ -1,0 +1,24 @@
+{
+  "schema_version": "r4-final-source-delta-v2",
+  "review_commit_before_classifier": "e5f83dc8b1d60a73fccf2052ba4b96044fc9fd42",
+  "production_candidate_commit": "828eff585a580f70d1cea8650eacc8bbaf221770",
+  "production_t04_reference_commit": "238fa89e00bba1795535dad9b3276b5ec72d2151",
+  "production_delta_scope": "RC3 diagnostic-only witness/export, build option, and host-test wiring",
+  "production_profile_effect": {
+    "diagnostic_macro": "STREAM_LAB_R4_T04_DIAGNOSTIC=OFF",
+    "witness_symbols_present": false,
+    "elf_matches_confirmed_1919_artifact": true,
+    "evidence": "../t04-rc3-readiness/readiness.json"
+  },
+  "relevant_source_delta_decision": {
+    "decision": "REUSE_SEALED_EVIDENCE",
+    "reason": "The final production profile has no RC3 witness execution and its ELF matches the confirmed production T04 artifact. The only post-reference target changes are compile-time diagnostic wiring; there is no production ownership, lifecycle, queue semantics, RuntimeEvent, CPU-window, or IRQ-accounting change to invalidate the selected sealed records."
+  },
+  "representative_nonregression": {
+    "r2_normal": "r2-normal-anchor/attempt-0002 PASS",
+    "r2_drop": "r2-drop-anchor/attempt-0002 PASS",
+    "r3_lifecycle_normal": "../../r3/w6/w6-a/attempt-0003 PASS",
+    "r3_lifecycle_drop": "../../r3/w6/w6-b/attempt-0003 PASS"
+  },
+  "scope_limit": "This is an R4 review reuse decision, not a claim that any historical attempt had the same artifact identity as another attempt. Each sealed record retains its own H0-H5 identity."
+}

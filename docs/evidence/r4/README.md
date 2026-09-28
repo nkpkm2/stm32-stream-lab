@@ -27,6 +27,7 @@ T12/T15/T17/timing records below close only their stated rows.
 
 * [`T04 engineering-deviation package`](../../r4/R4_T04_ENGINEERING_DEVIATION.md)
 * [`Corrected RC3 same-event diagnostic`](t04-rc3-diagnostic/attempt-0002/README.md)
+* [`Final closure classifier`](final-closure/README.md)
 
 * [`R4 implementation candidate`](../../r4/R4_IMPLEMENTATION_AND_ACCEPTANCE.md)
 * [`IRQ and queue callsite table`](r4-callsite-table.md)

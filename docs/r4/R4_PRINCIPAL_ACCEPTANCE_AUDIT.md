@@ -1,7 +1,13 @@
 # R4 Principal acceptance audit
 
-Status: **IN PROGRESS — this document supersedes any narrower R4 closure
-claim.**
+Status: **PRINCIPAL REVIEW READY WITH T04 ENGINEERING DEVIATION — pending
+Principal acceptance.**
+
+The matrix below is the historical F1 reconciliation. Its former `PARTIAL`
+labels are superseded by the final classifier in
+`docs/evidence/r4/final-closure/r4_final_classifier.json`, which reuses the
+same sealed attempts, records the final source-delta decision, and classifies
+completion timing separately as `PASS_WITH_EXPLICIT_DEVIATION`.
 
 Source: the Principal acceptance objective dated 2026-09-27.  A row is PASS
 only when its specified evidence exists; implemented code or an adjacent
@@ -147,6 +153,24 @@ composition was cross-compiled after this change.  These are implementation
 and target-build facts only: they are **not** a replacement for required host
 execution, production DMA-boundary wiring, or sealed hardware directed
 evidence.
+
+## Final-classifier reconciliation
+
+The final candidate's production profile is the `828eff5` source state. From
+the valid production T04 failure at `238fa89` to `828eff5`, the changed target
+paths are the compile-time-gated RC3 diagnostic witness/export and its test or
+harness wiring. The RC3 readiness package records that production witness
+symbols are absent and that the production-profile ELF is byte-identical to
+the confirmed 1919-cycle artifact. Therefore the selected sealed R4 domains
+and the R2 NORMAL/R2 DROP/R3 lifecycle representative anchors are reused; no
+production ownership, lifecycle, window, or IRQ semantic delta was introduced
+by the final candidate.
+
+The classifier is deliberately not a formal T04 PASS oracle. It requires the
+immutable 1919-cycle failure, the valid corrected same-event witness, the
+8064-cycle conservative full-critical engineering bound, and the D1--D6
+cross-stage controls. Principal alone may accept the resulting engineering
+deviation.
 
 ## Rule for closure
 

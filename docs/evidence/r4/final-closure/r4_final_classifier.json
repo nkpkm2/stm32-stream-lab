@@ -1,0 +1,46 @@
+{
+  "schema_version": "r4-final-classifier-v1",
+  "result": "R4_PRINCIPAL_REVIEW_READY_WITH_T04_ENGINEERING_DEVIATION",
+  "formal_t04_status": "CONFIRMED_VALID_FAIL_1919_OVER_1800",
+  "principal_acceptance_required": true,
+  "hardware_operation": "NONE",
+  "automatic_retry": "NONE",
+  "domains": [
+    {"domain": "CLOCK64", "status": "PASS"},
+    {"domain": "RUNTIME_EVENT_ATOMICITY", "status": "PASS"},
+    {"domain": "IRQ_AND_TASK_ATTRIBUTION", "status": "PASS"},
+    {"domain": "CPU_WINDOW_AND_CUTOFF", "status": "PASS"},
+    {"domain": "TICKSERVICE_Q0", "status": "PASS"},
+    {"domain": "MEASUREMENT_OVERHEAD", "status": "PASS"},
+    {"domain": "FORMAL_RESULT_IMMUTABILITY", "status": "PASS"},
+    {"domain": "R2_R3_REPRESENTATIVE_NONREGRESSION", "status": "PASS"},
+    {"domain": "EVIDENCE_PROVENANCE", "status": "PASS"},
+    {"domain": "COMPLETION_TIMING", "status": "PASS_WITH_EXPLICIT_DEVIATION"}
+  ],
+  "t04": {
+    "same_event_full_cycles": 1904,
+    "same_event_prefix_cycles": 1286,
+    "same_event_suffix_cycles": 618,
+    "full_critical_engineering_bound_cycles": 8064,
+    "r6_cost_rule": "1904 inner or 8064 full-critical ceiling as applicable; never fictional <=1800",
+    "r7_revalidation_required": true
+  },
+  "verified_pass_attempts": [
+    "t12-soak-a/attempt-0002", "t12-soak-b/attempt-0002",
+    "t15-q0/attempt-0004", "t15-release/attempt-0005",
+    "t17-atomic/attempt-0005", "task-synthetic/attempt-0005",
+    "dma-window/attempt-0001", "window-intersection/attempt-0001",
+    "microbenchmark/attempt-0002", "mask-timing/attempt-0001",
+    "response-synthetic/attempt-0001", "combined-service/attempt-0001",
+    "r2-normal-anchor/attempt-0002", "r2-drop-anchor/attempt-0002"
+  ],
+  "verified_r3_representative_anchors": [
+    "w6/w6-a/attempt-0003", "w6/w6-b/attempt-0003"
+  ],
+  "verification_run": {
+    "r4_evidence_verify": "15/15 PASS (including corrected RC3 diagnostic)",
+    "r3_anchor_manifests": "2/2 PASS",
+    "host_source_audit": "14/14 PASS",
+    "host_evidence_tests": "24/24 PASS"
+  }
+}
