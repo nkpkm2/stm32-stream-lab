@@ -27,6 +27,13 @@ static void Input(R5RunMetrics *metrics, uint32_t seq, uint64_t time,
         R5_METRICS_OK);
 }
 
+static void InputQ(R5RunMetrics *metrics, uint32_t seq, uint64_t time,
+    uint64_t serial, uint32_t free_available, uint32_t occupancy)
+{
+    CHECK(R5RunMetrics_OnInputWithOccupancy(metrics, seq, time, serial,
+        free_available, occupancy) == R5_METRICS_OK);
+}
+
 static void CaseKnownCohort(void)
 {
     R5RunMetrics metrics;
@@ -183,6 +190,53 @@ static void CaseSealedResultStore(void)
     CHECK(R5ResultStore_CanBeginRun(&store) == R5_RESULT_STORE_OK);
 }
 
+static void CaseCompletionWinsBeforeCutoff(void)
+{
+    R5RunMetrics metrics;
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 1U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    InputQ(&metrics, 0U, 1U, 1U, 1U, 4U);
+    InputQ(&metrics, 1U, 2U, 2U, 1U, 5U);
+    InputQ(&metrics, 2U, 3U, 3U, 1U, 6U);
+    /* Same timestamp would be immaterial: serial 4 commits first. */
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 0U, 100U, 4U) == R5_METRICS_OK);
+    InputQ(&metrics, 3U, 1000U, 5U, 1U, 99U);
+    CHECK(metrics.cohort_outcome[0] == R5_METRICS_OUTCOME_ON_TIME);
+    CHECK(metrics.expired_unresolved_count == 0U);
+    CHECK(metrics.occupancy_sample_count == 3U);
+    CHECK(metrics.occupancy_histogram[4U] == 1U);
+    CHECK(metrics.occupancy_histogram[6U] == 1U);
+    CHECK(metrics.occupancy_histogram[99U] == 0U); /* S2 has no Q sample. */
+    CHECK(metrics.occupancy_histogram[0U] == 0U);
+    CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
+}
+
+static void CaseExplicitOutcomesAndExact8D(void)
+{
+    R5RunMetrics metrics;
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 3U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    Input(&metrics, 0U, 1U, 1U, 0U);
+    Input(&metrics, 1U, 2U, 2U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 1U, 1480U, 3U) == R5_METRICS_OK);
+    Input(&metrics, 2U, 4U, 4U, 1U);
+    Input(&metrics, 3U, 5U, 5U, 1U);
+    Input(&metrics, 4U, 6U, 6U, 1U);
+    Input(&metrics, 5U, 1000U, 7U, 1U);
+    CHECK(metrics.cohort_outcome[0] == R5_METRICS_OUTCOME_CAPACITY_DROP);
+    CHECK(metrics.cohort_outcome[1] == R5_METRICS_OUTCOME_LATE);
+    CHECK(metrics.cohort_outcome[2] == R5_METRICS_OUTCOME_EXPIRED_UNRESOLVED);
+    CHECK(metrics.histogram_overflow_count == 1U); /* exact 8D: 1280 cycles */
+    CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
+    CHECK(metrics.p99_all_admitted.status == R5_METRICS_P99_CENSORED);
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) return EXIT_FAILURE;
@@ -193,6 +247,8 @@ int main(int argc, char **argv)
     else if (strcmp(argv[1], "insufficient") == 0) CaseInsufficientObservation();
     else if (strcmp(argv[1], "overflow") == 0) CaseOverflowAndDuplicate();
     else if (strcmp(argv[1], "store") == 0) CaseSealedResultStore();
+    else if (strcmp(argv[1], "completion_wins") == 0) CaseCompletionWinsBeforeCutoff();
+    else if (strcmp(argv[1], "outcomes") == 0) CaseExplicitOutcomesAndExact8D();
     else return EXIT_FAILURE;
     return EXIT_SUCCESS;
 }

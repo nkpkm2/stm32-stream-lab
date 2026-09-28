@@ -9,6 +9,10 @@ extern "C" {
 
 #define R5_METRICS_MAX_COHORT_BLOCKS 128U
 #define R5_METRICS_HISTOGRAM_BINS 128U
+#define R5_METRICS_OCCUPANCY_BINS 128U
+#define R5_METRICS_DEFAULT_TAIL_BLOCKS 8U
+#define R5_METRICS_SCHEMA_VERSION 1U
+#define R5_METRICS_OCCUPANCY_UNKNOWN UINT32_MAX
 
 typedef enum
 {
@@ -40,6 +44,19 @@ typedef enum
     R5_METRICS_P99_CENSORED
 } R5MetricsP99Status;
 
+/* A primary slot changes monotonically from NONE to a terminal outcome, with
+ * ADMITTED_PENDING as the only non-terminal state.  It lets conservation be
+ * audited directly instead of inferred from unrelated counters. */
+typedef enum
+{
+    R5_METRICS_OUTCOME_NONE = 0,
+    R5_METRICS_OUTCOME_CAPACITY_DROP,
+    R5_METRICS_OUTCOME_ADMITTED_PENDING,
+    R5_METRICS_OUTCOME_ON_TIME,
+    R5_METRICS_OUTCOME_LATE,
+    R5_METRICS_OUTCOME_EXPIRED_UNRESOLVED
+} R5MetricsOutcome;
+
 typedef struct
 {
     uint32_t s0;
@@ -60,6 +77,7 @@ typedef struct
 
 typedef struct
 {
+    uint32_t schema_version;
     R5MetricsPhase phase;
     R5MetricsStatus outcome_status;
     R5MetricsConfig config;
@@ -75,8 +93,14 @@ typedef struct
     uint64_t expired_unresolved_count;
     uint64_t completed_count;
     uint64_t post_cutoff_completion_count;
+    uint64_t live_post_cutoff_completion_count;
+    uint64_t live_order_fault_count;
     uint64_t histogram_overflow_count;
     uint64_t histogram[R5_METRICS_HISTOGRAM_BINS];
+    uint64_t occupancy_sample_count;
+    uint64_t occupancy_unknown_count;
+    uint64_t occupancy_overflow_count;
+    uint64_t occupancy_histogram[R5_METRICS_OCCUPANCY_BINS];
     uint64_t window_open_time;
     uint64_t window_close_time;
     uint32_t window_opened;
@@ -84,6 +108,7 @@ typedef struct
     uint32_t observation_closed;
     uint32_t cohort_admitted[R5_METRICS_MAX_COHORT_BLOCKS];
     uint32_t cohort_completed[R5_METRICS_MAX_COHORT_BLOCKS];
+    R5MetricsOutcome cohort_outcome[R5_METRICS_MAX_COHORT_BLOCKS];
     R5MetricsP99 p99_completed_by_cutoff;
     R5MetricsP99 p99_all_admitted;
 } R5RunMetrics;
@@ -96,6 +121,13 @@ R5MetricsStatus R5RunMetrics_Initialize(R5RunMetrics *metrics,
 R5MetricsStatus R5RunMetrics_OnInput(R5RunMetrics *metrics,
     uint32_t sequence, uint64_t irq_time, uint64_t event_serial,
     uint32_t free_available);
+
+/* Preferred production entry point.  observed_occupancy is Q immediately
+ * before the ordinary admission decision; pass OCCUPANCY_UNKNOWN only for a
+ * legacy/synthetic caller that cannot observe Q.  S2 never records a sample. */
+R5MetricsStatus R5RunMetrics_OnInputWithOccupancy(R5RunMetrics *metrics,
+    uint32_t sequence, uint64_t irq_time, uint64_t event_serial,
+    uint32_t free_available, uint32_t observed_occupancy);
 
 /* Called at the successful COMPLETE logical-commit point in the same serial
  * domain as OnInput.  Late arrivals after cutoff cannot alter sealed outcome. */

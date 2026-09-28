@@ -53,6 +53,22 @@ static void RecordLatency(R5RunMetrics *metrics, uint64_t latency)
     }
 }
 
+static void RecordOccupancy(R5RunMetrics *metrics, uint32_t occupancy)
+{
+    if (occupancy == R5_METRICS_OCCUPANCY_UNKNOWN)
+    {
+        ++metrics->occupancy_unknown_count;
+        return;
+    }
+    ++metrics->occupancy_sample_count;
+    if (occupancy >= R5_METRICS_OCCUPANCY_BINS)
+    {
+        ++metrics->occupancy_overflow_count;
+        return;
+    }
+    ++metrics->occupancy_histogram[occupancy];
+}
+
 static R5MetricsP99 ComputeP99(const R5RunMetrics *metrics, uint32_t censored)
 {
     R5MetricsP99 result;
@@ -90,6 +106,32 @@ static R5MetricsP99 ComputeP99(const R5RunMetrics *metrics, uint32_t censored)
     return result;
 }
 
+static uint32_t OutcomesAreConserved(const R5RunMetrics *metrics)
+{
+    uint32_t index;
+    uint32_t cohort_count = metrics->config.s1 - metrics->config.s0;
+    uint64_t drops = 0U;
+    uint64_t on_time = 0U;
+    uint64_t late = 0U;
+    uint64_t unresolved = 0U;
+
+    for (index = 0U; index < cohort_count; ++index)
+    {
+        switch (metrics->cohort_outcome[index])
+        {
+        case R5_METRICS_OUTCOME_CAPACITY_DROP: ++drops; break;
+        case R5_METRICS_OUTCOME_ON_TIME: ++on_time; break;
+        case R5_METRICS_OUTCOME_LATE: ++late; break;
+        case R5_METRICS_OUTCOME_EXPIRED_UNRESOLVED: ++unresolved; break;
+        default: return 0U;
+        }
+    }
+    return ((drops == metrics->drop_count) &&
+        (on_time == metrics->on_time_count) &&
+        (late == metrics->late_completed_count) &&
+        (unresolved == metrics->expired_unresolved_count)) ? 1U : 0U;
+}
+
 R5MetricsStatus R5RunMetrics_Initialize(R5RunMetrics *metrics,
     const R5MetricsConfig *config)
 {
@@ -110,6 +152,7 @@ R5MetricsStatus R5RunMetrics_Initialize(R5RunMetrics *metrics,
         return R5_METRICS_INVALID_ARGUMENT;
     }
     (void)memset(metrics, 0, sizeof(*metrics));
+    metrics->schema_version = R5_METRICS_SCHEMA_VERSION;
     metrics->phase = R5_METRICS_OPEN;
     metrics->outcome_status = R5_METRICS_OK;
     metrics->config = *config;
@@ -117,9 +160,9 @@ R5MetricsStatus R5RunMetrics_Initialize(R5RunMetrics *metrics,
     return R5_METRICS_OK;
 }
 
-R5MetricsStatus R5RunMetrics_OnInput(R5RunMetrics *metrics,
+R5MetricsStatus R5RunMetrics_OnInputWithOccupancy(R5RunMetrics *metrics,
     uint32_t sequence, uint64_t irq_time, uint64_t event_serial,
-    uint32_t free_available)
+    uint32_t free_available, uint32_t observed_occupancy)
 {
     uint32_t cohort_index;
     uint64_t latest_deadline;
@@ -161,6 +204,8 @@ R5MetricsStatus R5RunMetrics_OnInput(R5RunMetrics *metrics,
                 (metrics->cohort_completed[cohort_index] == 0U))
             {
                 ++metrics->expired_unresolved_count;
+                metrics->cohort_outcome[cohort_index] =
+                    R5_METRICS_OUTCOME_EXPIRED_UNRESOLVED;
             }
         }
         return R5_METRICS_OK;
@@ -169,6 +214,9 @@ R5MetricsStatus R5RunMetrics_OnInput(R5RunMetrics *metrics,
     {
         return Fail(metrics, R5_METRICS_SEQUENCE_ERROR);
     }
+    /* Every ordinary admission attempt contributes one arrival-observed Q.
+     * S2 returned above and therefore contributes none. */
+    RecordOccupancy(metrics, observed_occupancy);
     if ((sequence >= metrics->config.s0) && (sequence < metrics->config.s1))
     {
         cohort_index = sequence - metrics->config.s0;
@@ -176,14 +224,26 @@ R5MetricsStatus R5RunMetrics_OnInput(R5RunMetrics *metrics,
         if (free_available == 0U)
         {
             ++metrics->drop_count;
+            metrics->cohort_outcome[cohort_index] =
+                R5_METRICS_OUTCOME_CAPACITY_DROP;
         }
         else
         {
             metrics->cohort_admitted[cohort_index] = 1U;
+            metrics->cohort_outcome[cohort_index] =
+                R5_METRICS_OUTCOME_ADMITTED_PENDING;
             ++metrics->admitted_count;
         }
     }
     return R5_METRICS_OK;
+}
+
+R5MetricsStatus R5RunMetrics_OnInput(R5RunMetrics *metrics,
+    uint32_t sequence, uint64_t irq_time, uint64_t event_serial,
+    uint32_t free_available)
+{
+    return R5RunMetrics_OnInputWithOccupancy(metrics, sequence, irq_time,
+        event_serial, free_available, R5_METRICS_OCCUPANCY_UNKNOWN);
 }
 
 R5MetricsStatus R5RunMetrics_OnCompletion(R5RunMetrics *metrics,
@@ -198,7 +258,13 @@ R5MetricsStatus R5RunMetrics_OnCompletion(R5RunMetrics *metrics,
         (metrics->phase == R5_METRICS_SEALED)) return R5_METRICS_INVALID_STATE;
     if (metrics->phase == R5_METRICS_OUTCOME_CLOSED)
     {
+        /* Live diagnostic only: terminal outcomes are already immutable. */
         ++metrics->post_cutoff_completion_count;
+        ++metrics->live_post_cutoff_completion_count;
+        if (event_serial <= metrics->last_event_serial)
+        {
+            ++metrics->live_order_fault_count;
+        }
         return R5_METRICS_OBSERVATION_CLOSED;
     }
     status = CheckEvent(metrics, event_serial);
@@ -227,10 +293,12 @@ R5MetricsStatus R5RunMetrics_OnCompletion(R5RunMetrics *metrics,
     if (latency <= metrics->config.deadline_cycles)
     {
         ++metrics->on_time_count;
+        metrics->cohort_outcome[cohort_index] = R5_METRICS_OUTCOME_ON_TIME;
     }
     else
     {
         ++metrics->late_completed_count;
+        metrics->cohort_outcome[cohort_index] = R5_METRICS_OUTCOME_LATE;
     }
     RecordLatency(metrics, latency);
     return R5_METRICS_OK;
@@ -257,7 +325,8 @@ R5MetricsStatus R5RunMetrics_Seal(R5RunMetrics *metrics,
             metrics->on_time_count + metrics->late_completed_count +
             metrics->expired_unresolved_count)) ||
          (metrics->completed_count != (metrics->on_time_count +
-            metrics->late_completed_count))))
+            metrics->late_completed_count)) ||
+         (OutcomesAreConserved(metrics) == 0U)))
     {
         return Fail(metrics, R5_METRICS_INTEGRITY_ERROR);
     }

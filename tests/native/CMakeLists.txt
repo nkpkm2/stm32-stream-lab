@@ -108,7 +108,7 @@ if(R5_METRICS_NATIVE_TESTS)
         C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
     r2_apply_strict_warnings(test_r5_run_metrics)
     r2_apply_sanitizers(test_r5_run_metrics)
-    foreach(case_name known s2 s2_empty cutoff insufficient overflow store)
+    foreach(case_name known s2 s2_empty cutoff completion_wins insufficient overflow outcomes store)
         add_test(NAME r5.metrics.${case_name}
             COMMAND test_r5_run_metrics ${case_name})
         set_tests_properties(r5.metrics.${case_name} PROPERTIES TIMEOUT 10)
