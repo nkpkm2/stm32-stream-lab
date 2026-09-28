@@ -818,6 +818,9 @@ static void HarnessTask(void *argument)
 #if (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 12U)
     R4_CompletionTimingSnapshot timing;
 #endif
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC) && (R4_HW_CASE_ID == 12U)
+    R4CompletionWitness completion_diagnostic;
+#endif
 #if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U) || \
     (R4_HW_CASE_ID == 12U) || (R4_HW_CASE_ID == 16U) || (R4_HW_CASE_ID == 17U) || \
     (R4_HW_CASE_ID == 18U) || (R4_HW_CASE_ID == 19U)
@@ -1539,6 +1542,29 @@ static void HarnessTask(void *argument)
             &g_r4_hw_result.commit_pending_arm_count,
             &g_r4_hw_result.commit_pending_irq_count,
             &g_r4_hw_result.commit_pending_active_at_irq);
+#endif
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC) && (R4_HW_CASE_ID == 12U)
+    if (R4_RuntimeTarget_GetCompletionDiagnostic(&completion_diagnostic) ==
+        R4_RUNTIME_OK)
+    {
+        g_r4_hw_result.t04_diagnostic_valid = completion_diagnostic.valid;
+        g_r4_hw_result.t04_diagnostic_completion_ordinal =
+            completion_diagnostic.completion_ordinal;
+        g_r4_hw_result.t04_diagnostic_operation = completion_diagnostic.operation;
+        g_r4_hw_result.t04_diagnostic_path_flags =
+            completion_diagnostic.path_flags;
+        g_r4_hw_result.t04_diagnostic_full_cycles =
+            completion_diagnostic.full_cycles;
+        g_r4_hw_result.t04_diagnostic_prefix_cycles =
+            completion_diagnostic.prefix_cycles;
+        g_r4_hw_result.t04_diagnostic_suffix_cycles =
+            completion_diagnostic.suffix_cycles;
+        g_r4_hw_result.t04_diagnostic_t_lock = completion_diagnostic.t_lock;
+        g_r4_hw_result.t04_diagnostic_t_commit = completion_diagnostic.t_commit;
+        g_r4_hw_result.t04_diagnostic_t_unlock = completion_diagnostic.t_unlock;
+        g_r4_hw_result.t04_diagnostic_consistency_failures =
+            completion_diagnostic.consistency_failures;
+    }
 #endif
 #if (R4_HW_CASE_ID == 4U)
     /* Deliberately repeat the already-completed TIM6 exit.  This is final:

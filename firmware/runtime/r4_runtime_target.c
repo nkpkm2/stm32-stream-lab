@@ -12,6 +12,10 @@ static R4_RuntimeLedger target_ledger;
 static uint32_t target_initialized;
 static R4_RuntimeStatus target_boot_error = R4_RUNTIME_NOT_INITIALIZED;
 static R4_CompletionTimingSnapshot completion_timing;
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC)
+static R4CompletionWitness completion_diagnostic;
+static uint32_t completion_diagnostic_path_flags;
+#endif
 static R4_DmaTailSnapshot dma_tail;
 static R4_SysTickTraceSnapshot systick_trace;
 static R4_TaskTraceSnapshot task_trace;
@@ -456,6 +460,9 @@ void R4_RuntimeTarget_CompletionLock(uint32_t operation)
     completion_timing.operation = operation;
     completion_timing.t_commit = 0U;
     completion_timing.t_unlock = 0U;
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC)
+    completion_diagnostic_path_flags = 0U;
+#endif
     completion_timing.t_lock = CompletionBoundaryNow();
     ++completion_timing.lock_count;
 #if defined(STREAM_LAB_R4_HW)
@@ -521,9 +528,27 @@ void R4_RuntimeTarget_CompletionUnlock(uint32_t operation)
         uint64_t prefix = completion_timing.t_commit - completion_timing.t_lock;
         uint64_t suffix = completion_timing.t_unlock - completion_timing.t_commit;
         uint64_t total = completion_timing.t_unlock - completion_timing.t_lock;
-        if (prefix > completion_timing.max_prefix_cycles) completion_timing.max_prefix_cycles = prefix;
-        if (suffix > completion_timing.max_suffix_cycles) completion_timing.max_suffix_cycles = suffix;
-        if (total > completion_timing.max_total_cycles) completion_timing.max_total_cycles = total;
+        if (prefix > completion_timing.max_prefix_cycles)
+        {
+            completion_timing.max_prefix_cycles = prefix;
+        }
+        if (suffix > completion_timing.max_suffix_cycles)
+        {
+            completion_timing.max_suffix_cycles = suffix;
+        }
+        if (total > completion_timing.max_total_cycles)
+        {
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC)
+            /* t_unlock is already captured.  This diagnostic-only store is
+             * intentionally outside the measured [t_lock,t_unlock) span. */
+            (void)R4CompletionWitness_Record(&completion_diagnostic,
+                completion_timing.completed_count + 1U,
+                completion_timing.operation, completion_diagnostic_path_flags,
+                completion_timing.t_lock, completion_timing.t_commit,
+                completion_timing.t_unlock);
+#endif
+            completion_timing.max_total_cycles = total;
+        }
         ++completion_timing.completed_count;
     }
     completion_timing.active = 0U;
@@ -540,6 +565,28 @@ R4_RuntimeStatus R4_RuntimeTarget_GetCompletionTiming(
     return target_initialized != 0U ? R4_RuntimeLedger_GetStatus(&target_ledger) :
         target_boot_error;
 }
+
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC)
+void R4_RuntimeTarget_CompletionDiagnosticSetPathFlags(uint32_t flags)
+{
+    if (completion_timing.active != 0U)
+    {
+        completion_diagnostic_path_flags |= flags;
+    }
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_GetCompletionDiagnostic(
+    R4CompletionWitness *out)
+{
+    if (out == NULL)
+    {
+        return R4_RUNTIME_INVALID_ARGUMENT;
+    }
+    *out = completion_diagnostic;
+    return target_initialized != 0U ? R4_RuntimeLedger_GetStatus(&target_ledger) :
+        target_boot_error;
+}
+#endif
 
 void R4_RuntimeTarget_TraceIsrEnter(void)
 {

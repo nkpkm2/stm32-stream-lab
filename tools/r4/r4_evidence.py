@@ -200,6 +200,24 @@ CUTOFF_LOW_IRQ_CYCLES_WORD = 408
 CUTOFF_HIGH_IRQ_CYCLES_WORD = 410
 CUTOFF_IRQ_DEPTH_WORD = 412
 CUTOFF_RUNTIME_STATUS_WORD = 413
+T04_DIAGNOSTIC_VALID_WORD = 414
+T04_DIAGNOSTIC_ORDINAL_WORD = 415
+T04_DIAGNOSTIC_OPERATION_WORD = 416
+T04_DIAGNOSTIC_PATH_FLAGS_WORD = 417
+T04_DIAGNOSTIC_FULL_WORD = 418
+T04_DIAGNOSTIC_PREFIX_WORD = 420
+T04_DIAGNOSTIC_SUFFIX_WORD = 422
+T04_DIAGNOSTIC_T_LOCK_WORD = 424
+T04_DIAGNOSTIC_T_COMMIT_WORD = 426
+T04_DIAGNOSTIC_T_UNLOCK_WORD = 428
+T04_DIAGNOSTIC_CONSISTENCY_FAILURES_WORD = 430
+COMPLETION_MALFORMED_WORD = 23
+COMPLETION_DISCARDED_WORD = 24
+COMPLETION_COUNT_WORD = 28
+COMPLETION_LOCK_COUNT_WORD = 30
+COMPLETION_COMMIT_COUNT_WORD = 31
+COMPLETION_UNLOCK_COUNT_WORD = 32
+COMPLETION_MAX_TOTAL_WORD = 34
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -208,6 +226,7 @@ CASES = {
     "t17-atomic": ("T17_ATOMIC", 4, 0, 8),
     "t04-commit-budget-a": ("COMMIT_BUDGET", 5, 65000, 75),
     "t04-commit-budget-b": ("COMMIT_BUDGET", 5, 65000, 75),
+    "t04-rc3-diagnostic": ("COMMIT_BUDGET", 5, 65000, 75),
     "task-synthetic": ("SYNTHETIC_TASKS", 6, 0, 8),
     "dma-window": ("DMA_WINDOW", 7, 0, 8),
     "tick-gap": ("TICK_GAP", 8, 0, 8),
@@ -230,10 +249,32 @@ PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
 NINJA_DIR = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\Ninja\bin")
 ARM_DIR = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\GNU-tools-for-STM32\bin")
+T04_TARGET_SOAK_MS = 65000
+T04_READBACK_SETTLE_SECONDS = 10
+T04_REQUIRED_TARGET_SECONDS = 75
+T04_EFFECTIVE_RUN_ALLOWANCE_SECONDS = 180
 
 
 class EvidenceError(RuntimeError):
     pass
+
+
+def t04_watchdog_readiness(*, target_soak_ms: int = T04_TARGET_SOAK_MS,
+                           settle_seconds: int = T04_READBACK_SETTLE_SECONDS,
+                           effective_allowance_seconds: int =
+                           T04_EFFECTIVE_RUN_ALLOWANCE_SECONDS) -> dict[str, int | bool]:
+    """Validate allowance for the user-terminal T04 harness execution path."""
+    if min(target_soak_ms, settle_seconds, effective_allowance_seconds) <= 0:
+        raise EvidenceError("T04 watchdog policy values must be positive")
+    required_target_seconds = (target_soak_ms + 999) // 1000 + settle_seconds
+    return {
+        "target_soak_ms": target_soak_ms,
+        "required_target_seconds": required_target_seconds,
+        "effective_allowance_seconds": effective_allowance_seconds,
+        "safety_margin_seconds": effective_allowance_seconds - required_target_seconds,
+        "ready": required_target_seconds >= T04_REQUIRED_TARGET_SECONDS and
+                 required_target_seconds < effective_allowance_seconds,
+    }
 
 
 def digest(path: Path) -> str:
@@ -308,7 +349,8 @@ def git(repo: Path, *args: str) -> str:
     return completed.stdout.strip()
 
 
-def definitions(selector: str, soak_ms: int, accounting: str | None = None) -> dict[str, str]:
+def definitions(selector: str, soak_ms: int, accounting: str | None = None,
+                diagnostic: bool = False) -> dict[str, str]:
     result = {
         "STREAM_LAB_FOUNDATION_ADC_DBM_DRIVER": "ON",
         "STREAM_LAB_FOUNDATION_OWNERSHIP_CORE": "ON",
@@ -331,6 +373,8 @@ def definitions(selector: str, soak_ms: int, accounting: str | None = None) -> d
         if accounting not in ("MINIMAL", "R4"):
             raise EvidenceError("unknown accounting profile")
         result["STREAM_LAB_R4_ACCOUNTING"] = "OFF" if accounting == "MINIMAL" else "ON"
+    if diagnostic:
+        result["STREAM_LAB_R4_T04_DIAGNOSTIC"] = "ON"
     return result
 
 
@@ -350,6 +394,71 @@ def parse_words(text: str) -> list[int]:
 
 def evaluate(case: str, words: list[int], accounting: str | None = None) -> dict:
     selector, case_id, _, _ = CASES[case]
+    if case == "t04-rc3-diagnostic":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= T04_DIAGNOSTIC_CONSISTENCY_FAILURES_WORD:
+            return {"result": "FAIL", "checks": {"diagnostic_extension_present": False},
+                    "selector": selector,
+                    "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
+        full = word64(T04_DIAGNOSTIC_FULL_WORD)
+        prefix = word64(T04_DIAGNOSTIC_PREFIX_WORD)
+        suffix = word64(T04_DIAGNOSTIC_SUFFIX_WORD)
+        t_lock = word64(T04_DIAGNOSTIC_T_LOCK_WORD)
+        t_commit = word64(T04_DIAGNOSTIC_T_COMMIT_WORD)
+        t_unlock = word64(T04_DIAGNOSTIC_T_UNLOCK_WORD)
+        checks = {
+            "result_magic": words[0] == MAGIC,
+            "case_identity": words[1] == case_id,
+            "schema_version": words[2] == SCHEMA,
+            "no_non_timing_invariant_failure": (words[4] & ~0x40) == 0,
+            "init_status": words[5] == 0,
+            "completed_magic": words[10] == COMPLETE,
+            "completion_integrity": (
+                words[COMPLETION_MALFORMED_WORD] == 0 and
+                words[COMPLETION_DISCARDED_WORD] == 0 and
+                words[COMPLETION_COUNT_WORD] > 0 and
+                words[COMPLETION_LOCK_COUNT_WORD] == words[COMPLETION_COUNT_WORD] and
+                words[COMPLETION_COMMIT_COUNT_WORD] == words[COMPLETION_COUNT_WORD] and
+                words[COMPLETION_UNLOCK_COUNT_WORD] == words[COMPLETION_COUNT_WORD]),
+            "diagnostic_valid": words[T04_DIAGNOSTIC_VALID_WORD] == 1,
+            "diagnostic_complete_operation": words[T04_DIAGNOSTIC_OPERATION_WORD] == 3,
+            "diagnostic_ordinal_in_population": (
+                0 < words[T04_DIAGNOSTIC_ORDINAL_WORD] <= words[COMPLETION_COUNT_WORD]),
+            "diagnostic_expected_path_flags": (
+                words[T04_DIAGNOSTIC_PATH_FLAGS_WORD] == 0x1F),
+            "diagnostic_timestamp_order": t_lock <= t_commit <= t_unlock,
+            "diagnostic_exact_partition": (
+                prefix == t_commit - t_lock and
+                suffix == t_unlock - t_commit and
+                full == t_unlock - t_lock and
+                full == prefix + suffix),
+            "diagnostic_is_full_max_event": full == word64(COMPLETION_MAX_TOTAL_WORD),
+            "diagnostic_consistency": (
+                words[T04_DIAGNOSTIC_CONSISTENCY_FAILURES_WORD] == 0),
+        }
+        return {
+            "result": "PASS" if all(checks.values()) else "FAIL",
+            "checks": checks,
+            "selector": selector,
+            "diagnostic_only": True,
+            "formal_t04_acceptance": False,
+            "diagnostic_witness": {
+                "completion_ordinal": words[T04_DIAGNOSTIC_ORDINAL_WORD],
+                "operation": words[T04_DIAGNOSTIC_OPERATION_WORD],
+                "path_flags": words[T04_DIAGNOSTIC_PATH_FLAGS_WORD],
+                "full_cycles": full,
+                "prefix_cycles": prefix,
+                "suffix_cycles": suffix,
+                "t_lock": t_lock,
+                "t_commit": t_commit,
+                "t_unlock": t_unlock,
+                "consistency_failures": words[T04_DIAGNOSTIC_CONSISTENCY_FAILURES_WORD],
+                "formal_threshold_cycles": 1800,
+            },
+            "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]],
+        }
     checks = {
         "result_magic": words[0] == MAGIC,
         "case_identity": words[1] == case_id,
@@ -808,6 +917,7 @@ def run_attempt(args: argparse.Namespace) -> int:
     log, completed = CommandLog(root), []
     selector, case_id, soak_ms, wait_seconds = CASES[args.case]
     accounting = args.accounting if args.case == "perturbation-ab" else None
+    diagnostic = args.case == "t04-rc3-diagnostic"
     if args.case == "perturbation-ab" and accounting is None:
         raise EvidenceError("perturbation-ab requires --accounting MINIMAL or R4")
     env = {**os.environ, "PATH": str(ARM_DIR) + os.pathsep + str(NINJA_DIR) + os.pathsep + os.environ.get("PATH", "")}
@@ -820,7 +930,7 @@ def run_attempt(args: argparse.Namespace) -> int:
         build = root / "build"
         toolchain = repo / "firmware" / "cubemx" / "cmake" / "gcc-arm-none-eabi.cmake"
         command = [CMAKE, "-S", repo / "firmware" / "cubemx", "-B", build, "-G", "Ninja",
-                   f"-DCMAKE_TOOLCHAIN_FILE={toolchain}"] + [f"-D{k}={v}" for k, v in definitions(selector, soak_ms, accounting).items()]
+                   f"-DCMAKE_TOOLCHAIN_FILE={toolchain}"] + [f"-D{k}={v}" for k, v in definitions(selector, soak_ms, accounting, diagnostic).items()]
         log.run(command, "configure", env=env, timeout=180)
         log.run([CMAKE, "--build", build, "--parallel", "4"], "build", env=env, timeout=600)
         elf, binary = build / "cubemx.elf", build / "programmed.bin"
@@ -828,7 +938,7 @@ def run_attempt(args: argparse.Namespace) -> int:
             raise EvidenceError("target ELF missing")
         log.run([ARM_DIR / "arm-none-eabi-objcopy.exe", "-O", "binary", elf, binary], "programmed-binary", env=env, timeout=30)
         write_new(root / "H1.json", {"phase": "H1", "selector": selector, "case_id": case_id,
-                  "definitions": definitions(selector, soak_ms, accounting), "elf_sha256": digest(elf),
+                  "definitions": definitions(selector, soak_ms, accounting, diagnostic), "elf_sha256": digest(elf),
                   "programmed_image_sha256": digest(binary)})
         completed.append("H1")
         log.run([PROGRAMMER, "-c", "port=SWD", "mode=UR", "-w", elf, "-v", "-rst"], "flash-verify", timeout=120)

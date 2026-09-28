@@ -196,6 +196,17 @@ extern "C" {
 #define R4_HW_CUTOFF_HIGH_IRQ_CYCLES_WORD 410U
 #define R4_HW_CUTOFF_IRQ_DEPTH_WORD 412U
 #define R4_HW_CUTOFF_RUNTIME_STATUS_WORD 413U
+#define R4_HW_T04_DIAGNOSTIC_VALID_WORD 414U
+#define R4_HW_T04_DIAGNOSTIC_ORDINAL_WORD 415U
+#define R4_HW_T04_DIAGNOSTIC_OPERATION_WORD 416U
+#define R4_HW_T04_DIAGNOSTIC_PATH_FLAGS_WORD 417U
+#define R4_HW_T04_DIAGNOSTIC_FULL_WORD 418U
+#define R4_HW_T04_DIAGNOSTIC_PREFIX_WORD 420U
+#define R4_HW_T04_DIAGNOSTIC_SUFFIX_WORD 422U
+#define R4_HW_T04_DIAGNOSTIC_T_LOCK_WORD 424U
+#define R4_HW_T04_DIAGNOSTIC_T_COMMIT_WORD 426U
+#define R4_HW_T04_DIAGNOSTIC_T_UNLOCK_WORD 428U
+#define R4_HW_T04_DIAGNOSTIC_CONSISTENCY_FAILURES_WORD 430U
 
 #define R4_HW_PERTURBATION_PROFILE_MINIMAL 0U
 #define R4_HW_PERTURBATION_PROFILE_R4 1U
@@ -440,6 +451,21 @@ typedef struct
     uint64_t cutoff_high_irq_cycles;
     uint32_t cutoff_irq_depth;
     uint32_t cutoff_runtime_status;
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC)
+    /* Appended, diagnostic-only raw witness.  This does not alter the formal
+     * schema when the diagnostic profile is disabled. */
+    uint32_t t04_diagnostic_valid;
+    uint32_t t04_diagnostic_completion_ordinal;
+    uint32_t t04_diagnostic_operation;
+    uint32_t t04_diagnostic_path_flags;
+    uint64_t t04_diagnostic_full_cycles;
+    uint64_t t04_diagnostic_prefix_cycles;
+    uint64_t t04_diagnostic_suffix_cycles;
+    uint64_t t04_diagnostic_t_lock;
+    uint64_t t04_diagnostic_t_commit;
+    uint64_t t04_diagnostic_t_unlock;
+    uint32_t t04_diagnostic_consistency_failures;
+#endif
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -475,6 +501,20 @@ _Static_assert(offsetof(R4HwHarnessResult, cutoff_formal_window_before) ==
 _Static_assert(offsetof(R4HwHarnessResult, cutoff_runtime_status) ==
     (R4_HW_CUTOFF_RUNTIME_STATUS_WORD * sizeof(uint32_t)),
     "R4 cutoff runtime-status evidence word offset changed");
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC)
+_Static_assert(offsetof(R4HwHarnessResult, t04_diagnostic_valid) ==
+    (R4_HW_T04_DIAGNOSTIC_VALID_WORD * sizeof(uint32_t)),
+    "R4 T04 diagnostic-valid evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, t04_diagnostic_full_cycles) ==
+    (R4_HW_T04_DIAGNOSTIC_FULL_WORD * sizeof(uint32_t)),
+    "R4 T04 diagnostic-full evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, t04_diagnostic_t_lock) ==
+    (R4_HW_T04_DIAGNOSTIC_T_LOCK_WORD * sizeof(uint32_t)),
+    "R4 T04 diagnostic-lock evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, t04_diagnostic_consistency_failures) ==
+    (R4_HW_T04_DIAGNOSTIC_CONSISTENCY_FAILURES_WORD * sizeof(uint32_t)),
+    "R4 T04 diagnostic-consistency evidence word offset changed");
+#endif
 _Static_assert(offsetof(R4HwHarnessResult, dma_window_snapshot_status) ==
     (R4_HW_DMA_WINDOW_SNAPSHOT_WORD * sizeof(uint32_t)),
     "R4 DMA-window evidence word offset changed");

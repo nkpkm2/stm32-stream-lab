@@ -1,0 +1,51 @@
+{
+  "architecture": "v3.2.2",
+  "artifact_identity": {
+    "diagnostic_elf_sha256": "5F1D196644C404AE9B0EEC14E0AC3A12337A2AF8256A989C5A810A8CDC7527EB",
+    "diagnostic_programmed_image_sha256": "13B85DF2B4F5066000927EA46BC703DDE6D5F42DD8A089188B1E688429DC7084",
+    "production_elf_sha256": "67E039966AD4AE1ADD3CB608E29B9A604ADB4CCD1BD20130ACF3A65C7BDA86A3",
+    "production_elf_matches_confirmed_1919_attempt": true
+  },
+  "base_commit": "238fa89e00bba1795535dad9b3276b5ec72d2151",
+  "diagnostic_only": true,
+  "edge_post_bound": "DEFERRED_REQUIRED_BEFORE_FORMAL_T04_PASS",
+  "edge_pre_bound": "DEFERRED_REQUIRED_BEFORE_FORMAL_T04_PASS",
+  "hardware_operation": "NONE",
+  "host_watchdog_policy": {
+    "effective_allowance_seconds": 180,
+    "execution_path": "USER_TERMINAL_START_JOB_WAIT_JOB",
+    "required_target_seconds": 75,
+    "result": "PASS",
+    "safety_margin_seconds": 105,
+    "target_soak_ms": 65000
+  },
+  "production_gating": {
+    "diagnostic_profile": "STREAM_LAB_R4_T04_DIAGNOSTIC=ON",
+    "formal_acceptance_allowed": false,
+    "production_profile": "STREAM_LAB_R4_T04_DIAGNOSTIC=OFF",
+    "production_witness_symbols_present": false,
+    "result": "PASS"
+  },
+  "result": "RC3_DIAGNOSTIC_HARDWARE_READY",
+  "tests": {
+    "arm_diagnostic_release_lto": "PASS",
+    "evidence_selftest": "PASS",
+    "existing_native_regression": "137/137 PASS",
+    "host_source_and_evidence": "36/36 PASS",
+    "r4_native_with_witness": "26/26 PASS",
+    "witness_cases": {
+      "WIT-01_normal_complete": "PASS",
+      "WIT-02_new_max_replaces": "PASS",
+      "WIT-03_smaller_does_not_replace": "PASS",
+      "WIT-04_equal_edge_cycles": "PASS",
+      "WIT-05_reset_isolation": "PASS"
+    }
+  },
+  "t04_status": "CONFIRMED_FAIL_ROOT_CAUSE_UNRESOLVED",
+  "witness_contract": {
+    "full_equals_prefix_plus_suffix": true,
+    "operation_complete": true,
+    "path_flags_same_event": true,
+    "same_completion_ordinal": true
+  }
+}

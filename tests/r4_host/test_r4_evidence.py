@@ -14,6 +14,76 @@ SPEC.loader.exec_module(EVIDENCE)
 
 
 class R4EvidenceTests(unittest.TestCase):
+    def test_t04_watchdog_policy_has_sufficient_user_terminal_allowance(self) -> None:
+        policy = EVIDENCE.t04_watchdog_readiness()
+        self.assertTrue(policy["ready"])
+        self.assertEqual(policy["target_soak_ms"], 65000)
+        self.assertEqual(policy["required_target_seconds"], 75)
+        self.assertEqual(policy["effective_allowance_seconds"], 180)
+        self.assertEqual(policy["safety_margin_seconds"], 105)
+
+    def test_t04_watchdog_policy_rejects_observed_30_second_allowance(self) -> None:
+        policy = EVIDENCE.t04_watchdog_readiness(effective_allowance_seconds=30)
+        self.assertFalse(policy["ready"])
+
+    def test_t04_diagnostic_definition_is_explicitly_enabled(self) -> None:
+        values = EVIDENCE.definitions("COMMIT_BUDGET", 65000, diagnostic=True)
+        self.assertEqual(values["STREAM_LAB_R4_T04_DIAGNOSTIC"], "ON")
+
+    def test_t04_diagnostic_requires_coherent_full_max_witness(self) -> None:
+        words = [0] * (EVIDENCE.T04_DIAGNOSTIC_CONSISTENCY_FAILURES_WORD + 1)
+        words[:11] = [EVIDENCE.MAGIC, 5, EVIDENCE.SCHEMA, 0, 0x40, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+
+        def set64(index: int, value: int) -> None:
+            words[index] = value & 0xFFFFFFFF
+            words[index + 1] = value >> 32
+
+        words[EVIDENCE.COMPLETION_COUNT_WORD] = 50796
+        words[EVIDENCE.COMPLETION_LOCK_COUNT_WORD] = 50796
+        words[EVIDENCE.COMPLETION_COMMIT_COUNT_WORD] = 50796
+        words[EVIDENCE.COMPLETION_UNLOCK_COUNT_WORD] = 50796
+        set64(EVIDENCE.COMPLETION_MAX_TOTAL_WORD, 1919)
+        words[EVIDENCE.T04_DIAGNOSTIC_VALID_WORD] = 1
+        words[EVIDENCE.T04_DIAGNOSTIC_ORDINAL_WORD] = 40001
+        words[EVIDENCE.T04_DIAGNOSTIC_OPERATION_WORD] = 3
+        words[EVIDENCE.T04_DIAGNOSTIC_PATH_FLAGS_WORD] = 0x1F
+        set64(EVIDENCE.T04_DIAGNOSTIC_FULL_WORD, 1919)
+        set64(EVIDENCE.T04_DIAGNOSTIC_PREFIX_WORD, 1300)
+        set64(EVIDENCE.T04_DIAGNOSTIC_SUFFIX_WORD, 619)
+        set64(EVIDENCE.T04_DIAGNOSTIC_T_LOCK_WORD, 100000)
+        set64(EVIDENCE.T04_DIAGNOSTIC_T_COMMIT_WORD, 101300)
+        set64(EVIDENCE.T04_DIAGNOSTIC_T_UNLOCK_WORD, 101919)
+        verdict = EVIDENCE.evaluate("t04-rc3-diagnostic", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertFalse(verdict["formal_t04_acceptance"])
+        self.assertEqual(verdict["diagnostic_witness"]["completion_ordinal"], 40001)
+        self.assertTrue(verdict["checks"]["diagnostic_exact_partition"])
+        self.assertTrue(verdict["checks"]["diagnostic_is_full_max_event"])
+
+    def test_t04_diagnostic_rejects_cross_event_partition(self) -> None:
+        words = [0] * (EVIDENCE.T04_DIAGNOSTIC_CONSISTENCY_FAILURES_WORD + 1)
+        words[:11] = [EVIDENCE.MAGIC, 5, EVIDENCE.SCHEMA, 0, 0x40, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.COMPLETION_COUNT_WORD] = 1
+        words[EVIDENCE.COMPLETION_LOCK_COUNT_WORD] = 1
+        words[EVIDENCE.COMPLETION_COMMIT_COUNT_WORD] = 1
+        words[EVIDENCE.COMPLETION_UNLOCK_COUNT_WORD] = 1
+        words[EVIDENCE.COMPLETION_MAX_TOTAL_WORD] = 100
+        words[EVIDENCE.T04_DIAGNOSTIC_VALID_WORD] = 1
+        words[EVIDENCE.T04_DIAGNOSTIC_ORDINAL_WORD] = 1
+        words[EVIDENCE.T04_DIAGNOSTIC_OPERATION_WORD] = 3
+        words[EVIDENCE.T04_DIAGNOSTIC_PATH_FLAGS_WORD] = 0x1F
+        words[EVIDENCE.T04_DIAGNOSTIC_FULL_WORD] = 100
+        words[EVIDENCE.T04_DIAGNOSTIC_PREFIX_WORD] = 40
+        words[EVIDENCE.T04_DIAGNOSTIC_SUFFIX_WORD] = 59
+        words[EVIDENCE.T04_DIAGNOSTIC_T_LOCK_WORD] = 1000
+        words[EVIDENCE.T04_DIAGNOSTIC_T_COMMIT_WORD] = 1040
+        words[EVIDENCE.T04_DIAGNOSTIC_T_UNLOCK_WORD] = 1100
+        verdict = EVIDENCE.evaluate("t04-rc3-diagnostic", words)
+        self.assertEqual(verdict["result"], "FAIL")
+        self.assertFalse(verdict["checks"]["diagnostic_exact_partition"])
+
     def test_stable_prefix_accepts_matching_target_result(self) -> None:
         words = [EVIDENCE.MAGIC, 5, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0, 0, 0,
                  EVIDENCE.COMPLETE]

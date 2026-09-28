@@ -1102,6 +1102,17 @@ void StreamQueueAdapter_TraceQueueSend(void *queue_handle)
     if ((hook_status == STREAM_QUEUE_ADAPTER_OK) &&
         (adapter.send_context.operation == STREAM_QUEUE_ADAPTER_OP_COMPLETE))
     {
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC)
+        /* traceQUEUE_SEND executes only after the successful queue-space
+         * decision.  These flags are all determined before t_commit and are
+         * retained only by the non-formal diagnostic build. */
+        R4_RuntimeTarget_CompletionDiagnosticSetPathFlags(
+            R4_COMPLETION_WITNESS_QUEUE_SPACE |
+            R4_COMPLETION_WITNESS_ADAPTER_VALIDATED |
+            R4_COMPLETION_WITNESS_LEDGER_COMMITTED |
+            R4_COMPLETION_WITNESS_LEASE_RELEASED |
+            R4_COMPLETION_WITNESS_QUEUE_SET_DISABLED);
+#endif
         R4_RuntimeTarget_CompletionCommit((uint32_t)adapter.send_context.operation);
     }
 #endif

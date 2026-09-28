@@ -4,6 +4,9 @@
 #include <stdint.h>
 
 #include "r4_runtime_event.h"
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC)
+#include "r4_completion_witness.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -128,6 +131,14 @@ void R4_RuntimeTarget_CompletionCommit(uint32_t operation);
 void R4_RuntimeTarget_CompletionUnlock(uint32_t operation);
 R4_RuntimeStatus R4_RuntimeTarget_GetCompletionTiming(
     R4_CompletionTimingSnapshot *out);
+
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC)
+/* Diagnostic build only.  Flags describe the current COMPLETE transaction;
+ * capture occurs after t_unlock has already been timestamped. */
+void R4_RuntimeTarget_CompletionDiagnosticSetPathFlags(uint32_t flags);
+R4_RuntimeStatus R4_RuntimeTarget_GetCompletionDiagnostic(
+    R4CompletionWitness *out);
+#endif
 
 void R4_RuntimeTarget_TraceIsrEnter(void);
 void R4_RuntimeTarget_TraceIsrExit(void);

@@ -79,6 +79,24 @@ if(R4_RUNTIME_NATIVE_TESTS)
     endforeach()
 endif()
 
+option(R4_T04_DIAGNOSTIC_NATIVE_TESTS
+    "Build diagnostic-only R4 T04 same-event witness tests" OFF)
+if(R4_T04_DIAGNOSTIC_NATIVE_TESTS)
+    add_executable(test_r4_completion_witness
+        test_r4_completion_witness.c
+        ../../firmware/runtime/r4_completion_witness.c)
+    target_include_directories(test_r4_completion_witness PRIVATE
+        ../../firmware/runtime)
+    set_target_properties(test_r4_completion_witness PROPERTIES
+        C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+    r2_apply_strict_warnings(test_r4_completion_witness)
+    r2_apply_sanitizers(test_r4_completion_witness)
+    foreach(case_name normal_complete replace_max smaller_no_replace edge_cycles reset_isolation)
+        add_test(NAME r4.t04_diagnostic.${case_name}
+            COMMAND test_r4_completion_witness ${case_name})
+    endforeach()
+endif()
+
 option(R5_METRICS_NATIVE_TESTS "Build R5 cohort/sealing metrics tests" OFF)
 if(R5_METRICS_NATIVE_TESTS)
     add_executable(test_r5_run_metrics

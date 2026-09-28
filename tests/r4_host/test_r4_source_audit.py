@@ -131,6 +131,26 @@ class R4ClockAuthorityAuditTests(unittest.TestCase):
         self.assertIn("R4_HW_PERTURBATION_WORK_ITERATIONS 5000U", harness)
         self.assertIn("config.processing_work_iterations = R4_HW_PERTURBATION_WORK_ITERATIONS", harness)
 
+    def test_t04_diagnostic_witness_is_compile_time_gated_and_timestamped_first(self) -> None:
+        target = TARGET.read_text(encoding="utf-8")
+        cmake = CMAKE.read_text(encoding="utf-8")
+        witness = (RUNTIME / "r4_completion_witness.c").read_text(encoding="utf-8")
+        self.assertIn("option(STREAM_LAB_R4_T04_DIAGNOSTIC", cmake)
+        self.assertIn("STREAM_LAB_R4_T04_DIAGNOSTIC requires COMMIT_BUDGET", cmake)
+        self.assertIn("#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC)", target)
+        self.assertLess(target.index("completion_timing.t_unlock = now;"),
+                        target.index("R4CompletionWitness_Record"))
+        self.assertNotIn("printf", witness)
+        self.assertNotIn("malloc", witness)
+        self.assertNotIn("vTask", witness)
+
+    def test_t04_witness_keeps_one_coherent_event_and_exact_partition(self) -> None:
+        witness = (RUNTIME / "r4_completion_witness.c").read_text(encoding="utf-8")
+        self.assertIn("full = t_unlock - t_lock;", witness)
+        self.assertIn("full != (prefix + suffix)", witness)
+        self.assertIn("completion_ordinal = ordinal;", witness)
+        self.assertIn("if ((witness->valid != 0U) && (full <= witness->full_cycles))", witness)
+
 
 if __name__ == "__main__":
     unittest.main()

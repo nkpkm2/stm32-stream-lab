@@ -127,6 +127,8 @@ option(STREAM_LAB_R4_ACCOUNTING
     "Enable R4 accounting trace hooks; OFF is reserved for the paired R4 perturbation reference profile" ON)
 option(STREAM_LAB_R4_HW
     "Build the R4 target Clock64/runtime-window harness" OFF)
+option(STREAM_LAB_R4_T04_DIAGNOSTIC
+    "Build the non-formal T04 same-event diagnostic witness" OFF)
 set(STREAM_LAB_R4_HW_SOAK_MS "0" CACHE STRING
     "R4 target-harness real DMA/IRQ soak duration in milliseconds (0 disables)")
 set(STREAM_LAB_R4_HW_CASE "" CACHE STRING
@@ -529,6 +531,15 @@ if(STREAM_LAB_R4_RUNTIME)
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_perturbation_target.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_tick_service.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_tick_service_target.c")
+    if(STREAM_LAB_R4_T04_DIAGNOSTIC)
+        target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+            STREAM_LAB_R4_T04_DIAGNOSTIC=1)
+        target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_completion_witness.c")
+        set_source_files_properties(
+            "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r4_completion_witness.c"
+            PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
+    endif()
     target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime")
     set_source_files_properties(
@@ -602,6 +613,11 @@ if(STREAM_LAB_R4_HW)
         message(FATAL_ERROR "R4 hardware harness requires STREAM_LAB_R4_RUNTIME=ON.")
     endif()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R4_HW=1)
+    if(STREAM_LAB_R4_T04_DIAGNOSTIC AND
+       NOT STREAM_LAB_R4_HW_CASE STREQUAL "COMMIT_BUDGET")
+        message(FATAL_ERROR
+            "STREAM_LAB_R4_T04_DIAGNOSTIC requires COMMIT_BUDGET and is not formal acceptance.")
+    endif()
     if(NOT STREAM_LAB_R4_HW_SOAK_MS MATCHES "^[0-9]+$")
         message(FATAL_ERROR "STREAM_LAB_R4_HW_SOAK_MS must be an unsigned integer.")
     endif()
