@@ -151,6 +151,14 @@ class R4ClockAuthorityAuditTests(unittest.TestCase):
         self.assertIn("completion_ordinal = ordinal;", witness)
         self.assertIn("if ((witness->valid != 0U) && (full <= witness->full_cycles))", witness)
 
+    def test_t04_diagnostic_snapshot_is_wired_to_commit_budget_case(self) -> None:
+        harness = (RUNTIME / "r4_hw_harness.c").read_text(encoding="utf-8")
+        guard = "defined(STREAM_LAB_R4_T04_DIAGNOSTIC) && (R4_HW_CASE_ID == 5U)"
+        self.assertEqual(harness.count(guard), 2)
+        self.assertNotIn(
+            "defined(STREAM_LAB_R4_T04_DIAGNOSTIC) && (R4_HW_CASE_ID == 12U)",
+            harness)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,21 @@
+{
+  "first_failure_class": "TARGET_FIRMWARE",
+  "invariants": {
+    "case_identity": true,
+    "completed_magic": true,
+    "completion_integrity": true,
+    "diagnostic_complete_operation": false,
+    "diagnostic_consistency": true,
+    "diagnostic_exact_partition": true,
+    "diagnostic_expected_path_flags": false,
+    "diagnostic_is_full_max_event": false,
+    "diagnostic_ordinal_in_population": false,
+    "diagnostic_timestamp_order": true,
+    "diagnostic_valid": false,
+    "init_status": true,
+    "no_non_timing_invariant_failure": true,
+    "result_magic": true,
+    "schema_version": true
+  },
+  "result": "FAIL"
+}

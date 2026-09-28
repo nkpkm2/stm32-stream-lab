@@ -13,6 +13,10 @@ The future diagnostic run must preserve the historical 1919-cycle failure and
 must not be used to declare formal T04 PASS. `EDGE_PRE_BOUND` and
 `EDGE_POST_BOUND` remain required before formal closure.
 
+The first diagnostic attempt is preserved separately as a diagnostic wiring
+failure. Its snapshot export incorrectly selected case ID 12; the corrected
+candidate selects COMMIT_BUDGET case ID 5 and is protected by a source audit.
+
 To avoid the prior Codex observer timeout, the authorized run must execute the
 existing harness as a PowerShell job in the user's terminal with a 180-second
 allowance. The 75-second target soak/readback requirement therefore retains a

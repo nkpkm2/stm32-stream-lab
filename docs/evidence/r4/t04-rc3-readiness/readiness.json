@@ -1,8 +1,8 @@
 {
   "architecture": "v3.2.2",
   "artifact_identity": {
-    "diagnostic_elf_sha256": "5F1D196644C404AE9B0EEC14E0AC3A12337A2AF8256A989C5A810A8CDC7527EB",
-    "diagnostic_programmed_image_sha256": "13B85DF2B4F5066000927EA46BC703DDE6D5F42DD8A089188B1E688429DC7084",
+    "diagnostic_elf_sha256": "E3C798E69D978C4179A34B2E89E2F5DB4159E79FB988EE29466841CDEA033064",
+    "diagnostic_programmed_image_sha256": "85E9F6A656ED8E4D1DFCCD678F60FBB6BFBA306A59F732ECF08C13C4F2825A33",
     "production_elf_sha256": "67E039966AD4AE1ADD3CB608E29B9A604ADB4CCD1BD20130ACF3A65C7BDA86A3",
     "production_elf_matches_confirmed_1919_attempt": true
   },
@@ -10,7 +10,13 @@
   "diagnostic_only": true,
   "edge_post_bound": "DEFERRED_REQUIRED_BEFORE_FORMAL_T04_PASS",
   "edge_pre_bound": "DEFERRED_REQUIRED_BEFORE_FORMAL_T04_PASS",
-  "hardware_operation": "NONE",
+  "hardware_operation": "PRIOR_ATTEMPT_PRESERVED_NO_RETRY",
+  "prior_diagnostic_attempt": {
+    "attempt": "docs/evidence/r4/t04-rc3-diagnostic/attempt-0001",
+    "classification": "DIAGNOSTIC_WIRING_ERROR",
+    "fix": "snapshot guard corrected from case ID 12 to COMMIT_BUDGET case ID 5",
+    "preserved": true
+  },
   "host_watchdog_policy": {
     "effective_allowance_seconds": 180,
     "execution_path": "USER_TERMINAL_START_JOB_WAIT_JOB",
@@ -31,7 +37,7 @@
     "arm_diagnostic_release_lto": "PASS",
     "evidence_selftest": "PASS",
     "existing_native_regression": "137/137 PASS",
-    "host_source_and_evidence": "36/36 PASS",
+    "host_source_and_evidence": "38/38 PASS",
     "r4_native_with_witness": "26/26 PASS",
     "witness_cases": {
       "WIT-01_normal_complete": "PASS",

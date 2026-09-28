@@ -1,0 +1,34 @@
+{
+  "attempt_id": "r4-t04-rc3-diagnostic-ga0d0kdn",
+  "classification": "DIAGNOSTIC_WIRING_ERROR",
+  "diagnostic_result": "FAIL",
+  "formal_t04_acceptance": false,
+  "hardware_retry_performed": false,
+  "identity": {
+    "elf_sha256": "5F1D196644C404AE9B0EEC14E0AC3A12337A2AF8256A989C5A810A8CDC7527EB",
+    "programmed_image_sha256": "13B85DF2B4F5066000927EA46BC703DDE6D5F42DD8A089188B1E688429DC7084",
+    "source_commit": "3eca924485a97d644f7f993093746b9deb2dc93f"
+  },
+  "offline_decode": {
+    "completion_commit_count": 50796,
+    "completion_count": 50796,
+    "completion_discarded_count": 0,
+    "completion_lock_count": 50796,
+    "completion_malformed_count": 0,
+    "completion_max_full_cycles": 1901,
+    "completion_max_prefix_cycles": 1274,
+    "completion_max_suffix_cycles": 628,
+    "completion_unlock_count": 50796,
+    "diagnostic_words_all_zero": true,
+    "lifecycle_statuses_zero": true,
+    "non_timing_invariant_faults": 0,
+    "runtime_status": 0
+  },
+  "proven_root_cause": {
+    "actual_case_id": 5,
+    "fault": "diagnostic snapshot declaration and export were guarded by R4_HW_CASE_ID == 12U",
+    "scope": "diagnostic export only",
+    "target_case": "COMMIT_BUDGET"
+  },
+  "t04_production_status": "CONFIRMED_FAIL_ROOT_CAUSE_UNRESOLVED"
+}

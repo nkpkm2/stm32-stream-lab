@@ -818,7 +818,7 @@ static void HarnessTask(void *argument)
 #if (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 12U)
     R4_CompletionTimingSnapshot timing;
 #endif
-#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC) && (R4_HW_CASE_ID == 12U)
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC) && (R4_HW_CASE_ID == 5U)
     R4CompletionWitness completion_diagnostic;
 #endif
 #if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U) || \
@@ -1543,7 +1543,7 @@ static void HarnessTask(void *argument)
             &g_r4_hw_result.commit_pending_irq_count,
             &g_r4_hw_result.commit_pending_active_at_irq);
 #endif
-#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC) && (R4_HW_CASE_ID == 12U)
+#if defined(STREAM_LAB_R4_T04_DIAGNOSTIC) && (R4_HW_CASE_ID == 5U)
     if (R4_RuntimeTarget_GetCompletionDiagnostic(&completion_diagnostic) ==
         R4_RUNTIME_OK)
     {
