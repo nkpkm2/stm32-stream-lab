@@ -171,6 +171,17 @@ extern "C" {
 #define R4_HW_R2_POST_STOP_INTERFERENCE_GATE_WORD 376U
 #define R4_HW_R2_POST_STOP_BEGIN_VALID_WORD 377U
 #define R4_HW_R2_POST_STOP_REPORT_VALID_WORD 378U
+/* Task-selection witness: all counts come from real V11.1.0 trace macros,
+ * never from the harness synthesising RuntimeEvent calls. */
+#define R4_HW_TASK_TRACE_SNAPSHOT_STATUS_WORD 379U
+#define R4_HW_TASK_TRACE_FIRST_IN_WORD 380U
+#define R4_HW_TASK_TRACE_OUT_BEFORE_FIRST_IN_WORD 382U
+#define R4_HW_TASK_TRACE_OUT_TOTAL_WORD 384U
+#define R4_HW_TASK_TRACE_IN_TOTAL_WORD 386U
+#define R4_HW_TASK_TRACE_IDLE_OUT_WORD 388U
+#define R4_HW_TASK_TRACE_IDLE_IN_WORD 390U
+#define R4_HW_TASK_TRACE_FIRST_IDENTITY_WORD 392U
+#define R4_HW_SYNTHETIC_SYSTICK_IRQ_CYCLES_WORD 394U
 
 #define R4_HW_PERTURBATION_PROFILE_MINIMAL 0U
 #define R4_HW_PERTURBATION_PROFILE_R4 1U
@@ -394,6 +405,15 @@ typedef struct
     uint32_t r2_post_stop_interference_gate;
     uint32_t r2_post_stop_begin_valid;
     uint32_t r2_post_stop_report_valid;
+    uint32_t task_trace_snapshot_status;
+    uint64_t task_trace_first_in_count;
+    uint64_t task_trace_out_before_first_in_count;
+    uint64_t task_trace_out_total;
+    uint64_t task_trace_in_total;
+    uint64_t task_trace_idle_out_total;
+    uint64_t task_trace_idle_in_total;
+    uint32_t task_trace_first_identity;
+    uint64_t synthetic_systick_irq_cycles;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -414,6 +434,12 @@ _Static_assert(offsetof(R4HwHarnessResult, r2_post_stop_snapshot_status) ==
 _Static_assert(offsetof(R4HwHarnessResult, r2_post_stop_report_valid) ==
     (R4_HW_R2_POST_STOP_REPORT_VALID_WORD * sizeof(uint32_t)),
     "R4 R2 post-STOP report evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, task_trace_snapshot_status) ==
+    (R4_HW_TASK_TRACE_SNAPSHOT_STATUS_WORD * sizeof(uint32_t)),
+    "R4 task-trace snapshot evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, synthetic_systick_irq_cycles) ==
+    (R4_HW_SYNTHETIC_SYSTICK_IRQ_CYCLES_WORD * sizeof(uint32_t)),
+    "R4 synthetic SysTick evidence word offset changed");
 _Static_assert(offsetof(R4HwHarnessResult, dma_window_snapshot_status) ==
     (R4_HW_DMA_WINDOW_SNAPSHOT_WORD * sizeof(uint32_t)),
     "R4 DMA-window evidence word offset changed");

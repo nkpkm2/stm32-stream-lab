@@ -85,6 +85,20 @@ typedef struct
     uint64_t exit_count;
 } R4_SysTickTraceSnapshot;
 
+/* Read-only witness for the real FreeRTOS task-selection trace route.  It is
+ * intentionally a semantic recorder: the first non-Idle TASK_SWITCHED_IN
+ * must not be preceded by a fabricated TASK_SWITCHED_OUT. */
+typedef struct
+{
+    uint64_t first_task_in_count;
+    uint64_t task_out_before_first_in_count;
+    uint64_t task_switched_out_count;
+    uint64_t task_switched_in_count;
+    uint64_t idle_switched_out_count;
+    uint64_t idle_switched_in_count;
+    uint32_t first_task_identity;
+} R4_TaskTraceSnapshot;
+
 /* Hooks/IRQs may only latch a fail-closed request.  The Communication owner
  * consumes it in task context through the normal blocking safe-stop path. */
 typedef enum
@@ -125,6 +139,8 @@ R4_RuntimeStatus R4_RuntimeTarget_GetSysTickTraceSnapshot(
 void R4_RuntimeTarget_BindIdleTask(void *task);
 void R4_RuntimeTarget_TraceTaskSwitchedOut(void *task);
 void R4_RuntimeTarget_TraceTaskSwitchedIn(void *task);
+R4_RuntimeStatus R4_RuntimeTarget_GetTaskTraceSnapshot(
+    R4_TaskTraceSnapshot *out);
 /* Called exactly once from the real DMA IRQ common tail, before the port's
  * yield macro chooses either the no-switch or scheduler-request exit. */
 void R4_RuntimeTarget_TraceDmaTailYield(uint32_t higher_priority_task_woken);

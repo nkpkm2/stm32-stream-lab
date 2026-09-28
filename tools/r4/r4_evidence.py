@@ -179,6 +179,15 @@ R2_POST_STOP_PROCESSING_GATE_WORD = 375
 R2_POST_STOP_INTERFERENCE_GATE_WORD = 376
 R2_POST_STOP_BEGIN_VALID_WORD = 377
 R2_POST_STOP_REPORT_VALID_WORD = 378
+TASK_TRACE_SNAPSHOT_STATUS_WORD = 379
+TASK_TRACE_FIRST_IN_WORD = 380
+TASK_TRACE_OUT_BEFORE_FIRST_IN_WORD = 382
+TASK_TRACE_OUT_TOTAL_WORD = 384
+TASK_TRACE_IN_TOTAL_WORD = 386
+TASK_TRACE_IDLE_OUT_WORD = 388
+TASK_TRACE_IDLE_IN_WORD = 390
+TASK_TRACE_FIRST_IDENTITY_WORD = 392
+SYNTHETIC_SYSTICK_IRQ_CYCLES_WORD = 394
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -341,7 +350,7 @@ def evaluate(case: str, words: list[int], accounting: str | None = None) -> dict
         def word64(index: int) -> int:
             return words[index] | (words[index + 1] << 32)
 
-        if len(words) <= SYNTHETIC_WINDOW_UNCLASSIFIED_WORD + 1:
+        if len(words) <= SYNTHETIC_SYSTICK_IRQ_CYCLES_WORD + 1:
             checks["synthetic_extension_present"] = False
         else:
             task_a = word64(SYNTHETIC_A_CYCLES_WORD)
@@ -359,6 +368,18 @@ def evaluate(case: str, words: list[int], accounting: str | None = None) -> dict
                     words[SYNTHETIC_B_ITERATIONS_WORD] == 10000),
                 "synthetic_owner_ratio": task_a > (task_b * 2),
                 "synthetic_idle": window_idle > 0,
+                "synthetic_known_systick_irq": (
+                    window_irq > 0 and
+                    word64(SYNTHETIC_SYSTICK_IRQ_CYCLES_WORD) > 0 and
+                    word64(SYNTHETIC_SYSTICK_IRQ_CYCLES_WORD) <= window_irq),
+                "synthetic_first_scheduler_attribution": (
+                    words[TASK_TRACE_SNAPSHOT_STATUS_WORD] == 0 and
+                    word64(TASK_TRACE_FIRST_IN_WORD) == 1 and
+                    word64(TASK_TRACE_OUT_BEFORE_FIRST_IN_WORD) == 0 and
+                    words[TASK_TRACE_FIRST_IDENTITY_WORD] != 0 and
+                    word64(TASK_TRACE_OUT_TOTAL_WORD) >= 2 and
+                    word64(TASK_TRACE_IN_TOTAL_WORD) >= 3 and
+                    word64(TASK_TRACE_IDLE_IN_WORD) > 0),
                 "synthetic_conservation": (
                     word64(WINDOW_CYCLES_WORD) == window_task + window_irq + window_idle +
                     window_unclassified),

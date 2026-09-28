@@ -27,7 +27,7 @@ class R4EvidenceTests(unittest.TestCase):
         self.assertFalse(verdict["checks"]["no_invariant_failure"])
 
     def test_synthetic_case_requires_machine_readable_extension(self) -> None:
-        words = [0] * 140
+        words = [0] * (EVIDENCE.SYNTHETIC_SYSTICK_IRQ_CYCLES_WORD + 2)
         words[:11] = [EVIDENCE.MAGIC, 6, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
                       0, 0, EVIDENCE.COMPLETE]
         words[EVIDENCE.SYNTHETIC_CREATE_MASK_WORD] = 3
@@ -38,8 +38,15 @@ class R4EvidenceTests(unittest.TestCase):
         words[EVIDENCE.SYNTHETIC_A_CYCLES_WORD] = 300
         words[EVIDENCE.SYNTHETIC_B_CYCLES_WORD] = 100
         words[EVIDENCE.SYNTHETIC_WINDOW_TASK_WORD] = 1000
+        words[EVIDENCE.SYNTHETIC_WINDOW_IRQ_WORD] = 10
         words[EVIDENCE.SYNTHETIC_WINDOW_IDLE_WORD] = 200
-        words[EVIDENCE.WINDOW_CYCLES_WORD] = 1200
+        words[EVIDENCE.WINDOW_CYCLES_WORD] = 1210
+        words[EVIDENCE.TASK_TRACE_FIRST_IN_WORD] = 1
+        words[EVIDENCE.TASK_TRACE_OUT_TOTAL_WORD] = 2
+        words[EVIDENCE.TASK_TRACE_IN_TOTAL_WORD] = 3
+        words[EVIDENCE.TASK_TRACE_IDLE_IN_WORD] = 1
+        words[EVIDENCE.TASK_TRACE_FIRST_IDENTITY_WORD] = 1
+        words[EVIDENCE.SYNTHETIC_SYSTICK_IRQ_CYCLES_WORD] = 10
         verdict = EVIDENCE.evaluate("task-synthetic", words)
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["synthetic_conservation"])

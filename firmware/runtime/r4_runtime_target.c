@@ -14,6 +14,7 @@ static R4_RuntimeStatus target_boot_error = R4_RUNTIME_NOT_INITIALIZED;
 static R4_CompletionTimingSnapshot completion_timing;
 static R4_DmaTailSnapshot dma_tail;
 static R4_SysTickTraceSnapshot systick_trace;
+static R4_TaskTraceSnapshot task_trace;
 static R4_DmaWindowSnapshot dma_window;
 static R4_RuntimeHealthSnapshot runtime_health;
 static uintptr_t target_idle_task;
@@ -603,10 +604,16 @@ void R4_RuntimeTarget_TraceTaskSwitchedOut(void *task)
 {
     if ((target_idle_task != 0U) && ((uintptr_t)task == target_idle_task))
     {
+        ++task_trace.idle_switched_out_count;
         (void)Apply(R4_RUNTIME_EVENT_IDLE_SWITCHED_OUT, 0U);
     }
     else
     {
+        ++task_trace.task_switched_out_count;
+        if (task_trace.first_task_in_count == 0U)
+        {
+            ++task_trace.task_out_before_first_in_count;
+        }
         (void)Apply(R4_RUNTIME_EVENT_TASK_SWITCHED_OUT, (uintptr_t)task);
     }
 }
@@ -615,12 +622,35 @@ void R4_RuntimeTarget_TraceTaskSwitchedIn(void *task)
 {
     if ((target_idle_task != 0U) && ((uintptr_t)task == target_idle_task))
     {
+        ++task_trace.idle_switched_in_count;
         (void)Apply(R4_RUNTIME_EVENT_IDLE_SWITCHED_IN, 0U);
     }
     else
     {
+        ++task_trace.task_switched_in_count;
+        if (task_trace.first_task_in_count == 0U)
+        {
+            task_trace.first_task_in_count = 1U;
+            task_trace.first_task_identity = (uint32_t)(uintptr_t)task;
+        }
         (void)Apply(R4_RUNTIME_EVENT_TASK_SWITCHED_IN, (uintptr_t)task);
     }
+}
+
+R4_RuntimeStatus R4_RuntimeTarget_GetTaskTraceSnapshot(
+    R4_TaskTraceSnapshot *out)
+{
+    uint32_t saved_mask;
+
+    if (out == NULL)
+    {
+        return R4_RUNTIME_INVALID_ARGUMENT;
+    }
+    saved_mask = TargetSaveAndDisableBoundary();
+    *out = task_trace;
+    TargetRestoreBoundary(saved_mask);
+    return target_initialized != 0U ? R4_RuntimeLedger_GetStatus(&target_ledger) :
+        target_boot_error;
 }
 
 void R4_RuntimeTarget_TraceDmaTailYield(uint32_t higher_priority_task_woken)

@@ -436,6 +436,17 @@ static void EvaluateFormalInvariants(void)
         (g_r4_hw_result.synthetic_task_a_cycles <=
          (g_r4_hw_result.synthetic_task_b_cycles * UINT64_C(2))) ||
         (g_r4_hw_result.synthetic_window_idle_cycles == 0U) ||
+        (g_r4_hw_result.synthetic_window_irq_cycles == 0U) ||
+        (g_r4_hw_result.synthetic_systick_irq_cycles == 0U) ||
+        (g_r4_hw_result.synthetic_systick_irq_cycles >
+         g_r4_hw_result.synthetic_window_irq_cycles) ||
+        (g_r4_hw_result.task_trace_snapshot_status != ok) ||
+        (g_r4_hw_result.task_trace_first_in_count != UINT64_C(1)) ||
+        (g_r4_hw_result.task_trace_out_before_first_in_count != UINT64_C(0)) ||
+        (g_r4_hw_result.task_trace_first_identity == 0U) ||
+        (g_r4_hw_result.task_trace_out_total < UINT64_C(2)) ||
+        (g_r4_hw_result.task_trace_in_total < UINT64_C(3)) ||
+        (g_r4_hw_result.task_trace_idle_in_total == 0U) ||
         (g_r4_hw_result.window_cycles !=
          (g_r4_hw_result.synthetic_window_task_cycles +
           g_r4_hw_result.synthetic_window_irq_cycles +
@@ -792,6 +803,9 @@ static void HarnessTask(void *argument)
 #endif
 #if (R4_HW_CASE_ID == 17U)
     R4_PerturbationResponseSnapshot perturbation_response;
+#endif
+#if (R4_HW_CASE_ID == 6U)
+    R4_TaskTraceSnapshot task_trace;
 #endif
 #if (R4_HW_CASE_ID == 8U)
     R4_RuntimeHealthSnapshot tick_gap_health;
@@ -1325,6 +1339,18 @@ static void HarnessTask(void *argument)
         R4_RuntimeTarget_GetSysTickTraceSnapshot(&systick_trace);
     g_r4_hw_result.tick_systick_enter_count = systick_trace.enter_count;
     g_r4_hw_result.tick_systick_exit_count = systick_trace.exit_count;
+#if (R4_HW_CASE_ID == 6U)
+    g_r4_hw_result.task_trace_snapshot_status = (uint32_t)
+        R4_RuntimeTarget_GetTaskTraceSnapshot(&task_trace);
+    g_r4_hw_result.task_trace_first_in_count = task_trace.first_task_in_count;
+    g_r4_hw_result.task_trace_out_before_first_in_count =
+        task_trace.task_out_before_first_in_count;
+    g_r4_hw_result.task_trace_out_total = task_trace.task_switched_out_count;
+    g_r4_hw_result.task_trace_in_total = task_trace.task_switched_in_count;
+    g_r4_hw_result.task_trace_idle_out_total = task_trace.idle_switched_out_count;
+    g_r4_hw_result.task_trace_idle_in_total = task_trace.idle_switched_in_count;
+    g_r4_hw_result.task_trace_first_identity = task_trace.first_task_identity;
+#endif
 #if (R4_HW_CASE_ID == 8U)
     g_r4_hw_result.tick_gap_health_status = (uint32_t)
         R4_RuntimeTarget_GetHealthSnapshot(&tick_gap_health);
@@ -1389,6 +1415,9 @@ static void HarnessTask(void *argument)
         g_r4_hw_result.synthetic_window_idle_cycles = ledger->window_idle_cycles[0];
         g_r4_hw_result.synthetic_window_unclassified_cycles =
             ledger->window_unclassified_cycles[0];
+        g_r4_hw_result.synthetic_systick_irq_cycles = OwnerCycles(
+            ledger->window_irq_buckets[0], R4_RUNTIME_MAX_IRQ_BUCKETS,
+            (uintptr_t)15U);
 #endif
 #if (R4_HW_CASE_ID == 13U)
     /* Genuine post-close scheduling/tick activity must remain live-only. */
