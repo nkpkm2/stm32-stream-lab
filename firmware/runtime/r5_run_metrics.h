@@ -108,6 +108,8 @@ typedef struct
     R5MetricsConfig config;
     uint32_t s2;
     uint32_t next_input_sequence;
+    uint32_t pending_input_valid;
+    uint32_t pending_input_sequence;
     uint64_t last_event_serial;
     uint64_t raw_input_count;
     uint64_t ordinary_admission_attempt_count;
@@ -159,6 +161,17 @@ R5MetricsStatus R5RunMetrics_OnInput(R5RunMetrics *metrics,
 R5MetricsStatus R5RunMetrics_OnInputWithOccupancy(R5RunMetrics *metrics,
     uint32_t sequence, uint64_t irq_time, uint64_t event_serial,
     uint32_t free_available, uint32_t observed_occupancy);
+
+/* Split form for the real DMA callback.  The boundary call is always first;
+ * only a non-S2 input returns OK with a required ordinary admission decision.
+ * This prevents an S2 branch from taking a FREE token merely to learn whether
+ * it was available. */
+R5MetricsStatus R5RunMetrics_OnInputBoundary(R5RunMetrics *metrics,
+    uint32_t sequence, uint64_t irq_time, uint64_t event_serial);
+R5MetricsStatus R5RunMetrics_OnAdmissionDecision(R5RunMetrics *metrics,
+    uint32_t sequence, uint32_t free_available, uint32_t observed_occupancy);
+uint32_t R5RunMetrics_RequiresAdmissionDecision(const R5RunMetrics *metrics,
+    uint32_t sequence);
 
 /* Called at the successful COMPLETE logical-commit point in the same serial
  * domain as OnInput.  Late arrivals after cutoff cannot alter sealed outcome. */

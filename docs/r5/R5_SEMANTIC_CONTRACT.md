@@ -37,6 +37,11 @@ W6 concern and must carry this schema version rather than infer defaults.
    completion races: the earlier serial wins.  A completion after a closed
    outcome is diagnostic-only and cannot change an outcome.
 
+The core exposes this order as two APIs for the real DMA callback:
+`OnInputBoundary` followed, only if requested, by `OnAdmissionDecision`.
+Calling the latter for S2 is rejected.  The legacy combined input API is a
+thin compatibility wrapper around precisely those two operations.
+
 ## Outcome and lifecycle rules
 
 Every primary `seq` has exactly one immutable terminal outcome:

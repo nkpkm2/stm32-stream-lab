@@ -187,6 +187,39 @@ static void CaseAllCapacityDrop(void)
     CHECK(metrics.deadline_failure_rate_admitted.status == R5_METRICS_RATE_NOT_AVAILABLE);
 }
 
+static void CaseBoundaryThenAdmission(void)
+{
+    R5RunMetrics metrics;
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 1U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    CHECK(R5RunMetrics_OnInputBoundary(&metrics, 0U, 10U, 1U) ==
+        R5_METRICS_OK);
+    CHECK(metrics.window_opened == 1U);
+    CHECK(metrics.ordinary_admission_attempt_count == 0U);
+    CHECK(R5RunMetrics_RequiresAdmissionDecision(&metrics, 0U) != 0U);
+    CHECK(R5RunMetrics_OnAdmissionDecision(&metrics, 0U, 0U, 0U) ==
+        R5_METRICS_OK);
+    CHECK(metrics.drop_count == 1U);
+    CHECK(R5RunMetrics_OnInputBoundary(&metrics, 1U, 20U, 2U) ==
+        R5_METRICS_OK);
+    CHECK(metrics.window_closed == 1U);
+    CHECK(R5RunMetrics_OnAdmissionDecision(&metrics, 1U, 1U, 1U) ==
+        R5_METRICS_OK);
+    CHECK(R5RunMetrics_OnInputBoundary(&metrics, 2U, 30U, 3U) ==
+        R5_METRICS_OK);
+    CHECK(R5RunMetrics_OnAdmissionDecision(&metrics, 2U, 1U, 1U) ==
+        R5_METRICS_OK);
+    CHECK(R5RunMetrics_OnInputBoundary(&metrics, 3U, 271U, 4U) ==
+        R5_METRICS_OK);
+    CHECK(metrics.phase == R5_METRICS_OUTCOME_CLOSED);
+    CHECK(R5RunMetrics_RequiresAdmissionDecision(&metrics, 3U) == 0U);
+    CHECK(R5RunMetrics_OnAdmissionDecision(&metrics, 3U, 1U, 1U) ==
+        R5_METRICS_INVALID_STATE);
+}
+
 static void CaseCutoffWins(void)
 {
     R5RunMetrics metrics;
@@ -471,6 +504,7 @@ int main(int argc, char **argv)
     else if (strcmp(argv[1], "s1_empty") == 0) CaseS1BoundaryAdmission(0U);
     else if (strcmp(argv[1], "all_on_time") == 0) CaseAllOnTime();
     else if (strcmp(argv[1], "all_drop") == 0) CaseAllCapacityDrop();
+    else if (strcmp(argv[1], "boundary_then_admission") == 0) CaseBoundaryThenAdmission();
     else if (strcmp(argv[1], "cutoff") == 0) CaseCutoffWins();
     else if (strcmp(argv[1], "insufficient") == 0) CaseInsufficientObservation();
     else if (strcmp(argv[1], "overflow") == 0) CaseOverflowAndDuplicate();

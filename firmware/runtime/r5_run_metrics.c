@@ -171,15 +171,18 @@ R5MetricsStatus R5RunMetrics_Initialize(R5RunMetrics *metrics,
     return R5_METRICS_OK;
 }
 
-R5MetricsStatus R5RunMetrics_OnInputWithOccupancy(R5RunMetrics *metrics,
-    uint32_t sequence, uint64_t irq_time, uint64_t event_serial,
-    uint32_t free_available, uint32_t observed_occupancy)
+R5MetricsStatus R5RunMetrics_OnInputBoundary(R5RunMetrics *metrics,
+    uint32_t sequence, uint64_t irq_time, uint64_t event_serial)
 {
     uint32_t cohort_index;
     uint64_t latest_deadline;
     R5MetricsStatus status = CheckEvent(metrics, event_serial);
 
     if (status != R5_METRICS_OK) return status;
+    if (metrics->pending_input_valid != 0U)
+    {
+        return Fail(metrics, R5_METRICS_INVALID_STATE);
+    }
     if (sequence != metrics->next_input_sequence)
     {
         return Fail(metrics, R5_METRICS_SEQUENCE_ERROR);
@@ -225,6 +228,30 @@ R5MetricsStatus R5RunMetrics_OnInputWithOccupancy(R5RunMetrics *metrics,
     {
         return Fail(metrics, R5_METRICS_SEQUENCE_ERROR);
     }
+    metrics->pending_input_valid = 1U;
+    metrics->pending_input_sequence = sequence;
+    return R5_METRICS_OK;
+}
+
+uint32_t R5RunMetrics_RequiresAdmissionDecision(const R5RunMetrics *metrics,
+    uint32_t sequence)
+{
+    return ((metrics != NULL) && (metrics->phase == R5_METRICS_OPEN) &&
+        (metrics->pending_input_valid != 0U) &&
+        (metrics->pending_input_sequence == sequence)) ? 1U : 0U;
+}
+
+R5MetricsStatus R5RunMetrics_OnAdmissionDecision(R5RunMetrics *metrics,
+    uint32_t sequence, uint32_t free_available, uint32_t observed_occupancy)
+{
+    uint32_t cohort_index;
+
+    if (R5RunMetrics_RequiresAdmissionDecision(metrics, sequence) == 0U)
+    {
+        return metrics == NULL ? R5_METRICS_INVALID_ARGUMENT :
+            R5_METRICS_INVALID_STATE;
+    }
+    metrics->pending_input_valid = 0U;
     /* Every ordinary admission attempt contributes one arrival-observed Q.
      * S2 returned above and therefore contributes none. */
     RecordOccupancy(metrics, observed_occupancy);
@@ -256,6 +283,22 @@ R5MetricsStatus R5RunMetrics_OnInputWithOccupancy(R5RunMetrics *metrics,
         }
     }
     return R5_METRICS_OK;
+}
+
+R5MetricsStatus R5RunMetrics_OnInputWithOccupancy(R5RunMetrics *metrics,
+    uint32_t sequence, uint64_t irq_time, uint64_t event_serial,
+    uint32_t free_available, uint32_t observed_occupancy)
+{
+    R5MetricsStatus status = R5RunMetrics_OnInputBoundary(metrics, sequence,
+        irq_time, event_serial);
+
+    if ((status != R5_METRICS_OK) ||
+        (R5RunMetrics_RequiresAdmissionDecision(metrics, sequence) == 0U))
+    {
+        return status;
+    }
+    return R5RunMetrics_OnAdmissionDecision(metrics, sequence, free_available,
+        observed_occupancy);
 }
 
 R5MetricsStatus R5RunMetrics_OnInput(R5RunMetrics *metrics,
