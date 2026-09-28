@@ -558,12 +558,14 @@ if(STREAM_LAB_R5_METRICS)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE STREAM_LAB_R5_METRICS=1)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_run_metrics.c"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_result_store.c")
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_result_store.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_observer.c")
     target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime")
     set_source_files_properties(
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_run_metrics.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_result_store.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../runtime/r5_observer.c"
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
 endif()
 
