@@ -184,6 +184,8 @@ CASES = {
     "mask-timing": ("MASK_TIMING", 15, 0, 8),
     "combined-service": ("COMBINED_SERVICE", 16, 65000, 75),
     "perturbation-ab": ("PERTURBATION_AB", 17, 65000, 75),
+    "r2-normal-anchor": ("R2_NORMAL_ANCHOR", 18, 65000, 75),
+    "r2-drop-anchor": ("R2_DROP_ANCHOR", 19, 65000, 75),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -645,6 +647,33 @@ def evaluate(case: str, words: list[int], accounting: str | None = None) -> dict
                          TARGET_WINDOW_TASK_WORD, TARGET_WINDOW_IRQ_WORD,
                          TARGET_WINDOW_IDLE_WORD, TARGET_WINDOW_UNCLASSIFIED_WORD))))
             })
+    if case in ("r2-normal-anchor", "r2-drop-anchor"):
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        checks.update({
+            "r2_anchor_dma_population": (
+                words[25] == 0 and words[26] == 0 and words[27] == 0 and
+                words[T12_SOAK_CONFIGURED_MS_WORD] >= 60000 and
+                word64(T12_DMA_IRQ_COUNT_WORD) >= 50000),
+            "r2_anchor_health": (
+                words[T12_HEALTH_STATUS_WORD] == 0 and
+                words[T12_HEALTH_FIRST_FAULT_WORD] == 0 and
+                words[T12_HEALTH_FAIL_CLOSED_WORD] == 0),
+            "r2_anchor_driver": (
+                words[PERTURBATION_DRIVER_COMPLETIONS_WORD] >= 50000 and
+                words[PERTURBATION_DRIVER_REBIND_WORD] > 0 and
+                words[PERTURBATION_DRIVER_FAILURE_WORD] == 0 and
+                words[PERTURBATION_RUNTIME_FAULT_WORD] == 0),
+            "r2_normal_path" if case == "r2-normal-anchor" else "r2_drop_path": (
+                (words[PERTURBATION_DRIVER_KEEP_WORD] == 0 and
+                 words[PERTURBATION_PROCESSING_WAKE_WORD] > 0 and
+                 words[PERTURBATION_PROCESSING_COMPLETE_WORD] > 0)
+                if case == "r2-normal-anchor" else
+                (words[PERTURBATION_DRIVER_KEEP_WORD] > 0 and
+                 words[PERTURBATION_PROCESSING_WAKE_WORD] == 0 and
+                 words[PERTURBATION_PROCESSING_COMPLETE_WORD] == 0)),
+        })
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
             "selector": selector, "prefix_words": [f"0x{word:08X}" for word in words[:PREFIX_WORDS]]}
 

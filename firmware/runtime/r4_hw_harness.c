@@ -280,7 +280,7 @@ static void EvaluateFormalInvariants(void)
 {
     const uint32_t ok = (uint32_t)R4_RUNTIME_OK;
     const uint32_t tick_ok = (uint32_t)R4_TICK_SERVICE_OK;
-#if (R4_HW_CASE_ID == 17U)
+#if (R4_HW_CASE_ID == 17U) || (R4_HW_CASE_ID == 18U) || (R4_HW_CASE_ID == 19U)
     (void)tick_ok;
 #endif
 
@@ -641,6 +641,33 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
+#elif (R4_HW_CASE_ID == 18U) || (R4_HW_CASE_ID == 19U)
+    /* These are the representative R2 non-regression anchors under the
+     * production R4 profile.  Counters are captured while the stream is
+     * still live; after Stop(), the same production snapshot must prove
+     * ownership and DMA cleanup before the target reports PASS. */
+    if ((g_r4_hw_result.lifecycle_init_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_start_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.lifecycle_stop_status != (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.soak_configured_ms < 60000U) ||
+        (g_r4_hw_result.dma_irq_count < UINT64_C(50000)) ||
+        (g_r4_hw_result.perturbation_driver_completions < 50000U) ||
+        (g_r4_hw_result.perturbation_driver_rebind == 0U) ||
+        (g_r4_hw_result.perturbation_driver_failure != 0U) ||
+        (g_r4_hw_result.perturbation_runtime_fault != 0U) ||
+        (g_r4_hw_result.health_first_fault != 0U) ||
+        (g_r4_hw_result.health_fail_closed_requested != 0U) ||
+        ((R4_HW_CASE_ID == 18U) &&
+         ((g_r4_hw_result.perturbation_driver_keep != 0U) ||
+          (g_r4_hw_result.perturbation_processing_wake == 0U) ||
+          (g_r4_hw_result.perturbation_processing_complete == 0U))) ||
+        ((R4_HW_CASE_ID == 19U) &&
+         ((g_r4_hw_result.perturbation_driver_keep == 0U) ||
+          (g_r4_hw_result.perturbation_processing_wake != 0U) ||
+          (g_r4_hw_result.perturbation_processing_complete != 0U))))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -721,7 +748,8 @@ static void HarnessTask(void *argument)
     R4_CompletionTimingSnapshot timing;
 #endif
 #if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U) || \
-    (R4_HW_CASE_ID == 12U) || (R4_HW_CASE_ID == 16U) || (R4_HW_CASE_ID == 17U)
+    (R4_HW_CASE_ID == 12U) || (R4_HW_CASE_ID == 16U) || (R4_HW_CASE_ID == 17U) || \
+    (R4_HW_CASE_ID == 18U) || (R4_HW_CASE_ID == 19U)
     R3W3RuntimeConfig config;
     R3LifecycleStartRequest start;
     R3LifecycleStartTicket ticket;
@@ -738,8 +766,10 @@ static void HarnessTask(void *argument)
     R3W3RuntimeSnapshot runtime_snapshot;
     uint32_t dma_window_wait_tick;
 #endif
-#if (R4_HW_CASE_ID == 17U)
+#if (R4_HW_CASE_ID == 17U) || (R4_HW_CASE_ID == 18U) || (R4_HW_CASE_ID == 19U)
     R3W3RuntimeSnapshot runtime_snapshot;
+#endif
+#if (R4_HW_CASE_ID == 17U)
     R4_PerturbationResponseSnapshot perturbation_response;
 #endif
 #if (R4_HW_CASE_ID == 8U)
@@ -953,13 +983,17 @@ static void HarnessTask(void *argument)
     vTaskDelay(pdMS_TO_TICKS(2U));
 #endif
 #if (R4_HW_CASE_ID == 1U) || (R4_HW_CASE_ID == 5U) || (R4_HW_CASE_ID == 7U) || \
-    (R4_HW_CASE_ID == 12U) || (R4_HW_CASE_ID == 16U) || (R4_HW_CASE_ID == 17U)
+    (R4_HW_CASE_ID == 12U) || (R4_HW_CASE_ID == 16U) || (R4_HW_CASE_ID == 17U) || \
+    (R4_HW_CASE_ID == 18U) || (R4_HW_CASE_ID == 19U)
     (void)memset(&config, 0, sizeof(config));
 #if (R4_HW_CASE_ID == 17U)
     R4_PerturbationTarget_Reset();
 #endif
     config.boot_id = R4_HW_BOOT;
-    config.k = 4U;
+    config.k = R4_HW_CASE_ID == 18U ? 8U : R4_HW_CASE_ID == 19U ? 1U : 4U;
+#if (R4_HW_CASE_ID == 19U)
+    config.suppress_processing_notify = 1U;
+#endif
 #if (R4_HW_CASE_ID == 17U)
     config.processing_work_iterations = R4_HW_PERTURBATION_WORK_ITERATIONS;
 #endif
@@ -973,7 +1007,7 @@ static void HarnessTask(void *argument)
         start.boot_id = R4_HW_BOOT;
         start.request_id = 1U;
         start.generation = 1U;
-        start.configuration_id = 4U;
+        start.configuration_id = config.k;
         g_r4_hw_result.lifecycle_start_status =
             (uint32_t)R3W3Runtime_Start(&start, &ticket);
         if (g_r4_hw_result.lifecycle_start_status == (uint32_t)R3_W3_RUNTIME_OK)
@@ -1062,6 +1096,21 @@ static void HarnessTask(void *argument)
                 health.max_monitor_interval_cycles;
             g_r4_hw_result.health_monitor_interval_limit_cycles =
                 health.monitor_interval_limit_cycles;
+            /* Capture the data-plane state while the stream remains live,
+             * immediately before the STOP transaction. */
+#if (R4_HW_CASE_ID == 17U) || (R4_HW_CASE_ID == 18U) || (R4_HW_CASE_ID == 19U)
+            if (R3W3Runtime_GetSnapshot(&runtime_snapshot) == R3_W3_RUNTIME_OK)
+            {
+                g_r4_hw_result.perturbation_driver_completions = runtime_snapshot.driver.completion_count;
+                g_r4_hw_result.perturbation_driver_keep = runtime_snapshot.driver.inactive_keep_success_count;
+                g_r4_hw_result.perturbation_driver_rebind = runtime_snapshot.driver.inactive_rebind_success_count;
+                g_r4_hw_result.perturbation_driver_failure = runtime_snapshot.driver.inactive_failure_count + runtime_snapshot.driver.dma_error_count;
+                g_r4_hw_result.perturbation_processing_wake = runtime_snapshot.workers.processing_wake_count;
+                g_r4_hw_result.perturbation_processing_complete = runtime_snapshot.workers.processing_complete_count;
+                g_r4_hw_result.perturbation_processing_cancel = runtime_snapshot.workers.processing_cancel_count;
+                g_r4_hw_result.perturbation_runtime_fault = runtime_snapshot.runtime_fault;
+            }
+#endif
             vTaskDelay(pdMS_TO_TICKS(20U));
             stop.stream_ticket = ticket.stream_ticket;
             stop.stop_id = UINT32_C(0x52340002);
