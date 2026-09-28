@@ -42,6 +42,14 @@
 #if defined(STREAM_LAB_R4_RUNTIME)
 #include "r4_runtime_target.h"
 #endif
+#elif defined(STREAM_LAB_R5_HW)
+/* The synthetic R5 target profile starts the FreeRTOS scheduler even though
+ * it does not install the R3 lifecycle runtime.  TIM7 still declares the
+ * common-tail wake variable, and the generated DMA vector remains owned by
+ * the baseline R1 acquisition handler. */
+#include "FreeRTOS.h"
+#include "task.h"
+#include "r1_acquisition.h"
 #else
 #include "r1_acquisition.h"
 #endif
@@ -214,9 +222,9 @@ void EXTI15_10_IRQHandler(void)
   */
 void TIM7_IRQHandler(void)
 {
-  BaseType_t higher_priority_task_woken = pdFALSE;
   /* USER CODE BEGIN TIM7_IRQn 0 */
 #if defined(STREAM_LAB_R4_RUNTIME)
+  BaseType_t higher_priority_task_woken = pdFALSE;
   traceISR_ENTER();
 #if defined(STREAM_LAB_R4_HW)
   R4_RuntimeTarget_TestPendHighFromLowIrq();
