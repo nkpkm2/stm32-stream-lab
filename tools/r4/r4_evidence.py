@@ -967,11 +967,13 @@ def import_perturbation_suite(args: argparse.Namespace) -> int:
 
 
 def selftest(_: argparse.Namespace) -> int:
-    words = [MAGIC, 1, SCHEMA, 1, 0, 0, 0, 0, 0, 0, COMPLETE]
-    if evaluate("t12-soak-a", words)["result"] != "PASS":
+    # Use a prefix-only case.  T12 intentionally has target-extension gates,
+    # so an eleven-word parser smoke vector must not claim it is a T12 PASS.
+    words = [MAGIC, 5, SCHEMA, 1, 0, 0, 0, 0, 0, 0, COMPLETE]
+    if evaluate("t04-commit-budget-a", words)["result"] != "PASS":
         raise EvidenceError("positive parser self-test failed")
     words[4] = 1
-    if evaluate("t12-soak-a", words)["result"] != "FAIL":
+    if evaluate("t04-commit-budget-a", words)["result"] != "FAIL":
         raise EvidenceError("negative parser self-test failed")
     print("PASS")
     return 0
