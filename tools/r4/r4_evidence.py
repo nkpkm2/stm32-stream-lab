@@ -188,6 +188,18 @@ TASK_TRACE_IDLE_OUT_WORD = 388
 TASK_TRACE_IDLE_IN_WORD = 390
 TASK_TRACE_FIRST_IDENTITY_WORD = 392
 SYNTHETIC_SYSTICK_IRQ_CYCLES_WORD = 394
+CUTOFF_NESTED_ARM_STATUS_WORD = 396
+CUTOFF_POST_CLOSE_ARM_STATUS_WORD = 397
+CUTOFF_POST_CLOSE_CHECKPOINT_STATUS_WORD = 398
+CUTOFF_WINDOW_SEALED_WORD = 399
+CUTOFF_FORMAL_WINDOW_BEFORE_WORD = 400
+CUTOFF_FORMAL_WINDOW_AFTER_WORD = 402
+CUTOFF_LIVE_BEFORE_WORD = 404
+CUTOFF_LIVE_AFTER_WORD = 406
+CUTOFF_LOW_IRQ_CYCLES_WORD = 408
+CUTOFF_HIGH_IRQ_CYCLES_WORD = 410
+CUTOFF_IRQ_DEPTH_WORD = 412
+CUTOFF_RUNTIME_STATUS_WORD = 413
 CASES = {
     "t12-soak-a": ("T12_SOAK", 1, 65000, 75),
     "t12-soak-b": ("T12_SOAK", 1, 65000, 75),
@@ -212,6 +224,7 @@ CASES = {
     "perturbation-ab": ("PERTURBATION_AB", 17, 65000, 75),
     "r2-normal-anchor": ("R2_NORMAL_ANCHOR", 18, 65000, 75),
     "r2-drop-anchor": ("R2_DROP_ANCHOR", 19, 65000, 75),
+    "cutoff-live": ("CUTOFF_LIVE", 20, 0, 8),
 }
 PROGRAMMER = Path(r"E:\DevTools\STM32CubeProgrammer-2.23.0\bin\STM32_Programmer_CLI.exe")
 CMAKE = Path(r"E:\DevTools\STM32CubeCLT-1.22.0\CMake\bin\cmake.exe")
@@ -590,6 +603,31 @@ def evaluate(case: str, words: list[int], accounting: str | None = None) -> dict
                 word64(T17_WINDOW_AT_CLOSE_WORD) > 0 and
                 word64(T17_WINDOW_AFTER_CLOSE_WORD) ==
                 word64(T17_WINDOW_AT_CLOSE_WORD))
+    if case == "cutoff-live":
+        def word64(index: int) -> int:
+            return words[index] | (words[index + 1] << 32)
+
+        if len(words) <= CUTOFF_RUNTIME_STATUS_WORD:
+            checks["cutoff_live_extension_present"] = False
+        else:
+            checks.update({
+                "cutoff_nested_irq_before_close": (
+                    words[CUTOFF_NESTED_ARM_STATUS_WORD] == 0 and
+                    word64(CUTOFF_LOW_IRQ_CYCLES_WORD) > 0 and
+                    word64(CUTOFF_HIGH_IRQ_CYCLES_WORD) > 0),
+                "cutoff_formal_window_frozen_once": (
+                    words[CUTOFF_WINDOW_SEALED_WORD] == 1 and
+                    word64(CUTOFF_FORMAL_WINDOW_BEFORE_WORD) > 0 and
+                    word64(CUTOFF_FORMAL_WINDOW_AFTER_WORD) ==
+                    word64(CUTOFF_FORMAL_WINDOW_BEFORE_WORD)),
+                "cutoff_live_continues_after_close": (
+                    words[CUTOFF_POST_CLOSE_ARM_STATUS_WORD] == 0 and
+                    words[CUTOFF_POST_CLOSE_CHECKPOINT_STATUS_WORD] == 0 and
+                    word64(CUTOFF_LIVE_AFTER_WORD) > word64(CUTOFF_LIVE_BEFORE_WORD)),
+                "cutoff_no_duplicate_ownership": (
+                    words[CUTOFF_IRQ_DEPTH_WORD] == 0 and
+                    words[CUTOFF_RUNTIME_STATUS_WORD] == 0),
+            })
     if case == "response-synthetic":
         def word64(index: int) -> int:
             return words[index] | (words[index + 1] << 32)

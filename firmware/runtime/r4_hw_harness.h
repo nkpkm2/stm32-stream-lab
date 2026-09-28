@@ -182,6 +182,20 @@ extern "C" {
 #define R4_HW_TASK_TRACE_IDLE_IN_WORD 390U
 #define R4_HW_TASK_TRACE_FIRST_IDENTITY_WORD 392U
 #define R4_HW_SYNTHETIC_SYSTICK_IRQ_CYCLES_WORD 394U
+/* F2-B/F2-C directed cutoff witness.  These append-only fields record a
+ * real nested IRQ before CLOSE and real activity after CLOSE. */
+#define R4_HW_CUTOFF_NESTED_ARM_STATUS_WORD 396U
+#define R4_HW_CUTOFF_POST_CLOSE_ARM_STATUS_WORD 397U
+#define R4_HW_CUTOFF_POST_CLOSE_CHECKPOINT_STATUS_WORD 398U
+#define R4_HW_CUTOFF_WINDOW_SEALED_WORD 399U
+#define R4_HW_CUTOFF_FORMAL_WINDOW_BEFORE_WORD 400U
+#define R4_HW_CUTOFF_FORMAL_WINDOW_AFTER_WORD 402U
+#define R4_HW_CUTOFF_LIVE_BEFORE_WORD 404U
+#define R4_HW_CUTOFF_LIVE_AFTER_WORD 406U
+#define R4_HW_CUTOFF_LOW_IRQ_CYCLES_WORD 408U
+#define R4_HW_CUTOFF_HIGH_IRQ_CYCLES_WORD 410U
+#define R4_HW_CUTOFF_IRQ_DEPTH_WORD 412U
+#define R4_HW_CUTOFF_RUNTIME_STATUS_WORD 413U
 
 #define R4_HW_PERTURBATION_PROFILE_MINIMAL 0U
 #define R4_HW_PERTURBATION_PROFILE_R4 1U
@@ -414,6 +428,18 @@ typedef struct
     uint64_t task_trace_idle_in_total;
     uint32_t task_trace_first_identity;
     uint64_t synthetic_systick_irq_cycles;
+    uint32_t cutoff_nested_arm_status;
+    uint32_t cutoff_post_close_arm_status;
+    uint32_t cutoff_post_close_checkpoint_status;
+    uint32_t cutoff_window_sealed;
+    uint64_t cutoff_formal_window_before;
+    uint64_t cutoff_formal_window_after;
+    uint64_t cutoff_live_before;
+    uint64_t cutoff_live_after;
+    uint64_t cutoff_low_irq_cycles;
+    uint64_t cutoff_high_irq_cycles;
+    uint32_t cutoff_irq_depth;
+    uint32_t cutoff_runtime_status;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -440,6 +466,15 @@ _Static_assert(offsetof(R4HwHarnessResult, task_trace_snapshot_status) ==
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_systick_irq_cycles) ==
     (R4_HW_SYNTHETIC_SYSTICK_IRQ_CYCLES_WORD * sizeof(uint32_t)),
     "R4 synthetic SysTick evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, cutoff_nested_arm_status) ==
+    (R4_HW_CUTOFF_NESTED_ARM_STATUS_WORD * sizeof(uint32_t)),
+    "R4 cutoff nested-arm evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, cutoff_formal_window_before) ==
+    (R4_HW_CUTOFF_FORMAL_WINDOW_BEFORE_WORD * sizeof(uint32_t)),
+    "R4 cutoff formal-before evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, cutoff_runtime_status) ==
+    (R4_HW_CUTOFF_RUNTIME_STATUS_WORD * sizeof(uint32_t)),
+    "R4 cutoff runtime-status evidence word offset changed");
 _Static_assert(offsetof(R4HwHarnessResult, dma_window_snapshot_status) ==
     (R4_HW_DMA_WINDOW_SNAPSHOT_WORD * sizeof(uint32_t)),
     "R4 DMA-window evidence word offset changed");

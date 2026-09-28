@@ -217,6 +217,22 @@ class R4EvidenceTests(unittest.TestCase):
         self.assertEqual(verdict["result"], "PASS")
         self.assertTrue(verdict["checks"]["target_window_conservation"])
 
+    def test_cutoff_live_requires_nested_preclose_and_live_progress(self) -> None:
+        words = [0] * 414
+        words[:11] = [EVIDENCE.MAGIC, 20, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[EVIDENCE.CUTOFF_WINDOW_SEALED_WORD] = 1
+        words[EVIDENCE.CUTOFF_FORMAL_WINDOW_BEFORE_WORD] = 100
+        words[EVIDENCE.CUTOFF_FORMAL_WINDOW_AFTER_WORD] = 100
+        words[EVIDENCE.CUTOFF_LIVE_BEFORE_WORD] = 100
+        words[EVIDENCE.CUTOFF_LIVE_AFTER_WORD] = 120
+        words[EVIDENCE.CUTOFF_LOW_IRQ_CYCLES_WORD] = 10
+        words[EVIDENCE.CUTOFF_HIGH_IRQ_CYCLES_WORD] = 10
+        verdict = EVIDENCE.evaluate("cutoff-live", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["cutoff_formal_window_frozen_once"])
+        self.assertTrue(verdict["checks"]["cutoff_live_continues_after_close"])
+
     def test_response_synthetic_requires_independent_wall_and_owner_evidence(self) -> None:
         words = [0] * 234
         words[:11] = [EVIDENCE.MAGIC, 14, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,

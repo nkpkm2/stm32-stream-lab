@@ -130,6 +130,29 @@ static uint64_t OwnerCycles(const R4_RuntimeOwnerBucket *buckets,
 }
 #endif
 
+#if (R4_HW_CASE_ID == 20U)
+static uint64_t LiveCycles(const R4_RuntimeLedger *ledger)
+{
+    return ledger->task_cycles + ledger->irq_cycles + ledger->idle_cycles +
+        ledger->unclassified_cycles;
+}
+
+static uint64_t OwnerCycles(const R4_RuntimeOwnerBucket *buckets,
+    uint32_t capacity, uintptr_t identity)
+{
+    uint32_t index;
+
+    for (index = 0U; index < capacity; ++index)
+    {
+        if (buckets[index].identity == identity)
+        {
+            return buckets[index].cycles;
+        }
+    }
+    return 0U;
+}
+#endif
+
 #if (R4_HW_CASE_ID == 9U)
 static void SummarizeSamples(uint32_t *samples, uint32_t count,
     volatile uint64_t *minimum, volatile uint64_t *median,
@@ -700,6 +723,22 @@ static void EvaluateFormalInvariants(void)
     {
         FailInvariant(R4_HW_INVARIANT_CASE);
     }
+#elif (R4_HW_CASE_ID == 20U)
+    if ((g_r4_hw_result.cutoff_nested_arm_status != ok) ||
+        (g_r4_hw_result.cutoff_post_close_arm_status != ok) ||
+        (g_r4_hw_result.cutoff_post_close_checkpoint_status != ok) ||
+        (g_r4_hw_result.cutoff_window_sealed != 1U) ||
+        (g_r4_hw_result.cutoff_formal_window_before == 0U) ||
+        (g_r4_hw_result.cutoff_formal_window_after !=
+         g_r4_hw_result.cutoff_formal_window_before) ||
+        (g_r4_hw_result.cutoff_live_after <= g_r4_hw_result.cutoff_live_before) ||
+        (g_r4_hw_result.cutoff_low_irq_cycles == 0U) ||
+        (g_r4_hw_result.cutoff_high_irq_cycles == 0U) ||
+        (g_r4_hw_result.cutoff_irq_depth != 0U) ||
+        (g_r4_hw_result.cutoff_runtime_status != ok))
+    {
+        FailInvariant(R4_HW_INVARIANT_CASE);
+    }
 #endif
     g_r4_hw_result.terminal_pass =
         g_r4_hw_result.invariant_failure_mask == 0U ? 1U : 0U;
@@ -973,6 +1012,24 @@ static void HarnessTask(void *argument)
             ledger->irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
             (uintptr_t)TIM7_IRQn + 16U);
         g_r4_hw_result.t17_high_irq_cycles_after = OwnerCycles(
+            ledger->irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
+            (uintptr_t)TIM6_DAC_IRQn + 16U);
+    }
+#endif
+#if (R4_HW_CASE_ID == 20U)
+    /* A real TIM7 -> TIM6 nesting occurs while the harness task owns the
+     * active runtime context.  The wait only permits the pended vectors to
+     * execute; it does not fabricate a RuntimeEvent transition. */
+    g_r4_hw_result.cutoff_nested_arm_status =
+        (uint32_t)R4_RuntimeTarget_TestArmNestedIrq();
+    vTaskDelay(pdMS_TO_TICKS(2U));
+    ledger = R4_RuntimeTarget_GetLedger();
+    if (ledger != NULL)
+    {
+        g_r4_hw_result.cutoff_low_irq_cycles = OwnerCycles(
+            ledger->irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
+            (uintptr_t)TIM7_IRQn + 16U);
+        g_r4_hw_result.cutoff_high_irq_cycles = OwnerCycles(
             ledger->irq_buckets, R4_RUNTIME_MAX_IRQ_BUCKETS,
             (uintptr_t)TIM6_DAC_IRQn + 16U);
     }
@@ -1308,11 +1365,34 @@ static void HarnessTask(void *argument)
     if (ledger != NULL)
     {
         g_r4_hw_result.t17_window_cycles_at_close = ledger->window_cycles[0];
+#if (R4_HW_CASE_ID == 20U)
+        g_r4_hw_result.cutoff_formal_window_before = ledger->window_cycles[0];
+        g_r4_hw_result.cutoff_live_before = LiveCycles(ledger);
+        g_r4_hw_result.cutoff_window_sealed = ledger->window_sealed[0];
+#endif
     }
     /* A post-close settlement may update global ownership totals, but never
      * the sealed window field. */
     g_r4_hw_result.t17_post_close_status =
         (uint32_t)R4_RuntimeTarget_Checkpoint();
+#if (R4_HW_CASE_ID == 20U)
+    /* The next real IRQ is pended only while the production checkpoint has
+     * PRIMASK raised.  Subsequent tick/scheduling activity is live-only. */
+    g_r4_hw_result.cutoff_post_close_arm_status =
+        (uint32_t)R4_RuntimeTarget_TestArmPendingIrq();
+    g_r4_hw_result.cutoff_post_close_checkpoint_status =
+        (uint32_t)R4_RuntimeTarget_Checkpoint();
+    vTaskDelay(pdMS_TO_TICKS(2U));
+    ledger = R4_RuntimeTarget_GetLedger();
+    if (ledger != NULL)
+    {
+        g_r4_hw_result.cutoff_formal_window_after = ledger->window_cycles[0];
+        g_r4_hw_result.cutoff_live_after = LiveCycles(ledger);
+        g_r4_hw_result.cutoff_irq_depth = ledger->irq_depth;
+        g_r4_hw_result.cutoff_runtime_status =
+            (uint32_t)R4_RuntimeLedger_GetStatus(ledger);
+    }
+#endif
 #if (R4_HW_CASE_ID == 13U) || (R4_HW_CASE_ID == 14U)
     /* Require real SysTick/tick-hook activity after CLOSE before taking the
      * formal snapshot.  Those events are live-only and must not reopen or

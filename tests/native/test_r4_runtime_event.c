@@ -247,6 +247,32 @@ static void CaseWindowOwnerAttribution(void)
     CHECK(ledger.irq_cycles == 10U);
 }
 
+static void CaseNestedCutoffLiveSplit(void)
+{
+    FakePlatform platform = { 0U, 0U, 0U, 0U };
+    R4_Clock64 clock;
+    R4_RuntimeLedger ledger = NewLedger(&platform, &clock);
+    uint64_t formal_before;
+    uint64_t live_before;
+
+    CHECK(Apply(&ledger, &platform, 10U, R4_RUNTIME_EVENT_WINDOW_OPEN, 0U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 15U, R4_RUNTIME_EVENT_IRQ_ENTER, 41U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 20U, R4_RUNTIME_EVENT_IRQ_ENTER, 42U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 25U, R4_RUNTIME_EVENT_IRQ_EXIT, 42U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 30U, R4_RUNTIME_EVENT_IRQ_EXIT, 41U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 35U, R4_RUNTIME_EVENT_WINDOW_CLOSE, 0U) == R4_RUNTIME_OK);
+    formal_before = ledger.window_cycles[0];
+    live_before = ledger.task_cycles + ledger.irq_cycles + ledger.idle_cycles + ledger.unclassified_cycles;
+    CHECK(ledger.window_sealed[0] == 1U);
+    CHECK(Apply(&ledger, &platform, 40U, R4_RUNTIME_EVENT_CHECKPOINT, 0U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 45U, R4_RUNTIME_EVENT_IRQ_ENTER, 43U) == R4_RUNTIME_OK);
+    CHECK(Apply(&ledger, &platform, 50U, R4_RUNTIME_EVENT_IRQ_EXIT, 43U) == R4_RUNTIME_OK);
+    CHECK(ledger.window_cycles[0] == formal_before);
+    CHECK((ledger.task_cycles + ledger.irq_cycles + ledger.idle_cycles + ledger.unclassified_cycles) > live_before);
+    CHECK(ledger.irq_depth == 0U);
+    CHECK(R4_RuntimeLedger_GetStatus(&ledger) == R4_RUNTIME_OK);
+}
+
 static void CaseWindowEntirelyOutside(void)
 {
     FakePlatform platform = { 0U, 0U, 0U, 0U };
@@ -492,6 +518,10 @@ static void RunCase(const char *name)
     else if (strcmp(name, "window_owner") == 0)
     {
         CaseWindowOwnerAttribution();
+    }
+    else if (strcmp(name, "nested_cutoff_live") == 0)
+    {
+        CaseNestedCutoffLiveSplit();
     }
     else if (strcmp(name, "idle_irq") == 0)
     {
