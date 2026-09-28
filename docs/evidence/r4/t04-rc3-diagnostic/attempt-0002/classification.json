@@ -1,0 +1,26 @@
+{
+  "attempt_id": "r4-t04-rc3-diagnostic-ctmfkot0",
+  "classification": "VALID_DIAGNOSTIC_SAME_EVENT_WITNESS",
+  "diagnostic_result": "PASS",
+  "formal_t04_acceptance": false,
+  "hardware_retry_performed": false,
+  "identity": {
+    "elf_sha256": "E3C798E69D978C4179A34B2E89E2F5DB4159E79FB988EE29466841CDEA033064",
+    "programmed_image_sha256": "85E9F6A656ED8E4D1DFCCD678F60FBB6BFBA306A59F732ECF08C13C4F2825A33",
+    "source_commit": "828eff585a580f70d1cea8650eacc8bbaf221770"
+  },
+  "offline_decode": {
+    "complete_count": 50796,
+    "completion_ordinal": 20,
+    "operation": "COMPLETE",
+    "full_cycles": 1904,
+    "prefix_cycles": 1286,
+    "suffix_cycles": 618,
+    "full_equals_prefix_plus_suffix": true,
+    "path_flags": 31,
+    "consistency_failures": 0,
+    "non_timing_invariant_failures": 0
+  },
+  "production_t04_status": "CONFIRMED_VALID_FAIL_1919_OVER_1800",
+  "diagnostic_interpretation": "The same event identifies the successful COMPLETE path as pre-commit dominated. This is diagnostic evidence only and cannot change formal T04 acceptance."
+}

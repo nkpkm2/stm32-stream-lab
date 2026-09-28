@@ -1,0 +1,51 @@
+{
+  "checks": {
+    "case_identity": true,
+    "completed_magic": true,
+    "completion_integrity": true,
+    "diagnostic_complete_operation": true,
+    "diagnostic_consistency": true,
+    "diagnostic_exact_partition": true,
+    "diagnostic_expected_path_flags": true,
+    "diagnostic_is_full_max_event": true,
+    "diagnostic_ordinal_in_population": true,
+    "diagnostic_timestamp_order": true,
+    "diagnostic_valid": true,
+    "init_status": true,
+    "no_non_timing_invariant_failure": true,
+    "result_magic": true,
+    "schema_version": true
+  },
+  "diagnostic_only": true,
+  "diagnostic_witness": {
+    "completion_ordinal": 20,
+    "consistency_failures": 0,
+    "formal_threshold_cycles": 1800,
+    "full_cycles": 1904,
+    "operation": 3,
+    "path_flags": 31,
+    "prefix_cycles": 1286,
+    "suffix_cycles": 618,
+    "t_commit": 3544305162,
+    "t_lock": 3544303876,
+    "t_unlock": 3544305780
+  },
+  "formal_t04_acceptance": false,
+  "phase": "H4",
+  "prefix_words": [
+    "0x52344857",
+    "0x00000005",
+    "0x00000001",
+    "0x00000000",
+    "0x00000040",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x5234444E"
+  ],
+  "result": "PASS",
+  "result_address": "0x20005340",
+  "selector": "COMMIT_BUDGET"
+}

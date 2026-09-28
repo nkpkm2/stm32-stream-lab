@@ -1,0 +1,9 @@
+{
+  "case": "t04-rc3-diagnostic",
+  "clean_tree": true,
+  "git_head": "828eff585a580f70d1cea8650eacc8bbaf221770",
+  "origin_main": "828eff585a580f70d1cea8650eacc8bbaf221770",
+  "phase": "H0",
+  "probe_list_sha256": "CCCBFBE085110204EF1C7A0761CEB0C21B3CC958696744A58246C881DAC57356",
+  "result": "PASS"
+}

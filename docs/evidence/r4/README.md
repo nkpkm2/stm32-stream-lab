@@ -2,7 +2,14 @@
 
 ## Formal status
 
-R4 is **IN PROGRESS**.  The two historical SRAM captures below are useful
+R4 is **PRINCIPAL REVIEW READY WITH A PROPOSED T04 ENGINEERING DEVIATION**.
+The factual T04 production result remains a valid 1919-cycle observation over
+the 1800-cycle initial engineering target; it is not a PASS. The proposed
+deviation package preserves that result, supplies the corrected same-event
+diagnostic witness, and binds conservative cost use for R5--R7. Principal
+acceptance is still required before R4 can be closed.
+
+The two historical SRAM captures below are useful
 diagnostics, but they are not formal acceptance records: they lack a committed
 source/harness identity, a clean-tree H0 preflight, immutable phase records,
 raw command logs, and a manifest.  They must not be used to claim R4 PASS.
@@ -17,6 +24,9 @@ H0--H5, `identity.json`, `state.json`, raw command output and
 The broader Principal acceptance standard is tracked separately in the
 [`R4 Principal audit`](../../r4/R4_PRINCIPAL_ACCEPTANCE_AUDIT.md); sealed
 T12/T15/T17/timing records below close only their stated rows.
+
+* [`T04 engineering-deviation package`](../../r4/R4_T04_ENGINEERING_DEVIATION.md)
+* [`Corrected RC3 same-event diagnostic`](t04-rc3-diagnostic/attempt-0002/README.md)
 
 * [`R4 implementation candidate`](../../r4/R4_IMPLEMENTATION_AND_ACCEPTANCE.md)
 * [`IRQ and queue callsite table`](r4-callsite-table.md)

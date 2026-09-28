@@ -1,0 +1,29 @@
+{
+  "architecture": "v3.2.2",
+  "decision_path": "B_ENGINEERING_DEVIATION_PROPOSED",
+  "formal_t04_status": "CONFIRMED_VALID_FAIL_1919_OVER_1800",
+  "principal_decision_required": true,
+  "source_commit": "828eff585a580f70d1cea8650eacc8bbaf221770",
+  "same_event_diagnostic": {
+    "attempt": "../t04-rc3-diagnostic/attempt-0002",
+    "full_cycles": 1904,
+    "prefix_cycles": 1286,
+    "suffix_cycles": 618,
+    "path_flags": 31,
+    "consistency_failures": 0
+  },
+  "full_critical_engineering_bound_cycles": 8064,
+  "bound_components_cycles": {
+    "edge_pre": 4096,
+    "production_inner": 1919,
+    "edge_post": 2048
+  },
+  "cross_stage_constraints": {
+    "r5_semantics_changed": false,
+    "r6_real_cost_input": "1904 inner or 8064 full-critical ceiling as applicable; never fictional <=1800",
+    "r7_revalidation_required": true
+  },
+  "hardware_operation": "NONE",
+  "automatic_retry": "NONE",
+  "verdict": "R4_PRINCIPAL_REVIEW_READY_WITH_T04_ENGINEERING_DEVIATION_PROPOSED"
+}
