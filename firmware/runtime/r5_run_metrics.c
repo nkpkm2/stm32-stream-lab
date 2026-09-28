@@ -132,6 +132,17 @@ static uint32_t OutcomesAreConserved(const R5RunMetrics *metrics)
         (unresolved == metrics->expired_unresolved_count)) ? 1U : 0U;
 }
 
+static R5MetricsRate Rate(uint64_t numerator, uint64_t denominator)
+{
+    R5MetricsRate rate;
+
+    rate.numerator = numerator;
+    rate.denominator = denominator;
+    rate.status = denominator == 0U ? R5_METRICS_RATE_NOT_AVAILABLE :
+        R5_METRICS_RATE_RATIO;
+    return rate;
+}
+
 R5MetricsStatus R5RunMetrics_Initialize(R5RunMetrics *metrics,
     const R5MetricsConfig *config)
 {
@@ -335,11 +346,26 @@ R5MetricsStatus R5RunMetrics_Seal(R5RunMetrics *metrics,
         metrics->p99_completed_by_cutoff = ComputeP99(metrics, 0U);
         metrics->p99_all_admitted = ComputeP99(metrics,
             metrics->expired_unresolved_count != 0U ? 1U : 0U);
+        metrics->capacity_drop_rate = Rate(metrics->drop_count,
+            metrics->cohort_input_count);
+        metrics->on_time_rate = Rate(metrics->on_time_count,
+            metrics->cohort_input_count);
+        metrics->late_rate = Rate(metrics->late_completed_count,
+            metrics->cohort_input_count);
+        metrics->unresolved_rate = Rate(metrics->expired_unresolved_count,
+            metrics->cohort_input_count);
+        metrics->completion_rate = Rate(metrics->completed_count,
+            metrics->admitted_count);
     }
     else
     {
         metrics->p99_completed_by_cutoff.status = R5_METRICS_P99_NOT_AVAILABLE;
         metrics->p99_all_admitted.status = R5_METRICS_P99_NOT_AVAILABLE;
+        metrics->capacity_drop_rate.status = R5_METRICS_RATE_NOT_AVAILABLE;
+        metrics->on_time_rate.status = R5_METRICS_RATE_NOT_AVAILABLE;
+        metrics->late_rate.status = R5_METRICS_RATE_NOT_AVAILABLE;
+        metrics->unresolved_rate.status = R5_METRICS_RATE_NOT_AVAILABLE;
+        metrics->completion_rate.status = R5_METRICS_RATE_NOT_AVAILABLE;
     }
     metrics->phase = R5_METRICS_SEALED;
     return R5_METRICS_OK;

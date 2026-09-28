@@ -65,6 +65,12 @@ static void CaseKnownCohort(void)
     CHECK(snapshot.window_close_time == 510U);
     CHECK(snapshot.p99_completed_by_cutoff.status == R5_METRICS_P99_INTERVAL);
     CHECK(snapshot.p99_all_admitted.status == R5_METRICS_P99_INTERVAL);
+    CHECK(snapshot.capacity_drop_rate.status == R5_METRICS_RATE_RATIO);
+    CHECK(snapshot.capacity_drop_rate.numerator == 1U);
+    CHECK(snapshot.capacity_drop_rate.denominator == 3U);
+    CHECK(snapshot.completion_rate.status == R5_METRICS_RATE_RATIO);
+    CHECK(snapshot.completion_rate.numerator == 2U);
+    CHECK(snapshot.completion_rate.denominator == 2U);
     CHECK(R5RunMetrics_OnCompletion(&metrics, 2U, 360U, 11U) ==
         R5_METRICS_INVALID_STATE);
 }
@@ -147,6 +153,7 @@ static void CaseInsufficientObservation(void)
     CHECK(metrics.outcome_status == R5_METRICS_INSUFFICIENT_OBSERVATION);
     CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
     CHECK(metrics.p99_completed_by_cutoff.status == R5_METRICS_P99_NOT_AVAILABLE);
+    CHECK(metrics.capacity_drop_rate.status == R5_METRICS_RATE_NOT_AVAILABLE);
 }
 
 static void CaseOverflowAndDuplicate(void)

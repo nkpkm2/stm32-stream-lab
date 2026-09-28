@@ -44,6 +44,12 @@ typedef enum
     R5_METRICS_P99_CENSORED
 } R5MetricsP99Status;
 
+typedef enum
+{
+    R5_METRICS_RATE_NOT_AVAILABLE = 0,
+    R5_METRICS_RATE_RATIO
+} R5MetricsRateStatus;
+
 /* A primary slot changes monotonically from NONE to a terminal outcome, with
  * ADMITTED_PENDING as the only non-terminal state.  It lets conservation be
  * audited directly instead of inferred from unrelated counters. */
@@ -74,6 +80,13 @@ typedef struct
     uint64_t upper_cycles;
     R5MetricsP99Status status;
 } R5MetricsP99;
+
+typedef struct
+{
+    uint64_t numerator;
+    uint64_t denominator;
+    R5MetricsRateStatus status;
+} R5MetricsRate;
 
 typedef struct
 {
@@ -111,6 +124,11 @@ typedef struct
     R5MetricsOutcome cohort_outcome[R5_METRICS_MAX_COHORT_BLOCKS];
     R5MetricsP99 p99_completed_by_cutoff;
     R5MetricsP99 p99_all_admitted;
+    R5MetricsRate capacity_drop_rate;
+    R5MetricsRate on_time_rate;
+    R5MetricsRate late_rate;
+    R5MetricsRate unresolved_rate;
+    R5MetricsRate completion_rate;
 } R5RunMetrics;
 
 R5MetricsStatus R5RunMetrics_Initialize(R5RunMetrics *metrics,
