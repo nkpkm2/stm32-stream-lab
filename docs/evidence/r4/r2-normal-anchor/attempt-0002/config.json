@@ -1,0 +1,8 @@
+{
+  "accounting_profile": null,
+  "case_id": "r2-normal-anchor",
+  "case_numeric_id": 18,
+  "configured_soak_ms": 65000,
+  "selector": "R2_NORMAL_ANCHOR",
+  "work_package": "R4"
+}
