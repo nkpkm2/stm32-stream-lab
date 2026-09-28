@@ -1,0 +1,6 @@
+C:/Users/CHJ/.codex/visualizations/2026/09/27/01a0e1a1-c295-7233-b3f5-e371851ee2f5/r4-f3-t15-release/r4-t15-release-2e9qhpyh/build/CMakeFiles/cubemx.dir
+C:/Users/CHJ/.codex/visualizations/2026/09/27/01a0e1a1-c295-7233-b3f5-e371851ee2f5/r4-f3-t15-release/r4-t15-release-2e9qhpyh/build/CMakeFiles/edit_cache.dir
+C:/Users/CHJ/.codex/visualizations/2026/09/27/01a0e1a1-c295-7233-b3f5-e371851ee2f5/r4-f3-t15-release/r4-t15-release-2e9qhpyh/build/CMakeFiles/rebuild_cache.dir
+C:/Users/CHJ/.codex/visualizations/2026/09/27/01a0e1a1-c295-7233-b3f5-e371851ee2f5/r4-f3-t15-release/r4-t15-release-2e9qhpyh/build/cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir
+C:/Users/CHJ/.codex/visualizations/2026/09/27/01a0e1a1-c295-7233-b3f5-e371851ee2f5/r4-f3-t15-release/r4-t15-release-2e9qhpyh/build/cmake/stm32cubemx/CMakeFiles/edit_cache.dir
+C:/Users/CHJ/.codex/visualizations/2026/09/27/01a0e1a1-c295-7233-b3f5-e371851ee2f5/r4-f3-t15-release/r4-t15-release-2e9qhpyh/build/cmake/stm32cubemx/CMakeFiles/rebuild_cache.dir
