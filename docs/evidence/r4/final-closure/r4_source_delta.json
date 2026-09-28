@@ -1,0 +1,23 @@
+{
+  "schema_version": "r4-final-source-delta-v1",
+  "final_candidate": "8ea307a50b7954cffea76b882909b7275451ca63",
+  "rule": "A non-empty Git diff limited to the case's declared relevant source paths requires a fresh case; no semantic inference is used to reuse it.",
+  "decisions": [
+    {"case":"t12-soak-a/attempt-0002","decision":"RERUN_REQUIRED","changed_path_count":22},
+    {"case":"t15-q0/attempt-0004","decision":"RERUN_REQUIRED","changed_path_count":22},
+    {"case":"t15-release/attempt-0005","decision":"RERUN_REQUIRED","changed_path_count":22},
+    {"case":"t17-atomic/attempt-0005","decision":"RERUN_REQUIRED","changed_path_count":22},
+    {"case":"t04-commit-budget-a/attempt-0002","decision":"RERUN_REQUIRED","changed_path_count":22},
+    {"case":"mask-timing/attempt-0001","decision":"RERUN_REQUIRED","changed_path_count":22},
+    {"case":"task-synthetic/attempt-0005","decision":"RERUN_REQUIRED","changed_path_count":7},
+    {"case":"window-intersection/attempt-0001","decision":"RERUN_REQUIRED","changed_path_count":22},
+    {"case":"perturbation-ab/suite-0001","decision":"RERUN_REQUIRED","changed_path_count":22},
+    {"case":"response-synthetic/attempt-0001","decision":"RERUN_REQUIRED","changed_path_count":22},
+    {"case":"tick-gap/attempt-0001","decision":"RERUN_REQUIRED","changed_path_count":22},
+    {"case":"r2-normal-anchor/attempt-0002","decision":"RERUN_REQUIRED","changed_path_count":9},
+    {"case":"r2-drop-anchor/attempt-0002","decision":"RERUN_REQUIRED","changed_path_count":9},
+    {"case":"r3/w6-a/attempt-0003","decision":"RERUN_REQUIRED","changed_path_count":9},
+    {"case":"r3/w6-b/attempt-0003","decision":"RERUN_REQUIRED","changed_path_count":9},
+    {"case":"cutoff-live/attempt-0001","decision":"REUSE_SEALED_EVIDENCE","changed_path_count":0}
+  ]
+}
