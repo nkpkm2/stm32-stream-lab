@@ -279,3 +279,26 @@ class R4EvidenceTests(unittest.TestCase):
         words[EVIDENCE.PERTURBATION_PROFILE_WORD] = 0
         verdict = EVIDENCE.evaluate("perturbation-ab", words, "R4")
         self.assertEqual(verdict["result"], "FAIL")
+
+    def test_r2_anchor_requires_a_post_stop_ownership_witness(self) -> None:
+        words = [0] * (EVIDENCE.R2_POST_STOP_REPORT_VALID_WORD + 1)
+        words[:11] = [EVIDENCE.MAGIC, 18, EVIDENCE.SCHEMA, 1, 0, 0, 0, 0,
+                      0, 0, EVIDENCE.COMPLETE]
+        words[25:28] = [0, 0, 0]
+        words[EVIDENCE.T12_SOAK_CONFIGURED_MS_WORD] = 65000
+        words[EVIDENCE.T12_DMA_IRQ_COUNT_WORD] = 50000
+        words[EVIDENCE.T12_HEALTH_STATUS_WORD] = 0
+        words[EVIDENCE.PERTURBATION_DRIVER_COMPLETIONS_WORD] = 50000
+        words[EVIDENCE.PERTURBATION_DRIVER_REBIND_WORD] = 1
+        words[EVIDENCE.PERTURBATION_PROCESSING_WAKE_WORD] = 1
+        words[EVIDENCE.PERTURBATION_PROCESSING_COMPLETE_WORD] = 1
+        words[EVIDENCE.R2_POST_STOP_ACK_MASK_WORD] = 0x300
+        words[EVIDENCE.R2_POST_STOP_BEGIN_VALID_WORD] = 1
+        words[EVIDENCE.R2_POST_STOP_REPORT_VALID_WORD] = 1
+        verdict = EVIDENCE.evaluate("r2-normal-anchor", words)
+        self.assertEqual(verdict["result"], "PASS")
+        self.assertTrue(verdict["checks"]["r2_post_stop_quiescent"])
+        words[EVIDENCE.R2_POST_STOP_HARDWARE_OWNED_WORD] = 1
+        verdict = EVIDENCE.evaluate("r2-normal-anchor", words)
+        self.assertEqual(verdict["result"], "FAIL")
+        self.assertFalse(verdict["checks"]["r2_post_stop_quiescent"])

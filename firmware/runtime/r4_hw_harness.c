@@ -657,6 +657,24 @@ static void EvaluateFormalInvariants(void)
         (g_r4_hw_result.perturbation_runtime_fault != 0U) ||
         (g_r4_hw_result.health_first_fault != 0U) ||
         (g_r4_hw_result.health_fail_closed_requested != 0U) ||
+        (g_r4_hw_result.r2_post_stop_snapshot_status !=
+         (uint32_t)R3_W3_RUNTIME_OK) ||
+        (g_r4_hw_result.r2_post_stop_lifecycle_state != R3_LIFECYCLE_IDLE) ||
+        (g_r4_hw_result.r2_post_stop_hardware_owned != 0U) ||
+        (g_r4_hw_result.r2_post_stop_ownership_initialized != 0U) ||
+        (g_r4_hw_result.r2_post_stop_pool_active != 0U) ||
+        (g_r4_hw_result.r2_post_stop_pool_dma != 0U) ||
+        (g_r4_hw_result.r2_post_stop_pool_ready != 0U) ||
+        (g_r4_hw_result.r2_post_stop_pool_processing != 0U) ||
+        (g_r4_hw_result.r2_post_stop_slots_initialized != 0U) ||
+        (g_r4_hw_result.r2_post_stop_ack_mask != UINT32_C(0x300)) ||
+        (g_r4_hw_result.r2_post_stop_worker_faulted != 0U) ||
+        (g_r4_hw_result.r2_post_stop_runtime_fault != 0U) ||
+        (g_r4_hw_result.r2_post_stop_acquisition_gate != 0U) ||
+        (g_r4_hw_result.r2_post_stop_processing_gate != 0U) ||
+        (g_r4_hw_result.r2_post_stop_interference_gate != 0U) ||
+        (g_r4_hw_result.r2_post_stop_begin_valid != 1U) ||
+        (g_r4_hw_result.r2_post_stop_report_valid != 1U) ||
         ((R4_HW_CASE_ID == 18U) &&
          ((g_r4_hw_result.perturbation_driver_keep != 0U) ||
           (g_r4_hw_result.perturbation_processing_wake == 0U) ||
@@ -1119,6 +1137,50 @@ static void HarnessTask(void *argument)
             stop.stop_id = UINT32_C(0x52340002);
             g_r4_hw_result.lifecycle_stop_status =
                 (uint32_t)R3W3Runtime_Stop(&stop);
+#if (R4_HW_CASE_ID == 18U) || (R4_HW_CASE_ID == 19U)
+            /* STOP is not accepted merely because it returns OK.  Capture a
+             * fresh public snapshot after its transaction has completed so
+             * the target verdict proves DMA quiescence, offline ownership,
+             * closed lifecycle gates, and worker/runtime health. */
+            g_r4_hw_result.r2_post_stop_snapshot_status = (uint32_t)
+                R3W3Runtime_GetSnapshot(&runtime_snapshot);
+            if (g_r4_hw_result.r2_post_stop_snapshot_status ==
+                (uint32_t)R3_W3_RUNTIME_OK)
+            {
+                g_r4_hw_result.r2_post_stop_lifecycle_state =
+                    (uint32_t)runtime_snapshot.lifecycle.state;
+                g_r4_hw_result.r2_post_stop_hardware_owned =
+                    runtime_snapshot.driver.hardware_owned;
+                g_r4_hw_result.r2_post_stop_ownership_initialized =
+                    runtime_snapshot.ownership.initialized;
+                g_r4_hw_result.r2_post_stop_pool_active =
+                    runtime_snapshot.ownership.pool.active_count;
+                g_r4_hw_result.r2_post_stop_pool_dma =
+                    runtime_snapshot.ownership.pool.dma_owned_count;
+                g_r4_hw_result.r2_post_stop_pool_ready =
+                    runtime_snapshot.ownership.pool.ready_count;
+                g_r4_hw_result.r2_post_stop_pool_processing =
+                    runtime_snapshot.ownership.pool.processing_count;
+                g_r4_hw_result.r2_post_stop_slots_initialized =
+                    runtime_snapshot.ownership.slots.initialized;
+                g_r4_hw_result.r2_post_stop_ack_mask =
+                    runtime_snapshot.rollback_ack_mask;
+                g_r4_hw_result.r2_post_stop_worker_faulted =
+                    runtime_snapshot.workers.faulted;
+                g_r4_hw_result.r2_post_stop_runtime_fault =
+                    runtime_snapshot.runtime_fault;
+                g_r4_hw_result.r2_post_stop_acquisition_gate =
+                    runtime_snapshot.lifecycle.acquisition_publish_allowed;
+                g_r4_hw_result.r2_post_stop_processing_gate =
+                    runtime_snapshot.lifecycle.processing_claim_allowed;
+                g_r4_hw_result.r2_post_stop_interference_gate =
+                    runtime_snapshot.lifecycle.interference_release_allowed;
+                g_r4_hw_result.r2_post_stop_begin_valid =
+                    runtime_snapshot.stop_begin_report_valid;
+                g_r4_hw_result.r2_post_stop_report_valid =
+                    runtime_snapshot.stop_report_valid;
+            }
+#endif
 #if (R4_HW_CASE_ID == 17U)
             if (R3W3Runtime_GetSnapshot(&runtime_snapshot) == R3_W3_RUNTIME_OK)
             {

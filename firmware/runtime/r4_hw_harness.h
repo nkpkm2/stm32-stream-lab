@@ -151,6 +151,26 @@ extern "C" {
 #define R4_HW_PERTURBATION_RESPONSE_OVERFLOW_COUNT_WORD 262U
 #define R4_HW_PERTURBATION_RESPONSE_SAMPLES_WORD 263U
 #define R4_HW_PERTURBATION_RESPONSE_SAMPLE_COUNT 33U
+/* Append-only post-STOP ownership witness for the R2/R4 anchors.  The
+ * pre-STOP counters above describe the live data plane; these fields prove
+ * that the same run reached the required quiescent ownership state. */
+#define R4_HW_R2_POST_STOP_SNAPSHOT_STATUS_WORD 362U
+#define R4_HW_R2_POST_STOP_LIFECYCLE_STATE_WORD 363U
+#define R4_HW_R2_POST_STOP_HARDWARE_OWNED_WORD 364U
+#define R4_HW_R2_POST_STOP_OWNERSHIP_INITIALIZED_WORD 365U
+#define R4_HW_R2_POST_STOP_POOL_ACTIVE_WORD 366U
+#define R4_HW_R2_POST_STOP_POOL_DMA_WORD 367U
+#define R4_HW_R2_POST_STOP_POOL_READY_WORD 368U
+#define R4_HW_R2_POST_STOP_POOL_PROCESSING_WORD 369U
+#define R4_HW_R2_POST_STOP_SLOTS_INITIALIZED_WORD 370U
+#define R4_HW_R2_POST_STOP_ACK_MASK_WORD 371U
+#define R4_HW_R2_POST_STOP_WORKER_FAULTED_WORD 372U
+#define R4_HW_R2_POST_STOP_RUNTIME_FAULT_WORD 373U
+#define R4_HW_R2_POST_STOP_ACQUISITION_GATE_WORD 374U
+#define R4_HW_R2_POST_STOP_PROCESSING_GATE_WORD 375U
+#define R4_HW_R2_POST_STOP_INTERFERENCE_GATE_WORD 376U
+#define R4_HW_R2_POST_STOP_BEGIN_VALID_WORD 377U
+#define R4_HW_R2_POST_STOP_REPORT_VALID_WORD 378U
 
 #define R4_HW_PERTURBATION_PROFILE_MINIMAL 0U
 #define R4_HW_PERTURBATION_PROFILE_R4 1U
@@ -354,6 +374,26 @@ typedef struct
     uint32_t perturbation_response_complete_count;
     uint32_t perturbation_response_overflow_count;
     uint32_t perturbation_response_samples[R4_HW_PERTURBATION_RESPONSE_SAMPLE_COUNT][3];
+    /* R2 normal/drop anchor only: fresh snapshot captured after the
+     * successful Stop() transaction.  These fields deliberately remain
+     * separate from the live-path counters above. */
+    uint32_t r2_post_stop_snapshot_status;
+    uint32_t r2_post_stop_lifecycle_state;
+    uint32_t r2_post_stop_hardware_owned;
+    uint32_t r2_post_stop_ownership_initialized;
+    uint32_t r2_post_stop_pool_active;
+    uint32_t r2_post_stop_pool_dma;
+    uint32_t r2_post_stop_pool_ready;
+    uint32_t r2_post_stop_pool_processing;
+    uint32_t r2_post_stop_slots_initialized;
+    uint32_t r2_post_stop_ack_mask;
+    uint32_t r2_post_stop_worker_faulted;
+    uint32_t r2_post_stop_runtime_fault;
+    uint32_t r2_post_stop_acquisition_gate;
+    uint32_t r2_post_stop_processing_gate;
+    uint32_t r2_post_stop_interference_gate;
+    uint32_t r2_post_stop_begin_valid;
+    uint32_t r2_post_stop_report_valid;
 } R4HwHarnessResult;
 
 _Static_assert(offsetof(R4HwHarnessResult, synthetic_task_create_mask) ==
@@ -368,6 +408,12 @@ _Static_assert(offsetof(R4HwHarnessResult, perturbation_response_release_count) 
 _Static_assert(offsetof(R4HwHarnessResult, perturbation_response_samples) ==
     (R4_HW_PERTURBATION_RESPONSE_SAMPLES_WORD * sizeof(uint32_t)),
     "R4 perturbation response evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, r2_post_stop_snapshot_status) ==
+    (R4_HW_R2_POST_STOP_SNAPSHOT_STATUS_WORD * sizeof(uint32_t)),
+    "R4 R2 post-STOP evidence word offset changed");
+_Static_assert(offsetof(R4HwHarnessResult, r2_post_stop_report_valid) ==
+    (R4_HW_R2_POST_STOP_REPORT_VALID_WORD * sizeof(uint32_t)),
+    "R4 R2 post-STOP report evidence word offset changed");
 _Static_assert(offsetof(R4HwHarnessResult, dma_window_snapshot_status) ==
     (R4_HW_DMA_WINDOW_SNAPSHOT_WORD * sizeof(uint32_t)),
     "R4 DMA-window evidence word offset changed");
