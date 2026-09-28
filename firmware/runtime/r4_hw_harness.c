@@ -663,7 +663,10 @@ static void EvaluateFormalInvariants(void)
           (g_r4_hw_result.perturbation_processing_complete == 0U))) ||
         ((R4_HW_CASE_ID == 19U) &&
          ((g_r4_hw_result.perturbation_driver_keep == 0U) ||
-          (g_r4_hw_result.perturbation_processing_wake != 0U) ||
+          /* One wake is the permitted worker startup/bind handshake.  The
+           * DROP profile must not turn DMA publication into processing work,
+           * so no completion and no second wake are legal. */
+          (g_r4_hw_result.perturbation_processing_wake > 1U) ||
           (g_r4_hw_result.perturbation_processing_complete != 0U))))
     {
         FailInvariant(R4_HW_INVARIANT_CASE);

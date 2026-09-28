@@ -671,7 +671,7 @@ def evaluate(case: str, words: list[int], accounting: str | None = None) -> dict
                  words[PERTURBATION_PROCESSING_COMPLETE_WORD] > 0)
                 if case == "r2-normal-anchor" else
                 (words[PERTURBATION_DRIVER_KEEP_WORD] > 0 and
-                 words[PERTURBATION_PROCESSING_WAKE_WORD] == 0 and
+                 words[PERTURBATION_PROCESSING_WAKE_WORD] <= 1 and
                  words[PERTURBATION_PROCESSING_COMPLETE_WORD] == 0)),
         })
     return {"result": "PASS" if all(checks.values()) else "FAIL", "checks": checks,
