@@ -1,0 +1,5 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w6_hw_harness.c:26:32:StartRequest	32	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w6_hw_harness.c:36:13:StopRequest	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w6_hw_harness.c:43:13:Record	720	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w6_hw_harness.c:79:13:ControllerTask	240	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_w6_hw_harness.c:163:6:R3_W6_HW_Start	32	static

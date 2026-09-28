@@ -77,7 +77,13 @@ def evaluate(case: str, words: list[int]) -> dict:
         valid = row[0] == n+1 and row[1] == n+1 and row[2] == n+1 and row[3] == 0x60000000+n+1 and row[4] == 0 and row[5] == 0 and row[6] == 0 and row[7] == 0 and row[8] == 0x300 and row[9] == 0 and row[10] == 0 and row[11] == 0 and row[12] == 0
         records.append({"cycle":n+1, "valid":valid, "words":[f"0x{x:08X}" for x in row]})
     checks["all_records_valid"] = all(x["valid"] for x in records)
-    if anchor == "B": checks["controlled_drop_observed"] = words[6] > 0
+    if anchor == "A":
+        # Normal K=8 lifecycle exercise must use the real inactive-rebind
+        # production path, and must not drift into the K=1 KEEP/drop path.
+        checks["normal_rebind_observed"] = words[7] > 0
+        checks["normal_keep_absent"] = words[6] == 0
+    if anchor == "B":
+        checks["controlled_drop_observed"] = words[6] > 0
     return {"result":"PASS" if all(checks.values()) else "FAIL", "checks":checks, "records":records}
 
 

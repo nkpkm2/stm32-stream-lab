@@ -1,0 +1,13 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:16:17:AbsoluteDifference	32	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:21:17:TargetNow	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:30:12:TargetCommitStart	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:37:12:TargetReleaseJob	40	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:46:22:R4_TickServiceTarget_Initialize	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:69:22:R4_TickServiceTarget_Register	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:94:22:R4_TickServiceTarget_ArmStart	40	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:112:22:R4_TickServiceTarget_CancelStart	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:123:22:R4_TickServiceTarget_CompleteJob	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:134:22:R4_TickServiceTarget_OnTickHook	96	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:182:22:R4_TickServiceTarget_GetSnapshot	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:194:22:R4_TickServiceTarget_ConfigureTiming	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c:210:22:R4_TickServiceTarget_GetTiming	24	static

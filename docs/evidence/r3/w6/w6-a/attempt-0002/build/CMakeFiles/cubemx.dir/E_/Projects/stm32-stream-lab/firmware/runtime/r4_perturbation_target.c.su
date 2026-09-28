@@ -1,0 +1,5 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_perturbation_target.c:91:6:R4_PerturbationTarget_Reset	4	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_perturbation_target.c:92:6:R4_PerturbationTarget_OnReleaseFromIsr	4	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_perturbation_target.c:93:6:R4_PerturbationTarget_OnWorkerStart	4	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_perturbation_target.c:94:6:R4_PerturbationTarget_OnWorkerComplete	4	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_perturbation_target.c:95:6:R4_PerturbationTarget_GetSnapshot	16	static

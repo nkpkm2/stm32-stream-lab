@@ -1,0 +1,8 @@
+{
+  "schema_version": "r3-evidence-v1",
+  "git_head": "17d137b5cc3a0c8f32a5bb33cbbf776e87496ef0",
+  "elf_sha256": "FFDF78EAA1DCC6D6AF96522BB3FC05F6A1748F41D7D520CD794F2EE4F0EB493E",
+  "harness_version": "0.3.2-w2-hw-build-validation",
+  "harness_sha256": "6906B04D540D16203C3D2A09C16ACF19DCC2A4599CF42EE9B8EB668456968D74",
+  "board_profile": "NUCLEO-F446RE"
+}

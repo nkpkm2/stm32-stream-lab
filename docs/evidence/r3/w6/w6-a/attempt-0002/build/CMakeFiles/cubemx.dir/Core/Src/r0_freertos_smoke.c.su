@@ -1,0 +1,6 @@
+E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c:28:13:R0_TaskA	16	static
+E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c:39:13:R0_TaskB	16	static
+E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c:50:6:R0_FreeRTOS_StartSmoke	32	static
+E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c:95:6:vApplicationGetIdleTaskMemory	24	static
+E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c:109:6:vApplicationTickHook	8	static
+E:/Projects/stm32-stream-lab/firmware/cubemx/Core/Src/r0_freertos_smoke.c:124:6:vApplicationStackOverflowHook	16	static

@@ -1,0 +1,6 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service.c:5:29:Latch	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service.c:15:22:R4_TickService_Initialize	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service.c:42:22:R4_TickService_ArmStart	32	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service.c:65:22:R4_TickService_CancelStart	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service.c:79:22:R4_TickService_CompleteJob	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_tick_service.c:93:22:R4_TickService_OnService	80	static
