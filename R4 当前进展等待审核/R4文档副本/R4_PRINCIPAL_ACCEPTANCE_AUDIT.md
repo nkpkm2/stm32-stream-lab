@@ -11,8 +11,8 @@ hardware test is not a substitute.
 |---|---|---|---|
 | A01–A03 Clock64 authority, >60 s wrap, service bound | `t12-soak-a/attempt-0002` and `t12-soak-b/attempt-0002` are independent current target PASSes: >=65 s, observed DWT high-word advance, and >=60 bounded monitor services; `test_r4_source_audit.py` enforces the single production Clock64 authority and boot-only initialization | PARTIAL | add invalid-run audit |
 | A04–A06 RuntimeEvent atomicity/mask/error ordering | `t17-atomic/attempt-0005` sealed target PASS checks pending IRQ ordering, duplicate-exit rejection, and post-close immutability; `mask-restore/attempt-0001` witnesses PRIMASK preservation; `time-regression/attempt-0001` proves target fail-closed rejection | PARTIAL | combine these directed proofs in the final R2/R3 regression anchor |
-| A07–A13 IRQ pairing, no-yield/yield, SysTick | `t17-atomic/attempt-0005` sealed real TIM7→TIM6 nesting; fresh T12 semantic attempts exercise DMA `pdTRUE` and no-event `pdFALSE` tails; `test_r4_source_audit.py` locks macro wiring, TickHook non-duplication, and one-entry/one-port-tail application handlers | PARTIAL | exact task-switch attribution and one-pair SysTick evidence |
-| A14–A15 task/idle known workload | `task-synthetic/attempt-0004` sealed target PASS on the corrected ABI reader; H4 checks fixed A/B iterations, owner ratio, Idle residency, and formal conservation | PARTIAL | add known IRQ contribution and retain this workload in final integrated regression |
+| A07–A13 IRQ pairing, no-yield/yield, SysTick | `t17-atomic/attempt-0005` sealed real TIM7→TIM6 nesting; fresh T12 semantic attempts exercise DMA `pdTRUE` and no-event `pdFALSE` tails; `task-synthetic/attempt-0005` seals the first real FreeRTOS task selection (no pre-first-in task out) and real SysTick owner cycles; `test_r4_source_audit.py` locks macro wiring, TickHook non-duplication, and one-entry/one-port-tail application handlers | PARTIAL | final committed-source classifier must combine exact task-switch and port-tail evidence |
+| A14–A15 task/idle known workload | `task-synthetic/attempt-0005` sealed target PASS on the current reader; H4 checks fixed A/B iterations, owner ratio, Idle residency, real separate SysTick IRQ owner contribution, first scheduler attribution, and formal conservation | PARTIAL | retain this workload in final integrated regression |
 | A16–A24 CPU window clipping, immutability, conservation | `dma-window/attempt-0001` sealed target PASS at `cf78c83`: real DMA completion sequence opens at S0=1, seals at S1=4, and observes a later sequence >=5 without a boundary fault; `window-intersection/attempt-0001` adds target partition conservation and a post-CLOSE real SysTick/tick-hook witness with no formal-window mutation; `R4_NATIVE_RUNTIME_EXECUTION.md` records 20/20 host model cases including clipping and outside-window exclusion | PARTIAL | carry these directed proofs through the final R2/R3 regression anchor |
 | A25–A29 error/overhead/phase | `R4_MEASUREMENT_ERROR_BUDGET.md` binds 33-sample RuntimeEvent costs, DWT resolution, phase and completion bounds to sealed target evidence; `mask-timing/attempt-0001` independently observes 52 actual PRIMASK-held RuntimeEvent spans, maximum 559 cycles <= 1800; `perturbation-ab/attempt-0001` through `attempt-0006` plus `suite-0001.json` seal the frozen three-pair same-source A/B protocol; T15 q0/release independently bracket physical TIM2 CEN | PARTIAL | retain the perturbation result in the final R2/R3 regression anchor |
 | A30–A37 TickService and suspension | Current independent T15 q0/release target PASSes prove `SysTick enter = exit = real-hook service`, registration, DWT history, exact suspension callback/start/release/skip semantics, and q0→TIM2 CEN; `tick-gap/attempt-0001` proves a late real SysTick latches `TICK_SERVICE_GAP` fail-closed | PARTIAL | integrate these directed proofs into the final R2/R3 regression anchor |
@@ -53,6 +53,14 @@ hardware test is not a substitute.
   Apply returns the same latched status, and the event serial remains frozen.
   It therefore proves invalid formal timing results are fail-closed rather
   than becoming an unsigned underflow interval.
+* Task-switch / known-IRQ synthetic workload:
+  `docs/evidence/r4/task-synthetic/attempt-0005` is a sealed NUCLEO-F446RE
+  target PASS from `9a63372`. Its H4 reader requires the fixed A/B workloads,
+  separate task/Idle/IRQ formal partition conservation, a nonzero owner bucket
+  for physical SysTick IRQ 15, and the real FreeRTOS trace witness that the
+  first non-Idle `TASK_SWITCHED_IN` occurred exactly once without any preceding
+  non-Idle `TASK_SWITCHED_OUT`. It also requires later real task and Idle
+  switches, so the result is not a synthetic RuntimeEvent sequence.
 * Full `t_lock` to `t_unlock` bound: Release/LTO
   `t04-commit-budget-a/attempt-0002` and
   `t04-commit-budget-b/attempt-0001`.

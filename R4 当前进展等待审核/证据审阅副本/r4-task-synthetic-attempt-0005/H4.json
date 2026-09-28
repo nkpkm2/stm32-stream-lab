@@ -1,0 +1,37 @@
+{
+  "checks": {
+    "case_identity": true,
+    "completed_magic": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "result_magic": true,
+    "schema_version": true,
+    "synthetic_conservation": true,
+    "synthetic_created": true,
+    "synthetic_done": true,
+    "synthetic_first_scheduler_attribution": true,
+    "synthetic_idle": true,
+    "synthetic_iterations": true,
+    "synthetic_known_systick_irq": true,
+    "synthetic_owner_ratio": true,
+    "synthetic_schema": true,
+    "terminal_pass": true
+  },
+  "phase": "H4",
+  "prefix_words": [
+    "0x52344857",
+    "0x00000006",
+    "0x00000001",
+    "0x00000001",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x5234444E"
+  ],
+  "result": "PASS",
+  "result_address": "0x200028E8",
+  "selector": "SYNTHETIC_TASKS"
+}
