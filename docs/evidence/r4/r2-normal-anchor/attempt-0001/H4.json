@@ -1,0 +1,32 @@
+{
+  "checks": {
+    "case_identity": true,
+    "completed_magic": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "r2_anchor_dma_population": true,
+    "r2_anchor_driver": true,
+    "r2_anchor_health": true,
+    "r2_normal_path": true,
+    "result_magic": true,
+    "schema_version": true,
+    "terminal_pass": true
+  },
+  "phase": "H4",
+  "prefix_words": [
+    "0x52344857",
+    "0x00000012",
+    "0x00000001",
+    "0x00000001",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x5234444E"
+  ],
+  "result": "PASS",
+  "result_address": "0x200052B8",
+  "selector": "R2_NORMAL_ANCHOR"
+}
