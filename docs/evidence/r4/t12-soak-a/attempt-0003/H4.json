@@ -1,0 +1,33 @@
+{
+  "checks": {
+    "case_identity": true,
+    "completed_magic": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "result_magic": true,
+    "schema_version": true,
+    "t12_dma_no_event_path": true,
+    "t12_dma_yield_path": true,
+    "t12_health_service": true,
+    "t12_lifecycle": true,
+    "t12_wrap_and_duration": true,
+    "terminal_pass": true
+  },
+  "phase": "H4",
+  "prefix_words": [
+    "0x52344857",
+    "0x00000001",
+    "0x00000001",
+    "0x00000001",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x00000000",
+    "0x5234444E"
+  ],
+  "result": "PASS",
+  "result_address": "0x200052F0",
+  "selector": "T12_SOAK"
+}

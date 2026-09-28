@@ -1,0 +1,60 @@
+[1/55] Building C object CMakeFiles/cubemx.dir/Core/Src/main.c.obj
+[2/55] Building C object CMakeFiles/cubemx.dir/Core/Src/stm32f4xx_hal_msp.c.obj
+[3/55] Building C object CMakeFiles/cubemx.dir/Core/Src/stm32f4xx_hal_timebase_tim.c.obj
+[4/55] Building C object CMakeFiles/cubemx.dir/Core/Src/stm32f4xx_it.c.obj
+[5/55] Building ASM object CMakeFiles/cubemx.dir/startup_stm32f446xx.s.obj
+[6/55] Building C object CMakeFiles/cubemx.dir/Core/Src/sysmem.c.obj
+[7/55] Building C object CMakeFiles/cubemx.dir/Core/Src/syscalls.c.obj
+[8/55] Building C object CMakeFiles/cubemx.dir/Middlewares/Third_Party/FreeRTOS-Kernel/tasks.c.obj
+[9/55] Building C object CMakeFiles/cubemx.dir/Middlewares/Third_Party/FreeRTOS-Kernel/list.c.obj
+[10/55] Building C object CMakeFiles/cubemx.dir/Middlewares/Third_Party/FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c.obj
+[11/55] Building C object CMakeFiles/cubemx.dir/Middlewares/Third_Party/FreeRTOS-Kernel/queue.c.obj
+[12/55] Building C object CMakeFiles/cubemx.dir/Core/Src/r0_freertos_smoke.c.obj
+[13/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/buffer_pool/r2_buffer_pool.c.obj
+[14/55] Building C object CMakeFiles/cubemx.dir/6f6ec86f567d4ce5b926fd5fa9e64d9b/stm32-stream-lab/firmware/runtime/stream_ownership_core.c.obj
+[15/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/acquisition/adc_dbm_driver.c.obj
+[16/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/acquisition/r2_dma_slots.c.obj
+[17/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/stream_token_ledger.c.obj
+[18/55] Building C object CMakeFiles/cubemx.dir/6f6ec86f567d4ce5b926fd5fa9e64d9b/stm32-stream-lab/firmware/runtime/stream_run_authority.c.obj
+[19/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/r3_worker_contract.c.obj
+[20/55] Building C object CMakeFiles/cubemx.dir/6f6ec86f567d4ce5b926fd5fa9e64d9b/stm32-stream-lab/firmware/runtime/stream_queue_adapter.c.obj
+[21/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/r3_worker_tasks.c.obj
+[22/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/r3_command_ledger.c.obj
+[23/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/r3_lifecycle.c.obj
+[24/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/r3_result_store.c.obj
+[25/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/r4_clock64.c.obj
+[26/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/r3_w3_runtime.c.obj
+[27/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/r4_runtime_event.c.obj
+[28/55] Building C object CMakeFiles/cubemx.dir/6f6ec86f567d4ce5b926fd5fa9e64d9b/stm32-stream-lab/firmware/runtime/r4_perturbation_target.c.obj
+[29/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/r4_tick_service.c.obj
+[30/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/r4_runtime_target.c.obj
+[31/55] Building C object CMakeFiles/cubemx.dir/6f6ec86f567d4ce5b926fd5fa9e64d9b/stm32-stream-lab/firmware/runtime/r4_tick_service_target.c.obj
+[32/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/acquisition/r1_bringup.c.obj
+[33/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/runtime/r4_hw_harness.c.obj
+[34/55] Building C object CMakeFiles/cubemx.dir/C_/Users/CHJ/.codex/worktrees/r4-f2-cutoff/stm32-stream-lab/firmware/acquisition/r1_acquisition.c.obj
+[35/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f4xx.c.obj
+[36/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.c.obj
+[37/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c.obj
+[38/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c.obj
+[39/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c.obj
+[40/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj
+[41/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c.obj
+[42/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c.obj
+[43/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c.obj
+[44/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c.obj
+[45/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj
+[46/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c.obj
+[47/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c.obj
+[48/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c.obj
+[49/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c.obj
+[50/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj
+[51/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj
+[52/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c.obj
+[53/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/BSP/STM32F4xx-Nucleo/stm32f4xx_nucleo.c.obj
+[54/55] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c.obj
+[55/55] Linking C executable cubemx.elf
+lto-wrapper.exe: warning: using serial compilation of 2 LTRANS jobs
+lto-wrapper.exe: note: see the '-flto' option documentation for more information
+Memory region         Used Size  Region Size  %age Used
+             RAM:       24472 B       128 KB     18.67%
+           FLASH:       46140 B       512 KB      8.80%

@@ -1,0 +1,8 @@
+{
+  "accounting_profile": null,
+  "case_id": "t12-soak-a",
+  "case_numeric_id": 1,
+  "configured_soak_ms": 65000,
+  "selector": "T12_SOAK",
+  "work_package": "R4"
+}
