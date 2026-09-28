@@ -23,6 +23,9 @@ static R5MetricsConfig HarnessConfig(void)
 {
     R5MetricsConfig config;
 
+    config.boot_id = 1U;
+    config.run_id = 1U;
+    config.generation = 1U;
     config.s0 = 2U;
     config.s1 = 5U;
     config.tail_blocks = 2U;
@@ -43,6 +46,7 @@ static void HarnessTask(void *argument)
 {
     R5MetricsConfig config = HarnessConfig();
     R5MetricsStatus status;
+    R5LiveDiagnostics diagnostics = {0};
     const R5RunMetrics *published = NULL;
 
     (void)argument;
@@ -81,7 +85,8 @@ static void HarnessTask(void *argument)
     g_r5_hw_result.late_completed_count = synthetic_metrics.late_completed_count;
     g_r5_hw_result.expired_unresolved_count = synthetic_metrics.expired_unresolved_count;
     g_r5_hw_result.completed_count = synthetic_metrics.completed_count;
-    g_r5_hw_result.post_cutoff_completion_count = synthetic_metrics.post_cutoff_completion_count;
+    g_r5_hw_result.post_cutoff_completion_count =
+        diagnostics.post_cutoff_completion_count;
     g_r5_hw_result.window_open_time = synthetic_metrics.window_open_time;
     g_r5_hw_result.window_close_time = synthetic_metrics.window_close_time;
     g_r5_hw_result.p99_completed_status = (uint32_t)synthetic_metrics.p99_completed_by_cutoff.status;

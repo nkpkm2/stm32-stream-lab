@@ -65,6 +65,9 @@ typedef enum
 
 typedef struct
 {
+    uint32_t boot_id;
+    uint32_t run_id;
+    uint32_t generation;
     uint32_t s0;
     uint32_t s1;
     uint32_t tail_blocks;
@@ -73,6 +76,15 @@ typedef struct
     uint64_t deadline_cycles;
     uint64_t time_epsilon_cycles;
 } R5MetricsConfig;
+
+/* This object is deliberately not embedded in R5RunMetrics and is never
+ * copied into R5ResultStore.  It may continue to evolve after outcome closure
+ * without mutating the formal sealed result. */
+typedef struct
+{
+    uint64_t post_cutoff_completion_count;
+    uint64_t order_fault_count;
+} R5LiveDiagnostics;
 
 typedef struct
 {
@@ -98,6 +110,9 @@ typedef struct
     uint32_t next_input_sequence;
     uint64_t last_event_serial;
     uint64_t raw_input_count;
+    uint64_t ordinary_admission_attempt_count;
+    uint64_t ordinary_admitted_count;
+    uint64_t ordinary_drop_count;
     uint64_t cohort_input_count;
     uint64_t admitted_count;
     uint64_t drop_count;
@@ -105,9 +120,6 @@ typedef struct
     uint64_t late_completed_count;
     uint64_t expired_unresolved_count;
     uint64_t completed_count;
-    uint64_t post_cutoff_completion_count;
-    uint64_t live_post_cutoff_completion_count;
-    uint64_t live_order_fault_count;
     uint64_t histogram_overflow_count;
     uint64_t histogram[R5_METRICS_HISTOGRAM_BINS];
     uint64_t occupancy_sample_count;
@@ -129,6 +141,7 @@ typedef struct
     R5MetricsRate late_rate;
     R5MetricsRate unresolved_rate;
     R5MetricsRate completion_rate;
+    R5MetricsRate deadline_failure_rate_admitted;
 } R5RunMetrics;
 
 R5MetricsStatus R5RunMetrics_Initialize(R5RunMetrics *metrics,
@@ -150,6 +163,12 @@ R5MetricsStatus R5RunMetrics_OnInputWithOccupancy(R5RunMetrics *metrics,
 /* Called at the successful COMPLETE logical-commit point in the same serial
  * domain as OnInput.  Late arrivals after cutoff cannot alter sealed outcome. */
 R5MetricsStatus R5RunMetrics_OnCompletion(R5RunMetrics *metrics,
+    uint32_t sequence, uint64_t commit_time, uint64_t event_serial);
+
+/* The diagnostic object is optional.  When non-NULL it receives permitted
+ * post-cutoff observations, while R5RunMetrics remains frozen. */
+R5MetricsStatus R5RunMetrics_OnCompletionWithDiagnostics(
+    R5RunMetrics *metrics, R5LiveDiagnostics *diagnostics,
     uint32_t sequence, uint64_t commit_time, uint64_t event_serial);
 
 /* Freezes outcomes after worker quiescence/integrity checking.  A sealed

@@ -10,6 +10,9 @@
 static R5MetricsConfig Config(void)
 {
     R5MetricsConfig config;
+    config.boot_id = 1U;
+    config.run_id = 1U;
+    config.generation = 1U;
     config.s0 = 2U;
     config.s1 = 5U;
     config.tail_blocks = 2U;
@@ -54,7 +57,14 @@ static void CaseKnownCohort(void)
     CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
     CHECK(R5RunMetrics_GetSnapshot(&metrics, &snapshot) == R5_METRICS_OK);
     CHECK(snapshot.phase == R5_METRICS_SEALED);
+    CHECK(snapshot.schema_version == R5_METRICS_SCHEMA_VERSION);
+    CHECK(snapshot.config.boot_id == 1U);
+    CHECK(snapshot.config.run_id == 1U);
+    CHECK(snapshot.config.generation == 1U);
     CHECK(snapshot.raw_input_count == 8U);
+    CHECK(snapshot.ordinary_admission_attempt_count == 7U);
+    CHECK(snapshot.ordinary_admitted_count == 5U);
+    CHECK(snapshot.ordinary_drop_count == 2U);
     CHECK(snapshot.cohort_input_count == 3U);
     CHECK(snapshot.admitted_count == 2U);
     CHECK(snapshot.drop_count == 1U);
@@ -71,6 +81,9 @@ static void CaseKnownCohort(void)
     CHECK(snapshot.completion_rate.status == R5_METRICS_RATE_RATIO);
     CHECK(snapshot.completion_rate.numerator == 2U);
     CHECK(snapshot.completion_rate.denominator == 2U);
+    CHECK(snapshot.deadline_failure_rate_admitted.status == R5_METRICS_RATE_RATIO);
+    CHECK(snapshot.deadline_failure_rate_admitted.numerator == 1U);
+    CHECK(snapshot.deadline_failure_rate_admitted.denominator == 2U);
     CHECK(R5RunMetrics_OnCompletion(&metrics, 2U, 360U, 11U) ==
         R5_METRICS_INVALID_STATE);
 }
@@ -114,9 +127,70 @@ static void CaseS2EmptyNeverDropsAgain(void)
     CHECK(metrics.raw_input_count == 5U);
 }
 
+static void CaseS1BoundaryAdmission(uint32_t free_available)
+{
+    R5RunMetrics metrics;
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 1U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    Input(&metrics, 0U, 10U, 1U, 1U); /* S0 primary */
+    Input(&metrics, 1U, 20U, 2U, free_available); /* S1: close before decision */
+    CHECK(metrics.window_closed == 1U);
+    CHECK(metrics.window_close_time == 20U);
+    CHECK(metrics.cohort_input_count == 1U);
+    CHECK(metrics.ordinary_admission_attempt_count == 2U);
+    CHECK(metrics.ordinary_admitted_count == (free_available != 0U ? 2U : 1U));
+    CHECK(metrics.ordinary_drop_count == (free_available != 0U ? 0U : 1U));
+}
+
+static void CaseAllOnTime(void)
+{
+    R5RunMetrics metrics;
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 2U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    Input(&metrics, 0U, 1U, 1U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 0U, 100U, 2U) == R5_METRICS_OK);
+    Input(&metrics, 1U, 2U, 3U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 1U, 200U, 4U) == R5_METRICS_OK);
+    Input(&metrics, 2U, 3U, 5U, 1U);
+    Input(&metrics, 3U, 4U, 6U, 1U);
+    Input(&metrics, 4U, 1000U, 7U, 1U);
+    CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
+    CHECK(metrics.on_time_count == 2U);
+    CHECK(metrics.drop_count == 0U);
+    CHECK(metrics.late_completed_count == 0U);
+    CHECK(metrics.expired_unresolved_count == 0U);
+}
+
+static void CaseAllCapacityDrop(void)
+{
+    R5RunMetrics metrics;
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 2U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    Input(&metrics, 0U, 1U, 1U, 0U);
+    Input(&metrics, 1U, 2U, 2U, 0U);
+    Input(&metrics, 2U, 3U, 3U, 1U);
+    Input(&metrics, 3U, 4U, 4U, 1U);
+    Input(&metrics, 4U, 1000U, 5U, 1U);
+    CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
+    CHECK(metrics.drop_count == 2U);
+    CHECK(metrics.admitted_count == 0U);
+    CHECK(metrics.capacity_drop_rate.status == R5_METRICS_RATE_RATIO);
+    CHECK(metrics.deadline_failure_rate_admitted.status == R5_METRICS_RATE_NOT_AVAILABLE);
+}
+
 static void CaseCutoffWins(void)
 {
     R5RunMetrics metrics;
+    R5LiveDiagnostics diagnostics = {0};
     R5MetricsConfig config = Config();
 
     config.s0 = 0U;
@@ -127,11 +201,12 @@ static void CaseCutoffWins(void)
     Input(&metrics, 2U, 3U, 3U, 1U);
     Input(&metrics, 3U, 1000U, 4U, 1U);    /* S2 before complete */
     CHECK(metrics.expired_unresolved_count == 1U);
-    CHECK(R5RunMetrics_OnCompletion(&metrics, 0U, 120U, 5U) ==
+    CHECK(R5RunMetrics_OnCompletionWithDiagnostics(&metrics, &diagnostics,
+        0U, 120U, 5U) ==
         R5_METRICS_OBSERVATION_CLOSED);
     CHECK(metrics.expired_unresolved_count == 1U);
     CHECK(metrics.completed_count == 0U);
-    CHECK(metrics.post_cutoff_completion_count == 1U);
+    CHECK(diagnostics.post_cutoff_completion_count == 1U);
     CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
     CHECK(metrics.p99_all_admitted.status == R5_METRICS_P99_CENSORED);
 }
@@ -208,16 +283,57 @@ static void CaseCompletionWinsBeforeCutoff(void)
     InputQ(&metrics, 0U, 1U, 1U, 1U, 4U);
     InputQ(&metrics, 1U, 2U, 2U, 1U, 5U);
     InputQ(&metrics, 2U, 3U, 3U, 1U, 6U);
-    /* Same timestamp would be immaterial: serial 4 commits first. */
-    CHECK(R5RunMetrics_OnCompletion(&metrics, 0U, 100U, 4U) == R5_METRICS_OK);
-    InputQ(&metrics, 3U, 1000U, 5U, 1U, 99U);
-    CHECK(metrics.cohort_outcome[0] == R5_METRICS_OUTCOME_ON_TIME);
+    /* Same timestamp: serial 4 commits before serial 5 closes. */
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 0U, 271U, 4U) == R5_METRICS_OK);
+    InputQ(&metrics, 3U, 271U, 5U, 1U, 99U);
+    CHECK(metrics.cohort_outcome[0] == R5_METRICS_OUTCOME_LATE);
     CHECK(metrics.expired_unresolved_count == 0U);
     CHECK(metrics.occupancy_sample_count == 3U);
     CHECK(metrics.occupancy_histogram[4U] == 1U);
     CHECK(metrics.occupancy_histogram[6U] == 1U);
     CHECK(metrics.occupancy_histogram[99U] == 0U); /* S2 has no Q sample. */
     CHECK(metrics.occupancy_histogram[0U] == 0U);
+    CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
+}
+
+static void CaseSameTimestampCutoffWins(void)
+{
+    R5RunMetrics metrics;
+    R5LiveDiagnostics diagnostics = {0};
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 1U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    Input(&metrics, 0U, 1U, 1U, 1U);
+    Input(&metrics, 1U, 2U, 2U, 1U);
+    Input(&metrics, 2U, 3U, 3U, 1U);
+    /* Same timestamp as completion, but serial 4 closes first. */
+    Input(&metrics, 3U, 271U, 4U, 1U);
+    CHECK(R5RunMetrics_OnCompletionWithDiagnostics(&metrics, &diagnostics,
+        0U, 271U, 5U) == R5_METRICS_OBSERVATION_CLOSED);
+    CHECK(metrics.cohort_outcome[0] == R5_METRICS_OUTCOME_EXPIRED_UNRESOLVED);
+    CHECK(diagnostics.post_cutoff_completion_count == 1U);
+    CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
+}
+
+static void CaseDeadlineNeighbourhood(void)
+{
+    R5RunMetrics metrics;
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 2U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    Input(&metrics, 0U, 1U, 1U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 0U, 259U, 2U) == R5_METRICS_OK);
+    Input(&metrics, 1U, 2U, 3U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 1U, 361U, 4U) == R5_METRICS_OK);
+    Input(&metrics, 2U, 3U, 5U, 1U);
+    Input(&metrics, 3U, 4U, 6U, 1U);
+    Input(&metrics, 4U, 1000U, 7U, 1U);
+    CHECK(metrics.on_time_count == 1U); /* deadline - 1 */
+    CHECK(metrics.late_completed_count == 1U); /* deadline + 1 */
     CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
 }
 
@@ -297,6 +413,37 @@ static void CaseP99OverflowRank(void)
     CHECK(metrics.p99_completed_by_cutoff.status == R5_METRICS_P99_OUT_OF_RANGE);
 }
 
+static void CaseHistogramEdges(void)
+{
+    R5RunMetrics metrics;
+    R5MetricsConfig config = Config();
+
+    config.s0 = 0U;
+    config.s1 = 6U;
+    CHECK(R5RunMetrics_Initialize(&metrics, &config) == R5_METRICS_OK);
+    Input(&metrics, 0U, 1U, 1U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 0U, 100U, 2U) == R5_METRICS_OK);
+    Input(&metrics, 1U, 2U, 3U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 1U, 209U, 4U) == R5_METRICS_OK);
+    Input(&metrics, 2U, 3U, 5U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 2U, 310U, 6U) == R5_METRICS_OK);
+    Input(&metrics, 3U, 4U, 7U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 3U, 1679U, 8U) == R5_METRICS_OK);
+    Input(&metrics, 4U, 5U, 9U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 4U, 1780U, 10U) == R5_METRICS_OK);
+    Input(&metrics, 5U, 6U, 11U, 1U);
+    CHECK(R5RunMetrics_OnCompletion(&metrics, 5U, 1881U, 12U) == R5_METRICS_OK);
+    Input(&metrics, 6U, 7U, 13U, 1U);
+    Input(&metrics, 7U, 8U, 14U, 1U);
+    Input(&metrics, 8U, 2000U, 15U, 1U);
+    CHECK(metrics.histogram[0U] == 2U);       /* 0 and just below boundary */
+    CHECK(metrics.histogram[1U] == 1U);       /* exact boundary */
+    CHECK(metrics.histogram[127U] == 1U);     /* just below 8D */
+    CHECK(metrics.histogram_overflow_count == 2U); /* exact/above 8D */
+    CHECK(R5RunMetrics_Seal(&metrics, 1U, 1U) == R5_METRICS_OK);
+    CHECK(metrics.p99_completed_by_cutoff.status == R5_METRICS_P99_OUT_OF_RANGE);
+}
+
 static void CaseTailMinimumAndRunIsolation(void)
 {
     R5RunMetrics first;
@@ -320,15 +467,22 @@ int main(int argc, char **argv)
     if (strcmp(argv[1], "known") == 0) CaseKnownCohort();
     else if (strcmp(argv[1], "s2") == 0) CaseS2NeverAdmits();
     else if (strcmp(argv[1], "s2_empty") == 0) CaseS2EmptyNeverDropsAgain();
+    else if (strcmp(argv[1], "s1_free") == 0) CaseS1BoundaryAdmission(1U);
+    else if (strcmp(argv[1], "s1_empty") == 0) CaseS1BoundaryAdmission(0U);
+    else if (strcmp(argv[1], "all_on_time") == 0) CaseAllOnTime();
+    else if (strcmp(argv[1], "all_drop") == 0) CaseAllCapacityDrop();
     else if (strcmp(argv[1], "cutoff") == 0) CaseCutoffWins();
     else if (strcmp(argv[1], "insufficient") == 0) CaseInsufficientObservation();
     else if (strcmp(argv[1], "overflow") == 0) CaseOverflowAndDuplicate();
     else if (strcmp(argv[1], "store") == 0) CaseSealedResultStore();
     else if (strcmp(argv[1], "completion_wins") == 0) CaseCompletionWinsBeforeCutoff();
+    else if (strcmp(argv[1], "cutoff_wins_same_time") == 0) CaseSameTimestampCutoffWins();
     else if (strcmp(argv[1], "outcomes") == 0) CaseExplicitOutcomesAndExact8D();
     else if (strcmp(argv[1], "deadline") == 0) CaseDeadlineEquality();
+    else if (strcmp(argv[1], "deadline_neighbourhood") == 0) CaseDeadlineNeighbourhood();
     else if (strcmp(argv[1], "p99_empty") == 0) CaseNoCompletionP99();
     else if (strcmp(argv[1], "p99_overflow") == 0) CaseP99OverflowRank();
+    else if (strcmp(argv[1], "histogram_edges") == 0) CaseHistogramEdges();
     else if (strcmp(argv[1], "tail_isolation") == 0) CaseTailMinimumAndRunIsolation();
     else return EXIT_FAILURE;
     return EXIT_SUCCESS;

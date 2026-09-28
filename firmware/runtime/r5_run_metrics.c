@@ -228,6 +228,15 @@ R5MetricsStatus R5RunMetrics_OnInputWithOccupancy(R5RunMetrics *metrics,
     /* Every ordinary admission attempt contributes one arrival-observed Q.
      * S2 returned above and therefore contributes none. */
     RecordOccupancy(metrics, observed_occupancy);
+    ++metrics->ordinary_admission_attempt_count;
+    if (free_available == 0U)
+    {
+        ++metrics->ordinary_drop_count;
+    }
+    else
+    {
+        ++metrics->ordinary_admitted_count;
+    }
     if ((sequence >= metrics->config.s0) && (sequence < metrics->config.s1))
     {
         cohort_index = sequence - metrics->config.s0;
@@ -257,7 +266,8 @@ R5MetricsStatus R5RunMetrics_OnInput(R5RunMetrics *metrics,
         event_serial, free_available, R5_METRICS_OCCUPANCY_UNKNOWN);
 }
 
-R5MetricsStatus R5RunMetrics_OnCompletion(R5RunMetrics *metrics,
+R5MetricsStatus R5RunMetrics_OnCompletionWithDiagnostics(
+    R5RunMetrics *metrics, R5LiveDiagnostics *diagnostics,
     uint32_t sequence, uint64_t commit_time, uint64_t event_serial)
 {
     uint32_t cohort_index;
@@ -270,11 +280,13 @@ R5MetricsStatus R5RunMetrics_OnCompletion(R5RunMetrics *metrics,
     if (metrics->phase == R5_METRICS_OUTCOME_CLOSED)
     {
         /* Live diagnostic only: terminal outcomes are already immutable. */
-        ++metrics->post_cutoff_completion_count;
-        ++metrics->live_post_cutoff_completion_count;
-        if (event_serial <= metrics->last_event_serial)
+        if (diagnostics != NULL)
         {
-            ++metrics->live_order_fault_count;
+            ++diagnostics->post_cutoff_completion_count;
+            if (event_serial <= metrics->last_event_serial)
+            {
+                ++diagnostics->order_fault_count;
+            }
         }
         return R5_METRICS_OBSERVATION_CLOSED;
     }
@@ -313,6 +325,13 @@ R5MetricsStatus R5RunMetrics_OnCompletion(R5RunMetrics *metrics,
     }
     RecordLatency(metrics, latency);
     return R5_METRICS_OK;
+}
+
+R5MetricsStatus R5RunMetrics_OnCompletion(R5RunMetrics *metrics,
+    uint32_t sequence, uint64_t commit_time, uint64_t event_serial)
+{
+    return R5RunMetrics_OnCompletionWithDiagnostics(metrics, NULL, sequence,
+        commit_time, event_serial);
 }
 
 R5MetricsStatus R5RunMetrics_Seal(R5RunMetrics *metrics,
@@ -356,6 +375,9 @@ R5MetricsStatus R5RunMetrics_Seal(R5RunMetrics *metrics,
             metrics->cohort_input_count);
         metrics->completion_rate = Rate(metrics->completed_count,
             metrics->admitted_count);
+        metrics->deadline_failure_rate_admitted = Rate(
+            metrics->late_completed_count + metrics->expired_unresolved_count,
+            metrics->admitted_count);
     }
     else
     {
@@ -366,6 +388,8 @@ R5MetricsStatus R5RunMetrics_Seal(R5RunMetrics *metrics,
         metrics->late_rate.status = R5_METRICS_RATE_NOT_AVAILABLE;
         metrics->unresolved_rate.status = R5_METRICS_RATE_NOT_AVAILABLE;
         metrics->completion_rate.status = R5_METRICS_RATE_NOT_AVAILABLE;
+        metrics->deadline_failure_rate_admitted.status =
+            R5_METRICS_RATE_NOT_AVAILABLE;
     }
     metrics->phase = R5_METRICS_SEALED;
     return R5_METRICS_OK;

@@ -14,16 +14,16 @@ python tools/r5/r5_golden_vectors.py --check
 
 ## Result
 
-- Native C: 13/13 directed cases PASS.
+- Native C: 20/20 directed cases PASS.
 - Host arithmetic/vector manifest: PASS, IDs `SYN01` through `SYN14` present.
 - Frozen arithmetic: deadline `D=160`, bin width `D/16=10`, exact overflow
   boundary `8D=1280`.
 
 The 14 vector IDs are documented in
 [`R5_SEMANTIC_CONTRACT.md`](../../r5/R5_SEMANTIC_CONTRACT.md) and the host
-manifest.  Several IDs intentionally share a native process case where they
-exercise the same state transition (SYN13/SYN14); the C assertions separately
-check rejection of tail `<2` and a fresh-run zeroed state.
+manifest.  Some IDs intentionally share a native process case where they
+exercise the same state transition (for example the mixed outcome and
+post-close variants); each expectation is separately asserted in C.
 
 This is host-only evidence.  It is not hardware evidence and it does not
 change the R4 dependency: no R5 formal hardware acceptance has occurred.

@@ -15,20 +15,20 @@ D = 160
 BIN_WIDTH = D // 16
 
 VECTORS = (
-    ("SYN01", "warmup-primary-tail-known", "sealed conservation"),
-    ("SYN02", "s2-free", "S2 does not admit"),
-    ("SYN03", "s2-empty", "S2 does not capacity-drop"),
-    ("SYN04", "cutoff-wins", "unresolved is immutable"),
-    ("SYN05", "completion-wins", "serial decides same-timestamp race"),
-    ("SYN06", "insufficient-cutoff", "not an infrastructure failure"),
-    ("SYN07", "overflow", "latency beyond 8D is overflow"),
-    ("SYN08", "unique-outcomes", "drop/late/unresolved conservation"),
-    ("SYN09", "sealed-store", "immutable copied result"),
-    ("SYN10", "deadline-equality", "t_commit == deadline is on-time"),
-    ("SYN11", "no-completed-p99", "P99 is N/A"),
-    ("SYN12", "p99-overflow-rank", "P99 is OUT_OF_RANGE"),
-    ("SYN13", "tail-minimum", "tail < 2 rejected"),
-    ("SYN14", "new-run-isolation", "state starts empty"),
+    ("SYN01", "all_on_time", "all primary outcomes are ON_TIME"),
+    ("SYN02", "all_drop", "all primary outcomes are CAPACITY_DROP"),
+    ("SYN03", "outcomes", "drop/on-time/late/unresolved are conserved"),
+    ("SYN04", "s2", "S0 capacity-drop still opens the window"),
+    ("SYN05", "s1_empty", "S1 tail drop closes window, not cohort"),
+    ("SYN06", "s2", "S2 with FREE is cutoff-only"),
+    ("SYN07", "s2_empty", "S2 without FREE is cutoff-only"),
+    ("SYN08", "completion_wins", "same-time completion serial wins"),
+    ("SYN09", "cutoff_wins_same_time", "same-time cutoff serial wins"),
+    ("SYN10", "insufficient", "observation is insufficient, not invalid"),
+    ("SYN11", "histogram_edges", "overflow and exact 8D convention"),
+    ("SYN12", "outcomes", "overflow plus unresolved gives censored P99"),
+    ("SYN13", "cutoff", "post-close completion leaves outcome unchanged"),
+    ("SYN14", "store", "repeated immutable result reads"),
 )
 
 

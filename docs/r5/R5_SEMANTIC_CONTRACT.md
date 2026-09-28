@@ -7,6 +7,8 @@ W6 concern and must carry this schema version rather than infer defaults.
 ## Schema and arithmetic
 
 - Schema version: `R5_SCHEMA_VERSION = 1`.
+- Every result config carries `boot_id`, `run_id` and `generation`; these are
+  copied into the sealed object as run identity rather than inferred by a host.
 - `seq` is a unique, strictly increasing input ordinal.  Every
   integrity-checked input, including a capacity drop and S2, advances it.
 - Primary population is exactly `S0 <= seq < S1`.  `S0` is included and `S1`
@@ -47,7 +49,8 @@ bounded pass.  Conservation at seal is:
 
 `OPEN -> OUTCOME_CLOSED -> SEALED` is one way.  SEALED output fields are
 immutable.  Diagnostics arriving after cutoff are recorded in separately named
-live counters and do not change sealed outcomes.
+`R5LiveDiagnostics`, which is not embedded in or copied with the sealed
+`R5RunMetrics` result.
 
 `p99_completed_by_cutoff` uses completed primary samples only.  The
 all-admitted P99 is `CENSORED` whenever unresolved primary admissions exist.
@@ -60,6 +63,12 @@ Each ordinary admission attempt records the queue occupancy `Q` observed
 immediately before the FREE/admission decision.  This is a count population,
 not a time-weighted measure.  W6 must take it from the real queue adapter.
 S2 creates no occupancy sample.
+
+Raw input diagnostics and ordinary admission attempts are separately counted:
+S2 contributes one raw input but zero ordinary attempts, admissions, drops, or
+occupancy observations.  Rates are explicit integer numerator/denominator
+pairs with `N/A` for zero denominators.  In particular,
+`DeadlineFailureRate_admitted = (late + unresolved) / admitted`.
 
 ## Golden-vector identifiers
 
