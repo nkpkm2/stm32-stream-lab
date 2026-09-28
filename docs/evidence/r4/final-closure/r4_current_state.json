@@ -1,0 +1,130 @@
+{
+  "schema_version": "r4-final-closure-current-state-v1",
+  "purpose": "R4-F1 current-state reconciliation; this is an inventory, not a final acceptance verdict.",
+  "observed_head": "164c4eae992852c97c3afc511a34e5ff8ad35c4a",
+  "observed_origin_main": "164c4eae992852c97c3afc511a34e5ff8ad35c4a",
+  "working_tree_at_observation": {
+    "status": "DIRTY",
+    "untracked_paths": [
+      "R4 当前进展等待审核.7z",
+      "stm32-stream-lab.rar"
+    ],
+    "note": "These untracked review archives are not source or sealed evidence. A later F3 candidate must be evaluated from a clean tree."
+  },
+  "status_vocabulary": ["PASS", "PARTIAL", "MISSING"],
+  "pass_rule": "A domain is PASS here only when the named production source and regression test exist and every named sealed attempt verified with tools/r4/r4_evidence.py verify during this reconciliation. PASS here does not waive F3 final-source delta analysis or F4 final classification.",
+  "domains": [
+    {
+      "id": "D01",
+      "name": "Clock64",
+      "status": "PASS",
+      "source": ["firmware/runtime/r4_clock64.c", "firmware/runtime/r4_clock64.h"],
+      "tests": ["tests/r4_host/test_r4_source_audit.py", "tests/native/test_r4_runtime_event.c", "tests/r4_host/test_r4_evidence.py"],
+      "sealed_evidence": ["t12-soak-a/attempt-0002", "t12-soak-b/attempt-0002", "tick-gap/attempt-0001"],
+      "verified_manifests": true,
+      "basis": "T12 A/B verify wrap and monitor-service health; tick-gap verifies named fail-closed handling of stale service history."
+    },
+    {
+      "id": "D02",
+      "name": "RuntimeEvent",
+      "status": "PASS",
+      "source": ["firmware/runtime/r4_runtime_event.c", "firmware/runtime/r4_runtime_event.h"],
+      "tests": ["tests/native/test_r4_runtime_event.c", "tests/r4_host/test_r4_evidence.py"],
+      "sealed_evidence": ["t17-atomic/attempt-0005", "mask-restore/attempt-0001", "time-regression/attempt-0001"],
+      "verified_manifests": true,
+      "basis": "The selected cases cover real nesting, duplicate exit rejection, mask preservation, and fail-closed time regression."
+    },
+    {
+      "id": "D03",
+      "name": "IRQ wiring",
+      "status": "PASS",
+      "source": ["firmware/runtime/r4_runtime_target.c", "firmware/runtime/r4_hw_harness.c", "firmware/cubemx/Core/Src/stm32f4xx_it.c"],
+      "tests": ["tests/r4_host/test_r4_source_audit.py", "tests/r4_host/test_r4_evidence.py"],
+      "sealed_evidence": ["t12-soak-a/attempt-0002", "t12-soak-b/attempt-0002", "t17-atomic/attempt-0005", "t15-q0/attempt-0004", "t15-release/attempt-0005", "task-synthetic/attempt-0005"],
+      "verified_manifests": true,
+      "basis": "Selected target cases cover DMA tails, real nesting, SysTick/hook service and known SysTick ownership."
+    },
+    {
+      "id": "D04",
+      "name": "Task / Idle attribution",
+      "status": "PASS",
+      "source": ["firmware/runtime/r4_runtime_target.c", "firmware/runtime/r4_hw_harness.c"],
+      "tests": ["tests/native/test_r4_runtime_event.c", "tests/r4_host/test_r4_source_audit.py", "tests/r4_host/test_r4_evidence.py"],
+      "sealed_evidence": ["task-synthetic/attempt-0005"],
+      "verified_manifests": true,
+      "basis": "The target record requires first real non-Idle task selection without a prior task-out, later task/Idle switches, owner buckets and conservation."
+    },
+    {
+      "id": "D05",
+      "name": "CPU window",
+      "status": "PASS",
+      "source": ["firmware/runtime/r4_runtime_event.c", "firmware/runtime/r4_runtime_target.c"],
+      "tests": ["tests/native/test_r4_runtime_event.c", "tests/r4_host/test_r4_evidence.py"],
+      "sealed_evidence": ["dma-window/attempt-0001", "window-intersection/attempt-0001"],
+      "verified_manifests": true,
+      "basis": "The selected cases verify production S0/S1 boundary operation, partition conservation and no sealed-window mutation after real activity."
+    },
+    {
+      "id": "D06",
+      "name": "Error / overhead / perturbation",
+      "status": "PASS",
+      "source": ["firmware/runtime/r4_runtime_event.c", "firmware/runtime/r4_perturbation_target.c", "tools/r4/r4_evidence.py"],
+      "tests": ["tests/native/test_r4_runtime_event.c", "tests/r4_host/test_r4_evidence.py"],
+      "sealed_evidence": ["microbenchmark/attempt-0002", "mask-timing/attempt-0001", "perturbation-ab/attempt-0001", "perturbation-ab/attempt-0002", "perturbation-ab/attempt-0003", "perturbation-ab/attempt-0004", "perturbation-ab/attempt-0005", "perturbation-ab/attempt-0006"],
+      "verified_manifests": true,
+      "aggregate_verification": "verify-perturbation-suite returned PASS with all_three_pairs_pass, frozen_run_order and suite_identity true.",
+      "basis": "All six immutable A/B members and the frozen suite verifier passed."
+    },
+    {
+      "id": "D07",
+      "name": "TickService / suspension",
+      "status": "PASS",
+      "source": ["firmware/runtime/r4_tick_service.c", "firmware/runtime/r4_tick_service_target.c"],
+      "tests": ["tests/native/test_r4_tick_service.c", "tests/r4_host/test_r4_evidence.py"],
+      "sealed_evidence": ["t15-q0/attempt-0004", "t15-release/attempt-0005", "tick-gap/attempt-0001"],
+      "verified_manifests": true,
+      "basis": "Target attempts cover one real SysTick enter/exit per hook service, q0/release and the fail-closed gap path."
+    },
+    {
+      "id": "D08",
+      "name": "T12 / T17 cutoff + formal/live",
+      "status": "PARTIAL",
+      "source": ["firmware/runtime/r4_runtime_event.c", "firmware/runtime/r4_hw_harness.c"],
+      "tests": ["tests/native/test_r4_runtime_event.c", "tests/r4_host/test_r4_evidence.py"],
+      "sealed_evidence": ["t12-soak-a/attempt-0002", "t12-soak-b/attempt-0002", "t17-atomic/attempt-0005", "window-intersection/attempt-0001"],
+      "verified_manifests": true,
+      "missing": ["A directed machine-readable nested/cutoff interleaving case.", "A record containing formal_window_before/formal_window_after and live_before/live_after that proves frozen formal counters while live counters continue after CLOSE."],
+      "basis": "Existing sealed evidence proves related clipping and immutability, but not the two explicit F2-B/F2-C artifacts."
+    },
+    {
+      "id": "D09",
+      "name": "Response / utilization / critical timing",
+      "status": "PASS",
+      "source": ["firmware/runtime/r4_runtime_target.c", "firmware/runtime/r4_tick_service_target.c", "firmware/runtime/stream_queue_adapter.c"],
+      "tests": ["tests/native/test_r4_runtime_event.c", "tests/native/test_r4_tick_service.c", "tests/r4_host/test_r4_evidence.py"],
+      "sealed_evidence": ["t04-commit-budget-a/attempt-0002", "t04-commit-budget-b/attempt-0001", "commit-pending-irq/attempt-0001", "response-synthetic/attempt-0001", "combined-service/attempt-0001", "mask-timing/attempt-0001"],
+      "verified_manifests": true,
+      "basis": "The selected target cases cover complete lock bound, pending IRQ release, response endpoints, production DMA service and actual PRIMASK spans."
+    },
+    {
+      "id": "D10",
+      "name": "Non-regression / provenance",
+      "status": "PARTIAL",
+      "source": ["tools/r4/r4_evidence.py", "firmware/runtime/r3_w6_hw_harness.c", "firmware/runtime/r4_hw_harness.c"],
+      "tests": ["tests/r4_host/test_r4_evidence.py", "tests/r4_host/test_r4_source_audit.py"],
+      "sealed_evidence": ["r2-normal-anchor/attempt-0002", "r2-drop-anchor/attempt-0002", "../r3/w6/w6-a/attempt-0003", "../r3/w6/w6-b/attempt-0003"],
+      "verified_manifests": true,
+      "missing": ["A frozen, clean, pushed final candidate commit.", "Per-evidence relevant-source delta decisions or required reruns against that candidate."],
+      "basis": "R2 anchors were reverified in this pass and R3 A/B acceptance records exist, but final committed-source provenance is an F3 requirement."
+    }
+  ],
+  "stale_documents": [
+    {
+      "path": "docs/r4/R4_IMPLEMENTATION_AND_ACCEPTANCE.md",
+      "reason": "Its acceptance matrix still labels T12, T15, T17 and the lock budget as pending or diagnostic even though selected later sealed attempts verify PASS."
+    }
+  ],
+  "f1_result": "PASS",
+  "next_package": "R4-F2",
+  "f1_blockers_for_principal_review": ["D08 is PARTIAL: directed nested/cutoff and formal/live split artifacts are absent.", "D10 is PARTIAL: F3 final candidate and source-delta reconciliation have not occurred."]
+}
