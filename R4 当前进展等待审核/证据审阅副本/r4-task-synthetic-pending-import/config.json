@@ -1,0 +1,8 @@
+{
+  "accounting_profile": null,
+  "case_id": "task-synthetic",
+  "case_numeric_id": 6,
+  "configured_soak_ms": 0,
+  "selector": "SYNTHETIC_TASKS",
+  "work_package": "R4"
+}

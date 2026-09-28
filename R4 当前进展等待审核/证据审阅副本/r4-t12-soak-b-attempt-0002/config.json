@@ -1,0 +1,7 @@
+{
+  "case_id": "t12-soak-b",
+  "case_numeric_id": 1,
+  "configured_soak_ms": 65000,
+  "selector": "T12_SOAK",
+  "work_package": "R4"
+}

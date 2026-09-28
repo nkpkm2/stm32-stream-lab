@@ -1,0 +1,9 @@
+{
+  "case": "t12-soak-a",
+  "clean_tree": true,
+  "git_head": "bd3722d4edaef5cf2982c2795549f8f0ee62a36f",
+  "origin_main": "bd3722d4edaef5cf2982c2795549f8f0ee62a36f",
+  "phase": "H0",
+  "probe_list_sha256": "CCCBFBE085110204EF1C7A0761CEB0C21B3CC958696744A58246C881DAC57356",
+  "result": "PASS"
+}

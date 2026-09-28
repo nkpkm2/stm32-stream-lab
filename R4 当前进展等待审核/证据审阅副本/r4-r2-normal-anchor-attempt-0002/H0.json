@@ -1,0 +1,9 @@
+{
+  "case": "r2-normal-anchor",
+  "clean_tree": true,
+  "git_head": "1a80065c52b4f2bda75920e08ddfae11a4f3e593",
+  "origin_main": "1a80065c52b4f2bda75920e08ddfae11a4f3e593",
+  "phase": "H0",
+  "probe_list_sha256": "CCCBFBE085110204EF1C7A0761CEB0C21B3CC958696744A58246C881DAC57356",
+  "result": "PASS"
+}

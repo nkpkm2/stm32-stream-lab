@@ -1,0 +1,18 @@
+{
+  "first_failure_class": null,
+  "invariants": {
+    "case_identity": true,
+    "completed_magic": true,
+    "init_status": true,
+    "no_invariant_failure": true,
+    "result_magic": true,
+    "schema_version": true,
+    "t12_dma_no_event_path": true,
+    "t12_dma_yield_path": true,
+    "t12_health_service": true,
+    "t12_lifecycle": true,
+    "t12_wrap_and_duration": true,
+    "terminal_pass": true
+  },
+  "result": "PASS"
+}
