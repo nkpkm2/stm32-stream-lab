@@ -28,9 +28,9 @@ Status date: 2026-09-29.  Values are restricted to `PASS`, `PARTIAL`,
 | A21 | live diagnostics separated from outcomes | PARTIAL | post-cutoff live counters exist; transport schema not integrated |
 | A22 | C/host known-truth agreement | PASS | W5 native 13/13 + host manifest SYN01–SYN14 |
 | A23 | target profile cross-build | PASS | `W5_TARGET_BUILD.md`, `W6_STACK_SOURCE_AUDIT.md` |
-| A24 | real DMA input / pre-admission Q wiring | MISSING | no R3 production hook exposes Q/serial to R5 |
-| A25 | real worker COMPLETE/t_commit wiring | MISSING | no R3 worker completion bridge into R5 |
-| A26 | actual S2 stop-gate and quiescence integration | MISSING | synthetic harness only |
+| A24 | real DMA input / pre-admission Q wiring | BLOCKED | approved R3/R4 receipt/observer surface absent; see integration review |
+| A25 | real worker COMPLETE/t_commit wiring | BLOCKED | actual protected commit does not expose a per-event receipt |
+| A26 | actual S2 stop-gate and quiescence integration | BLOCKED | requires the same approved observer/gate contract |
 | A27 | run/boot identity in R5 result schema | MISSING | requires R3 lifecycle bridge |
 | A28 | real result transport/readback | MISSING | store is local-only |
 | A29 | hardware H01–H08 directed cases | BLOCKED | R4 not formally CLOSED; W6 action packet |
