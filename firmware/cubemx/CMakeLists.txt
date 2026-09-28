@@ -119,6 +119,8 @@ option(STREAM_LAB_R3_W5_HW
     "Build the R3-W5 command/isolation target hardware harness" OFF)
 option(STREAM_LAB_R3_W6_HW
     "Build the R3-W6 500-cycle lifecycle target harness" OFF)
+option(STREAM_LAB_R4_R3_LIFECYCLE_REGRESSION
+    "Bind R3-W6 lifecycle hardware evidence to the R4 accounting runtime" OFF)
 option(STREAM_LAB_R4_RUNTIME
     "Compile the R4 Clock64/RuntimeEvent/TickService integration" OFF)
 option(STREAM_LAB_R4_ACCOUNTING
@@ -245,6 +247,11 @@ if(STREAM_LAB_R3_W3_HW OR STREAM_LAB_R3_W4_HW OR STREAM_LAB_R3_W5_HW OR STREAM_L
     if(STREAM_LAB_R3_W6_HW)
         if(NOT STREAM_LAB_R3_LIFECYCLE)
             message(FATAL_ERROR "R3-W6 hardware harness requires STREAM_LAB_R3_LIFECYCLE=ON.")
+        endif()
+        if(NOT STREAM_LAB_R4_R3_LIFECYCLE_REGRESSION OR
+           NOT STREAM_LAB_R4_RUNTIME OR NOT STREAM_LAB_R4_ACCOUNTING)
+            message(FATAL_ERROR
+                "R3-W6 formal lifecycle evidence requires its explicit R4 accounting profile.")
         endif()
         if(STREAM_LAB_R3_W6_HW_ANCHOR STREQUAL "A")
             set(R3_W6_HW_ANCHOR_VALUE 1)
@@ -708,7 +715,8 @@ elseif(STREAM_LAB_R3_W5_HW)
         PROPERTIES COMPILE_OPTIONS "-Wall;-Wextra;-Werror;-mthumb")
 elseif(STREAM_LAB_R3_W6_HW)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-        STREAM_LAB_R3_W6_HW=1 R3_W6_HW_ANCHOR=${R3_W6_HW_ANCHOR_VALUE}U)
+        STREAM_LAB_R3_W6_HW=1 R3_W6_HW_ANCHOR=${R3_W6_HW_ANCHOR_VALUE}U
+        STREAM_LAB_R4_R3_LIFECYCLE_REGRESSION=1)
     target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/../runtime" "${CMAKE_CURRENT_SOURCE_DIR}/../buffer_pool"
         "${CMAKE_CURRENT_SOURCE_DIR}/../acquisition")

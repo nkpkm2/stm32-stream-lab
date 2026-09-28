@@ -5,9 +5,13 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "r3_w3_runtime.h"
+#include "r4_runtime_target.h"
 
 #ifndef R3_W6_HW_ANCHOR
 #error "R3_W6_HW_ANCHOR must be supplied by CMake"
+#endif
+#ifndef STREAM_LAB_R4_R3_LIFECYCLE_REGRESSION
+#error "R3-W6 formal lifecycle harness requires the explicit R4 regression profile"
 #endif
 
 #define W6_BOOT 0x36570001UL
@@ -48,6 +52,7 @@ static void Record(uint32_t index, R3W3RuntimeStatus start_status,
     cycle->stop_id = W6_STOP_BASE + index;
     cycle->start_status = (uint32_t)start_status;
     cycle->stop_status = (uint32_t)stop_status;
+    cycle->r4_checkpoint_status = (uint32_t)R4_RuntimeTarget_Checkpoint();
     if (R3W3Runtime_GetSnapshot(&snapshot) != R3_W3_RUNTIME_OK)
     {
         ++g_r3_w6_hw_result.fault_cycles;
@@ -64,7 +69,8 @@ static void Record(uint32_t index, R3W3RuntimeStatus start_status,
     if ((start_status != R3_W3_RUNTIME_OK) || (stop_status != R3_W3_RUNTIME_OK) ||
         (cycle->lifecycle_state != R3_LIFECYCLE_IDLE) ||
         (cycle->dma_hardware_owned != 0U) || (cycle->ack_mask != 0x300U) ||
-        (cycle->worker_faulted != 0U) || (cycle->runtime_fault != 0U))
+        (cycle->worker_faulted != 0U) || (cycle->runtime_fault != 0U) ||
+        (cycle->r4_checkpoint_status != (uint32_t)R4_RUNTIME_OK))
     {
         ++g_r3_w6_hw_result.fault_cycles;
     }
@@ -73,9 +79,14 @@ static void Record(uint32_t index, R3W3RuntimeStatus start_status,
 static void ControllerTask(void *argument)
 {
     R3W3RuntimeConfig config;
+    R4_RuntimeHealthSnapshot health;
+    R4_RuntimeWindowSummary summary;
+    const R4_RuntimeLedger *ledger;
     uint32_t index;
     (void)argument;
     (void)memset(&config, 0, sizeof(config));
+    (void)memset(&health, 0, sizeof(health));
+    (void)memset(&summary, 0, sizeof(summary));
     config.boot_id = W6_BOOT;
     config.k = R3_W6_HW_ANCHOR == 1U ? 8U : 1U;
     config.suppress_processing_notify = R3_W6_HW_ANCHOR == 2U ? 1U : 0U;
@@ -106,6 +117,41 @@ static void ControllerTask(void *argument)
         g_r3_w6_hw_result.completed_cycles = index;
         if (g_r3_w6_hw_result.fault_cycles != 0U) break;
     }
+    g_r3_w6_hw_result.r4_window_close_status =
+        (uint32_t)R4_RuntimeTarget_CloseWindow(0U);
+    g_r3_w6_hw_result.r4_final_checkpoint_status =
+        (uint32_t)R4_RuntimeTarget_Checkpoint();
+    g_r3_w6_hw_result.r4_health_status =
+        (uint32_t)R4_RuntimeTarget_GetHealthSnapshot(&health);
+    g_r3_w6_hw_result.r4_health_first_fault = (uint32_t)health.first_fault;
+    ledger = R4_RuntimeTarget_GetLedger();
+    g_r3_w6_hw_result.r4_ledger_status = ledger == NULL ?
+        (uint32_t)R4_RUNTIME_NOT_INITIALIZED :
+        (uint32_t)R4_RuntimeLedger_GetSealedWindowSummary(ledger, 0U, &summary);
+    if (g_r3_w6_hw_result.r4_ledger_status == (uint32_t)R4_RUNTIME_OK)
+    {
+        g_r3_w6_hw_result.r4_window_cycles = summary.window_cycles;
+        g_r3_w6_hw_result.r4_window_task_cycles = summary.task_cycles;
+        g_r3_w6_hw_result.r4_window_irq_cycles = summary.irq_cycles;
+        g_r3_w6_hw_result.r4_window_idle_cycles = summary.idle_cycles;
+        g_r3_w6_hw_result.r4_window_unclassified_cycles =
+            summary.unclassified_cycles;
+        g_r3_w6_hw_result.r4_event_serial = ledger->event_serial;
+    }
+    if ((g_r3_w6_hw_result.r4_window_close_status != (uint32_t)R4_RUNTIME_OK) ||
+        (g_r3_w6_hw_result.r4_final_checkpoint_status != (uint32_t)R4_RUNTIME_OK) ||
+        (g_r3_w6_hw_result.r4_ledger_status != (uint32_t)R4_RUNTIME_OK) ||
+        (g_r3_w6_hw_result.r4_health_status != (uint32_t)R4_RUNTIME_OK) ||
+        (g_r3_w6_hw_result.r4_health_first_fault != 0U) ||
+        (g_r3_w6_hw_result.r4_window_cycles == 0U) ||
+        (g_r3_w6_hw_result.r4_window_cycles !=
+         g_r3_w6_hw_result.r4_window_task_cycles +
+         g_r3_w6_hw_result.r4_window_irq_cycles +
+         g_r3_w6_hw_result.r4_window_idle_cycles +
+         g_r3_w6_hw_result.r4_window_unclassified_cycles))
+    {
+        ++g_r3_w6_hw_result.fault_cycles;
+    }
     g_r3_w6_hw_result.terminal =
         (g_r3_w6_hw_result.completed_cycles == R3_W6_HW_CYCLES &&
          g_r3_w6_hw_result.fault_cycles == 0U) ? 1U : 2U;
@@ -119,8 +165,20 @@ void R3_W6_HW_Start(void)
     TaskHandle_t controller;
     (void)memset((void *)&g_r3_w6_hw_result, 0, sizeof(g_r3_w6_hw_result));
     g_r3_w6_hw_result.magic = R3_W6_HW_MAGIC;
-    g_r3_w6_hw_result.schema = 1U;
+    g_r3_w6_hw_result.schema = R3_W6_HW_SCHEMA_R4_REGRESSION;
     g_r3_w6_hw_result.anchor = R3_W6_HW_ANCHOR;
+    g_r3_w6_hw_result.r4_initialize_status =
+        (uint32_t)R4_RuntimeTarget_Initialize();
+    g_r3_w6_hw_result.r4_window_open_status =
+        (uint32_t)R4_RuntimeTarget_OpenWindow(0U);
+    if ((g_r3_w6_hw_result.r4_initialize_status != (uint32_t)R4_RUNTIME_OK) ||
+        (g_r3_w6_hw_result.r4_window_open_status != (uint32_t)R4_RUNTIME_OK))
+    {
+        g_r3_w6_hw_result.terminal = 2U;
+        g_r3_w6_hw_result.fault_cycles = R3_W6_HW_CYCLES;
+        __DMB(); g_r3_w6_hw_result.completed_magic = R3_W6_HW_COMPLETE;
+        __disable_irq(); for (;;) { __NOP(); }
+    }
     controller = xTaskCreateStatic(ControllerTask, "R3W6Ctrl", W6_STACK_WORDS,
         NULL, W6_PRIORITY, controller_stack, &controller_tcb);
     if (controller == NULL)

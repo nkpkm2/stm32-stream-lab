@@ -16,8 +16,11 @@ from .w2_build_validation import CommandLog, configure, select_tools, verify_cac
 from .w3_hardware import digest, manifest, validate_manifest, write_new
 
 ANCHORS = {"W6-A": ("A", 1, 8), "W6-B": ("B", 2, 1)}
-MAGIC, COMPLETE, CYCLES, HEADER, CYCLE_WORDS = 0x52335736, 0xA66C0DE6, 500, 9, 12
-WORDS = HEADER + CYCLES * CYCLE_WORDS
+MAGIC, COMPLETE, CYCLES, HEADER, CYCLE_WORDS = 0x52335736, 0xA66C0DE6, 500, 9, 13
+EXTENSION = HEADER + CYCLES * CYCLE_WORDS
+# Seven status words followed by six uint64 witnesses.  The exact target ABI
+# is deliberately frozen here rather than inferred from a host compiler.
+WORDS = EXTENSION + 19
 TARGET_BOUND_S, HOST_TIMEOUT_S = 20.0, 45.0
 
 
@@ -25,7 +28,7 @@ class WorkflowError(RuntimeError): pass
 
 
 def definitions(anchor: str) -> dict[str, str]:
-    return {"STREAM_LAB_FOUNDATION_ADC_DBM_DRIVER":"ON", "STREAM_LAB_FOUNDATION_OWNERSHIP_CORE":"ON", "STREAM_LAB_FOUNDATION_TOKEN_LEDGER":"ON", "STREAM_LAB_FOUNDATION_QUEUE_ADAPTER":"ON", "STREAM_LAB_R3_WORKER_CONTRACT":"ON", "STREAM_LAB_R3_WORKER_TASKS":"ON", "STREAM_LAB_R3_LIFECYCLE":"ON", "STREAM_LAB_R3_W2_HW":"OFF", "STREAM_LAB_R3_W2_HW_CASE":"", "STREAM_LAB_R3_W3_HW":"OFF", "STREAM_LAB_R3_W3_HW_CASE":"", "STREAM_LAB_R3_W4_HW":"OFF", "STREAM_LAB_R3_W4_HW_CASE":"", "STREAM_LAB_R3_W5_HW":"OFF", "STREAM_LAB_R3_W5_HW_CASE":"", "STREAM_LAB_R3_W6_HW":"ON", "STREAM_LAB_R3_W6_HW_ANCHOR":anchor}
+    return {"STREAM_LAB_FOUNDATION_ADC_DBM_DRIVER":"ON", "STREAM_LAB_FOUNDATION_OWNERSHIP_CORE":"ON", "STREAM_LAB_FOUNDATION_TOKEN_LEDGER":"ON", "STREAM_LAB_R3_WORKER_CONTRACT":"ON", "STREAM_LAB_R3_WORKER_TASKS":"ON", "STREAM_LAB_R3_LIFECYCLE":"ON", "STREAM_LAB_R3_W2_HW":"OFF", "STREAM_LAB_R3_W2_HW_CASE":"", "STREAM_LAB_R3_W3_HW":"OFF", "STREAM_LAB_R3_W3_HW_CASE":"", "STREAM_LAB_R3_W4_HW":"OFF", "STREAM_LAB_R3_W4_HW_CASE":"", "STREAM_LAB_R3_W5_HW":"OFF", "STREAM_LAB_R3_W5_HW_CASE":"", "STREAM_LAB_R3_W6_HW":"ON", "STREAM_LAB_R3_W6_HW_ANCHOR":anchor, "STREAM_LAB_R4_RUNTIME":"ON", "STREAM_LAB_R4_ACCOUNTING":"ON", "STREAM_LAB_R4_R3_LIFECYCLE_REGRESSION":"ON"}
 
 
 def parse_words(text: str) -> list[int]:
@@ -39,11 +42,18 @@ def parse_words(text: str) -> list[int]:
 
 def evaluate(case: str, words: list[int]) -> dict:
     anchor, anchor_id, k = ANCHORS[case]
-    checks = {"magic":words[0] == MAGIC, "schema":words[1] == 1, "anchor":words[2] == anchor_id, "terminal":words[3] == 1, "all_cycles":words[4] == CYCLES, "no_fault_cycles":words[5] == 0, "complete":words[8] == COMPLETE}
+    def word64(index: int) -> int:
+        return words[index] | (words[index + 1] << 32)
+
+    checks = {"magic":words[0] == MAGIC, "schema_r4":words[1] == 2, "anchor":words[2] == anchor_id, "terminal":words[3] == 1, "all_cycles":words[4] == CYCLES, "no_fault_cycles":words[5] == 0, "complete":words[8] == COMPLETE,
+              "r4_statuses_ok":all(words[EXTENSION + offset] == 0 for offset in range(7)),
+              "r4_window_nonzero":word64(EXTENSION + 7) > 0,
+              "r4_window_conserved":word64(EXTENSION + 7) == word64(EXTENSION + 9) + word64(EXTENSION + 11) + word64(EXTENSION + 13) + word64(EXTENSION + 15),
+              "r4_event_serial":word64(EXTENSION + 17) > 0}
     records = []
     for n in range(CYCLES):
         row = words[HEADER + n*CYCLE_WORDS:HEADER + (n+1)*CYCLE_WORDS]
-        valid = row[0] == n+1 and row[1] == n+1 and row[2] == n+1 and row[3] == 0x60000000+n+1 and row[4] == 0 and row[5] == 0 and row[6] == 0 and row[7] == 0 and row[8] == 0x300 and row[9] == 0 and row[10] == 0 and row[11] == 0
+        valid = row[0] == n+1 and row[1] == n+1 and row[2] == n+1 and row[3] == 0x60000000+n+1 and row[4] == 0 and row[5] == 0 and row[6] == 0 and row[7] == 0 and row[8] == 0x300 and row[9] == 0 and row[10] == 0 and row[11] == 0 and row[12] == 0
         records.append({"cycle":n+1, "valid":valid, "words":[f"0x{x:08X}" for x in row]})
     checks["all_records_valid"] = all(x["valid"] for x in records)
     if anchor == "B": checks["controlled_drop_observed"] = words[6] > 0
@@ -80,6 +90,9 @@ def attempt(repo: Path, case: str, output_parent: Path) -> int:
 def import_attempt(repo: Path, root: Path) -> Path:
     a=json.loads((root/"acceptance.json").read_text()); c=json.loads((root/"config.json").read_text())
     if a.get("result") != "PASS" or c.get("case_id") not in ANCHORS: raise WorkflowError("only completed PASS W6 attempts may be imported")
-    validate_manifest(root); dest=repo/"docs/evidence/r3/w6"/c["case_id"].lower()/"attempt-0001"
-    if dest.exists(): raise WorkflowError("immutable evidence destination exists")
+    validate_manifest(root)
+    parent=repo/"docs/evidence/r3/w6"/c["case_id"].lower()
+    number=1
+    while (parent/f"attempt-{number:04d}").exists(): number += 1
+    dest=parent/f"attempt-{number:04d}"
     shutil.copytree(root,dest); validate_manifest(dest); return dest
