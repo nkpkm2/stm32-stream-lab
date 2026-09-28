@@ -30,6 +30,7 @@ def main() -> int:
         "current_state": present("docs/r5/R5_CURRENT_STATE.md"),
         "known_truth_evidence": present("docs/evidence/r5/W5_HOST_KNOWN_TRUTH.md"),
         "target_build_evidence": present("docs/evidence/r5/W5_TARGET_BUILD.md"),
+        "shared_stack_build_evidence": present("docs/evidence/r5/W6_STACK_SOURCE_AUDIT.md"),
         "action_packet": present("docs/r5/R5_W6_ACTION_PACKET.md"),
         "native_core": present("firmware/runtime/r5_run_metrics.c"),
         "result_store": present("firmware/runtime/r5_result_store.c"),

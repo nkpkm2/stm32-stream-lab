@@ -27,14 +27,14 @@ Status date: 2026-09-29.  Values are restricted to `PASS`, `PARTIAL`,
 | A20 | sealed result transport copy | PASS | result-store native case |
 | A21 | live diagnostics separated from outcomes | PARTIAL | post-cutoff live counters exist; transport schema not integrated |
 | A22 | C/host known-truth agreement | PASS | W5 native 13/13 + host manifest SYN01–SYN14 |
-| A23 | target profile cross-build | PASS | `W5_TARGET_BUILD.md` |
+| A23 | target profile cross-build | PASS | `W5_TARGET_BUILD.md`, `W6_STACK_SOURCE_AUDIT.md` |
 | A24 | real DMA input / pre-admission Q wiring | MISSING | no R3 production hook exposes Q/serial to R5 |
 | A25 | real worker COMPLETE/t_commit wiring | MISSING | no R3 worker completion bridge into R5 |
 | A26 | actual S2 stop-gate and quiescence integration | MISSING | synthetic harness only |
 | A27 | run/boot identity in R5 result schema | MISSING | requires R3 lifecycle bridge |
 | A28 | real result transport/readback | MISSING | store is local-only |
 | A29 | hardware H01–H08 directed cases | BLOCKED | R4 not formally CLOSED; W6 action packet |
-| A30 | R2/R3/R4 representative regression | PARTIAL | existing lower-layer evidence retained; no integrated R5 profile |
+| A30 | R2/R3/R4 representative regression | PARTIAL | shared R3/R4/R5 source-stack build passes; no integrated R5 profile or hardware anchor yet |
 | A31 | immutable hardware attempt/evidence manifest | BLOCKED | no authorized hardware run |
 | A32 | Principal review readiness | BLOCKED | A24–A31 remain open |
 
