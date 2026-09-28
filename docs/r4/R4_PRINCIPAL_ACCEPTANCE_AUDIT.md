@@ -78,17 +78,17 @@ hardware test is not a substitute.
   perturbation only; it does not substitute for the required R2/R3 anchors.
 
 * R4-aware R3 lifecycle non-regression: the first schema-2 cohort is
-  `docs/evidence/r3/w6/w6-a/attempt-0002` and
-  `docs/evidence/r3/w6/w6-b/attempt-0002`, both built from the clean,
-  pushed commit `17d137b`.  Each H4 record checks 500/500 real production
+  `docs/evidence/r3/w6/w6-a/attempt-0003` and
+  `docs/evidence/r3/w6/w6-b/attempt-0003`, both built from the clean,
+  pushed commit `0cd7b9c`.  Each H4 record checks 500/500 real production
   START/STOP cycles, a successful R4 checkpoint after every stopped cycle,
   a sealed nonzero R4 window with exact task+IRQ+Idle+residual conservation,
   healthy runtime state, and a nonzero event serial.  A is K=8 normal
-  lifecycle traffic (raw aggregate `KEEP=0`, `REBIND=500`); B is K=1 with
-  processing notification withheld (raw aggregate `KEEP=2500`,
-  `REBIND=500`).  The next schema-2 rerun adds those A normal-path values as
-  explicit H4 predicates; neither cohort substitutes for the still-required
-  long R2 normal/drop anchors.
+  lifecycle traffic with explicit `REBIND>0` and `KEEP=0` predicates; B is
+  K=1 with processing notification withheld and explicit `KEEP>0`.  The raw
+  aggregates are A `KEEP=0`, `REBIND=500` and B `KEEP=2500`, `REBIND=500`.
+  This closes the R3 representative anchor only; neither cohort substitutes
+  for the still-required long R2 normal/drop anchors.
 
 Historical failed attempts are intentionally retained alongside their PASS
 successors.  They establish that the harness rejects over-broad release

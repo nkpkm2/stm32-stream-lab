@@ -1,0 +1,14 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:6:12:ValidWorkerId	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:12:12:SameRun	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:21:13:Reject	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:29:16:R3WorkerContract_Initialize	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:44:16:R3WorkerContract_BindRun	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:88:16:R3WorkerContract_RequestStop	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:140:16:R3WorkerContract_BuildQuiescedAck	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:182:16:R3WorkerContract_GetSnapshot	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:204:10:R3WorkerContract_AllowsBoundRunMutation	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:216:10:R3WorkerContract_NewWorkAllowed	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:229:23:R3WorkerContract_SelectWake	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:248:10:R3WorkerAck_MatchesStop	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:266:24:R3ProcessingWorker_StopAction	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_worker_contract.c:296:26:R3InterferenceWorker_StopAction	16	static

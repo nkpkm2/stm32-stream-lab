@@ -1,0 +1,18 @@
+{
+  "result": "PASS",
+  "invariants": {
+    "magic": true,
+    "schema_r4": true,
+    "anchor": true,
+    "terminal": true,
+    "all_cycles": true,
+    "no_fault_cycles": true,
+    "complete": true,
+    "r4_statuses_ok": true,
+    "r4_window_nonzero": true,
+    "r4_window_conserved": true,
+    "r4_event_serial": true,
+    "all_records_valid": true,
+    "controlled_drop_observed": true
+  }
+}

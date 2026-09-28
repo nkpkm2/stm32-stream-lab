@@ -1,0 +1,10 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_event.c:5:25:Latch	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_event.c:15:17:ContextIsValid	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_event.c:30:25:AccountOwner	40	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_event.c:61:25:Settle	128	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_event.c:131:18:R4_RuntimeLedger_Initialize	40	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_event.c:203:18:R4_RuntimeEvent_Apply	64	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_event.c:383:18:R4_RuntimeLedger_CheckpointLocked	48	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_event.c:429:18:R4_RuntimeLedger_CheckpointLockedTime	48	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_event.c:467:18:R4_RuntimeLedger_GetStatus	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r4_runtime_event.c:480:18:R4_RuntimeLedger_GetSealedWindowSummary	56	static

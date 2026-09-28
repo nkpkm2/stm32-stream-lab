@@ -1,0 +1,11 @@
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_lifecycle.c:17:13:CloseGates	4	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_lifecycle.c:24:12:TicketMatches	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_lifecycle.c:33:12:StopMatches	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_lifecycle.c:41:26:RollbackToIdle	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_lifecycle.c:58:6:R3Lifecycle_Init	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_lifecycle.c:72:19:R3Lifecycle_PrepareStart	32	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_lifecycle.c:117:19:R3Lifecycle_RequestStopBeforeCommit	16	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_lifecycle.c:124:19:R3Lifecycle_CommitStart	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_lifecycle.c:145:19:R3Lifecycle_RequestInfrastructureStopFromIsr	8	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_lifecycle.c:162:19:R3Lifecycle_RequestStop	24	static
+E:/Projects/stm32-stream-lab/firmware/runtime/r3_lifecycle.c:195:19:R3Lifecycle_GetSnapshot	24	static

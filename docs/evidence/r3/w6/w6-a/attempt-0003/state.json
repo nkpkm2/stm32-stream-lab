@@ -1,0 +1,14 @@
+{
+  "work_package": "R3-W6",
+  "case_id": "W6-A",
+  "attempt": 1,
+  "completed_phases": [
+    "H0",
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "H5"
+  ],
+  "next_allowed": "COMPLETE"
+}
